@@ -1,7 +1,7 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SCS.HomePhotos.Core;
+using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Workers;
 using SCS.HomePhotos.Workers;

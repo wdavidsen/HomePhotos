@@ -45,7 +45,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SCS.HomePhotos.Model\SCS.HomePhotos.Model.csproj" />
-    <ProjectReference Include="..\SCS.HomePhotos.Web2\SCS.HomePhotos.Web.csproj" />
+    <ProjectReference Include="..\SCS.HomePhotos.Web\SCS.HomePhotos.Web.csproj" />
     <ProjectReference Include="..\SCS.HomePhotos\SCS.HomePhotos.csproj" />
   </ItemGroup>
 

@@ -28,8 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SCS.HomePhotos.Core\SCS.HomePhotos.Service.csproj" />
     <ProjectReference Include="..\SCS.HomePhotos.Model\SCS.HomePhotos.Model.csproj" />
+    <ProjectReference Include="..\SCS.HomePhotos.Service\SCS.HomePhotos.Service.csproj" />
     <ProjectReference Include="..\SCS.HomePhotos\SCS.HomePhotos.csproj" />
   </ItemGroup>
 
