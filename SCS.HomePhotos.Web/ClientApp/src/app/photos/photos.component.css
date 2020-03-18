@@ -1,0 +1,14 @@
+.photo-list {
+    padding-top: 10px;
+}
+    .photo-list div {
+        margin: 0 0 0 4px;
+        display: inline-block;
+        
+        background-position: center center !important;
+        background-size: cover !important;
+    }
+
+        .photo-list div.selected {
+            border: solid 4px yellow;
+        }

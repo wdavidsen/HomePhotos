@@ -7,12 +7,12 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class SettingsService {
-  
+
     constructor(private http: HttpClient) {
 
     }
 
-    getSettings() : Observable<Settings> {
+    getSettings(): Observable<Settings> {
         return this.http.get<Settings>(`${environment.apiUrl}/settings`);
     }
 

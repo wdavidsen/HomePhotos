@@ -49,10 +49,11 @@ namespace SCS.HomePhotos.Service
                 {
                     token.ThrowIfCancellationRequested();
 
+                    var imageLayoutInfo = GetImageLayoutInfo(imageFilePath);
                     var fullImagePath = CreateFullImage(imageFilePath, cacheFilePath);
                     var smallImagePath = CreateSmallImage(fullImagePath, cacheFilePath);
                     CreateThumbnail(smallImagePath, cacheFilePath);
-                    SavePhotoAndTags(imageFilePath, cacheFilePath, checksum);                       
+                    SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo);                       
                 }
                 catch (Exception ex)
                 {
@@ -136,11 +137,11 @@ namespace SCS.HomePhotos.Service
             return savePath;
         }
 
-        public Photo SavePhotoAndTags(string imageFilePath, string cacheFilePath, string checksum)
+        public Photo SavePhotoAndTags(string imageFilePath, string cacheFilePath, string checksum, ImageLayoutInfo imageLayoutInfo)
         {
             _logger.LogInformation("Saving photo with checksum {Checksum}.", checksum);
 
-            var imageInfo = _fileSystemService.GetInfo(imageFilePath);
+            var imageInfo = _fileSystemService.GetImageInfo(imageFilePath);
             var photo = new Photo
             {
                 Name = Path.GetFileName(imageFilePath),
@@ -148,7 +149,9 @@ namespace SCS.HomePhotos.Service
                 Checksum = checksum,
                 CacheFolder = Path.GetDirectoryName(cacheFilePath),
                 DateFileCreated = File.GetCreationTime(imageFilePath),
-                DateTaken = imageInfo.DateTaken
+                DateTaken = imageInfo.DateTaken,
+                ImageHeight = imageLayoutInfo.Height,
+                ImageWidth = imageLayoutInfo.Width
             };
             _photoService.SavePhoto(photo);
             _photoService.AssociateTags(photo, imageInfo.Tags.ToArray());

@@ -153,8 +153,8 @@ namespace SCS.HomePhotos
             return new DynamicConfig
             {
                 ConfigId = null,
-                IndexPath = AppDomain.CurrentDomain.BaseDirectory + "photos",
-                CacheFolder = AppDomain.CurrentDomain.BaseDirectory  + "cache",
+                IndexPath = @"C:\HomePhotos\Photos",
+                CacheFolder = @"C:\HomePhotos\Cache", /*AppDomain.CurrentDomain.BaseDirectory  + "cache", */
                 ThumbnailSize = 256,
                 SmallImageSize = 800,
                 LargeImageSize = 1920,

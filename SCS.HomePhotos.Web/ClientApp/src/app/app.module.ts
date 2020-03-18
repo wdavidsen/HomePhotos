@@ -16,6 +16,7 @@ import { AlertComponent } from './components';
 import { JwtInterceptor, ErrorInterceptor, AuthGuard } from './helpers';
 import { SettingsService } from './services/settings.service';
 import { AccountComponent } from './account/account.component';
+import { PhotosService } from './services/photos.service';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { AccountComponent } from './account/account.component';
   ],
   providers: [
     SettingsService,
+    PhotosService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],

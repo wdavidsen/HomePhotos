@@ -15,6 +15,10 @@ namespace SCS.HomePhotos.Model
 
         public string FileName { get; set; }
 
+        public int ImageHeight { get; set; }
+
+        public int ImageWidth { get; set; }
+
         public DateTime? DateTaken { get; set; }
 
         public DateTime DateFileCreated { get; set; }

@@ -6,6 +6,6 @@
         string GetChecksum(string filePath);
 
         long GetFileSize(string filePath);
-        ImageInfo GetInfo(string filePath);
+        ImageInfo GetImageInfo(string filePath);
     }
 }

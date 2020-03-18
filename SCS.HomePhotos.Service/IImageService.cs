@@ -18,7 +18,7 @@ namespace SCS.HomePhotos.Service
 
         string CreateThumbnail(string imageFilePath, string cacheSubfolder);
 
-        Photo SavePhotoAndTags(string imageFilePath, string checksum, string cacheSubfolder);
+        Photo SavePhotoAndTags(string imageFilePath, string checksum, string cacheSubfolder, ImageLayoutInfo imageLayoutInfo);
 
         ImageLayoutInfo GetImageLayoutInfo(string sourcePath);
     }

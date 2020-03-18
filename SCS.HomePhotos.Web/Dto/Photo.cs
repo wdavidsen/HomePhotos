@@ -14,6 +14,8 @@ namespace SCS.HomePhotos.Web.Dto
             DateTaken = photo.DateTaken;
             DateFileCreated = photo.DateFileCreated;
             CacheFolder = photo.CacheFolder;
+            ImageHeight = photo.ImageHeight;
+            ImageWidth = photo.ImageWidth;
         }
 
         public int? PhotoId { get; set; }
@@ -21,6 +23,10 @@ namespace SCS.HomePhotos.Web.Dto
         public string Name { get; set; }
 
         public string FileName { get; set; }
+
+        public int ImageHeight { get; set; }
+
+        public int ImageWidth { get; set; }
 
         public DateTime? DateTaken { get; set; }
 
@@ -37,7 +43,9 @@ namespace SCS.HomePhotos.Web.Dto
                 FileName = FileName,
                 DateTaken = DateTaken,
                 DateFileCreated = DateFileCreated,
-                CacheFolder = CacheFolder
+                CacheFolder = CacheFolder,
+                ImageHeight = ImageHeight,
+                ImageWidth = ImageWidth
             };
 
             return photo;

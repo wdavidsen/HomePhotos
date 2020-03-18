@@ -1,1 +1,12 @@
-<p>photos works!</p>
+<section class="mainbar">
+
+    <section>
+        <div class="container">
+            <div class="row photo-list" id="photoList">
+                <div *ngFor="let t of thumbnails" [ngClass]="{selected: t.selected}" (click)="select(t, $event)"
+                     [ngStyle]="{ background : 'url(' + t.thumbUrl + ')', height: t.thumbHeight + 'px', width : t.thumbWidth + 'px'}">
+                </div>
+            </div>
+        </div>
+    </section>
+</section>

@@ -251,7 +251,7 @@ namespace SCS.HomePhotos.Workers
                                     var fullImagePath = imageService.CreateFullImage(imageFilePath, cacheFilePath);
                                     var smallImagePath = imageService.CreateSmallImage(fullImagePath, cacheFilePath);
                                     imageService.CreateThumbnail(smallImagePath, cacheFilePath);
-                                    imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum);
+                                    imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo);
                                 }
                                 else
                                 {

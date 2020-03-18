@@ -121,7 +121,7 @@ namespace SCS.HomePhotos.Web
 
             app.UseGloablExceptionMiddleware();
             app.UseCors("AllowAllOrigins");
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UsePhotoImageMiddleware();
             app.UseStaticFiles();
 

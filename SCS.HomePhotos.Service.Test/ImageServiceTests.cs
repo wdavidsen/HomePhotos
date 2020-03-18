@@ -47,7 +47,7 @@ namespace SCS.HomePhotos.Service.Test
             var checksum = "abc123";
 
             _fileSystemService.Setup(m => m.GetChecksum(It.IsAny<string>())).Returns(checksum);
-            _fileSystemService.Setup(m => m.GetInfo(It.IsAny<string>())).Returns(new ImageInfo { DateTaken = DateTime.Now, Tags = { "Tag1", "Tag2" } });
+            _fileSystemService.Setup(m => m.GetImageInfo(It.IsAny<string>())).Returns(new ImageInfo { DateTaken = DateTime.Now, Tags = { "Tag1", "Tag2" } });
             _photoService.Setup(m => m.GetPhotoByChecksum(It.IsAny<string>())).ReturnsAsync(default(Photo));
             _dynamicConfig.SetupGet(o => o.CacheFolder).Returns(cacheDir);
             _dynamicConfig.SetupGet(o => o.LargeImageSize).Returns(800);
@@ -66,7 +66,7 @@ namespace SCS.HomePhotos.Service.Test
             _fileSystemService.Verify(m => m.GetChecksum(filePath),
                 Times.Once);
 
-            _fileSystemService.Verify(m => m.GetInfo(filePath),
+            _fileSystemService.Verify(m => m.GetImageInfo(filePath),
                 Times.Once);
 
             _photoService.Verify(m => m.GetPhotoByChecksum(checksum),
@@ -268,7 +268,7 @@ namespace SCS.HomePhotos.Service.Test
                 Tags = new List<string> { "Tag1", "Tag2", "parties", "birthdays" }
             };
 
-            _fileSystemService.Setup(m => m.GetInfo(imageFilePath)).Returns(imageInfo);
+            _fileSystemService.Setup(m => m.GetImageInfo(imageFilePath)).Returns(imageInfo);
             _photoService.Setup(m => m.SavePhoto(It.IsAny<Model.Photo>()))
                 .Callback<Model.Photo>((photo) =>
                 {
@@ -298,7 +298,7 @@ namespace SCS.HomePhotos.Service.Test
 
             _imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum);
 
-            _fileSystemService.Verify(m => m.GetInfo(imageFilePath), Times.Once);
+            _fileSystemService.Verify(m => m.GetImageInfo(imageFilePath), Times.Once);
 
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Model.Photo>()), Times.Once);
             _photoService.Verify(m => m.AssociateTags(It.IsAny<Model.Photo>(), It.IsAny<string[]>()), Times.Once);

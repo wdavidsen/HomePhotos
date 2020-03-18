@@ -16,7 +16,7 @@ namespace SCS.HomePhotos.Web.Controllers
     /// <summary>
     /// Receives uploaded files.
     /// </summary>
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UploadController : ControllerBase
@@ -49,7 +49,6 @@ namespace SCS.HomePhotos.Web.Controllers
         public async Task<IActionResult> ImageUpload(List<IFormFile> files)
         {
             var acceptedExtensions = new string[] { "JPG", "PNG", "GIF" };
-            var response = new FileGroup<FileProcessed>();
 
             foreach (var file in files)
             {
@@ -68,23 +67,23 @@ namespace SCS.HomePhotos.Web.Controllers
                     // check for invalid characters
                     if (filePath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
                     {
-                        throw new InvalidOperationException($"Invalid characters in uploaded file name.");
+                        return BadRequest();
                     }
 
                     // check for valid extensions
                     if (!acceptedExtensions.Any(e => e == extension.TrimStart('.').ToUpper()))
                     {
-                        throw new InvalidOperationException($"Invalid file extension {extension}.");
+                        return BadRequest();
                     }
 
                     // check image header bytes
-                    using (var sourceStream = file.OpenReadStream())
-                    {
-                        if (!ImageValidationHelper.ValidateImageHeaders(sourceStream))
-                        {
-                            throw new InvalidOperationException("Invalid image file header in uploaded file.");
-                        }
-                    }
+                    //using (var sourceStream = file.OpenReadStream())
+                    //{
+                    //    if (!ImageValidationHelper.ValidateImageHeaders(sourceStream))
+                    //    {
+                    //        return BadRequest();
+                    //    }
+                    //}
 
                     // file name should not exceed 255 characters
                     if (fileName.Length > 255)
@@ -101,13 +100,6 @@ namespace SCS.HomePhotos.Web.Controllers
                     }
 
                     var cachePath = await _imageService.QueueMobileResize(filePath, false);
-
-                    response.Files.Add(new FileProcessed
-                    {
-                        Name = Path.GetFileName(cachePath),
-                        OriginalName = fileName,
-                        ThumbnailUrl = $"{Constants.CacheRoute}/{cachePath}"
-                    });
                 }
                 catch (Exception ex)
                 {
@@ -116,7 +108,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 }
             }
 
-            return Ok(response);
+            return Ok();
         }
     }
 }

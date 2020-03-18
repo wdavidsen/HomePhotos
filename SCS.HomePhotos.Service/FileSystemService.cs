@@ -36,7 +36,7 @@ namespace SCS.HomePhotos.Service
             return fi.Length;
         }
 
-        public ImageInfo GetInfo(string filePath)
+        public ImageInfo GetImageInfo(string filePath)
         {
             var imageInfo = new ImageInfo();
 
