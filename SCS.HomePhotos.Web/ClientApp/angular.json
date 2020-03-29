@@ -23,9 +23,15 @@
             "assets": ["src/assets"],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/blueimp-gallery/css/blueimp-gallery.min.css",
+              "node_modules/blueimp-gallery/css/blueimp-gallery-indicator.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/blueimp-gallery/js/blueimp-helper.js",
+              "node_modules/blueimp-gallery/js/blueimp-gallery.js",
+              "node_modules/blueimp-gallery/js/blueimp-gallery-indicator.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -14,4 +14,8 @@ export class PhotosService {
     getLatest(): Observable<Photo[]> {
         return this.http.get<Photo[]>(`${environment.apiUrl}/photos/latest`);
     }
+
+    getPhotosByTag(tagName: string): Observable<Photo[]> {
+        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/byTag?tag=${escape(tagName)}`);
+    }
 }

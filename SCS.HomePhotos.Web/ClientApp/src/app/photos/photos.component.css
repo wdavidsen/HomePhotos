@@ -2,7 +2,7 @@
     padding-top: 10px;
 }
     .photo-list div {
-        margin: 0 0 0 4px;
+        margin: 0 0 8px 8px;
         display: inline-block;
         
         background-position: center center !important;

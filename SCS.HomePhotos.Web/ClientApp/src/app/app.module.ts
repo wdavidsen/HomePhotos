@@ -16,7 +16,8 @@ import { AlertComponent } from './components';
 import { JwtInterceptor, ErrorInterceptor, AuthGuard } from './helpers';
 import { SettingsService } from './services/settings.service';
 import { AccountComponent } from './account/account.component';
-import { PhotosService } from './services/photos.service';
+import { PhotosService, TagService, PageInfoService } from './services';
+import { PageInfoComponent } from './components/page-info.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { PhotosService } from './services/photos.service';
     RegisterComponent,
     SettingsComponent,
     AlertComponent,
+    PageInfoComponent,
     AccountComponent
   ],
   imports: [
@@ -38,7 +40,7 @@ import { PhotosService } from './services/photos.service';
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: PhotosComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-      { path: 'photos', component: PhotosComponent, canActivate: [AuthGuard] },
+      { path: 'photos/:tagName', component: PhotosComponent, canActivate: [AuthGuard] },
       { path: 'tags', component: TagsComponent, canActivate: [AuthGuard] },
       { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
       { path: 'login', component: LoginComponent },
@@ -51,6 +53,7 @@ import { PhotosService } from './services/photos.service';
   providers: [
     SettingsService,
     PhotosService,
+    TagService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],

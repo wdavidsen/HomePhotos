@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { PhotosService } from '../services/photos.service';
 import { Thumbnail, Photo } from '../models';
 import { map } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { AlertService } from '../services';
+import { PageInfoService } from '../services/page-info.service';
+
+declare const blueimp: any;
 
 @Component({
   selector: 'app-photos',
@@ -11,14 +16,55 @@ import { map } from 'rxjs/operators';
 export class PhotosComponent implements OnInit {
   thumbHeight = 100;
   thumbnails: Thumbnail[];
+  tagName: string;
 
-  constructor(private photosService: PhotosService) { }
+  constructor(private photosService: PhotosService, private route: ActivatedRoute,
+    private alertService: AlertService, private pageInfoService: PageInfoService) {
+
+    }
 
   ngOnInit() {
 
-    this.photosService.getLatest()
-      .pipe(map(photos => this.photosToThumbnails(photos)))
-      .subscribe((thumbs => this.thumbnails =  thumbs));
+    this.route.paramMap.subscribe(params => {
+      this.tagName = params.get('tagName');
+      console.log(`Received tag: ${this.tagName}`);
+
+      if (this.tagName) {
+        this.pageInfoService.setTitle(this.tagName);
+
+        this.photosService.getPhotosByTag(this.tagName)
+          .pipe(map(photos => this.photosToThumbnails(photos)))
+          .subscribe((thumbs => this.thumbnails =  thumbs));
+      }
+      else {
+        this.pageInfoService.setTitle('Latest Photos');
+
+        this.photosService.getLatest()
+          .pipe(map(photos => this.photosToThumbnails(photos)))
+          .subscribe((thumbs => this.thumbnails =  thumbs));
+      }
+    });
+  }
+
+  select(thumbnail: Thumbnail) {
+    // thumbnail.selected = !thumbnail.selected;
+    const images: any[] = [];
+    this.thumbnails.forEach(thumb => {
+      images.push({
+        href: `${thumb.thumbUrl}?type=full`,
+        type: 'image/jpeg',
+        thumbnail: thumb.thumbUrl
+      });
+    });
+    this.showLightbox(null, images);
+  }
+
+  showLightbox(event: any, images: any[]) {
+    const options = {
+        event: event || window.event,
+    };
+
+    blueimp.Gallery(images, options);
   }
 
   private photosToThumbnails(photos: Photo[]): Thumbnail[] {
