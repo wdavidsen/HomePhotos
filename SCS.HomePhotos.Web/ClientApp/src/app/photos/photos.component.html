@@ -6,3 +6,17 @@
         </div>
     </div>
 </section>
+
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-bottom">   
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav">
+            <button type="button" class="btn btn-default navbar-btn" (click)="showTagTool()" [disabled]="getSelectedThumbnails().length === 0">Tag Photos</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="selectAll()">Select All</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="clearSelections()" [disabled]="getSelectedThumbnails().length === 0">Clear Selections</button>            
+        </div>
+    </div>
+</nav>

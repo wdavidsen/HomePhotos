@@ -3,8 +3,9 @@ import { PhotosService } from '../services/photos.service';
 import { Thumbnail, Photo } from '../models';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { AlertService } from '../services';
+import { AlertService, SearchService } from '../services';
 import { PageInfoService } from '../services/page-info.service';
+import { Subscription } from 'rxjs';
 
 declare const blueimp: any;
 
@@ -15,15 +16,19 @@ declare const blueimp: any;
 })
 export class PhotosComponent implements OnInit {
   thumbHeight = 100;
-  thumbnails: Thumbnail[];
+  thumbnails: Thumbnail[] = [];
   tagName: string;
 
-  constructor(private photosService: PhotosService, private route: ActivatedRoute,
-    private alertService: AlertService, private pageInfoService: PageInfoService) {
+  constructor(private photosService: PhotosService,
+    private route: ActivatedRoute,
+    private alertService: AlertService,
+    private pageInfoService: PageInfoService,
+    private searchService: SearchService) {
 
     }
 
   ngOnInit() {
+    this.searchService.setHidden(false);
 
     this.route.paramMap.subscribe(params => {
       this.tagName = params.get('tagName');
@@ -44,19 +49,35 @@ export class PhotosComponent implements OnInit {
           .subscribe((thumbs => this.thumbnails =  thumbs));
       }
     });
+
+    this.searchService.getKeywords()
+      .subscribe(keywords => {
+        if (keywords) {
+          console.log(`Received search keywords: ${keywords}`);
+          this.photosService.searchPhotos(keywords)
+            .pipe(map(photos => this.photosToThumbnails(photos)))
+            .subscribe((thumbs => this.thumbnails =  thumbs));
+        }
+        else {
+          this.photosService.getLatest()
+            .pipe(map(photos => this.photosToThumbnails(photos)))
+            .subscribe((thumbs => this.thumbnails =  thumbs));
+        }
+      });
   }
 
   select(thumbnail: Thumbnail) {
-    // thumbnail.selected = !thumbnail.selected;
-    const images: any[] = [];
-    this.thumbnails.forEach(thumb => {
-      images.push({
-        href: `${thumb.thumbUrl}?type=full`,
-        type: 'image/jpeg',
-        thumbnail: thumb.thumbUrl
-      });
-    });
-    this.showLightbox(null, images);
+    thumbnail.selected = !thumbnail.selected;
+
+    // const images: any[] = [];
+    // this.thumbnails.forEach(thumb => {
+    //   images.push({
+    //     href: `${thumb.thumbUrl}?type=full`,
+    //     type: 'image/jpeg',
+    //     thumbnail: thumb.thumbUrl
+    //   });
+    // });
+    // this.showLightbox(null, images);
   }
 
   showLightbox(event: any, images: any[]) {
@@ -65,6 +86,22 @@ export class PhotosComponent implements OnInit {
     };
 
     blueimp.Gallery(images, options);
+  }
+
+  getSelectedThumbnails() {
+    return this.thumbnails.filter(thumb => thumb.selected);
+  }
+
+  showTagTool() {
+
+  }
+
+  selectAll() {
+
+  }
+
+  clearSelections() {
+    this.thumbnails.forEach(thumb => thumb.selected = false);
   }
 
   private photosToThumbnails(photos: Photo[]): Thumbnail[] {

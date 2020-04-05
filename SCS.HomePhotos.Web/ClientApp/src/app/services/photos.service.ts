@@ -18,4 +18,8 @@ export class PhotosService {
     getPhotosByTag(tagName: string): Observable<Photo[]> {
         return this.http.get<Photo[]>(`${environment.apiUrl}/photos/byTag?tag=${escape(tagName)}`);
     }
+
+    searchPhotos(keywords: string) {
+        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/search?keywords=${escape(keywords)}`);
+    }
 }

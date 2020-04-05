@@ -18,6 +18,8 @@ import { SettingsService } from './services/settings.service';
 import { AccountComponent } from './account/account.component';
 import { PhotosService, TagService, PageInfoService } from './services';
 import { PageInfoComponent } from './components/page-info.component';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { SearchComponent } from './components/search.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { PageInfoComponent } from './components/page-info.component';
     SettingsComponent,
     AlertComponent,
     PageInfoComponent,
+    SearchComponent,
     AccountComponent
   ],
   imports: [
@@ -38,6 +41,7 @@ import { PageInfoComponent } from './components/page-info.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    AngularFontAwesomeModule,
     RouterModule.forRoot([
       { path: '', component: PhotosComponent, pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'photos/:tagName', component: PhotosComponent, canActivate: [AuthGuard] },

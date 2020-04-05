@@ -55,5 +55,25 @@ namespace SCS.HomePhotos.Web.Controllers
 
             return Ok(dtos);
         }
+
+        [HttpGet("search", Name = "SearchPhotos")]
+        public async Task<IActionResult> SearchPhotos([FromQuery] string keywords, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 200)
+        {
+            if (string.IsNullOrWhiteSpace(keywords))
+            {
+                return BadRequest();
+            }
+
+            var photos = await _photoSevice.GetPhotosByKeywords(keywords, pageNum, pageSize);
+
+            var dtos = new List<Dto.Photo>();
+
+            foreach (var photo in photos)
+            {
+                dtos.Add(new Dto.Photo(photo));
+            }
+
+            return Ok(dtos);
+        }
     }
 }

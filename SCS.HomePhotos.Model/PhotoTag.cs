@@ -6,7 +6,7 @@ namespace SCS.HomePhotos.Model
     public class PhotoTag
     {
         [Key]
-        public int PhotoTagId { get; set; }
+        public int? PhotoTagId { get; set; }
         public int PhotoId { get; set; }
         public int TagId { get; set; }
     }

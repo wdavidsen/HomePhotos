@@ -23,11 +23,13 @@
             "assets": ["src/assets"],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/blueimp-gallery/css/blueimp-gallery.min.css",
               "node_modules/blueimp-gallery/css/blueimp-gallery-indicator.css",
               "src/styles.css"
             ],
             "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "node_modules/blueimp-gallery/js/blueimp-helper.js",
               "node_modules/blueimp-gallery/js/blueimp-gallery.js",
               "node_modules/blueimp-gallery/js/blueimp-gallery-indicator.js"

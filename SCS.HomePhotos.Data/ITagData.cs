@@ -9,8 +9,16 @@ namespace SCS.HomePhotos.Service
     {
         Task<IEnumerable<Tag>> GetTags();
 
+        Task<IEnumerable<TagStat>> GetTags(string keywords, int pageNum = 0, int pageSize = 200);
+
         Task<IEnumerable<TagStat>> GetTagAndPhotoCount();
 
         Task<Tag> SaveTag(Tag tag);
+
+        Task<IEnumerable<PhotoTag>> GetPhotoTagAssociations(int tagId);
+        
+        Task<PhotoTag> AssociatePhotoTag(int photoId, int tagId);
+
+        Task<PhotoTag> AssociatePhotoTag(int photoId, int existingTagId, int newTagId);
     }
 }

@@ -52,18 +52,6 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 
             _imageService.Verify(m => m.QueueMobileResize(It.IsAny<string>(), false),
                 Times.Once);
-
-            var value = ((OkObjectResult)response).Value;
-
-            Assert.IsType<FileGroup<FileProcessed>>(value);
-
-            var fileGroup = value as FileGroup<FileProcessed>;
-
-            Assert.True(fileGroup.Files.Count == 1);
-            Assert.Equal(files.Count, fileGroup.Files.Count);
-            Assert.Equal(files[0].GetFileName(), fileGroup.Files[0].OriginalName);
-            Assert.Equal(Path.GetFileName(cachePath), fileGroup.Files[0].Name);
-            Assert.Equal($"{Constants.CacheRoute}/{cachePath}", fileGroup.Files[0].ThumbnailUrl);
         }
     }
 }

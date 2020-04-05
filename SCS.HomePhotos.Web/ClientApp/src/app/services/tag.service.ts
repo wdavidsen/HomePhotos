@@ -14,4 +14,8 @@ export class TagService {
     getTags(): Observable<Tag[]> {
         return this.http.get<Tag[]>(`${environment.apiUrl}/tags`);
     }
+
+    searchTags(keywords: string) {
+        return this.http.get<Tag[]>(`${environment.apiUrl}/tags/search?keywords=${escape(keywords)}`);
+    }
 }

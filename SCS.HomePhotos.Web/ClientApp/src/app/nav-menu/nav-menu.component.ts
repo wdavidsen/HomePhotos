@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from '../models';
-import { AuthenticationService } from '../services';
+import { AuthenticationService, SearchService } from '../services';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,12 +8,23 @@ import { Router } from '@angular/router';
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css']
 })
-export class NavMenuComponent {
+export class NavMenuComponent implements OnInit {
   isExpanded = false;
   currentUser: User;
+  hideSearch = true;
+  hideMenu = true;
 
-  constructor (private router: Router, private authenticationService: AuthenticationService) {
-      this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+  constructor (private router: Router,
+    private authenticationService: AuthenticationService,
+    private searchService: SearchService) {
+      this.authenticationService.currentUser.subscribe(user => {
+        this.currentUser = user;
+        this.hideMenu = !this.currentUser;
+      });
+  }
+
+  ngOnInit() {
+    this.searchService.getHidden().subscribe(hidden => this.hideSearch = (hidden !== false));
   }
 
   collapse() {

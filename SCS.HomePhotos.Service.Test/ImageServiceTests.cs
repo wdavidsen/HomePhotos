@@ -267,6 +267,13 @@ namespace SCS.HomePhotos.Service.Test
                 DateTaken = DateTime.Now,
                 Tags = new List<string> { "Tag1", "Tag2", "parties", "birthdays" }
             };
+            var imageLayoutInfo = new ImageLayoutInfo
+            {
+                Height = 1000,
+                Width = 3000,
+                LayoutType = ImageLayoutType.Landscape,
+                Ratio = 0.33m
+            };
 
             _fileSystemService.Setup(m => m.GetImageInfo(imageFilePath)).Returns(imageInfo);
             _photoService.Setup(m => m.SavePhoto(It.IsAny<Model.Photo>()))
@@ -295,8 +302,10 @@ namespace SCS.HomePhotos.Service.Test
                     Assert.Contains("parties", tags);
                     Assert.Contains("birthdays", tags);
                 });
+            
+            //_imageResizer.Setup(m => m.GetImageLayoutInfo(It.IsAny<string>())).Returns(imageLayoutInfo);
 
-            _imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum);
+            _imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo);
 
             _fileSystemService.Verify(m => m.GetImageInfo(imageFilePath), Times.Once);
 

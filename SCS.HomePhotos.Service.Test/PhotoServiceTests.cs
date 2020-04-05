@@ -192,13 +192,13 @@ namespace SCS.HomePhotos.Service.Test
             _tagData.Setup(m => m.GetListAsync<Tag>(It.IsAny<string>(), It.IsAny<object>()))
                 .ReturnsAsync(tags);
 
-            _photoData.Setup(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()));
+            _tagData.Setup(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()));
 
             await _photoService.AssociateTags(photo, tags.Select(t => t.TagName).ToArray());
 
             _tagData.Verify(m => m.GetListAsync<Tag>(It.IsAny<string>(), It.IsAny<object>()),
                 Times.Exactly(3));
-            _photoData.Verify(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()),
+            _tagData.Verify(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()),
                 Times.Exactly(3));
         }
     }

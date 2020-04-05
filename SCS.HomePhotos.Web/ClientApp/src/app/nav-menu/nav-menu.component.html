@@ -1,51 +1,40 @@
 <header>
-  <nav
-    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
-  >
-    <div class="container">
-      <a class="navbar-brand" [routerLink]="['/']">Home Photos</a> <app-page-info></app-page-info>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target=".navbar-collapse"
-        aria-label="Toggle navigation"
-        [attr.aria-expanded]="isExpanded"
-        (click)="toggle()"
-      >
+  <nav class="navbar navbar-expand-md navbar-light bg-light">
+    <a href="#" class="navbar-brand">Home Photos</a>
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
-      </button>
-      <div
-        class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"
-        [ngClass]="{ show: isExpanded }"
-      >
-        <ul class="navbar-nav flex-grow" *ngIf="currentUser">
-          <li
-            class="nav-item"
-            [routerLinkActive]="['link-active']"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <a class="nav-link text-dark" [routerLink]="['/photos']">Photos</a>
-          </li>
-          <li
-            class="nav-item"
-            [routerLinkActive]="['link-active']"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <a class="nav-link text-dark" [routerLink]="['/tags']">Tags</a>
-          </li>
-          <li
-            class="nav-item"
-            [routerLinkActive]="['link-active']"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <a class="nav-link text-dark" [routerLink]="['/settings']">Settings</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" (click)="logout()">Logout</a>
-          </li>
-        </ul>
-      </div>      
-    </div>
+    </button>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+      <div class="navbar-nav" [hidden]="hideMenu">
+          <a href="#" class="nav-item nav-link active" 
+            [routerLinkActive]="['link-active']" 
+            [routerLinkActiveOptions]="{ exact: true }" 
+            [routerLink]="['/photos']">Photos</a>
+
+          <a href="#" class="nav-item nav-link active" 
+            [routerLinkActive]="['link-active']" 
+            [routerLinkActiveOptions]="{ exact: true }" 
+            [routerLink]="['/tags']">Tags</a>
+
+          <a href="#" class="nav-item nav-link active" 
+            [routerLinkActive]="['link-active']" 
+            [routerLinkActiveOptions]="{ exact: true }" 
+            [routerLink]="['/settings']">Settings</a>
+          
+          <div class="nav-item dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Admin</a>
+              <div class="dropdown-menu">
+                <a href="#" class="dropdown-item" 
+                  [routerLinkActive]="['link-active']" 
+                  [routerLinkActiveOptions]="{ exact: true }" 
+                  [routerLink]="['/settings']">Settings</a>
+              </div>
+          </div>
+      </div>
+      <app-search [hidden]="hideSearch"></app-search>
+      <div class="navbar-nav" [hidden]="hideMenu">
+        <a class="nav-link text-dark" (click)="logout()">Logout</a>
+      </div>
+    </div>    
   </nav>
 </header>

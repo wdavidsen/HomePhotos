@@ -9,8 +9,8 @@ namespace SCS.HomePhotos.Data
     {
         Task<IEnumerable<Photo>> GetPhotos(DateTime dateTakenStart, DateTime dateTakenEnd, bool descending = true, int pageNum = 0, int pageSize = 200);
         Task<IEnumerable<Photo>> GetPhotos(string[] tags, int pageNum = 0, int pageSize = 200);
+        Task<IEnumerable<Photo>> GetPhotos(string keywords, int pageNum = 0, int pageSize = 200);
 
         Task<Photo> SavePhoto(Photo photo);
-        Task<PhotoTag> AssociatePhotoTag(int photoId, int tagId);
     }
 }
