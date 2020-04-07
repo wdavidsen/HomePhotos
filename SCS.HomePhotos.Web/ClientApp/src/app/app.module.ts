@@ -12,7 +12,7 @@ import { TagsComponent } from './tags/tags.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { SettingsComponent } from './settings/settings.component';
-import { AlertComponent } from './components';
+import { AlertComponent, OrganizeComponent } from './components';
 import { JwtInterceptor, ErrorInterceptor, AuthGuard } from './helpers';
 import { SettingsService } from './services/settings.service';
 import { AccountComponent } from './account/account.component';
@@ -33,6 +33,7 @@ import { SearchComponent } from './components/search.component';
     SettingsComponent,
     AlertComponent,
     PageInfoComponent,
+    OrganizeComponent,
     SearchComponent,
     AccountComponent
   ],

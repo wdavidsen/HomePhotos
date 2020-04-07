@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PhotosService } from '../services/photos.service';
 import { Thumbnail, Photo } from '../models';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { AlertService, SearchService } from '../services';
+import { AlertService, SearchService, OrganizeService } from '../services';
 import { PageInfoService } from '../services/page-info.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 
 declare const blueimp: any;
 
@@ -14,16 +14,21 @@ declare const blueimp: any;
   templateUrl: './photos.component.html',
   styleUrls: ['./photos.component.css']
 })
-export class PhotosComponent implements OnInit {
+export class PhotosComponent implements OnInit, OnDestroy {
   thumbHeight = 100;
   thumbnails: Thumbnail[] = [];
   tagName: string;
+  organizeMode = false;
+
+  private organizeSubscription: Subscription;
+  private searchSubscription: Subscription;
 
   constructor(private photosService: PhotosService,
     private route: ActivatedRoute,
     private alertService: AlertService,
     private pageInfoService: PageInfoService,
-    private searchService: SearchService) {
+    private searchService: SearchService,
+    private organizeService: OrganizeService) {
 
     }
 
@@ -50,7 +55,7 @@ export class PhotosComponent implements OnInit {
       }
     });
 
-    this.searchService.getKeywords()
+    this.searchSubscription = this.searchService.getKeywords()
       .subscribe(keywords => {
         if (keywords) {
           console.log(`Received search keywords: ${keywords}`);
@@ -64,32 +69,51 @@ export class PhotosComponent implements OnInit {
             .subscribe((thumbs => this.thumbnails =  thumbs));
         }
       });
+
+    this.organizeSubscription = this.organizeService.getEnabled()
+      .subscribe(enabled => {
+        this.organizeMode = enabled;
+        this.clearSelections();
+      });
+  }
+
+  ngOnDestroy() {
+    this.searchSubscription.unsubscribe();
+    this.organizeSubscription.unsubscribe();
   }
 
   select(thumbnail: Thumbnail) {
-    thumbnail.selected = !thumbnail.selected;
-
-    // const images: any[] = [];
-    // this.thumbnails.forEach(thumb => {
-    //   images.push({
-    //     href: `${thumb.thumbUrl}?type=full`,
-    //     type: 'image/jpeg',
-    //     thumbnail: thumb.thumbUrl
-    //   });
-    // });
-    // this.showLightbox(null, images);
+    if (this.organizeMode) {
+      thumbnail.selected = !thumbnail.selected;
+    }
+    else {
+      this.showLightbox();
+    }
   }
 
-  showLightbox(event: any, images: any[]) {
+  showLightbox() {
     const options = {
-        event: event || window.event,
+        event: window.event,
     };
+
+    const images: any[] = [];
+    this.thumbnails.forEach(thumb => {
+      images.push({
+        href: `${thumb.thumbUrl}?type=full`,
+        type: 'image/jpeg',
+        thumbnail: thumb.thumbUrl
+      });
+    });
 
     blueimp.Gallery(images, options);
   }
 
-  getSelectedThumbnails() {
+  getSelectedThumbnails(): Thumbnail[] {
     return this.thumbnails.filter(thumb => thumb.selected);
+  }
+
+  clearSelections(): void {
+    this.thumbnails.forEach(thumb => thumb.selected = false);
   }
 
   showTagTool() {
@@ -98,10 +122,6 @@ export class PhotosComponent implements OnInit {
 
   selectAll() {
 
-  }
-
-  clearSelections() {
-    this.thumbnails.forEach(thumb => thumb.selected = false);
   }
 
   private photosToThumbnails(photos: Photo[]): Thumbnail[] {

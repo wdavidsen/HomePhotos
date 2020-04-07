@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { TagService, SearchService } from '../services';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { TagService, SearchService, OrganizeService } from '../services';
 import { TagChip, Tag } from '../models';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -10,13 +10,17 @@ import { Subscription } from 'rxjs';
   templateUrl: './tags.component.html',
   styleUrls: ['./tags.component.css']
 })
-export class TagsComponent implements OnInit {
+export class TagsComponent implements OnInit, OnDestroy {
   tagChips: TagChip[] = [];
-  selectedTags: TagChip[] = [];
+  organizeMode = false;
+
+  private searchSubscription: Subscription;
+  private organizeSubscription: Subscription;
 
   constructor(private tagService: TagService,
     private router: Router,
-    private searchService: SearchService) { }
+    private searchService: SearchService,
+    private organizeService: OrganizeService) { }
 
   ngOnInit() {
     this.searchService.setHidden(false);
@@ -25,7 +29,7 @@ export class TagsComponent implements OnInit {
       .pipe(map(tags => this.tagsToChips(tags)))
       .subscribe((chips => this.tagChips = this.insertIndexDividers(chips)));
 
-    this.searchService.getKeywords()
+    this.searchSubscription = this.searchService.getKeywords()
       .subscribe(keywords => {
         if (keywords) {
           console.log(`Received search keywords: ${keywords}`);
@@ -39,18 +43,34 @@ export class TagsComponent implements OnInit {
             .subscribe((chips => this.tagChips = this.insertIndexDividers(chips)));
         }
       });
+
+    this.organizeSubscription = this.organizeService.getEnabled()
+      .subscribe(enabled => {
+        this.organizeMode = enabled;
+        this.clearSelections();
+      });
+  }
+
+  ngOnDestroy() {
+    this.searchSubscription.unsubscribe();
+    this.organizeSubscription.unsubscribe();
   }
 
   select(chip: TagChip) {
-    chip.selected = !chip.selected;
-
-    if (chip.selected) {
-      this.selectedTags.push(chip);
+    if (this.organizeMode) {
+      chip.selected = !chip.selected;
     }
     else {
-      this.selectedTags = this.selectedTags.filter(c => c.name !== c.name);
+      this.router.navigate(['/photos', chip.name]);
     }
-    // this.router.navigate(['/photos', chip.name]);
+  }
+
+  getSelectedChips(): TagChip[] {
+    return this.tagChips.filter(chip => chip.selected);
+  }
+
+  clearSelections(): void {
+    this.tagChips.forEach(thumb => thumb.selected = false);
   }
 
   matchesFilter(tagName: string): boolean {
@@ -75,11 +95,6 @@ export class TagsComponent implements OnInit {
 
   combineTags() {
 
-  }
-
-  clearSelections() {
-    this.tagChips.forEach(chip => chip.selected = false);
-    this.selectedTags = [];
   }
 
   private tagsToChips(photos: Tag[]): TagChip[] {

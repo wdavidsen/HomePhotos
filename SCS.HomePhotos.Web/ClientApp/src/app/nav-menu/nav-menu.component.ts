@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../models';
 import { AuthenticationService, SearchService } from '../services';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav-menu',
@@ -13,6 +14,7 @@ export class NavMenuComponent implements OnInit {
   currentUser: User;
   hideSearch = true;
   hideMenu = true;
+  hideOrganize = true;
 
   constructor (private router: Router,
     private authenticationService: AuthenticationService,
@@ -21,6 +23,10 @@ export class NavMenuComponent implements OnInit {
         this.currentUser = user;
         this.hideMenu = !this.currentUser;
       });
+
+      router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(info => this.SetOrganize(<NavigationEnd>info));
   }
 
   ngOnInit() {
@@ -38,5 +44,9 @@ export class NavMenuComponent implements OnInit {
   logout() {
     this.authenticationService.logout();
     this.router.navigate(['/login']);
+  }
+
+  private SetOrganize(navInfo: NavigationEnd): void {
+    this.hideOrganize = !/\/$|\/photos|\/tags/.test(navInfo.url);
   }
 }

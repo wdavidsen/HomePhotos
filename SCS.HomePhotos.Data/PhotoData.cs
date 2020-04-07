@@ -84,7 +84,7 @@ namespace SCS.HomePhotos.Data
             var dynamicParams = BuildSearchParameterValues(keywordArray);
             var dynamicCount = dynamicParams.ParameterNames.Count();
 
-            // "contains" match sql for individual words (when more than 1 is provided)
+            // "exact" match of full keyword phrase
             if (wordCount > 1)
             {
                 sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(_sql, 1) + _where2;

@@ -39,13 +39,15 @@ namespace SCS.HomePhotos.Data
             var _sql = $@"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount, {{0}} as Weight  
                          FROM Photo p
                          JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
-                         JOIN Tag t ON pt.TagId = t.TagId 
-                         WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
+                         JOIN Tag t ON pt.TagId = t.TagId ";
+
+            var _where1 = $"{Environment.NewLine}WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
+            var _where2 = $"{Environment.NewLine}WHERE t.TagName <> '' ";
 
             var groupBy = $"{Environment.NewLine}GROUP BY t.TagName, t.TagId ";
 
             // "exact" match sql for individual words (when more than 1 is provided)
-            var sql = string.Format(_sql, 2);
+            var sql = string.Format(_sql, 2) + ((wordCount > 1) ? _where1 : _where2);
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -56,7 +58,7 @@ namespace SCS.HomePhotos.Data
             sql += groupBy;
 
             // "starts with" match sql for individual words (when more than 1 is provided)
-            sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(_sql, 3);
+            sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(_sql, 3) + ((wordCount > 1) ? _where1 : _where2);
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -67,7 +69,7 @@ namespace SCS.HomePhotos.Data
             sql += groupBy;
 
             // "contains" match sql for individual words (when more than 1 is provided)
-            sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(_sql, 4);
+            sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(_sql, 4) + ((wordCount > 1) ? _where1 : _where2);
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -81,12 +83,15 @@ namespace SCS.HomePhotos.Data
             var dynamicCount = dynamicParams.ParameterNames.Count();
 
             // "exact" match of full keyword phrase
-            sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(_sql, 1);
-            sql += $"AND t.TagName = @Tag{dynamicCount + 1}";
-            dynamicParams.Add($"@Tag{dynamicCount + 1}", keywords);
-            sql += groupBy;
+            if (wordCount > 1)
+            {
+                sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(_sql, 1) + _where2;
+                sql += $"AND t.TagName = @Tag{dynamicCount + 1}";
+                dynamicParams.Add($"@Tag{dynamicCount + 1}", keywords);
+                sql += groupBy;
 
-            sql += $"{Environment.NewLine}ORDER BY Weight ASC, TagName ASC LIMIT {pageSize} OFFSET {offset}";
+                sql += $"{Environment.NewLine}ORDER BY Weight ASC, TagName ASC LIMIT {pageSize} OFFSET {offset}";
+            }
 
             using (var conn = GetDbConnection())
             {
