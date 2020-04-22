@@ -1,33 +1,60 @@
-﻿namespace SCS.HomePhotos.Web.Dto
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace SCS.HomePhotos.Web.Dto
 {
     public class User
     {
         public User() { }
-        public User(Model.User user, string token = null, string refreshToken = null)
+        public User(Model.User user)
         {
-            Id = user.UserId;
+            UserId = user.UserId;
             Username = user.UserName;
             FirstName = user.FirstName;
             LastName = user.LastName;
-            Token = token;
-            RefreshToken = refreshToken;
+            Enabled = user.Enabled;
+            Admin = user.Admin;
+            LastLogin = user.LastLogin;
+            FailedLoginCount = user.FailedLoginCount;
+            MustChangePassword = user.MustChangePassword;
         }
 
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Token { get; set; }
-        public string RefreshToken { get; set; }
+        public int UserId { get; set; }
 
-        public Model.User ToModel()
+        [Required]
+        public string Username { get; set; }
+
+        [Required]
+        public string FirstName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+
+        [Required]
+        public bool Enabled { get; set; }
+
+        [Required]
+        public bool Admin { get; set; }
+
+        public DateTime? LastLogin { get; set; }
+
+        public int FailedLoginCount { get; set; }
+
+        public bool MustChangePassword { get; set; }
+
+        public  virtual Model.User ToModel()
         {
             return new Model.User
             {
-                UserId = Id,
+                UserId = UserId,
                 UserName = Username,
                 FirstName = FirstName,
-                LastName = LastName
+                LastName = LastName,
+                Enabled = Enabled,
+                Admin = Admin,
+                LastLogin = LastLogin,
+                FailedLoginCount = FailedLoginCount,
+                MustChangePassword = MustChangePassword
             };
         }
     }

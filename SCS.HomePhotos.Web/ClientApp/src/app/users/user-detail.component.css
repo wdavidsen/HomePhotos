@@ -1,0 +1,11 @@
+.btn-group {
+    padding-top: 20px;
+}
+
+.btn-group button {
+    margin-right: 5px;
+}
+
+.summary-info {
+    text-align: right;
+}

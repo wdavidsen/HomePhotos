@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace SCS.HomePhotos.Web.Dto
 {
@@ -19,12 +20,26 @@ namespace SCS.HomePhotos.Web.Dto
         }
 
         public int? ConfigId { get; set; }
+
+        [Required]
         public string CacheFolder { get; set; }
+
+        [Required]
         public string IndexPath { get; set; }
+
+        [Required]
         public int LargeImageSize { get; set; }
+
+        [Required]
         public int SmallImageSize { get; set; }
+
+        [Required]
         public DateTime? NextIndexTime { get; set; }
+
+        [Required]
         public int IndexFrequencyHours { get; set; }
+
+        [Required]
         public int ThumbnailSize { get; set; }
 
         public Model.Config ToModel()

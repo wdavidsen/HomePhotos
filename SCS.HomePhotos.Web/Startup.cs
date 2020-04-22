@@ -13,7 +13,6 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Data;
-using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Service.Workers;
 using SCS.HomePhotos.Web.Middleware;
 using SCS.HomePhotos.Web.Security;
@@ -98,6 +97,7 @@ namespace SCS.HomePhotos.Web
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ISecurityService, SecurityService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

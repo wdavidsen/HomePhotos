@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="passwordCompare">Confirm confirmation</label>
+        <label for="passwordCompare">Confirm password</label>
         <input type="password" formControlName="passwordCompare" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.passwordCompare.errors }" />
         <div *ngIf="submitted && f.passwordCompare.errors" class="invalid-feedback">
             <div *ngIf="f.passwordCompare.errors.required">Confirm confirmation is required</div>

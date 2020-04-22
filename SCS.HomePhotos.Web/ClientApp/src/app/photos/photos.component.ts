@@ -3,9 +3,12 @@ import { PhotosService } from '../services/photos.service';
 import { Thumbnail, Photo } from '../models';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { AlertService, SearchService, OrganizeService } from '../services';
+import { SearchService, OrganizeService } from '../services';
 import { PageInfoService } from '../services/page-info.service';
-import { Subscription, Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { PhotoTaggerComponent } from './photo-tagger.component';
 
 declare const blueimp: any;
 
@@ -19,16 +22,18 @@ export class PhotosComponent implements OnInit, OnDestroy {
   thumbnails: Thumbnail[] = [];
   tagName: string;
   organizeMode = false;
+  taggerModalRef: BsModalRef;
 
   private organizeSubscription: Subscription;
   private searchSubscription: Subscription;
 
   constructor(private photosService: PhotosService,
     private route: ActivatedRoute,
-    private alertService: AlertService,
     private pageInfoService: PageInfoService,
     private searchService: SearchService,
-    private organizeService: OrganizeService) {
+    private organizeService: OrganizeService,
+    private toastr: ToastrService,
+    private modalService: BsModalService) {
 
     }
 
@@ -117,11 +122,20 @@ export class PhotosComponent implements OnInit, OnDestroy {
   }
 
   showTagTool() {
+    const selections = this.getSelectedThumbnails();
 
+    if (selections.length) {
+      const initialState = {
+        title: 'Photo Tagger',
+        photoIds: selections.map(s => s.photoId)
+      };
+
+      this.taggerModalRef = this.modalService.show(PhotoTaggerComponent, {initialState});
+    }
   }
 
   selectAll() {
-
+    this.thumbnails.forEach(thumb => thumb.selected = true);
   }
 
   private photosToThumbnails(photos: Photo[]): Thumbnail[] {
@@ -135,6 +149,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
     const thumb = new Thumbnail();
     const heightWidth = this.calculateThumbSize(photo, this.thumbHeight);
 
+    thumb.photoId = photo.photoId;
     thumb.selected = false;
     thumb.thumbUrl = `/photo-image/${photo.cacheFolder}/${photo.fileName}`;
     thumb.thumbHeight = heightWidth.height;

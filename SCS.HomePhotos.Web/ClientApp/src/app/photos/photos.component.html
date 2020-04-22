@@ -14,9 +14,9 @@
 
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav">
-            <button type="button" class="btn btn-default navbar-btn" (click)="showTagTool()" [disabled]="getSelectedThumbnails().length === 0">Tag Photos</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="selectAll()">Select All</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="clearSelections()" [disabled]="getSelectedThumbnails().length === 0">Clear Selections</button>            
+            <button type="button" class="btn btn-default navbar-btn" (click)="showTagTool()" [disabled]="getSelectedThumbnails().length === 0"><i class="fa fa-tag"></i> Tag Photos</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="selectAll()"><i class="fa fa-arrows-alt"></i> Select All</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="clearSelections()" [disabled]="getSelectedThumbnails().length === 0"><i class="fa fa-eraser"></i> Clear Selections</button>            
         </div>
     </div>
 </nav>

@@ -1,4 +1,5 @@
 ﻿using SCS.HomePhotos.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace SCS.HomePhotos.Web.Dto
 {
@@ -15,6 +16,7 @@ namespace SCS.HomePhotos.Web.Dto
 
         public int? TagId { get; set; }
 
+        [Required]
         public string TagName { get; set; }
 
         public int PhotoCount { get; set; }

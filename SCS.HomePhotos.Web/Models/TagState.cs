@@ -5,18 +5,18 @@
         public TagState()
         {
             Id = 0;
-            Name = "";
+            TagName = "";
             Checked = false;
         }
         public TagState(int tagId, string name, bool isChecked) : this()
         {
             Id = tagId;
-            Name = name;
+            TagName = name;
             Checked = isChecked;
         }
 
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string TagName { get; set; }
         public bool Checked { get; set; }
     }
 }

@@ -1,0 +1,28 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{title}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form class="tag-tool form-inline">        
+        <div class="form-group mb-2">            
+            <input [(ngModel)]="selectedTag" [typeahead]="allTags" class="form-control" placeholder="New tag..." name="tagSearchTypeahead" id="tagSearchTypeahead">             
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <button type="button" class="btn btn-light" (click)="addTag()">Add</button>
+        </div>
+    </form>
+    <div class="form-group tag-group">
+        <app-tri-check *ngFor="let ts of tagStates"
+            [label]="ts.tagName" 
+            [checked]="ts.checked" 
+            [indeterminate]="ts.indeterminate" 
+            [allowIndeterminate]="ts.allowIndeterminate"
+            (changed)="tagStateChanged($event)"></app-tri-check>
+    </div>    
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="saveTags()">OK</button>
+    <button type="button" class="btn btn-light" (click)="bsModalRef.hide()">Close</button>
+</div>

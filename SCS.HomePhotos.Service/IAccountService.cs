@@ -14,5 +14,9 @@ namespace SCS.HomePhotos.Service
         Task DeleteAgentRefreshTokens(string userName, string agentIdentifier);
         Task SaveRefreshToken(string userName, string newRefreshToken, string agentIdentifier, string issuer, string audience, DateTime expirationUtc);
         Task<ChangePasswordResult> ChangePassword(string userName, string currentPassword, string newPassword);
+        Task<IEnumerable<User>> GetUsers();
+        Task<User> GetUser(int userId);
+        Task DeleteUser(int userId);
+        Task<User> SaveUser(User user, string password = null);
     }
 }

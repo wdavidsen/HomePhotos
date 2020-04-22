@@ -19,7 +19,7 @@ namespace SCS.HomePhotos.Web.Controllers
     //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UploadController : ControllerBase
+    public class UploadController : HomePhotosController
     {
         private readonly ILogger<UploadController> _logger;
         private readonly IImageService _imageService;

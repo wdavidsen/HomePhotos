@@ -47,6 +47,7 @@ namespace SCS.HomePhotos.Model
         public int FailedLoginCount { get; set; }
 
         public bool MustChangePassword { get; set; }
+
         public string PasswordHistory { get; set; }
     }
 }

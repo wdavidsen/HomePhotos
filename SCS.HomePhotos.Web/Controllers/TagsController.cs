@@ -10,7 +10,7 @@ namespace SCS.HomePhotos.Web.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class TagsController : ControllerBase
+    public class TagsController : HomePhotosController
     {
         private readonly ILogger<TagsController> _logger;
         private readonly IPhotoService _photoSevice;
@@ -77,17 +77,17 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
-        [HttpGet("batchTag", Name = "GetPhotosToTag")]
-        public async Task<IActionResult> GetPhotosToTag([FromQuery]int[] photoIds)
+        [HttpPost("batchTag", Name = "GetPhotosToTag")]
+        public async Task<IActionResult> GetPhotosToTag([FromBody]int[] photoIds)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await Task.CompletedTask;
+            var photoTags = await _photoSevice.GetTagsAndPhotos(photoIds);
 
-            return Ok(new BatchSelectTags());
+            return Ok(new BatchSelectTags(photoIds, photoTags));
         }
 
         [HttpPut("batchTag", Name = "TagPhotos")]
@@ -98,7 +98,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            await Task.CompletedTask;
+            await _photoSevice.UpdatePhotoTags(updateTags.PhotoIds, updateTags.GetAddedTagNames(), updateTags.GetRemovedTagIds());
 
             return Ok();
         }

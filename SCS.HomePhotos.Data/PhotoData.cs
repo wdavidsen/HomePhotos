@@ -101,6 +101,72 @@ namespace SCS.HomePhotos.Data
             }
         }
 
+        public async Task<IEnumerable<Tag>> GetTagsAndPhotos(int[] photoIds)
+        {
+            var sql = @"SELECT t.TagId, t.TagName, p.PhotoId, p.Checksum, p.Name, p.Name, p.FileName, p.DateTaken, p.DateFileCreated, p.CacheFolder, p.ImageHeight, p.ImageWidth 
+                        FROM Photo p 
+                        JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId 
+                        JOIN Tag t ON pt.TagId = t.TagId 
+                        WHERE p.PhotoId IN @PhotoIds ";
+
+            var lookup = new Dictionary<int, Tag>();
+
+            using (var conn = GetDbConnection())
+            {
+                var tags = await conn.QueryAsync<Tag, Photo, Tag>(sql, (tag, photo) =>
+                {
+                    var isDup = true;
+
+                    if (!lookup.TryGetValue(tag.TagId.Value, out var tempTag))
+                    {
+                        isDup = false;
+                        lookup.Add(tag.TagId.Value, tempTag = tag);
+                    }
+
+                    tempTag.Photos = tempTag.Photos ?? new List<Photo>();
+                    tempTag.Photos.Add(photo);
+
+                    return isDup ? null : tempTag;
+                },
+                splitOn: "PhotoId", param: new { PhotoIds = photoIds });
+
+                return tags.Where(t => t != null);
+            }
+        }
+
+        public async Task<IEnumerable<Photo>> GetPhotosAndTags(int[] photoIds)
+        {
+            var sql = @"SELECT p.PhotoId, p.Checksum, p.Name, p.Name, p.FileName, p.DateTaken, p.DateFileCreated, p.CacheFolder, p.ImageHeight, p.ImageWidth, t.TagId, t.TagName   
+                        FROM Photo p 
+                        JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId 
+                        JOIN Tag t ON pt.TagId = t.TagId 
+                        WHERE p.PhotoId IN @PhotoIds ";
+
+            var lookup = new Dictionary<int, Photo>();
+
+            using (var conn = GetDbConnection())
+            {
+                var tags = await conn.QueryAsync<Photo, Tag, Photo>(sql, (photo, tag) =>
+                {
+                    var isDup = true;
+
+                    if (!lookup.TryGetValue(photo.PhotoId.Value, out var tempPhoto))
+                    {
+                        isDup = false;
+                        lookup.Add(photo.PhotoId.Value, tempPhoto = photo);
+                    }
+
+                    tempPhoto.Tags = tempPhoto.Tags ?? new List<Tag>();
+                    tempPhoto.Tags.Add(tag);
+
+                    return isDup ? null : tempPhoto;
+                },
+                splitOn: "TagId", param: new { PhotoIds = photoIds });
+
+                return tags.Where(t => t != null);
+            }
+        }
+
         public async Task<Photo> SavePhoto(Photo photo)
         {
             if (photo.PhotoId == null)

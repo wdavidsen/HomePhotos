@@ -7,21 +7,22 @@ namespace SCS.HomePhotos.Web.Models
     {
         public BatchUpdateTags()
         {
-            Tags = new List<TagState>();
+            TagStates = new List<TagState>();
             PhotoIds = new List<int>();
         }
 
-        public List<TagState> Tags { get; set; }
+        public List<TagState> TagStates { get; set; }
+
         public List<int> PhotoIds { get; set; }
 
-        public List<int> GetAddedTagIds()
+        public List<string> GetAddedTagNames()
         {
-            return Tags.Where(t => t.Checked).Select(o => o.Id).ToList();
+            return TagStates.Where(t => t.Checked).Select(o => o.TagName).ToList();
         }
 
         public List<int> GetRemovedTagIds()
         {
-            return Tags.Where(t => !t.Checked).Select(o => o.Id).ToList();
+            return TagStates.Where(t => !t.Checked).Select(o => o.Id).ToList();
         }
     }
 }

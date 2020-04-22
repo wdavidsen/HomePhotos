@@ -13,6 +13,8 @@ namespace SCS.HomePhotos.Service
         private readonly IUserData _userData;
         private readonly IUserTokenData _userTokenData;
 
+        public string ValidIssuer => throw new NotImplementedException();
+
         public AccountService(IStaticConfig staticConfig, IUserData userData, IUserTokenData userTokenData)
         {
             _staticConfig = staticConfig;
@@ -168,6 +170,56 @@ namespace SCS.HomePhotos.Service
                 Expiration = expirationUtc
             };
             await _userTokenData.InsertAsync(userToken);
+        }
+
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            var users = await _userData.GetListAsync<User>();
+
+            return users;
+        }
+
+        public async Task<User> GetUser(int userId)
+        {
+            var user = await _userData.GetAsync<User>(userId);
+
+            return user;
+        }
+
+        public async Task DeleteUser(int userId)
+        {
+            await _userData.DeleteAsync<User>(userId);
+        }
+
+        public async Task<User> SaveUser(User user, string password = null)
+        {
+            if (password != null)
+            {
+                user.PasswordHash = PasswordHash.CreateHash(password);
+            }
+
+            if (user.UserId > 0)
+            {
+                var exitingUser = await _userData.GetAsync<User>(user.UserId);
+                if (exitingUser == null)
+                {
+                    throw new InvalidOperationException("User does not exist.");
+                }
+
+                exitingUser.FirstName = user.FirstName;
+                exitingUser.LastName = user.LastName;
+                exitingUser.Enabled = user.Enabled;
+                exitingUser.Admin = user.Admin;
+
+                await _userData.UpdateAsync(exitingUser);
+            }
+            else
+            {
+                var userId = await _userData.InsertAsync(user);
+                user.UserId = userId.Value;
+            }
+            
+            return user;
         }
 
         protected async Task<User> GetUser(string userName, bool throwIfNotExists = true)

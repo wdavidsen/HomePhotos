@@ -1,5 +1,5 @@
 <header>
-  <nav class="navbar navbar-expand-md navbar-light bg-light">
+  <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
     <a href="#" class="navbar-brand">Home Photos</a>
     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
@@ -26,11 +26,11 @@
                 <a href="#" class="dropdown-item" 
                   [routerLinkActive]="['link-active']" 
                   [routerLinkActiveOptions]="{ exact: true }" 
-                  [routerLink]="['/settings']">Users</a>              
+                  [routerLink]="['/users']">Users</a>              
                 <a href="#" class="dropdown-item" 
                   [routerLinkActive]="['link-active']" 
                   [routerLinkActiveOptions]="{ exact: true }" 
-                  [routerLink]="['/settings']">Logs</a>
+                  [routerLink]="['/logs']">Logs</a>
                 <div class="dropdown-divider" [hidden]="hideOrganize"></div>
                 <label class="dropdown-item" [hidden]="hideOrganize">
                   <app-organize></app-organize>
@@ -41,7 +41,7 @@
       <app-search [hidden]="hideSearch"></app-search>
       <div class="navbar-nav" [hidden]="hideMenu">
         <a href="#" class="nav-link text-dark" (click)="logout()">Logout</a>
-        <a href="#" class="nav-link text-dark" (click)="logout()">{{currentUser.username}}</a>        
+        <a href="#" class="nav-link text-dark" (click)="logout()">{{currentUser?.username}}</a>        
       </div>
     </div>    
   </nav>

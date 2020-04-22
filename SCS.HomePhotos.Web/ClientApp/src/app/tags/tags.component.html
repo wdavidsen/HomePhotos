@@ -14,12 +14,12 @@
 
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav">
-            <button type="button" class="btn btn-default navbar-btn" (click)="addTag()">Add New</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="deleteTags()" [disabled]="getSelectedChips().length === 0">Delete</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="renameTag()" [disabled]="getSelectedChips().length !== 1">Rename</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="copyTag()" [disabled]="getSelectedChips().length !== 1">Copy</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="combineTags()" [disabled]="getSelectedChips().length <= 1">Combine</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="clearSelections()" [disabled]="getSelectedChips().length === 0">Clear</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="addTag()"><i class="fa fa-plus"></i> Add New</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="deleteTags()" [disabled]="getSelectedChips().length === 0"><i class="fa fa-remove"></i> Delete</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="renameTag()" [disabled]="getSelectedChips().length !== 1"><i class="fa fa-pencil"></i> Rename</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="copyTag()" [disabled]="getSelectedChips().length !== 1"><i class="fa fa-copy"></i> Copy</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="combineTags()" [disabled]="getSelectedChips().length <= 1"><i class="fa fa-magic"></i> Combine</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="clearSelections()" [disabled]="getSelectedChips().length === 0"><i class="fa fa-magic"></i> Clear</button>
         </div>
     </div>
 </nav>

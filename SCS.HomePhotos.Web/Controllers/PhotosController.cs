@@ -10,7 +10,7 @@ namespace SCS.HomePhotos.Web.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class PhotosController : ControllerBase
+    public class PhotosController : HomePhotosController
     {
         private readonly ILogger<PhotosController> _logger;
         private readonly IPhotoService _photoSevice;

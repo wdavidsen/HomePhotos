@@ -4,13 +4,12 @@
     {
         public AmbiguousTagState() : base()
         {
-            AppliesToAll = true;
-        }
-        public AmbiguousTagState(int tagId, string name, bool isChecked, bool appliesToAll) : base(tagId, name, isChecked)
-        {
-            AppliesToAll = appliesToAll;
+            Indeterminate = false;
+            AllowIndeterminate = false;
         }
 
-        public bool AppliesToAll { get; set; }
+        public bool Indeterminate { get; set; }
+
+        public bool AllowIndeterminate { get; set; }
     }
 }

@@ -17,6 +17,17 @@ namespace SCS.HomePhotos.Data
             return await GetListPagedAsync<Tag>("", new object(), "TagName ASC", 1, int.MaxValue);
         }
 
+        public async Task<Tag> GetTag(string tagName)
+        {
+            var list = await GetListAsync<Tag>("WHERE TagName = @TagName", new { TagName = tagName });
+
+            if (list.Count() > 0)
+            {
+                return list.First();
+            }
+            return null;
+        }
+
         public async Task<IEnumerable<TagStat>> GetTagAndPhotoCount()
         {
             var sql = @"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount 
@@ -118,13 +129,18 @@ namespace SCS.HomePhotos.Data
             return await GetListAsync<PhotoTag>("WHERE TagId = @TagId", new { TagId = tagId });
         }
 
+        public async Task<IEnumerable<PhotoTag>> GetPhotoTagAssociations(int photoId, int tagId)
+        {
+            return await GetListAsync<PhotoTag>("WHERE PhotoId = @PhotoId AND TagId = @TagId", new { PhotoId = photoId, TagId = tagId });
+        }
+
         public async Task<PhotoTag> AssociatePhotoTag(int photoId, int tagId)
         {
-            var existingTag = await GetListAsync<PhotoTag>("WHERE PhotoId = @PhotoId AND TagId = @TagId", new { PhotoId = photoId, TagId = tagId });
+            var existingTags = await GetPhotoTagAssociations(photoId, tagId);
 
-            if (existingTag.Any())
+            if (existingTags.Any())
             {
-                return existingTag.First();
+                return existingTags.First();
             }
 
             var photoTag = new PhotoTag
@@ -150,6 +166,16 @@ namespace SCS.HomePhotos.Data
             await UpdateAsync(photoTag);
 
             return photoTag;
+        }
+
+        public async Task DissociatePhotoTag(int photoId, int tagId)
+        {
+            var existingTags = await GetPhotoTagAssociations(photoId, tagId);
+
+            foreach (var photoTag in existingTags)
+            {
+                await DeleteAsync(photoTag);
+            }
         }
 
         private static DynamicParameters BuildSearchParameterValues(string[] keywordArray)

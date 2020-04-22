@@ -37,20 +37,20 @@ export class AuthenticationService {
     }
 
     updateToken() {
-        var currentUser = this.currentUserValue;
-        var payload = { 
-            token: currentUser.token, 
-            refreshToken: currentUser.refreshToken 
+        const currentUser = this.currentUserValue;
+        const payload = {
+            token: currentUser.token,
+            refreshToken: currentUser.refreshToken
         };
 
         return this.http.post<any>(`${environment.apiUrl}/auth/refresh`, payload)
             .subscribe(tokenInfo => {
-                var updatedUser = Object.assign({}, currentUser);
+                const updatedUser = Object.assign({}, currentUser);
                 updatedUser.token = tokenInfo.token;
                 updatedUser.refreshToken = tokenInfo.refreshToken;
 
                 localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-                this.currentUserSubject.next(updatedUser);                
+                this.currentUserSubject.next(updatedUser);
                 location.reload(true);
               },
               error => {
@@ -62,10 +62,10 @@ export class AuthenticationService {
 
     requiresAuthentication(url: string) {
 
-        if (url.indexOf('/auth/login') != -1) {
+        if (url.indexOf('/auth/login') !== -1) {
             return false;
         }
-        if (url.indexOf('/auth/register') != -1) {
+        if (url.indexOf('/account/register') !== -1) {
             return false;
         }
         return true;

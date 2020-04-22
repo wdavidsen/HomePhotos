@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using System;
+using System.Collections.Generic;
 
 namespace SCS.HomePhotos.Model
 {
@@ -24,5 +25,7 @@ namespace SCS.HomePhotos.Model
         public DateTime DateFileCreated { get; set; }
 
         public string CacheFolder { get; set; }
+
+        public IList<Tag> Tags { get; set; }
     }
 }

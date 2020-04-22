@@ -4,6 +4,7 @@ import { TagChip, Tag } from '../models';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-tags',
@@ -20,7 +21,8 @@ export class TagsComponent implements OnInit, OnDestroy {
   constructor(private tagService: TagService,
     private router: Router,
     private searchService: SearchService,
-    private organizeService: OrganizeService) { }
+    private organizeService: OrganizeService,
+    private toastr: ToastrService) { }
 
   ngOnInit() {
     this.searchService.setHidden(false);

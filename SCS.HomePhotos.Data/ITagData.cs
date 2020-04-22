@@ -16,9 +16,14 @@ namespace SCS.HomePhotos.Service
         Task<Tag> SaveTag(Tag tag);
 
         Task<IEnumerable<PhotoTag>> GetPhotoTagAssociations(int tagId);
-        
+
+        Task<IEnumerable<PhotoTag>> GetPhotoTagAssociations(int photoId, int tagId);
+
         Task<PhotoTag> AssociatePhotoTag(int photoId, int tagId);
 
         Task<PhotoTag> AssociatePhotoTag(int photoId, int existingTagId, int newTagId);
+        Task DissociatePhotoTag(int photoId, int tagId);
+
+        Task<Tag> GetTag(string tagName);
     }
 }

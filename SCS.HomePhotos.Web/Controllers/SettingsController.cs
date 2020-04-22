@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 namespace SCS.HomePhotos.Web.Controllers
 {
     [Authorize]
-    //[Authorize(Policy = "AdminsOnly")]
+    [Authorize(Policy = "AdminsOnly")]
     [Route("api/[controller]")]
-    public class SettingsController : ControllerBase
+    public class SettingsController : HomePhotosController
     {
         private readonly ILogger<SettingsController> _logger;
         private readonly IDynamicConfig _dynamicConfig;

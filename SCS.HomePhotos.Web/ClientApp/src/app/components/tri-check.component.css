@@ -1,0 +1,32 @@
+.tricheck {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+    .tricheck > div {
+        border: solid 1px black;
+        height: 19px;
+        width: 19px;
+        background-color: white;
+        -webkit-background-size: cover; /* For WebKit*/
+        -moz-background-size: cover; /* Mozilla*/
+        -o-background-size: cover; /* Opera*/
+        background-size: cover; /* Generic*/
+        display: inline-block;
+    }
+
+.tricheck-on > div {
+    background: url('/assets/images/check-on.png') no-repeat center center;
+}
+
+.tricheck-off > div {
+    background: none;
+}
+
+.tricheck-indeterminate > div {
+    background: url('/assets/images/check-neutral.png') no-repeat center center;
+}
+
+.tricheck > label {
+    margin: 0 10px 0 5px;
+}

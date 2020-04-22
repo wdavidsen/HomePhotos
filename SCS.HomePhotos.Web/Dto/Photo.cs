@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace SCS.HomePhotos.Web.Dto
 {
@@ -20,18 +21,25 @@ namespace SCS.HomePhotos.Web.Dto
 
         public int? PhotoId { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
+        [Required]
         public string FileName { get; set; }
 
+        [Required]
         public int ImageHeight { get; set; }
 
+        [Required]
         public int ImageWidth { get; set; }
 
+        [Required]
         public DateTime? DateTaken { get; set; }
 
+        [Required]
         public DateTime DateFileCreated { get; set; }
 
+        [Required]
         public string CacheFolder { get; set; }
 
         public Model.Photo ToModel()

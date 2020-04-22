@@ -69,9 +69,7 @@ namespace SCS.HomePhotos.Service
 
         public async Task<Tag> GetTag(string tagName)
         {
-            var results = await _tagData.GetListAsync<Tag>("WHERE TagName = @TagName", new { TagName = tagName });
-
-            return results.FirstOrDefault();
+            return await _tagData.GetTag(tagName);
         }
 
         public async Task<Tag> GetTag(string tagName, bool createIfMissing = true)
@@ -147,6 +145,47 @@ namespace SCS.HomePhotos.Service
             foreach (var assoc in await _tagData.GetPhotoTagAssociations(sourceTagId.Value))
             {
                 await _tagData.AssociatePhotoTag(assoc.PhotoId, newTag.TagId.Value);
+            }
+        }
+
+        public async Task<IEnumerable<Tag>> GetTagsAndPhotos(params int[] photoIds)
+        {
+            return await _photoData.GetTagsAndPhotos(photoIds);
+        }
+
+        public async Task UpdatePhotoTags(List<int> photoIds, List<string> addTagNames, List<int> removeTagIds)
+        {
+            var photos = await _photoData.GetPhotosAndTags(photoIds.ToArray());
+
+            foreach (var photo in photos)
+            {
+                foreach (var addTagName in addTagNames)
+                {
+                    if (!photo.Tags.Any(t => t.TagName == addTagName))
+                    {
+                        var tag = await GetTag(addTagName, true);
+
+                        if (tag != null)
+                        {
+                            photo.Tags.Add(tag);
+                            await _tagData.AssociatePhotoTag(photo.PhotoId.Value, tag.TagId.Value);
+                        }
+                    }
+                }
+
+                foreach (var removeTagId in removeTagIds)
+                {
+                    if (photo.Tags.Any(t => t.TagId == removeTagId))
+                    {
+                        var tag = await _tagData.GetAsync<Tag>(removeTagId);
+
+                        if (tag != null)
+                        {
+                            photo.Tags.Remove(tag);
+                            await _tagData.DissociatePhotoTag(photo.PhotoId.Value, tag.TagId.Value);
+                        }
+                    }
+                }
             }
         }
 

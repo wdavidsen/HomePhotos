@@ -20,6 +20,17 @@ import { PhotosService, TagService, PageInfoService } from './services';
 import { PageInfoComponent } from './components/page-info.component';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { SearchComponent } from './components/search.component';
+import { UsersComponent } from './users/users.component';
+import { UserDetailComponent } from './users/user-detail.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { ModalModule, BsModalRef } from 'ngx-bootstrap/modal';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { ToastrModule } from 'ngx-toastr';
+import { ModalContentComponent } from './users/change-password-modal.component';
+import { PhotoTaggerComponent } from './photos/photo-tagger.component';
+import { TriCheckComponent } from './components/tri-check.component';
 
 @NgModule({
   declarations: [
@@ -31,11 +42,20 @@ import { SearchComponent } from './components/search.component';
     LoginComponent,
     RegisterComponent,
     SettingsComponent,
+    UsersComponent,
+    UserDetailComponent,
     AlertComponent,
     PageInfoComponent,
     OrganizeComponent,
     SearchComponent,
-    AccountComponent
+    AccountComponent,
+    ModalContentComponent,
+    PhotoTaggerComponent,
+    TriCheckComponent
+  ],
+  entryComponents: [
+    ModalContentComponent,
+    PhotoTaggerComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -50,14 +70,29 @@ import { SearchComponent } from './components/search.component';
       { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
+      { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
+      { path: 'users/:userId', component: UserDetailComponent, canActivate: [AuthGuard] },
 
       // otherwise redirect to home
       { path: '**', redirectTo: '' }
-    ])
+    ]),
+    BrowserAnimationsModule,
+    TypeaheadModule.forRoot(),
+    PaginationModule.forRoot(),
+    ModalModule.forRoot(),
+    AlertModule.forRoot(),
+    ModalModule.forRoot(),
+    TypeaheadModule.forRoot(),
+    ToastrModule.forRoot({
+      timeOut: 4000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true
+    })
   ],
   providers: [
     SettingsService,
     PhotosService,
+    BsModalRef,
     TagService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }

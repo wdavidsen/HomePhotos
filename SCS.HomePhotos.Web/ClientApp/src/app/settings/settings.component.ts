@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AlertService } from '../services';
 import { SettingsService } from '../services/settings.service';
 import { Settings } from '../models/settings';
 import { map } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-settings',
@@ -16,12 +15,11 @@ export class SettingsComponent implements OnInit {
   settingsForm: FormGroup;
   loading = false;
   submitted = false;
-  
+
   constructor(
     private formBuilder: FormBuilder,
     private settingsService: SettingsService,
-    private alertService: AlertService) { 
-      
+    private toastr: ToastrService) {
     }
 
   ngOnInit() {
@@ -38,16 +36,14 @@ export class SettingsComponent implements OnInit {
           this.loading = false;
         },
         error => {
-            this.alertService.error(error);
-            this.loading = false;
+          console.error(error);
+          this.toastr.error('Failed to load settings');
+          this.loading = false;
         });
   }
 
   onSubmit() {
     this.submitted = true;
-
-    // reset alerts on submit
-    this.alertService.clear();
 
     // stop here if form is invalid
     if (this.settingsForm.invalid) {
@@ -55,17 +51,19 @@ export class SettingsComponent implements OnInit {
     }
 
     this.loading = true;
-    var newSettings = this.formToSettings();
+    const newSettings = this.formToSettings();
     this.settingsService.updateSettings(newSettings)
-        .subscribe(data => {
-          this.alertService.success('Settings saved successfully', true);
-          this.settings = newSettings;
-          this.loading = false;
-        },
-        error => {
-            this.alertService.error(error);
+        .subscribe(
+          data => {
+            this.toastr.success('Successfully saved settings');
+            this.settings = newSettings;
             this.loading = false;
-        });
+          },
+          error => {
+            console.error(error);
+            this.toastr.error('Failed to save settings');
+            this.loading = false;
+          });
   }
 
   // convenience getter for easy access to form fields
@@ -83,8 +81,8 @@ export class SettingsComponent implements OnInit {
       thumbnailSize: [data ? data.thumbnailSize : '', Validators.required]});
   }
 
-  private formToSettings() : Settings {
-    var settings = new Settings ();
+  private formToSettings(): Settings {
+    const settings = new Settings ();
 
     settings.indexPath = this.f.indexPath.value;
     settings.cacheFolder = this.f.cacheFolder.value;

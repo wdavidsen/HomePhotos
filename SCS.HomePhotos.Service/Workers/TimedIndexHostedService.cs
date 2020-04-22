@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service;
-using SCS.HomePhotos.Service;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
