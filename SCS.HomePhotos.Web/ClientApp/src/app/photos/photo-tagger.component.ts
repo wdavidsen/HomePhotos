@@ -48,7 +48,7 @@ export class PhotoTaggerComponent implements OnInit {
     }
 
     addTag() {
-        if (this.allTags.find((tagName) => tagName.toUpperCase() === this.selectedTag.toUpperCase())) {
+        if (this.tagStates.find((t) => t.tagName.toUpperCase() === this.selectedTag.toUpperCase())) {
             this.toastr.warning(`Tag already applied`);
         }
         else {

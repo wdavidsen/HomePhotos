@@ -1,11 +1,10 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../services';
+import { UserService, AuthenticationService } from '../services';
 import { User } from '../models';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { Subscription } from 'rxjs';
 import { ModalContentComponent } from './change-password-modal.component';
 
 @Component({
@@ -14,6 +13,7 @@ import { ModalContentComponent } from './change-password-modal.component';
   styleUrls: ['./user-detail.component.css']
 })
 export class UserDetailComponent implements OnInit {
+  private currentUser: User;
   user: User;
   userForm: FormGroup;
   loading = false;
@@ -22,11 +22,16 @@ export class UserDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private authenticationService: AuthenticationService,
     private router: Router,
     private formBuilder: FormBuilder,
     private userService: UserService,
     private toastr: ToastrService,
-    private modalService: BsModalService) {}
+    private modalService: BsModalService) {
+      this.authenticationService.currentUser.subscribe(user => {
+        this.currentUser = user;
+      });
+    }
 
   // convenience getter for easy access to form fields
   get f() { return this.userForm.controls; }
@@ -84,6 +89,11 @@ export class UserDetailComponent implements OnInit {
   }
 
   deleteUser(): void {
+    if (this.currentUser.username === this.user.username) {
+      this.toastr.warning(`You cannot delete yourself`);
+      return;
+    }
+
     this.userService.delete(this.user.userId)
         .subscribe(() => {
             this.router.navigate(['/users']);

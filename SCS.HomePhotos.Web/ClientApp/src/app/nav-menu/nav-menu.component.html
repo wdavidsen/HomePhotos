@@ -39,9 +39,9 @@
           </div>
       </div>
       <app-search [hidden]="hideSearch"></app-search>
-      <div class="navbar-nav" [hidden]="hideMenu">
-        <a href="#" class="nav-link text-dark" (click)="logout()">Logout</a>
-        <a href="#" class="nav-link text-dark" (click)="logout()">{{currentUser?.username}}</a>        
+      <div class="navbar-nav nav-right" [hidden]="hideMenu">
+        <a href="#" class="nav-link text-dark" (click)="logout()">Logout</a> <span class="bar">|</span>
+        <a href="#" class="nav-link text-dark" [routerLink]="['/account']">{{currentUser?.username}}</a>        
       </div>
     </div>    
   </nav>

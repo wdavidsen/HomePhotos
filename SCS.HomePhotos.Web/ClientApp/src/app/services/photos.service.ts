@@ -11,15 +11,15 @@ export class PhotosService {
 
     }
 
-    getLatest(): Observable<Photo[]> {
-        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/latest`);
+    getLatest(pageNum: number): Observable<Photo[]> {
+        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/latest?pageNum=${pageNum}`);
     }
 
-    getPhotosByTag(tagName: string): Observable<Photo[]> {
-        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/byTag?tag=${escape(tagName)}`);
+    getPhotosByTag(pageNum: number, tagName: string): Observable<Photo[]> {
+        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/byTag?pageNum=${pageNum}&tag=${escape(tagName)}`);
     }
 
-    searchPhotos(keywords: string) {
-        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/search?keywords=${escape(keywords)}`);
+    searchPhotos(pageNum: number, keywords: string) {
+        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/search?pageNum=${pageNum}&keywords=${escape(keywords)}`);
     }
 }

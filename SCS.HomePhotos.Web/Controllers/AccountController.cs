@@ -1,39 +1,31 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Web.Models;
-using SCS.HomePhotos.Web.Security;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("SCS.HomePhotos.Web.Test")]
 
 namespace SCS.HomePhotos.Web.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class AccountController : HomePhotosController
     {
-        private readonly ILogger<AccountController> _logger;        
+        private readonly ILogger<AccountController> _logger;
         private readonly IAccountService _accountService;
         private readonly IStaticConfig _staticConfig;
         private readonly ISecurityService _securityService;
 
-        public AccountController(ILogger<AccountController> logger,             
-            IAccountService accountService, 
+        public AccountController(ILogger<AccountController> logger,
+            IAccountService accountService,
             IStaticConfig staticConfig,
             ISecurityService securityService)
         {
-            _logger = logger;            
+            _logger = logger;
             _accountService = accountService;
             _staticConfig = staticConfig;
             _securityService = securityService;
@@ -112,6 +104,29 @@ namespace SCS.HomePhotos.Web.Controllers
                 Token = newJwtToken,
                 RefreshToken = newRefreshToken
             });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var user = await _accountService.GetUser(User.Identity.Name);
+
+            return Ok(new Dto.AccountInfo(user));
+        }
+
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody]Dto.AccountInfo accountInfo)
+        {
+            if (accountInfo.Username != User.Identity.Name)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _accountService.UpdateAccount(accountInfo.ToModel());
+
+            return Ok(new Dto.AccountInfo(user));
         }
     }
 }

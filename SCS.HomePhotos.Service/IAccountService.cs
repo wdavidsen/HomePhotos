@@ -16,7 +16,10 @@ namespace SCS.HomePhotos.Service
         Task<ChangePasswordResult> ChangePassword(string userName, string currentPassword, string newPassword);
         Task<IEnumerable<User>> GetUsers();
         Task<User> GetUser(int userId);
+        Task<User> GetUser(string userId);
         Task DeleteUser(int userId);
         Task<User> SaveUser(User user, string password = null);
+
+        Task<User> UpdateAccount(User user);
     }
 }

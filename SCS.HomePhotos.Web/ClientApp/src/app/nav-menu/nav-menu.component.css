@@ -16,3 +16,11 @@ html {
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+
+.bar {
+  margin: 7px 7px 0 7px;
+}
+
+.nav-right a:hover {
+  text-decoration: underline;
+}

@@ -30,7 +30,11 @@ export class NavMenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.searchService.getHidden().subscribe(hidden => this.hideSearch = (hidden !== false));
+    this.searchService.getHidden()
+      .subscribe(hidden => {
+        this.hideSearch = (hidden !== false);
+        console.log(`Search hide state: ${hidden}`);
+      });
   }
 
   collapse() {

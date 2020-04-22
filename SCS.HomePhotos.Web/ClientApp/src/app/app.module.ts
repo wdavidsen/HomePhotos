@@ -72,6 +72,7 @@ import { TriCheckComponent } from './components/tri-check.component';
       { path: 'register', component: RegisterComponent },
       { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
       { path: 'users/:userId', component: UserDetailComponent, canActivate: [AuthGuard] },
+      { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
 
       // otherwise redirect to home
       { path: '**', redirectTo: '' }

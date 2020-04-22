@@ -5,7 +5,7 @@
     </button>
 </div>
 <div class="modal-body">
-    <form class="tag-tool form-inline">        
+    <form class="tag-tool form-inline" autocomplete="off">        
         <div class="form-group mb-2">            
             <input [(ngModel)]="selectedTag" [typeahead]="allTags" class="form-control" placeholder="New tag..." name="tagSearchTypeahead" id="tagSearchTypeahead">             
         </div>

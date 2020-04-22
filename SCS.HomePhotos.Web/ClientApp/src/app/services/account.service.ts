@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-import { User } from '../models';
+import { User, AccountInfo } from '../models';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -20,5 +20,13 @@ export class AccountService {
             newPasswordCompare: newPasswordCompare
         };
         return this.http.post(`${environment.apiUrl}/account/changePassword`, data);
+    }
+
+    info(user: AccountInfo): Observable<AccountInfo> {
+        return this.http.get<AccountInfo>(`${environment.apiUrl}/account`);
+    }
+
+    save(user: AccountInfo): Observable<AccountInfo> {
+        return this.http.put<AccountInfo>(`${environment.apiUrl}/account`, user);
     }
 }

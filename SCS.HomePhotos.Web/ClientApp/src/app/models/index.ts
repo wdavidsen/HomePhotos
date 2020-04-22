@@ -6,4 +6,6 @@ export * from './tag';
 export * from './tag-chip';
 export * from './user-row';
 export * from './tag-state';
+export * from './account-info';
+
 

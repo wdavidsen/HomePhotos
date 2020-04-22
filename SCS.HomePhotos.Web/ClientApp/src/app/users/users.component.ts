@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../services';
+import { UserService, AuthenticationService } from '../services';
 import { UserRow, User } from '../models';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -12,13 +12,19 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class UsersComponent implements OnInit {
     private _users: User[];
+    private currentUser: User;
     public users: UserRow[];
     public loading = false;
 
   constructor(
     private router: Router,
+    private authenticationService: AuthenticationService,
     private userService: UserService,
     private toastr: ToastrService) {
+
+      this.authenticationService.currentUser.subscribe(user => {
+        this.currentUser = user;
+      });
     }
 
   ngOnInit() {
@@ -41,7 +47,7 @@ export class UsersComponent implements OnInit {
 
   deleteUser(): void {
     if (confirm('Are you sure you want to delete ALL selected users?')) {
-        this.getSelectedUsers().forEach(userRow => this.userService.delete(userRow.userId)
+        this.getUpdatableUsers('delete').forEach(userRow => this.userService.delete(userRow.userId)
             .subscribe(
                 () => {
                     const users = this._users.filter(u => u.userId !== userRow.userId);
@@ -58,19 +64,21 @@ export class UsersComponent implements OnInit {
   }
 
   enableDisableUser(enabled: boolean): void {
-    this.getSelectedUsers().forEach(userRow => {
+    const action = enabled ? 'enable' : 'disable';
+
+    this.getUpdatableUsers(action).forEach(userRow => {
         const user = this._users.find(u => u.userId === userRow.userId);
         user.enabled = enabled;
         this.userService.save(user)
             .subscribe(
                 savedUser => {
                     userRow.enabled = user.enabled = savedUser.enabled;
-                    const msg = `Successfully ${enabled ? 'enabled' : 'disabled'} ${user.username}`;
+                    const msg = `Successfully ${action} ${user.username}`;
                     this.toastr.success(msg);
                 },
                 error => {
                     console.error(error);
-                    const msg = `Failed to ${enabled ? 'enable' : 'disable'} ${user.username}`;
+                    const msg = `Failed to ${action } ${user.username}`;
                     this.toastr.error(msg);
                 });
     });
@@ -78,6 +86,16 @@ export class UsersComponent implements OnInit {
 
   getSelectedUsers(): UserRow[] {
     return this.users ? this.users.filter(user => user.selected) : [];
+  }
+
+  private getUpdatableUsers(action: string): UserRow[] {
+    let users = this.users ? this.users.filter(user => user.selected) : [];
+
+    if (users.find(u => u.username === this.currentUser.username)) {
+      this.toastr.warning(`Cannot ${action} yourself`);
+      users = users.filter(u => u.username !== this.currentUser.username);
+    }
+    return users;
   }
 
   private usersToUserRows(users: User[]): UserRow[] {

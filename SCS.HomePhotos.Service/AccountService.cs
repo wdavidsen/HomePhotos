@@ -186,9 +186,32 @@ namespace SCS.HomePhotos.Service
             return user;
         }
 
+        public async Task<User> GetUser(string userName)
+        {
+            var user = await _userData.GetUser(userName);
+
+            return user;
+        }
+
         public async Task DeleteUser(int userId)
         {
             await _userData.DeleteAsync<User>(userId);
+        }
+
+        public async Task<User> UpdateAccount(User user)
+        {
+            var exitingUser = await _userData.GetUser(user.UserName);
+            if (exitingUser == null)
+            {
+                throw new InvalidOperationException("User does not exist.");
+            }
+
+            exitingUser.FirstName = user.FirstName;
+            exitingUser.LastName = user.LastName;                        
+
+            await _userData.UpdateAsync(exitingUser);
+
+            return exitingUser;
         }
 
         public async Task<User> SaveUser(User user, string password = null)
