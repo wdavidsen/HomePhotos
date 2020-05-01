@@ -21,8 +21,8 @@ namespace SCS.HomePhotos.Web.Controllers
             _photoSevice = photoSevice;
         }
 
-        [HttpGet("latest", Name = "GetLatest")]
-        public async Task<IActionResult> GetLatest([FromQuery] int pageNum = 1, [FromQuery] int pageSize = 200)
+        [HttpGet("latest", Name = "GetLatestPhotos")]
+        public async Task<IActionResult> GetLatestPhotos([FromQuery] int pageNum = 1, [FromQuery] int pageSize = 200)
         {
             var photos = await _photoSevice.GetLatestPhotos(pageNum, pageSize);
 
@@ -36,8 +36,8 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(dtos);
         }
 
-        [HttpGet("byTag", Name = "GetByTag")]
-        public async Task<IActionResult> GetByTag([FromQuery] string tag, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 200)
+        [HttpGet("byTag", Name = "GetPhotosByTag")]
+        public async Task<IActionResult> GetPhotosByTag([FromQuery] string tag, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 200)
         {
             if (string.IsNullOrWhiteSpace(tag))
             {

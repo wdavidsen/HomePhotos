@@ -14,6 +14,7 @@ export class NavMenuComponent implements OnInit {
   currentUser: User;
   hideSearch = true;
   hideMenu = true;
+  hideMenuAdmin = true;
   hideOrganize = true;
 
   constructor (private router: Router,
@@ -22,6 +23,7 @@ export class NavMenuComponent implements OnInit {
       this.authenticationService.currentUser.subscribe(user => {
         this.currentUser = user;
         this.hideMenu = !this.currentUser;
+        this.hideMenuAdmin = !(this.currentUser && this.currentUser.admin);
       });
 
       router.events

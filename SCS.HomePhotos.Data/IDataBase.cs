@@ -12,6 +12,8 @@ namespace SCS.HomePhotos.Data
         Task<IEnumerable<T>> GetListAsync<T>(string whereClause, object parameters);
         Task<IEnumerable<T>> GetListPagedAsync<T>(string whereClause, object parameters, string orderBy, int pageNum, int pageSize);
         Task<int?> InsertAsync<T>(T entity);
+        int? Insert<T>(T entity);
         Task<int?> UpdateAsync<T>(T entity);
+        Task<long> GetRecordCount<T>(string whereClause, object parameters);
     }
 }

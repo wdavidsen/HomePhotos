@@ -32,7 +32,7 @@ namespace SCS.HomePhotos.Service
 
         public async Task<IEnumerable<Photo>> GetLatestPhotos(int pageNum = 1, int pageSize = 200)
         {
-            return await _photoData.GetPhotos(DateTime.MinValue, DateTime.Today, true, pageNum, pageSize);
+            return await _photoData.GetPhotos(DateTime.MinValue, DateTime.Now, true, pageNum, pageSize);
         }
 
         public async Task<IEnumerable<Photo>> GetPhotosByTag(string[] tags, int pageNum = 1, int pageSize = 200)

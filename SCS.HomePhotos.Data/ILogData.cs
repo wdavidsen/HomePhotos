@@ -1,0 +1,17 @@
+﻿using SCS.HomePhotos.Model;
+using System;
+using System.Threading.Tasks;
+
+namespace SCS.HomePhotos.Data
+{
+    public interface ILogData : IDataBase
+    {
+        Task<DataList<LogEntry>> GetLogEntries(PageInfo pageInfo,
+            LogCategory? category,
+            LogSeverity? serverity,
+            DateTime timestampStart,
+            DateTime timestampEnd);
+
+        Task DeleteLogEntries(DateTime olderThanDate);
+    }
+}

@@ -28,7 +28,7 @@ namespace SCS.HomePhotos.Web.Middleware
                     && httpContext.Request.Path.Value.StartsWith(Constants.CacheRoute, StringComparison.InvariantCultureIgnoreCase))
             {
                 var folderAndFile = httpContext.Request.Path.Value.Substring(Constants.CacheRoute.Length).Trim('/').Split('/');
-                var size = httpContext.Request.Query.ContainsKey("type") ? httpContext.Request.Query["type"].ToString().ToLower() : "small";
+                var size = httpContext.Request.Query.ContainsKey("type") ? httpContext.Request.Query["type"].ToString().ToLower() : "thumb";
 
                 switch (size)
                 {

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service;
-using SCS.HomePhotos.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -61,7 +59,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
                     var extension = Path.GetExtension(fileName);
                     var tempDir = Path.GetTempPath();
-                    
+
                     #region Validations
 
                     // check for invalid characters

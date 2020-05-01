@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
-    [Authorize]
     [Authorize(Policy = "AdminsOnly")]
     [Route("api/[controller]")]
     public class UsersController : HomePhotosController

@@ -1,11 +1,10 @@
-.btn-group {
-    padding-top: 20px;
+button {
+    margin-right: 10px;
 }
-
-.btn-group button {
-    margin-right: 5px;
-}
-
 .summary-info {
     text-align: right;
+}
+
+.spacer {
+    height: 30px;
 }

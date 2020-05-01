@@ -31,6 +31,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { ModalContentComponent } from './users/change-password-modal.component';
 import { PhotoTaggerComponent } from './photos/photo-tagger.component';
 import { TriCheckComponent } from './components/tri-check.component';
+import { LogService } from './services/log.service';
+import { LogsComponent } from './logs/logs.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,8 @@ import { TriCheckComponent } from './components/tri-check.component';
     AccountComponent,
     ModalContentComponent,
     PhotoTaggerComponent,
-    TriCheckComponent
+    TriCheckComponent,
+    LogsComponent
   ],
   entryComponents: [
     ModalContentComponent,
@@ -73,6 +76,7 @@ import { TriCheckComponent } from './components/tri-check.component';
       { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
       { path: 'users/:userId', component: UserDetailComponent, canActivate: [AuthGuard] },
       { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
+      { path: 'logs', component: LogsComponent, canActivate: [AuthGuard] },
 
       // otherwise redirect to home
       { path: '**', redirectTo: '' }
@@ -95,6 +99,7 @@ import { TriCheckComponent } from './components/tri-check.component';
     PhotosService,
     BsModalRef,
     TagService,
+    LogService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],

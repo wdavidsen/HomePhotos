@@ -18,6 +18,8 @@
 
         int ImageResizeQuality { get; set; }
 
+        int LogRetentionDays { get; set; }
+
         PasswordRequirements PasswordRequirements { get; set; }
     }
 }

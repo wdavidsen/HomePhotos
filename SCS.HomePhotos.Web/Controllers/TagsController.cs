@@ -51,6 +51,7 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(dtos);
         }
 
+        [Authorize(Policy = "AdminsOnly")]
         [HttpPut("merge", Name = "MergeTags")]
         public async Task<IActionResult> MergeTags([FromBody]TagMergeInfo mergeInfo)
         {
@@ -64,6 +65,7 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "AdminsOnly")]
         [HttpPut("copy", Name = "CopyTags")]
         public async Task<IActionResult> CopyTags([FromBody]TagCopyInfo copyInfo)
         {
@@ -77,6 +79,7 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "AdminsOnly")]
         [HttpPost("batchTag", Name = "GetPhotosToTag")]
         public async Task<IActionResult> GetPhotosToTag([FromBody]int[] photoIds)
         {
@@ -90,6 +93,7 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(new BatchSelectTags(photoIds, photoTags));
         }
 
+        [Authorize(Policy = "AdminsOnly")]
         [HttpPut("batchTag", Name = "TagPhotos")]
         public async Task<IActionResult> TagPhotos([FromBody]BatchUpdateTags updateTags)
         {

@@ -6,16 +6,16 @@ import { catchError, map } from 'rxjs/operators';
 import { AuthenticationService } from '../services';
 
 @Injectable()
-export class ErrorInterceptor implements HttpInterceptor {  
+export class ErrorInterceptor implements HttpInterceptor {
     constructor(private authenticationService: AuthenticationService) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        return next.handle(request).pipe(            
+        return next.handle(request).pipe(
             catchError(err => {
                 if (err instanceof HttpErrorResponse) {
                     const errorResponse = <HttpErrorResponse>err;
 
-                    switch (errorResponse.status) {                       
+                    switch (errorResponse.status) {
                         case 401:
                             // does not work in chromium linux
                             // let header = errorResponse.headers.get('www-authenticate');
@@ -23,9 +23,9 @@ export class ErrorInterceptor implements HttpInterceptor {
 
                             // if (tokenExpired) {
 
-                            let isRefresh = errorResponse.url.indexOf('/auth/refresh') != -1;
-                            let isLogin = errorResponse.url.indexOf('/auth/login') != -1;
-                            let currentUser = this.authenticationService.currentUserValue;
+                            const isRefresh = errorResponse.url.indexOf('/auth/refresh') !== -1;
+                            const isLogin = errorResponse.url.indexOf('/auth/login') !== -1;
+                            const currentUser = this.authenticationService.currentUserValue;
 
                             if (!isRefresh && currentUser) {
                                 this.authenticationService.updateToken();
@@ -38,8 +38,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                             break;
                     }
                 }
-            
-            const error = err.error.message || err.statusText;
+
+            const error = (err.error && err.error.message) ? err.error.message : err.statusText;
             return throwError(error);
         }));
     }

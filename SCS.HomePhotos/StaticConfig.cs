@@ -20,6 +20,8 @@ namespace SCS.HomePhotos
 
         public int ImageResizeQuality { get; set; }
 
+        public int LogRetentionDays { get; set; }
+
         public PasswordRequirements PasswordRequirements { get; set; }
 
         public static StaticConfig Build(IConfiguration config)

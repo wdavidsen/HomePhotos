@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TagService, SearchService, OrganizeService } from '../services';
 import { TagChip, Tag } from '../models';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -28,6 +28,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.searchService.setHidden(false);
 
     this.tagService.getTags()
+      // .pipe(tap(tags => tags.length ? this.toastr.success(`Loaded ${tags.length} tags`) : this.toastr.warning(`No tags available`)))
       .pipe(map(tags => this.tagsToChips(tags)))
       .subscribe((chips => this.tagChips = this.insertIndexDividers(chips)));
 

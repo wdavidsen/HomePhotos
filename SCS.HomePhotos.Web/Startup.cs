@@ -89,6 +89,7 @@ namespace SCS.HomePhotos.Web
             services.AddScoped<ITagData, TagData>();
             services.AddScoped<IUserData, UserData>();
             services.AddScoped<IUserTokenData, UserTokenData>();
+            services.AddScoped<ILogData, LogData>();
 
             // services
             services.AddScoped<IFileSystemService, FileSystemService>();
@@ -98,6 +99,7 @@ namespace SCS.HomePhotos.Web
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ISecurityService, SecurityService>();
+            services.AddSingleton<IAdminLogService>(new AdminLogService(new LogData(staticConfig), staticConfig));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

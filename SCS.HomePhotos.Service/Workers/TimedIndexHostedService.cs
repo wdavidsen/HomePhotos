@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
 using System;
 using System.Collections.ObjectModel;
@@ -28,13 +29,15 @@ namespace SCS.HomePhotos.Workers
         private readonly ILogger<TimedIndexHostedService> _logger;
         private readonly IDynamicConfig _dynamicConfig;
         private readonly IStaticConfig _staticConfig;
+        private readonly IAdminLogService _adminlogger;
         private Timer _timer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TimedIndexHostedService"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IDynamicConfig dynamicConfig, IStaticConfig staticConfig)
+        public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IDynamicConfig dynamicConfig, IStaticConfig staticConfig,
+            IAdminLogService dblogger)
         {
             Name = "Image Indexer";
 
@@ -42,6 +45,7 @@ namespace SCS.HomePhotos.Workers
             _logger = logger;
             _dynamicConfig = dynamicConfig;
             _staticConfig = staticConfig;
+            _adminlogger = dblogger;
 
             _dynamicConfig.PropertyChanged += _config_PropertyChanged;
         }
@@ -50,11 +54,11 @@ namespace SCS.HomePhotos.Workers
         {
             if (e.PropertyName == nameof(DynamicConfig.IndexFrequencyHours) || e.PropertyName == nameof(DynamicConfig.NextIndexTime))
             {
-                _logger.LogInformation("Index configuration has changed.");
+                _logger.LogInformation(_adminlogger.LogInformation("Index configuration has changed.", LogCategory.Index));
 
                 if (_indexingNow && _internalCanellationTokenSource != null)
                 {
-                    _logger.LogInformation("Canceling current index now.");
+                    _logger.LogInformation(_adminlogger.LogInformation("Indexing canceled.", LogCategory.Index));
 
                     _internalCanellationTokenSource.Cancel();
                     Thread.Sleep(5000);
@@ -87,10 +91,11 @@ namespace SCS.HomePhotos.Workers
         {
             if (_dynamicConfig.NextIndexTime != null)
             {
-                _timer = new Timer(DoWork, null, StartTime, RunFrequency);
+                var start = (DateTime.Now + StartTime).ToString("g");
+                var msg = $"Next photo index time set for {start}; reoccurance every {RunFrequency.Hours} hours.";
 
-                _logger.LogInformation("Initialized next photo index time. Start time: {StartTime}, Run frequency {RunFrequency}",
-                    DateTime.Now + StartTime, RunFrequency);
+                _timer = new Timer(DoWork, null, StartTime, RunFrequency);
+                _logger.LogInformation(_adminlogger.LogInformation(msg, LogCategory.Index));
             }
         }
 
@@ -129,7 +134,7 @@ namespace SCS.HomePhotos.Workers
 
             executionCount++;
 
-            _logger.LogInformation("Photo index service is executing. Count: {Count}", executionCount);
+            _logger.LogInformation(_adminlogger.LogInformation("Photo index started.", LogCategory.Index));
 
             try
             {
@@ -138,12 +143,13 @@ namespace SCS.HomePhotos.Workers
 
                 ProcessDirectory(_indexCanellationToken, _internalCanellationToken, _dynamicConfig.IndexPath);
                 _logger.LogInformation("Completed photo image index");
+                _adminlogger.LogInformation("Photo index completed.", LogCategory.Index);
 
                 _dynamicConfig.IndexOnStartup = false;
             }
             catch (AggregateException ex)
             {
-                _logger.LogError("Failed to index photos at path: {IndexPath}", _dynamicConfig.IndexPath);
+                _logger.LogError(_adminlogger.LogError($"Failed to index photos at path: {_dynamicConfig.IndexPath}", LogCategory.Index));
 
                 foreach (var innerEx in ex.InnerExceptions)
                 {
@@ -154,7 +160,7 @@ namespace SCS.HomePhotos.Workers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to index photos at path: {IndexPath}", _dynamicConfig.IndexPath);         
+                _logger.LogError(_adminlogger.LogError($"Failed to index photos at path: {_dynamicConfig.IndexPath}", LogCategory.Index));
                 StopTimer();
             }
             finally
@@ -169,9 +175,8 @@ namespace SCS.HomePhotos.Workers
         /// <returns></returns>
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Photo index service is stopping.");
-
             StopTimer();
+            _logger.LogInformation(_adminlogger.LogInformation($"Photo indexing stopped.", LogCategory.Index));
 
             return Task.CompletedTask;
         }
@@ -243,7 +248,9 @@ namespace SCS.HomePhotos.Workers
 
                                 _logger.LogInformation("Determined file checksum: {Checksum}.", checksum);
 
-                                if (photoService.GetPhotoByChecksum(checksum).Result == null)
+                                var existingPhoto = photoService.GetPhotoByChecksum(checksum).Result;
+
+                                if (existingPhoto == null || !CacheFileExists(existingPhoto))
                                 {
                                     var cacheFilePath = imageService.CreateCachePath(checksum, Path.GetExtension(imageFilePath));
                                     var imageLayoutInfo = imageService.GetImageLayoutInfo(imageFilePath);
@@ -273,7 +280,7 @@ namespace SCS.HomePhotos.Workers
                         catch (Exception ex)
                         {
                             failCount++;
-                            _logger.LogError(ex, $"Photo image index failed for: {imageFilePath}");
+                            _logger.LogError(ex, "Photo image index failed for: {imageFilePath}", imageFilePath);
 
                             if (ex is IOException)
                             {
@@ -295,6 +302,11 @@ namespace SCS.HomePhotos.Workers
                     ProcessDirectory(externalCancellationToken, internalCancellationToken, dirPath);
                 }
             }
+        }
+
+        private bool CacheFileExists(Photo existingPhoto)
+        {
+            return File.Exists(Path.Combine(_dynamicConfig.CacheFolder, existingPhoto.CacheFolder, existingPhoto.FileName));
         }
     }
 }

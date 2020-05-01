@@ -51,9 +51,15 @@ export class PhotosComponent implements OnInit, OnDestroy {
     let scrollPosition = docElem.scrollTop;
 
     if (scrollPosition < 1) {
-      scrollPosition = document.getElementsByName('body')[0].scrollTop;
+      const body = document.getElementsByName('body')[0];
+      scrollPosition = body ? body.scrollTop : 0;
     }
-    this.scrollSubject.next(scrollPosition);
+
+    if (scrollPosition > this.previousScroll) {
+      if ((scrollPosition + window.innerHeight) >= (document.documentElement.scrollHeight - 20)) {
+        this.scrollSubject.next(scrollPosition);
+      }
+    }
   }
 
   ngOnInit() {
@@ -87,6 +93,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
           this.mode = 1;
         }
 
+        this.resetResults();
         this.loadPhotos();
       });
 
@@ -98,15 +105,9 @@ export class PhotosComponent implements OnInit, OnDestroy {
 
     this.bottomScrollSubscription = this.scrollSubject
       .pipe(debounce(() => timer(1000)))
-      .subscribe(currentScroll => {
-
-        if (currentScroll > this.previousScroll) {
-          if ((currentScroll + window.innerHeight) >= (document.documentElement.scrollHeight - 20)) {
-            this.pageNum++;
-            this.loadPhotos();
-          }
-        }
-        this.previousScroll = currentScroll;
+      .subscribe(() => {
+        this.pageNum++;
+        this.loadPhotos();
       });
   }
 
@@ -121,13 +122,18 @@ export class PhotosComponent implements OnInit, OnDestroy {
       thumbnail.selected = !thumbnail.selected;
     }
     else {
-      this.showLightbox();
+      this.showLightbox(thumbnail);
     }
   }
 
-  showLightbox() {
+  showLightbox(thumbnail: Thumbnail) {
+    // https://github.com/blueimp/Gallery#lightbox-setup
     const options = {
         event: window.event,
+        slideshowInterval: 5000,
+        startSlideshow: false,
+        fullScreen: false,
+        thumbnailIndicators: true
     };
 
     const images: any[] = [];
@@ -139,7 +145,8 @@ export class PhotosComponent implements OnInit, OnDestroy {
       });
     });
 
-    blueimp.Gallery(images, options);
+    const gallery = blueimp.Gallery(images, options);
+    gallery.slide(this.thumbnails.findIndex(t => t.photoId ===  thumbnail.photoId), 0);
   }
 
   getSelectedThumbnails(): Thumbnail[] {
@@ -179,23 +186,33 @@ export class PhotosComponent implements OnInit, OnDestroy {
       case 1:
         this.photosService.getLatest(this.pageNum)
           .pipe(map(photos => this.photosToThumbnails(photos)))
-          .subscribe((thumbs => this.appendThumbnails(thumbs)));
+          .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
         break;
       case 2:
         this.photosService.getPhotosByTag(this.pageNum, this.tagName)
           .pipe(map(photos => this.photosToThumbnails(photos)))
-          .subscribe((thumbs => this.appendThumbnails(thumbs)));
+          .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
         break;
       case 3:
         this.photosService.searchPhotos(this.pageNum, this.keywords)
           .pipe(map(photos => this.photosToThumbnails(photos)))
-          .subscribe((thumbs => this.appendThumbnails(thumbs)));
+          .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
       break;
     }
   }
 
+  private handleLoadError(error: any) {
+    console.error(error);
+    this.toastr.error('Failed to load photos');
+  }
+
   private appendThumbnails(newThumbs: Thumbnail[]): void {
     newThumbs.forEach(t => this.thumbnails.push(t));
+  }
+
+  private resetResults(): void {
+    this.pageNum = 1;
+    this.thumbnails = [];
   }
 
   private photoToThumbnail(photo: Photo): Thumbnail {

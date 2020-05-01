@@ -16,7 +16,7 @@
             [routerLinkActiveOptions]="{ exact: true }" 
             [routerLink]="['/tags']">Tags</a>
           
-          <div class="nav-item dropdown">
+          <div class="nav-item dropdown" [hidden]="hideMenuAdmin">
               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Admin</a>
               <div class="dropdown-menu">
                 <a href="#" class="dropdown-item" 
@@ -30,7 +30,7 @@
                 <a href="#" class="dropdown-item" 
                   [routerLinkActive]="['link-active']" 
                   [routerLinkActiveOptions]="{ exact: true }" 
-                  [routerLink]="['/logs']">Logs</a>
+                  [routerLink]="['/logs']">Activity</a>
                 <div class="dropdown-divider" [hidden]="hideOrganize"></div>
                 <label class="dropdown-item" [hidden]="hideOrganize">
                   <app-organize></app-organize>

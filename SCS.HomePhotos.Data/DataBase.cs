@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Data
@@ -36,6 +37,14 @@ namespace SCS.HomePhotos.Data
             using (var connection = GetDbConnection())
             {
                 return await connection.InsertAsync(entity);
+            }
+        }
+
+        public virtual int? Insert<T>(T entity)
+        {
+            using (var connection = GetDbConnection())
+            {
+                return connection.Insert(entity);
             }
         }
 
@@ -93,6 +102,24 @@ namespace SCS.HomePhotos.Data
             {
                 return await connection.DeleteAsync<T>(id);
             }
+        }
+
+        public virtual async Task<long> GetRecordCount<T>(string whereClause, object parameters)
+        {
+            using (var connection = GetDbConnection())
+            {
+                var tableName = GetTableName<T>();
+                var sql = $"SELECT COUNT(*) FROM {tableName} {whereClause}";
+
+                var result = await connection.ExecuteScalarAsync(sql, parameters);
+                return (long)result;
+            }
+        }
+
+        public static string GetTableName<T>()
+        {
+            var tableAttribute = (TableAttribute)Attribute.GetCustomAttribute(typeof(T), typeof(TableAttribute));
+            return tableAttribute.Name;
         }
     }
 }

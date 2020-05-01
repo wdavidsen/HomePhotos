@@ -26,6 +26,8 @@ namespace SCS.HomePhotos.Model
 
         public string CacheFolder { get; set; }
 
+        public bool ReprocessCache { get; set; }
+
         public IList<Tag> Tags { get; set; }
     }
 }

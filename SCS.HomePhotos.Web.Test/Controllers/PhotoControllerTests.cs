@@ -35,7 +35,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _photosService.Setup(m => m.GetLatestPhotos(1, 200))
                 .ReturnsAsync(photos);
 
-            var response = await _photosController.GetLatest().ConfigureAwait(true);
+            var response = await _photosController.GetLatestPhotos().ConfigureAwait(true);
 
             Assert.IsType<OkObjectResult>(response);
 
