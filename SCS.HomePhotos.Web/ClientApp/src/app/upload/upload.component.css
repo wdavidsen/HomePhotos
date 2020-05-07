@@ -1,0 +1,35 @@
+.my-drop-zone { 
+    border: dotted 3px lightgray; 
+}
+
+.nv-file-over { 
+    border: dotted 3px green; 
+} /* Default class applied to drop zones on over */
+
+.another-file-over-class { 
+    border: dotted 3px green; 
+}
+
+.progress {
+    margin-bottom: 20px;
+}
+
+button {
+    margin-right: 10px;
+}
+
+.col-picker > input {
+    margin: 30px;
+    width: 108px !important;
+}
+
+.col-dropzone > div {
+    margin: 10px;
+    height: 60px;
+    text-align: center;
+}
+
+.col-dropzone > div > span {
+    display: inline-block;
+    margin-top: 13px;
+}

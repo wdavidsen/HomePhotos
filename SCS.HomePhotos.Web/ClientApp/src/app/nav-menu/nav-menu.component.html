@@ -15,6 +15,11 @@
             [routerLinkActive]="['link-active']" 
             [routerLinkActiveOptions]="{ exact: true }" 
             [routerLink]="['/tags']">Tags</a>
+
+          <a href="#" class="nav-item nav-link active" [hidden]="hideUploadMenu" 
+            [routerLinkActive]="['link-active']" 
+            [routerLinkActiveOptions]="{ exact: true }" 
+            [routerLink]="['/upload']">Upload</a>
           
           <div class="nav-item dropdown" [hidden]="hideMenuAdmin">
               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Admin</a>

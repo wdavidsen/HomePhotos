@@ -8,5 +8,6 @@ namespace SCS.HomePhotos.Service
         IStaticConfig StaticConfig { get; }
 
         Task SetDynamicConfig();
+        void SaveDynamicConfig();
     }
 }

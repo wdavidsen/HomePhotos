@@ -27,8 +27,7 @@ namespace SCS.HomePhotos.Workers
         private CancellationToken _internalCanellationToken;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<TimedIndexHostedService> _logger;
-        private readonly IDynamicConfig _dynamicConfig;
-        private readonly IStaticConfig _staticConfig;
+        private readonly IConfigService _configService;        
         private readonly IAdminLogService _adminlogger;
         private Timer _timer;
 
@@ -36,29 +35,27 @@ namespace SCS.HomePhotos.Workers
         /// Initializes a new instance of the <see cref="TimedIndexHostedService"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IDynamicConfig dynamicConfig, IStaticConfig staticConfig,
-            IAdminLogService dblogger)
+        public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IConfigService configService, IAdminLogService dblogger)
         {
             Name = "Image Indexer";
 
             _serviceProvider = services;
             _logger = logger;
-            _dynamicConfig = dynamicConfig;
-            _staticConfig = staticConfig;
+            _configService = configService;            
             _adminlogger = dblogger;
 
-            _dynamicConfig.PropertyChanged += _config_PropertyChanged;
+            configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
         }
 
         private void _config_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(DynamicConfig.IndexFrequencyHours) || e.PropertyName == nameof(DynamicConfig.NextIndexTime))
             {
-                _logger.LogInformation(_adminlogger.LogInformation("Index configuration has changed.", LogCategory.Index));
+                _logger.LogInformation(_adminlogger.LogNeutral("Index configuration has changed.", LogCategory.Index));
 
                 if (_indexingNow && _internalCanellationTokenSource != null)
                 {
-                    _logger.LogInformation(_adminlogger.LogInformation("Indexing canceled.", LogCategory.Index));
+                    _logger.LogInformation(_adminlogger.LogNeutral("Indexing canceled.", LogCategory.Index));
 
                     _internalCanellationTokenSource.Cancel();
                     Thread.Sleep(5000);
@@ -89,36 +86,41 @@ namespace SCS.HomePhotos.Workers
 
         protected void StartTimer()
         {
-            if (_dynamicConfig.NextIndexTime != null)
+            if (_configService.DynamicConfig.NextIndexTime != null)
             {
                 var start = (DateTime.Now + StartTime).ToString("g");
                 var msg = $"Next photo index time set for {start}; reoccurance every {RunFrequency.Hours} hours.";
 
                 _timer = new Timer(DoWork, null, StartTime, RunFrequency);
-                _logger.LogInformation(_adminlogger.LogInformation(msg, LogCategory.Index));
+                _logger.LogInformation(_adminlogger.LogNeutral(msg, LogCategory.Index));
             }
         }
 
         protected bool SetupTimer()
         {
-            if (_dynamicConfig.NextIndexTime != null)
+            if (_configService.DynamicConfig.NextIndexTime != null)
             {
                 _internalCanellationTokenSource = new CancellationTokenSource();
                 _internalCanellationToken = _internalCanellationTokenSource.Token;
 
-                TimeSpan timespan = _dynamicConfig.NextIndexTime.Value - DateTime.Now;
-
-                while (timespan.Minutes < 0)
-                {
-                    timespan = timespan.Add(TimeSpan.FromHours(_dynamicConfig.IndexFrequencyHours));
-                }
-
-                StartTime = timespan;
-                RunFrequency = TimeSpan.FromHours(_dynamicConfig.IndexFrequencyHours);
+                StartTime = GetNextStartTime();
+                RunFrequency = TimeSpan.FromHours(_configService.DynamicConfig.IndexFrequencyHours);
 
                 return true;
             }
             return false;
+        }
+
+        private TimeSpan GetNextStartTime()
+        {
+            TimeSpan timespan = _configService.DynamicConfig.NextIndexTime.Value - DateTime.Now;
+
+            while (timespan.Minutes < 0)
+            {
+                timespan = timespan.Add(TimeSpan.FromHours(_configService.DynamicConfig.IndexFrequencyHours));
+            }
+
+            return timespan;
         }
 
         /// <summary>
@@ -134,22 +136,29 @@ namespace SCS.HomePhotos.Workers
 
             executionCount++;
 
-            _logger.LogInformation(_adminlogger.LogInformation("Photo index started.", LogCategory.Index));
+            _logger.LogInformation(_adminlogger.LogNeutral("Photo index started.", LogCategory.Index));
 
             try
             {
                 // to resume index after crash of power outage
-                _dynamicConfig.IndexOnStartup = true;
+                _configService.DynamicConfig.IndexOnStartup = true;
 
-                ProcessDirectory(_indexCanellationToken, _internalCanellationToken, _dynamicConfig.IndexPath);
+                ProcessDirectory(_indexCanellationToken, _internalCanellationToken, _configService.DynamicConfig.IndexPath);
                 _logger.LogInformation("Completed photo image index");
-                _adminlogger.LogInformation("Photo index completed.", LogCategory.Index);
 
-                _dynamicConfig.IndexOnStartup = false;
+                var nextStart = DateTime.Now + GetNextStartTime();
+                
+                var msg = $"Photo index completed. Next photo index time: {nextStart.ToString("g")}.";
+                _adminlogger.LogNeutral(msg, LogCategory.Index);
+
+                _configService.DynamicConfig.PropertyChanged -= _config_PropertyChanged;
+                _configService.DynamicConfig.NextIndexTime = nextStart;
+                _configService.DynamicConfig.IndexOnStartup = false;
+                _configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
             }
             catch (AggregateException ex)
             {
-                _logger.LogError(_adminlogger.LogError($"Failed to index photos at path: {_dynamicConfig.IndexPath}", LogCategory.Index));
+                _logger.LogError(_adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
 
                 foreach (var innerEx in ex.InnerExceptions)
                 {
@@ -160,7 +169,7 @@ namespace SCS.HomePhotos.Workers
             }
             catch (Exception ex)
             {
-                _logger.LogError(_adminlogger.LogError($"Failed to index photos at path: {_dynamicConfig.IndexPath}", LogCategory.Index));
+                _logger.LogError(_adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
                 StopTimer();
             }
             finally
@@ -176,7 +185,7 @@ namespace SCS.HomePhotos.Workers
         public Task StopAsync(CancellationToken cancellationToken)
         {
             StopTimer();
-            _logger.LogInformation(_adminlogger.LogInformation($"Photo indexing stopped.", LogCategory.Index));
+            _logger.LogInformation(_adminlogger.LogNeutral($"Photo indexing stopped.", LogCategory.Index));
 
             return Task.CompletedTask;
         }
@@ -228,7 +237,7 @@ namespace SCS.HomePhotos.Workers
                 var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
                 var fileSystemService = scope.ServiceProvider.GetRequiredService<IFileSystemService>();
 
-                var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = _staticConfig.ImageIndexParallelism };
+                var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = _configService.StaticConfig.ImageIndexParallelism };
                 var failCount = 0;
 
                 Parallel.ForEach(Directory.GetFiles(directoryPath), parallelOptions, (imageFilePath) =>
@@ -237,7 +246,7 @@ namespace SCS.HomePhotos.Workers
                     {
                         try
                         {
-                            if (fileSystemService.GetFileSize(imageFilePath) <= _staticConfig.MaxImageFileSizeBytes)
+                            if (fileSystemService.GetFileSize(imageFilePath) <= _configService.StaticConfig.MaxImageFileSizeBytes)
                             {
                                 _logger.LogInformation("Processing image file {ImageFilePath}.", imageFilePath);
 
@@ -266,7 +275,7 @@ namespace SCS.HomePhotos.Workers
                             }
                             else
                             {
-                                _logger.LogInformation("Skipping image file since it is greater than {MaxImageFileSizeBytes} bytes.", _staticConfig.MaxImageFileSizeBytes);
+                                _logger.LogInformation("Skipping image file since it is greater than {MaxImageFileSizeBytes} bytes.", _configService.StaticConfig.MaxImageFileSizeBytes);
                             }
                         }  
                         catch (OutOfMemoryException)
@@ -289,7 +298,7 @@ namespace SCS.HomePhotos.Workers
                                     throw;
                                 }
                             }
-                            if (failCount > _staticConfig.MaxAllowedIndexDirectoryFailures)
+                            if (failCount > _configService.StaticConfig.MaxAllowedIndexDirectoryFailures)
                             {
                                 throw;
                             }
@@ -306,7 +315,7 @@ namespace SCS.HomePhotos.Workers
 
         private bool CacheFileExists(Photo existingPhoto)
         {
-            return File.Exists(Path.Combine(_dynamicConfig.CacheFolder, existingPhoto.CacheFolder, existingPhoto.FileName));
+            return File.Exists(Path.Combine(_configService.DynamicConfig.CacheFolder, existingPhoto.CacheFolder, existingPhoto.FileName));
         }
     }
 }

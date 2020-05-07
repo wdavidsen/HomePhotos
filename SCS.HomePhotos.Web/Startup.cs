@@ -76,8 +76,10 @@ namespace SCS.HomePhotos.Web
 
             services.AddSingleton<IStaticConfig>(staticConfig);
             services.AddSingleton<IConfigData>(configData);
-            services.AddSingleton<IDynamicConfig>(dynamicConfig); // we'll populate this in Configure method
-            services.AddSingleton<IConfigService>(new ConfigService(configData, dynamicConfig, staticConfig));
+            services.AddSingleton<IDynamicConfig>(dynamicConfig);
+            var configService = new ConfigService(configData, dynamicConfig, staticConfig);
+            SetDynamicConfig(configService).Wait();
+            services.AddSingleton<IConfigService>(configService);
 
             // background tasks
             services.AddHostedService<QueuedHostedService>();
@@ -103,12 +105,10 @@ namespace SCS.HomePhotos.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IConfigService configService, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             // https://github.com/serilog/serilog-extensions-logging-file
             loggerFactory.AddFile(Configuration.GetSection("Logging"));
-
-            SetDynamicConfig(configService).Wait();
 
             if (env.IsDevelopment())
             {

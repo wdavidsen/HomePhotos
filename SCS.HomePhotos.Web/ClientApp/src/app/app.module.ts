@@ -33,6 +33,8 @@ import { PhotoTaggerComponent } from './photos/photo-tagger.component';
 import { TriCheckComponent } from './components/tri-check.component';
 import { LogService } from './services/log.service';
 import { LogsComponent } from './logs/logs.component';
+import { UploadComponent } from './upload/upload.component';
+import { FileUploadModule } from 'ng2-file-upload';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,8 @@ import { LogsComponent } from './logs/logs.component';
     ModalContentComponent,
     PhotoTaggerComponent,
     TriCheckComponent,
-    LogsComponent
+    LogsComponent,
+    UploadComponent
   ],
   entryComponents: [
     ModalContentComponent,
@@ -77,6 +80,7 @@ import { LogsComponent } from './logs/logs.component';
       { path: 'users/:userId', component: UserDetailComponent, canActivate: [AuthGuard] },
       { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
       { path: 'logs', component: LogsComponent, canActivate: [AuthGuard] },
+      { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
 
       // otherwise redirect to home
       { path: '**', redirectTo: '' }
@@ -92,7 +96,8 @@ import { LogsComponent } from './logs/logs.component';
       timeOut: 4000,
       positionClass: 'toast-bottom-right',
       preventDuplicates: true
-    })
+    }),
+    FileUploadModule
   ],
   providers: [
     SettingsService,

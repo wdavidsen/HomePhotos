@@ -48,11 +48,16 @@ namespace SCS.HomePhotos.Service
             DynamicConfig.TrackChanges = true;
         }
 
-        private void _dynamicConfig_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void SaveDynamicConfig()
         {
             var configToSave = new Model.Config();
             configToSave.FromDynamicConfig(DynamicConfig);
             _configData.SaveConfiguration(configToSave);
+        }
+
+        private void _dynamicConfig_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            SaveDynamicConfig();
         }
     }
 }

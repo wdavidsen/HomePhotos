@@ -29,7 +29,7 @@ namespace SCS.HomePhotos.Service
             return logEntry.Message;
         }
 
-        public string LogError(string message, LogCategory category = LogCategory.General)
+        public string LogHigh(string message, LogCategory category = LogCategory.General)
         {
             return AddLogEntry(new LogEntry
             {
@@ -40,7 +40,7 @@ namespace SCS.HomePhotos.Service
             });
         }
 
-        public string LogInformation(string message, LogCategory category = LogCategory.General)
+        public string LogNeutral(string message, LogCategory category = LogCategory.General)
         {
             return AddLogEntry(new LogEntry
             {
@@ -51,13 +51,24 @@ namespace SCS.HomePhotos.Service
             });
         }
 
-        public string LogWarning(string message, LogCategory category = LogCategory.General)
+        public string LogElevated(string message, LogCategory category = LogCategory.General)
         {
             return AddLogEntry(new LogEntry
             {
                 Message = message,
                 Category = category,
                 Severity = LogSeverity.Elevated,
+                Timestamp = DateTime.UtcNow
+            });
+        }
+
+        public string LogUrgent(string message, LogCategory category = LogCategory.General)
+        {
+            return AddLogEntry(new LogEntry
+            {
+                Message = message,
+                Category = category,
+                Severity = LogSeverity.Urgent,
                 Timestamp = DateTime.UtcNow
             });
         }

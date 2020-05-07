@@ -12,14 +12,16 @@ namespace SCS.HomePhotos.Service
         private readonly IStaticConfig _staticConfig;
         private readonly IUserData _userData;
         private readonly IUserTokenData _userTokenData;
+        private readonly IAdminLogService _adminLogService;
 
         public string ValidIssuer => throw new NotImplementedException();
 
-        public AccountService(IStaticConfig staticConfig, IUserData userData, IUserTokenData userTokenData)
+        public AccountService(IStaticConfig staticConfig, IUserData userData, IUserTokenData userTokenData, IAdminLogService adminLogService)
         {
             _staticConfig = staticConfig;
             _userData = userData;
             _userTokenData = userTokenData;
+            _adminLogService = adminLogService;
         }
 
         public async Task<AuthResult> Authenticate(string userName, string password)
@@ -39,10 +41,16 @@ namespace SCS.HomePhotos.Service
             }
 
             if (!PasswordHash.ValidatePassword(password, user.PasswordHash))
-            { 
+            {
+                _adminLogService.LogElevated($"Login for {user.UserName} failed.", LogCategory.Security);
                 user.FailedLoginCount++;
                 result.AttemptsExceeded = user.FailedLoginCount >= _staticConfig.MaxFailedLogins;
-                
+
+                if (result.AttemptsExceeded)
+                {
+                    _adminLogService.LogElevated($"Login attempts for {user.UserName} exceeded; account disabled.", LogCategory.Security);
+                }
+
                 user.Enabled = user.Enabled && !result.AttemptsExceeded;
 
                 await _userData.UpdateAsync(user);
@@ -51,14 +59,17 @@ namespace SCS.HomePhotos.Service
                 result.PasswordMismatch = true;
                 return result;
             }
+            else
+            {
+                _adminLogService.LogNeutral($"Login for {user.UserName} succeeded.", LogCategory.Security);
+                user.LastLogin = DateTime.Now;
+                user.FailedLoginCount = 0;
+                await _userData.UpdateAsync(user);
 
-            user.LastLogin = DateTime.Now;
-            user.FailedLoginCount = 0;
-            await _userData.UpdateAsync(user);
-
-            result.MustChangePassword = user.MustChangePassword;
-            result.User = user;
-            return result;
+                result.MustChangePassword = user.MustChangePassword;
+                result.User = user;
+                return result;
+            }            
         }
 
         public async Task<RegisterResult> Register(User user, string password)
@@ -86,6 +97,7 @@ namespace SCS.HomePhotos.Service
             newUser.Enabled = true;
 
             await _userData.InsertAsync(newUser);
+            _adminLogService.LogNeutral($"New user registration for {user.UserName} succeeded.", LogCategory.Security);
 
             return result;
         }
@@ -96,6 +108,7 @@ namespace SCS.HomePhotos.Service
 
             if (!authResult.Success)
             {
+                _adminLogService.LogElevated($"Password change for {userName} rejected (invalid password).", LogCategory.Security);
                 return new ChangePasswordResult(authResult);
             }
 
@@ -105,6 +118,7 @@ namespace SCS.HomePhotos.Service
 
             if (passwordHistory.Any(s => s == passwordCheckHash))
             {
+                _adminLogService.LogElevated($"Password change for {userName} rejected (password used previously).", LogCategory.Security);
                 return new ChangePasswordResult { PasswordUsedPreviously = true };
             }
 
@@ -115,6 +129,7 @@ namespace SCS.HomePhotos.Service
             user.MustChangePassword = false;
 
             await _userData.UpdateAsync(user);
+            _adminLogService.LogNeutral($"Password change for {user.UserName} succeeded.", LogCategory.Security);
 
             return new ChangePasswordResult
             {
@@ -195,7 +210,14 @@ namespace SCS.HomePhotos.Service
 
         public async Task DeleteUser(int userId)
         {
-            await _userData.DeleteAsync<User>(userId);
+            var exitingUser = await _userData.GetAsync<User>(userId);
+            if (exitingUser == null)
+            {
+                throw new InvalidOperationException("User does not exist.");
+            }
+
+            await _userData.DeleteAsync(exitingUser);
+            _adminLogService.LogNeutral($"User account deletion for {exitingUser.UserName} succeeded.", LogCategory.Security);
         }
 
         public async Task<User> UpdateAccount(User user)
@@ -210,6 +232,7 @@ namespace SCS.HomePhotos.Service
             exitingUser.LastName = user.LastName;                        
 
             await _userData.UpdateAsync(exitingUser);
+            _adminLogService.LogNeutral($"User account update for {user.UserName} succeeded.", LogCategory.Security);
 
             return exitingUser;
         }
@@ -235,10 +258,12 @@ namespace SCS.HomePhotos.Service
                 exitingUser.Admin = user.Admin;
 
                 await _userData.UpdateAsync(exitingUser);
+                _adminLogService.LogNeutral($"User account update for {user.UserName} succeeded.", LogCategory.Security);
             }
             else
             {
                 var userId = await _userData.InsertAsync(user);
+                _adminLogService.LogNeutral($"User account creation for {user.UserName} succeeded.", LogCategory.Security);
                 user.UserId = userId.Value;
             }
             

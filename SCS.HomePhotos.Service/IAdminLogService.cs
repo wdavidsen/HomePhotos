@@ -8,9 +8,10 @@ namespace SCS.HomePhotos.Service
     {
         string AddLogEntry(LogEntry logEntry);
         Task<DataList<LogEntry>> GetLatestLogEntries(PageInfo pageInfo, LogCategory? category, LogSeverity? serverity);
-        string LogError(string message, LogCategory category = LogCategory.General);
-        string LogInformation(string message, LogCategory category = LogCategory.General);
-        string LogWarning(string message, LogCategory category = LogCategory.General);
+        string LogHigh(string message, LogCategory category = LogCategory.General);
+        string LogNeutral(string message, LogCategory category = LogCategory.General);
+        string LogElevated(string message, LogCategory category = LogCategory.General);
+        string LogUrgent(string message, LogCategory category = LogCategory.General);
         Task TruncateLog();
     }
 }

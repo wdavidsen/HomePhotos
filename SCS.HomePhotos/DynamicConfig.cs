@@ -6,6 +6,7 @@ namespace SCS.HomePhotos
 {
     public class DynamicConfig : IDynamicConfig, INotifyPropertyChanged
     {
+        #region Fields
         public event PropertyChangedEventHandler PropertyChanged;
         private int? _configId;
         private string _indexPath;
@@ -15,6 +16,7 @@ namespace SCS.HomePhotos
         private int _largeImageSize;
         private DateTime? _nextIndexTime;
         private int _indexFrequencyHours;
+        #endregion
 
         public bool TrackChanges { get; set; }
         public int? ConfigId
