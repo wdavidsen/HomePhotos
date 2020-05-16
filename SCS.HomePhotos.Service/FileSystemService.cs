@@ -1,6 +1,7 @@
 ﻿using MetadataExtractor.Formats.Exif;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -36,47 +37,26 @@ namespace SCS.HomePhotos.Service
             return fi.Length;
         }
 
-        public ImageInfo GetImageInfo(string filePath)
+        public IEnumerable<string> GetDirectoryTags(string filePath)
         {
-            var imageInfo = new ImageInfo();
-
-            var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(filePath);
-            var exifData = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
-
-            if (exifData != null)
-            {
-                if (exifData.HasTagName(ExifDirectoryBase.TagDateTimeOriginal))
-                {
-                    var dateTaken = exifData?.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
-                    var dateParts = dateTaken.Split(':', '-', '.', ' ', 'T');
-                    imageInfo.DateTaken = new DateTime(int.Parse(dateParts[0]), int.Parse(dateParts[1]), int.Parse(dateParts[2]),
-                        int.Parse(dateParts[3]), int.Parse(dateParts[4]), int.Parse(dateParts[5]));
-                }
-
-                var exifTag = exifData.GetDescription(ExifDirectoryBase.TagModel);
-
-                if (exifTag != null)
-                {
-                    imageInfo.Tags.Add(exifTag);
-                }
-            }
+            var list = new List<string>();
 
             var dirs = Path.GetDirectoryName(filePath).Split('/', '\\');
             var tag = dirs[dirs.Length - 1];
 
-            imageInfo.Tags.Add(tag);
+            list.Add(tag);
 
             if (dirs.Length > 1)
             {
                 tag = dirs[dirs.Length - 2];
 
-                if (!imageInfo.Tags.Contains(tag))
+                if (!list.Contains(tag))
                 {
-                    imageInfo.Tags.Add(tag);
+                    list.Add(tag);
                 }
             }
 
-            return imageInfo;
+            return list;
         }
 
         public void CreateDirectory(string path)

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using SixLabors.Primitives;
 using System;
 using System.IO;
 
@@ -10,12 +12,12 @@ namespace SCS.HomePhotos.Service
     /// <summary>
     /// Helper class for common image operations.
     /// </summary>
-    public class ImageResizer : IImageResizer
+    public class ImageTransformer : IImageTransformer
     {
-        private readonly ILogger<ImageResizer> _logger;
+        private readonly ILogger<ImageTransformer> _logger;
         private readonly IStaticConfig _staticConfig;
 
-        public ImageResizer(ILogger<ImageResizer> logger, IStaticConfig staticConfig)
+        public ImageTransformer(ILogger<ImageTransformer> logger, IStaticConfig staticConfig)
         {
             _logger = logger;
             _staticConfig = staticConfig;
@@ -138,6 +140,23 @@ namespace SCS.HomePhotos.Service
                         File.Delete(tempPathResized);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Rotates an image x degrees.
+        /// </summary>
+        /// <param name="sourcePath">The image to rotate.</param>
+        /// <param name="angle">The rotation angle.</param>
+        /// <returns>The original and rotated sizes.</returns>
+        public (Size original, Size rotated) Rotate(string sourcePath, int angle)
+        {
+            using (var image = Image.Load<Rgba32>(sourcePath))
+            {
+                Size original = image.Size();
+                image.Mutate(x => x.Rotate(angle));
+
+                return (original, image.Size());
             }
         }
 

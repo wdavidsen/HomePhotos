@@ -17,12 +17,14 @@ namespace SCS.HomePhotos.Service.Test
         private readonly Mock<IUserData> _userData;
         private readonly Mock<IUserTokenData> _userTokenData;
         private readonly Mock<IStaticConfig> _staticConfig;
+        private readonly Mock<IAdminLogService> _adminLogService;
 
         public AccountServiceTests()
         {
             _staticConfig = new Mock<IStaticConfig>();
             _userData = new Mock<IUserData>();
             _userTokenData = new Mock<IUserTokenData>();
+            _adminLogService = new Mock<IAdminLogService>();
 
             _staticConfig.SetupGet(p => p.MaxFailedLogins).Returns(3);
             _staticConfig.SetupGet(p => p.PasswordRequirements)
@@ -33,7 +35,7 @@ namespace SCS.HomePhotos.Service.Test
                     UppercaseCharacters = 1
                 });
 
-            _accountService = new AccountService(_staticConfig.Object, _userData.Object, _userTokenData.Object);
+            _accountService = new AccountService(_staticConfig.Object, _userData.Object, _userTokenData.Object, _adminLogService.Object);
         }
 
         [Fact]

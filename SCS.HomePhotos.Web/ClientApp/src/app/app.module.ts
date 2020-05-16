@@ -35,6 +35,7 @@ import { LogService } from './services/log.service';
 import { LogsComponent } from './logs/logs.component';
 import { UploadComponent } from './upload/upload.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.component';
 
 @NgModule({
   declarations: [
@@ -55,13 +56,15 @@ import { FileUploadModule } from 'ng2-file-upload';
     AccountComponent,
     ModalContentComponent,
     PhotoTaggerComponent,
+    UploadPhotoTaggerComponent,
     TriCheckComponent,
     LogsComponent,
     UploadComponent
   ],
   entryComponents: [
     ModalContentComponent,
-    PhotoTaggerComponent
+    PhotoTaggerComponent,
+    UploadPhotoTaggerComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

@@ -1,4 +1,6 @@
-﻿namespace SCS.HomePhotos.Service
+﻿using System.Collections.Generic;
+
+namespace SCS.HomePhotos.Service
 {
     public interface IFileSystemService
     {
@@ -6,6 +8,6 @@
         string GetChecksum(string filePath);
 
         long GetFileSize(string filePath);
-        ImageInfo GetImageInfo(string filePath);
+        IEnumerable<string> GetDirectoryTags(string filePath);
     }
 }

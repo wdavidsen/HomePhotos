@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -38,15 +39,17 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>
         /// Receives one or more image files and returns their thumbnail URLs.
         /// </summary>
-        /// <param name="files">The uploaded files.</param>
-        /// <returns>Image file status and thumbnail URL.</returns>
+        /// <param name="formdata">The uploaded files and form data.</param>
         [HttpPost]
         [Route("imageUpload")]
         [RequestSizeLimit(20_000_000)] // 20 MB        
         [SuppressMessage("Security", "SCS0018:Path traversal: injection possible in {1} argument passed to '{0}'", Justification = "Invalid characters are being checked in file name prior to passing it to steam.")]
-        public async Task<IActionResult> ImageUpload(List<IFormFile> files)
+        public async Task<IActionResult> ImageUpload(IFormCollection formdata)
         {
-            var acceptedExtensions = new string[] { "JPG", "PNG", "GIF" };
+            var acceptedExtensions = new string[] { "JPG", "JPEG", "PNG", "GIF" };
+
+            var files = HttpContext.Request.Form.Files;
+            var tags = (formdata.ContainsKey("tagList") && formdata["tagList"].Count > 0) ? formdata["tagList"].ToArray() : new string[] { };
 
             foreach (var file in files)
             {
@@ -97,7 +100,7 @@ namespace SCS.HomePhotos.Web.Controllers
                         await file.CopyToAsync(stream);
                     }
 
-                    var cachePath = await _imageService.QueueMobileResize(filePath, false);
+                    var cachePath = await _imageService.QueueMobileResize(filePath, false, tags);
                 }
                 catch (Exception ex)
                 {

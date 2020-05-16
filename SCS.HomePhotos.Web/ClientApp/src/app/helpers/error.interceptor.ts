@@ -4,10 +4,14 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { AuthenticationService } from '../services';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-    constructor(private authenticationService: AuthenticationService) {}
+    constructor(
+        private authenticationService: AuthenticationService,
+        private router: Router,
+        private route: ActivatedRoute) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(
@@ -29,7 +33,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
                             if (!isRefresh && currentUser) {
                                 this.authenticationService.updateToken();
-                                return;
+                                this.router.navigateByUrl(err.url);
                             }
                             else if (!isLogin){
                                 this.authenticationService.logout();

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MetadataExtractor.Formats.Exif;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Model;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -261,12 +263,16 @@ namespace SCS.HomePhotos.Workers
 
                                 if (existingPhoto == null || !CacheFileExists(existingPhoto))
                                 {
+                                    var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
+                                    var exifData = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+                                    imageService.OrientImage(imageFilePath, exifData);
+
                                     var cacheFilePath = imageService.CreateCachePath(checksum, Path.GetExtension(imageFilePath));
                                     var imageLayoutInfo = imageService.GetImageLayoutInfo(imageFilePath);
                                     var fullImagePath = imageService.CreateFullImage(imageFilePath, cacheFilePath);
                                     var smallImagePath = imageService.CreateSmallImage(fullImagePath, cacheFilePath);
                                     imageService.CreateThumbnail(smallImagePath, cacheFilePath);
-                                    imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo);
+                                    imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);
                                 }
                                 else
                                 {

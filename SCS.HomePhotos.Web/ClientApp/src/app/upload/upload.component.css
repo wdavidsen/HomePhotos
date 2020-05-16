@@ -1,35 +1,68 @@
-.my-drop-zone { 
+.drop-zone { 
     border: dotted 3px lightgray; 
+    margin: 10px;
+    height: 60px;
+    text-align: center;
+}
+.drop-zone span {
+    display: inline-block;
+    margin-top: 17px;
+    color: #222;
 }
 
-.nv-file-over { 
+.drop-zone-file-over { 
     border: dotted 3px green; 
-} /* Default class applied to drop zones on over */
-
-.another-file-over-class { 
-    border: dotted 3px green; 
-}
-
-.progress {
-    margin-bottom: 20px;
 }
 
 button {
     margin-right: 10px;
 }
 
-.col-picker > input {
+input[type=file] {
     margin: 30px;
     width: 108px !important;
-}
-
-.col-dropzone > div {
-    margin: 10px;
-    height: 60px;
-    text-align: center;
 }
 
 .col-dropzone > div > span {
     display: inline-block;
     margin-top: 13px;
 }
+
+.col-or > span {
+    display: inline-block;
+    margin-top: 30px;
+    margin-left: 30px;
+}
+
+.files {
+    margin-top: 20px;
+}
+
+.files .image-tile {
+    display: inline-block;
+    min-width: 155px;
+    margin: 5px;
+    min-height: 135px;
+    border: solid 1px #ccc;
+    padding: 5px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: center;
+}
+
+.files .image-tile canvas,
+.files .image-tile img {
+    border: 5px solid #eee;
+}
+
+.files .image-tile .size {
+    white-space: nowrap;
+    font-size: .8em;
+    text-align: center;
+}
+
+.files .image-tile .progress {
+    margin: 3px 0;
+}
+        
+			

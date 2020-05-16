@@ -95,7 +95,7 @@ namespace SCS.HomePhotos.Web
 
             // services
             services.AddScoped<IFileSystemService, FileSystemService>();
-            services.AddScoped<IImageResizer, ImageResizer>();
+            services.AddScoped<IImageTransformer, ImageTransformer>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IFileUploadService, FileUploadService>();

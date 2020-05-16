@@ -37,7 +37,8 @@
               "./node_modules/bootstrap/dist/js/bootstrap.min.js",
               "./node_modules/blueimp-gallery/js/blueimp-helper.js",
               "./node_modules/blueimp-gallery/js/blueimp-gallery.js",
-              "./node_modules/blueimp-gallery/js/blueimp-gallery-indicator.js"
+              "./node_modules/blueimp-gallery/js/blueimp-gallery-indicator.js",
+              "./node_modules/blueimp-load-image/js/load-image.all.min.js"
             ]
           },
           "configurations": {

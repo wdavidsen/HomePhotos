@@ -36,18 +36,18 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task ImageUpload()
         {
-            var files = _fixture.CreateMany<MockFormFile>(1).Cast<IFormFile>().ToList();
+            var formCollecton = new MockFormCollection();
             var cachePath = "c1/A2A44CAE-2EC8-4610-BA4D-6995878B1183.jpg";
 
-            _fileUploadService.Setup(m => m.CopyFile(files[0], It.IsAny<string>(), FileMode.Create));
+            _fileUploadService.Setup(m => m.CopyFile(formCollecton.Files[0], It.IsAny<string>(), FileMode.Create));
             _imageService.Setup(m => m.QueueMobileResize(It.IsAny<string>(), false))
                 .ReturnsAsync(cachePath);
 
-            var response = await _uploadController.ImageUpload(files).ConfigureAwait(true);
+            var response = await _uploadController.ImageUpload(formCollecton).ConfigureAwait(true);
 
             Assert.IsType<OkObjectResult>(response);
 
-            _fileUploadService.Verify(m => m.CopyFile(files[0], It.IsAny<string>(), FileMode.Create),
+            _fileUploadService.Verify(m => m.CopyFile(formCollecton.Files[0], It.IsAny<string>(), FileMode.Create),
                 Times.Once);
 
             _imageService.Verify(m => m.QueueMobileResize(It.IsAny<string>(), false),

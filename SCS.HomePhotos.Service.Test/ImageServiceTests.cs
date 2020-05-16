@@ -11,6 +11,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using MetadataExtractor.Formats.Exif;
 
 namespace SCS.HomePhotos.Service.Test
 {
@@ -21,7 +22,7 @@ namespace SCS.HomePhotos.Service.Test
         private readonly ImageService _imageService;
         private readonly IBackgroundTaskQueue _queue;
 
-        private readonly Mock<IImageResizer> _imageResizer;
+        private readonly Mock<IImageTransformer> _imageTransformer;
         private readonly Mock<IFileSystemService> _fileSystemService;
         private readonly Mock<IPhotoService> _photoService;
         private readonly Mock<IDynamicConfig> _dynamicConfig;
@@ -29,14 +30,14 @@ namespace SCS.HomePhotos.Service.Test
 
         public ImageServiceTests()
         {
-            _imageResizer = new Mock<IImageResizer>();
+            _imageTransformer = new Mock<IImageTransformer>();
             _fileSystemService = new Mock<IFileSystemService>();
             _photoService = new Mock<IPhotoService>();
             _dynamicConfig = new Mock<IDynamicConfig>();
             _logger = new Mock<ILogger<ImageService>>();
 
             _queue = new BackgroundTaskQueue();
-            _imageService = new ImageService(_imageResizer.Object, _fileSystemService.Object, _photoService.Object, _dynamicConfig.Object, _queue, _logger.Object);
+            _imageService = new ImageService(_imageTransformer.Object, _fileSystemService.Object, _photoService.Object, _dynamicConfig.Object, _queue, _logger.Object);
         }
 
         [Fact]
@@ -47,7 +48,8 @@ namespace SCS.HomePhotos.Service.Test
             var checksum = "abc123";
 
             _fileSystemService.Setup(m => m.GetChecksum(It.IsAny<string>())).Returns(checksum);
-            _fileSystemService.Setup(m => m.GetImageInfo(It.IsAny<string>())).Returns(new ImageInfo { DateTaken = DateTime.Now, Tags = { "Tag1", "Tag2" } });
+            _fileSystemService.Setup(m => m.GetDirectoryTags(It.IsAny<string>())).Returns(new List<string> { "Tag1", "Tag2" });
+            
             _photoService.Setup(m => m.GetPhotoByChecksum(It.IsAny<string>())).ReturnsAsync(default(Photo));
             _dynamicConfig.SetupGet(o => o.CacheFolder).Returns(cacheDir);
             _dynamicConfig.SetupGet(o => o.LargeImageSize).Returns(800);
@@ -66,16 +68,16 @@ namespace SCS.HomePhotos.Service.Test
             _fileSystemService.Verify(m => m.GetChecksum(filePath),
                 Times.Once);
 
-            _fileSystemService.Verify(m => m.GetImageInfo(filePath),
+            _fileSystemService.Verify(m => m.GetDirectoryTags(filePath),
                 Times.Once);
 
             _photoService.Verify(m => m.GetPhotoByChecksum(checksum),
                 Times.Once);
 
-            _imageResizer.Verify(m => m.ResizeImageByGreatestDimension(It.IsAny<string>(), It.IsAny<string>(), 200),
+            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(It.IsAny<string>(), It.IsAny<string>(), 200),
                 Times.Exactly(1));
 
-            _imageResizer.Verify(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800),
+            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800),
                 Times.Exactly(1));
 
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Photo>()),
@@ -110,7 +112,7 @@ namespace SCS.HomePhotos.Service.Test
             _dynamicConfig.SetupGet(o => o.LargeImageSize).Returns(800);
             _dynamicConfig.SetupGet(o => o.ThumbnailSize).Returns(200);
 
-            _imageResizer.Setup(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800))
+            _imageTransformer.Setup(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800))
                 .Throws<OutOfMemoryException>();
 
             var cachePath = await _imageService.QueueMobileResize(filePath);
@@ -129,10 +131,10 @@ namespace SCS.HomePhotos.Service.Test
             _photoService.Verify(m => m.GetPhotoByChecksum(checksum),
                 Times.Once);
 
-            _imageResizer.Verify(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800),
+            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800),
                Times.Once);
 
-            _imageResizer.Verify(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 200),
+            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 200),
                 Times.Never);
 
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Photo>()),
@@ -158,7 +160,7 @@ namespace SCS.HomePhotos.Service.Test
             _dynamicConfig.SetupGet(o => o.LargeImageSize).Returns(800);
             _dynamicConfig.SetupGet(o => o.ThumbnailSize).Returns(200);
 
-            _imageResizer.Setup(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 200))
+            _imageTransformer.Setup(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 200))
                 .Throws<OutOfMemoryException>();
 
             var cachePath = await _imageService.QueueMobileResize(filePath);
@@ -177,10 +179,10 @@ namespace SCS.HomePhotos.Service.Test
             _photoService.Verify(m => m.GetPhotoByChecksum(checksum),
                 Times.Once);
 
-            _imageResizer.Verify(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800),
+            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800),
                Times.Once);
 
-            _imageResizer.Verify(m => m.ResizeImageByGreatestDimension(It.IsAny<string>(), It.IsAny<string>(), 200),
+            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(It.IsAny<string>(), It.IsAny<string>(), 200),
                 Times.Once);
 
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Photo>()),
@@ -222,14 +224,14 @@ namespace SCS.HomePhotos.Service.Test
             _dynamicConfig.SetupGet(o => o.CacheFolder).Returns(cacheDir);
             _dynamicConfig.SetupGet(o => o.LargeImageSize).Returns(800);
 
-            _imageResizer.Setup(m => m.ResizeImageByGreatestDimension(imageFilePath, savePath, 800));
+            _imageTransformer.Setup(m => m.ResizeImageByGreatestDimension(imageFilePath, savePath, 800));
 
             _imageService.CreateFullImage(imageFilePath, cacheFilePath);
 
             _dynamicConfig.VerifyGet(o => o.CacheFolder, Times.Once);
             _dynamicConfig.VerifyGet(o => o.LargeImageSize, Times.Once);
 
-            _imageResizer.Verify(m => m.ResizeImageByGreatestDimension(imageFilePath, savePath, 800), Times.Once);
+            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(imageFilePath, savePath, 800), Times.Once);
         }
 
         [Fact]
@@ -243,14 +245,14 @@ namespace SCS.HomePhotos.Service.Test
             _dynamicConfig.SetupGet(o => o.CacheFolder).Returns(cacheDir);
             _dynamicConfig.SetupGet(o => o.ThumbnailSize).Returns(200);
 
-            _imageResizer.Setup(m => m.ResizeImageByGreatestDimension(imageFilePath, savePath, 200));
+            _imageTransformer.Setup(m => m.ResizeImageByGreatestDimension(imageFilePath, savePath, 200));
 
             _imageService.CreateThumbnail(imageFilePath, cacheFilePath);
 
             _dynamicConfig.VerifyGet(o => o.CacheFolder, Times.Once);
             _dynamicConfig.VerifyGet(o => o.ThumbnailSize, Times.Once);
 
-            _imageResizer.Verify(m => m.ResizeImageByGreatestDimension(imageFilePath, savePath, 200), Times.Once);
+            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(imageFilePath, savePath, 200), Times.Once);
         }
 
         [Fact]
@@ -262,11 +264,9 @@ namespace SCS.HomePhotos.Service.Test
             var cacheSubfolder = "c1";
             var cacheFilePath = Path.Combine(cacheSubfolder, fileNameCache);
             var imageFilePath = Path.Combine("home", "homePhotos", "parties", "birthdays", fileNameOriginal);
-            var imageInfo = new ImageInfo
-            {
-                DateTaken = DateTime.Now,
-                Tags = new List<string> { "Tag1", "Tag2", "parties", "birthdays" }
-            };
+            var tags = new List<string> { "Tag1", "Tag2", "parties", "birthdays" };
+            var exifData = new ExifSubIfdDirectory();
+
             var imageLayoutInfo = new ImageLayoutInfo
             {
                 Height = 1000,
@@ -275,14 +275,13 @@ namespace SCS.HomePhotos.Service.Test
                 Ratio = 0.33m
             };
 
-            _fileSystemService.Setup(m => m.GetImageInfo(imageFilePath)).Returns(imageInfo);
+            _fileSystemService.Setup(m => m.GetDirectoryTags(imageFilePath)).Returns(tags);
             _photoService.Setup(m => m.SavePhoto(It.IsAny<Model.Photo>()))
                 .Callback<Model.Photo>((photo) =>
                 {
                     Assert.Equal(checksum, photo.Checksum);
                     Assert.Equal(fileNameOriginal, photo.Name);
-                    Assert.Equal(fileNameCache, photo.FileName);
-                    Assert.Equal(imageInfo.DateTaken, photo.DateTaken);
+                    Assert.Equal(fileNameCache, photo.FileName);                    
                     Assert.Equal(cacheSubfolder, photo.CacheFolder);
                 });
 
@@ -291,8 +290,7 @@ namespace SCS.HomePhotos.Service.Test
                 {
                     Assert.Equal(checksum, photo.Checksum);
                     Assert.Equal(fileNameOriginal, photo.Name);
-                    Assert.Equal(fileNameCache, photo.FileName);
-                    Assert.Equal(imageInfo.DateTaken, photo.DateTaken);
+                    Assert.Equal(fileNameCache, photo.FileName);                    
                     Assert.Equal(cacheSubfolder, photo.CacheFolder);
 
                     Assert.NotNull(tags);
@@ -303,11 +301,11 @@ namespace SCS.HomePhotos.Service.Test
                     Assert.Contains("birthdays", tags);
                 });
             
-            //_imageResizer.Setup(m => m.GetImageLayoutInfo(It.IsAny<string>())).Returns(imageLayoutInfo);
+            //_imageTransformer.Setup(m => m.GetImageLayoutInfo(It.IsAny<string>())).Returns(imageLayoutInfo);
 
-            _imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo);
+            _imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);
 
-            _fileSystemService.Verify(m => m.GetImageInfo(imageFilePath), Times.Once);
+            _fileSystemService.Verify(m => m.GetDirectoryTags(imageFilePath), Times.Once);
 
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Model.Photo>()), Times.Once);
             _photoService.Verify(m => m.AssociateTags(It.IsAny<Model.Photo>(), It.IsAny<string[]>()), Times.Once);

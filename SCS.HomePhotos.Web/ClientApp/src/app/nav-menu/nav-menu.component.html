@@ -35,18 +35,18 @@
                 <a href="#" class="dropdown-item" 
                   [routerLinkActive]="['link-active']" 
                   [routerLinkActiveOptions]="{ exact: true }" 
-                  [routerLink]="['/logs']">Activity</a>
-                <div class="dropdown-divider" [hidden]="hideOrganize"></div>
-                <label class="dropdown-item" [hidden]="hideOrganize">
-                  <app-organize></app-organize>
-                </label>
+                  [routerLink]="['/logs']">Activity</a>                
               </div>
           </div>
-      </div>
+      </div>      
       <app-search [hidden]="hideSearch"></app-search>
       <div class="navbar-nav nav-right" [hidden]="hideMenu">
+        <label class="nav-item nav-check" [hidden]="hideOrganize">
+          <app-organize></app-organize>
+        </label>
+        <span class="bar" [hidden]="hideOrganize">|</span> 
         <a href="#" class="nav-link text-dark" (click)="logout()">Logout</a> <span class="bar">|</span>
-        <a href="#" class="nav-link text-dark" [routerLink]="['/account']">{{currentUser?.username}}</a>        
+        <a href="#" class="nav-link text-dark" [routerLink]="['/account']">{{currentUser?.username}}</a> 
       </div>
     </div>    
   </nav>

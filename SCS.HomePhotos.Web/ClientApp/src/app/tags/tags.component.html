@@ -1,7 +1,7 @@
 <section>
     <nav class="tag-cloud">
         <div *ngFor="let t of tagChips">
-            <div *ngIf="!t.isDivider" class="tag" (click)="select(t)" [ngClass]="{'tag-selected': t.selected}" [hidden]="!matchesFilter(t.name)">{{t.name}} <span class="badge">{{t.count}}</span></div>
+            <div *ngIf="!t.isDivider" class="tag" (click)="select(t)" [ngClass]="{'tag-selected': t.selected}" [hidden]="!matchesFilter(t.name)">{{t.name}} <span class="badge badge-pill badge-light">{{t.count}}</span></div>
             <div *ngIf="t.isDivider" class="tag tag-divider" (click)="toggleFilter(t.name)" [hidden]="!matchesFilter(t.name)">{{t.name}}</div>
         </div>
     </nav>

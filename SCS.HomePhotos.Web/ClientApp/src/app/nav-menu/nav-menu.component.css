@@ -24,3 +24,8 @@ html {
 .nav-right a:hover {
   text-decoration: underline;
 }
+
+.nav-check {
+  margin-top: 8px;
+  padding: 0;
+}

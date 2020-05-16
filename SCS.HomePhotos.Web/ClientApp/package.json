@@ -25,6 +25,7 @@
     "angular-font-awesome": "^3.1.2",
     "aspnet-prerendering": "^3.0.1",
     "blueimp-gallery": "^2.37.0",
+    "blueimp-load-image": "^5.10.0",
     "bootstrap": "^4.3.1",
     "core-js": "^3.3.3",
     "font-awesome": "^4.7.0",
