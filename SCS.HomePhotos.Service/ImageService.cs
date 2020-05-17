@@ -3,10 +3,12 @@ using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Workers;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Service
@@ -51,14 +53,18 @@ namespace SCS.HomePhotos.Service
                     token.ThrowIfCancellationRequested();
 
                     var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
-                    var exifData = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
-                    OrientImage(imageFilePath, exifData);
+                    var metadata = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
+
+                    OrientImage(imageFilePath, metadata);
 
                     var imageLayoutInfo = GetImageLayoutInfo(imageFilePath);
                     var fullImagePath = CreateFullImage(imageFilePath, cacheFilePath);
                     var smallImagePath = CreateSmallImage(fullImagePath, cacheFilePath);
                     CreateThumbnail(smallImagePath, cacheFilePath);
-                    SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);
+
+                    var finalPath = GetMobileUploadPath(imageFilePath);
+                    File.Move(imageFilePath, finalPath);
+                    SavePhotoAndTags(finalPath, cacheFilePath, checksum, imageLayoutInfo, metadata, tags);
                 }
                 catch (Exception ex)
                 {
@@ -68,6 +74,18 @@ namespace SCS.HomePhotos.Service
             });
 
             return cacheFilePath;
+        }
+
+        private string GetMobileUploadPath(string sourcePath)
+        {
+            var subfolder = DateTime.Today.ToString("yyyy-MM-dd");
+            var fullDir = Path.Combine(_dynamicConfig.MobileUploadsFolder, subfolder);
+
+            Directory.CreateDirectory(fullDir);
+
+            var fullPath = Path.Combine(fullDir, Path.GetFileName(sourcePath));
+
+            return fullPath;
         }
 
         public ImageLayoutInfo GetImageLayoutInfo(string sourcePath)
@@ -125,7 +143,7 @@ namespace SCS.HomePhotos.Service
             return savePath;
         }
 
-        public void OrientImage(string imageFilePath, ExifSubIfdDirectory exifData)
+        public void OrientImage(string imageFilePath, ExifIfd0Directory exifData)
         {
             if (exifData != null)
             {
@@ -135,19 +153,25 @@ namespace SCS.HomePhotos.Service
 
                     if (orientation != null)
                     {
-                        var parts = orientation.Split(' ');
+                        var regex = new Regex(@"\(Rotate \d+ \D+\)", RegexOptions.IgnoreCase);
 
-                        if (parts.Length == 2)
+                        if (regex.IsMatch(orientation))
                         {
-                            if (int.TryParse(parts[0], out var degrees) && parts[0] == "CW")
+                            var parts = regex.Match(orientation).Value.Trim('(', ')').Split(' ');
+
+                            if (parts.Length == 3)
                             {
-                                _logger.LogInformation($"Orienting image {orientation}.");
-                                var stopwatch = Stopwatch.StartNew();
+                                if (parts[2] == "CW" && int.TryParse(parts[1], out var degrees))
+                                {
+                                    _logger.LogInformation($"Orienting image {orientation}.");
+                                    var stopwatch = Stopwatch.StartNew();
 
-                                _imageTransformer.Rotate(imageFilePath, degrees * -1);
+                                    //var rotateDegrees = degrees == 270 ? 90 : (degrees == 90 ? 270 : 0);
+                                    _imageTransformer.Rotate(imageFilePath, degrees);
 
-                                stopwatch.Stop();
-                                _logger.LogInformation("Oriented image in {ElapsedMilliseconds}.", stopwatch.ElapsedMilliseconds);
+                                    stopwatch.Stop();
+                                    _logger.LogInformation("Oriented image in {ElapsedMilliseconds}.", stopwatch.ElapsedMilliseconds);
+                                }
                             }
                         }
                     }
@@ -173,7 +197,7 @@ namespace SCS.HomePhotos.Service
         }
 
         public Photo SavePhotoAndTags(string imageFilePath, string cacheFilePath, string checksum, 
-            ImageLayoutInfo imageLayoutInfo, ExifSubIfdDirectory exifData, params string[] tags)
+            ImageLayoutInfo imageLayoutInfo, ExifIfd0Directory exifData, params string[] tags)
         {
             _logger.LogInformation("Saving photo with checksum {Checksum}.", checksum);
 
@@ -207,7 +231,7 @@ namespace SCS.HomePhotos.Service
             return photo;
         }
 
-        public ImageInfo GetImageInfo(ExifSubIfdDirectory exifData)
+        public ImageInfo GetImageInfo(ExifIfd0Directory exifData)
         {
             var imageInfo = new ImageInfo();
 
@@ -215,7 +239,7 @@ namespace SCS.HomePhotos.Service
             {
                 if (exifData.HasTagName(ExifDirectoryBase.TagDateTimeOriginal))
                 {
-                    var dateTaken = exifData.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
+                    var dateTaken = exifData.GetDescription(ExifDirectoryBase.TagDateTime);
                     var dateParts = dateTaken.Split(':', '-', '.', ' ', 'T');
                     imageInfo.DateTaken = new DateTime(int.Parse(dateParts[0]), int.Parse(dateParts[1]), int.Parse(dateParts[2]),
                         int.Parse(dateParts[3]), int.Parse(dateParts[4]), int.Parse(dateParts[5]));
@@ -227,8 +251,26 @@ namespace SCS.HomePhotos.Service
                 {
                     imageInfo.Tags.Add(exifTag);
                 }
-            }
+            }       
             return imageInfo;
+        }
+
+        public Dictionary<string, string> GetImageMetadata(string imageFilePath)
+        {
+            var metadata = new Dictionary<string, string>();
+            var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
+
+            foreach (var directory in directories)
+            {
+                foreach (var tag in directory.Tags)
+                {
+                    if (!metadata.ContainsKey(tag.Name))
+                    {
+                        metadata.Add(tag.Name, tag.Description);
+                    }
+                }
+            }
+            return metadata;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Web.Controllers;
 using SCS.HomePhotos.Web.Security;
 using System;
@@ -83,7 +84,7 @@ namespace SCS.HomePhotos.Web
             }
         }
 
-        public List<Claim> GetUserClaims(string userName, bool admin)
+        public List<Claim> GetUserClaims(string userName, RoleType role)
         {
             var claims = new List<Claim>
             {
@@ -92,10 +93,8 @@ namespace SCS.HomePhotos.Web
                 new Claim(JwtRegisteredClaimNames.Typ, Guid.NewGuid().ToString())
             };
 
-            if (admin)
-            {
-                claims.Add(new Claim("Admin", "Admin"));
-            }
+            claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+
             return claims;
         }
 

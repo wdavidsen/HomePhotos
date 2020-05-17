@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SCS.HomePhotos.Model;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SCS.HomePhotos.Web.Dto
@@ -12,7 +13,7 @@ namespace SCS.HomePhotos.Web.Dto
             Username = user.UserName;
             FirstName = user.FirstName;
             LastName = user.LastName;            
-            Admin = user.Admin;
+            Admin = user.Role == RoleType.Admin;
             LastLogin = user.LastLogin;
         }
 
@@ -40,7 +41,7 @@ namespace SCS.HomePhotos.Web.Dto
                 UserName = Username,
                 FirstName = FirstName,
                 LastName = LastName,                
-                Admin = Admin,
+                Role = Admin ? RoleType.Admin : RoleType.Reader,
                 LastLogin = LastLogin                
             };
         }

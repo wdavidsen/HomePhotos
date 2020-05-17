@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SCS.HomePhotos.Model;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SCS.HomePhotos.Web.Dto
@@ -13,7 +14,7 @@ namespace SCS.HomePhotos.Web.Dto
             FirstName = user.FirstName;
             LastName = user.LastName;
             Enabled = user.Enabled;
-            Admin = user.Admin;
+            Admin = user.Role == RoleType.Admin;
             LastLogin = user.LastLogin;
             FailedLoginCount = user.FailedLoginCount;
             MustChangePassword = user.MustChangePassword;
@@ -51,7 +52,7 @@ namespace SCS.HomePhotos.Web.Dto
                 FirstName = FirstName,
                 LastName = LastName,
                 Enabled = Enabled,
-                Admin = Admin,
+                Role = Admin ? RoleType.Admin : RoleType.Reader,
                 LastLogin = LastLogin,
                 FailedLoginCount = FailedLoginCount,
                 MustChangePassword = MustChangePassword

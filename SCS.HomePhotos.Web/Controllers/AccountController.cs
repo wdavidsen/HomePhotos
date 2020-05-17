@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Web.Models;
 using System;
@@ -59,7 +60,7 @@ namespace SCS.HomePhotos.Web.Controllers
             }
 
             var agentId = GetAgentIdentifier();
-            var claims = _securityService.GetUserClaims(model.UserName, false);
+            var claims = _securityService.GetUserClaims(model.UserName, RoleType.Reader);
             var newJwtToken = _securityService.GenerateToken(claims);
             var newRefreshToken = _securityService.GenerateRefreshToken();
 
@@ -91,7 +92,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 return Unauthorized((new ProblemModel { Id = "CurrentPasswordFailed", Message = "Current password validation failed." }));
             }
 
-            var claims = _securityService.GetUserClaims(model.UserName, result.User.Admin);
+            var claims = _securityService.GetUserClaims(model.UserName, result.User.Role);
             var newJwtToken = _securityService.GenerateToken(claims);
             var newRefreshToken = _securityService.GenerateRefreshToken();
 

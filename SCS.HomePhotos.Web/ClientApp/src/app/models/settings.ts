@@ -1,5 +1,6 @@
 export class Settings {
     cacheFolder: string;
+    mobileUploadsFolder: string;
     indexPath: string;
     nextIndexTime: Date;
     indexFrequencyHours: number;

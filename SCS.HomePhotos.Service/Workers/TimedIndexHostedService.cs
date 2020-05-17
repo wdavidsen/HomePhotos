@@ -264,7 +264,7 @@ namespace SCS.HomePhotos.Workers
                                 if (existingPhoto == null || !CacheFileExists(existingPhoto))
                                 {
                                     var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
-                                    var exifData = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+                                    var exifData = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
                                     imageService.OrientImage(imageFilePath, exifData);
 
                                     var cacheFilePath = imageService.CreateCachePath(checksum, Path.GetExtension(imageFilePath));

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SCS.HomePhotos.Model;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace SCS.HomePhotos.Web
@@ -11,6 +12,6 @@ namespace SCS.HomePhotos.Web
         string GenerateRefreshToken();
         string GenerateToken(IEnumerable<Claim> claims);
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
-        List<Claim> GetUserClaims(string userName, bool admin);
+        List<Claim> GetUserClaims(string userName, RoleType role);
     }
 }

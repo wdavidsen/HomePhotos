@@ -10,6 +10,7 @@ namespace SCS.HomePhotos.Model
         public int? ConfigId { get; set; }
         public string IndexPath { get; set; }
         public string CacheFolder { get; set; }
+        public string MobileUploadsFolder { get; set; }
         public int ThumbnailSize { get; set; }
         public int SmallImageSize { get; set; }
         public int LargeImageSize { get; set; }
@@ -22,6 +23,7 @@ namespace SCS.HomePhotos.Model
         {
             dynamicConfig.ConfigId = ConfigId;
             dynamicConfig.CacheFolder = CacheFolder;
+            dynamicConfig.MobileUploadsFolder = MobileUploadsFolder;
             dynamicConfig.IndexPath = IndexPath;
             dynamicConfig.ThumbnailSize = ThumbnailSize;
             dynamicConfig.SmallImageSize = SmallImageSize;

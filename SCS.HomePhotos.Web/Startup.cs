@@ -18,6 +18,7 @@ using SCS.HomePhotos.Web.Middleware;
 using SCS.HomePhotos.Web.Security;
 using SCS.HomePhotos.Workers;
 using System.Threading.Tasks;
+using SCS.HomePhotos.Model;
 
 namespace SCS.HomePhotos.Web
 {
@@ -51,7 +52,7 @@ namespace SCS.HomePhotos.Web
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminsOnly", policy => policy.RequireClaim("Admin"));
+                options.AddPolicy("AdminsOnly", policy => policy.RequireRole(RoleType.Admin.ToString()));
             });
 
             // In production, the Angular files will be served from this directory

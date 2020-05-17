@@ -66,7 +66,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 }
             }
 
-            var claims = _securityService.GetUserClaims(model.UserName, result.User.Admin);
+            var claims = _securityService.GetUserClaims(model.UserName, result.User.Role);
             var newJwtToken = _securityService.GenerateToken(claims);
             var newRefreshToken = _securityService.GenerateRefreshToken();
 

@@ -155,6 +155,7 @@ namespace SCS.HomePhotos.Service
             {
                 Size original = image.Size();
                 image.Mutate(x => x.Rotate(angle));
+                image.Save(sourcePath);
 
                 return (original, image.Size());
             }

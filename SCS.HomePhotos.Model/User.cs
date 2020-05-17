@@ -1,10 +1,15 @@
 ﻿using Dapper;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SCS.HomePhotos.Model
 {
+    public enum RoleType
+    {
+        Reader = 0,
+        Contributer = 1,
+        Admin = 2
+    }
+
     [Table("User")]
     public class User
     {
@@ -21,7 +26,7 @@ namespace SCS.HomePhotos.Model
             FirstName = user.FirstName;
             LastName = user.LastName;
             Enabled = user.Enabled;
-            Admin = user.Admin;
+            Role = user.Role;
             LastLogin = user.LastLogin;
             FailedLoginCount = user.FailedLoginCount;
             MustChangePassword = user.MustChangePassword;
@@ -40,7 +45,7 @@ namespace SCS.HomePhotos.Model
 
         public bool Enabled { get; set; }
 
-        public bool Admin { get; set; }
+        public RoleType Role { get; set; }
 
         public DateTime? LastLogin { get; set; }
 

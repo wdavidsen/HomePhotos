@@ -34,6 +34,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest();
             }
             _dynamicConfig.CacheFolder = settings.CacheFolder;
+            _dynamicConfig.MobileUploadsFolder = settings.MobileUploadsFolder;
             _dynamicConfig.IndexPath = settings.IndexPath;
             _dynamicConfig.NextIndexTime = settings.NextIndexTime;
             _dynamicConfig.IndexFrequencyHours = settings.IndexFrequencyHours;

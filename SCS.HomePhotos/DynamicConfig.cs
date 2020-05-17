@@ -11,6 +11,7 @@ namespace SCS.HomePhotos
         private int? _configId;
         private string _indexPath;
         private string _cacheFolder;
+        private string _mobileUploadsFolder;
         private int _thumbnailSize;
         private int _smallImageSize;
         private int _largeImageSize;
@@ -63,6 +64,22 @@ namespace SCS.HomePhotos
                 if (value != _cacheFolder)
                 {
                     _cacheFolder = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public string MobileUploadsFolder
+        {
+            get
+            {
+                return _mobileUploadsFolder;
+            }
+
+            set
+            {
+                if (value != _mobileUploadsFolder)
+                {
+                    _mobileUploadsFolder = value;
                     NotifyPropertyChanged();
                 }
             }

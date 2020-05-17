@@ -5,6 +5,7 @@ namespace SCS.HomePhotos
     public interface IConfig
     {
         string CacheFolder { get; set; }
+        string MobileUploadsFolder { get; set; }
         int? ConfigId { get; set; }
         string IndexPath { get; set; }
         int LargeImageSize { get; set; }

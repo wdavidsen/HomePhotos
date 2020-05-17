@@ -74,6 +74,7 @@ export class SettingsComponent implements OnInit {
     this.settingsForm = this.formBuilder.group({
       indexPath: [data ? data.indexPath : '', Validators.required],
       cacheFolder: [data ? data.cacheFolder : '', Validators.required],
+      mobileUploadsFolder: [data ? data.mobileUploadsFolder : '', Validators.required],
       nextIndexTime: [data ? data.nextIndexTime : '', Validators.required],
       indexFrequencyHours: [data ? data.indexFrequencyHours : '', Validators.required],
       largeImageSize: [data ? data.largeImageSize : '', Validators.required],
@@ -86,6 +87,7 @@ export class SettingsComponent implements OnInit {
 
     settings.indexPath = this.f.indexPath.value;
     settings.cacheFolder = this.f.cacheFolder.value;
+    settings.mobileUploadsFolder = this.f.mobileUploadsFolder.value;
     settings.nextIndexTime = this.f.nextIndexTime.value;
     settings.indexFrequencyHours = this.f.indexFrequencyHours.value;
     settings.smallImageSize = this.f.smallImageSize.value;

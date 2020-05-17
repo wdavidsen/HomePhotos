@@ -15,6 +15,13 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="mobileUploadsFolder">Mobile uploads folder</label>
+        <input type="text" formControlName="mobileUploadsFolder" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.mobileUploadsFolder.errors }" />
+        <div *ngIf="submitted && f.mobileUploadsFolder.errors" class="invalid-feedback">
+            <div *ngIf="f.mobileUploadsFolder.errors.required">Mobile uploads folder is required</div>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="nextIndexTime">Next index time</label>
         <input type="datetime-local" formControlName="nextIndexTime" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime.errors }" />
         <div *ngIf="submitted && f.nextIndexTime.errors" class="invalid-feedback">

@@ -255,7 +255,7 @@ namespace SCS.HomePhotos.Service
                 exitingUser.FirstName = user.FirstName;
                 exitingUser.LastName = user.LastName;
                 exitingUser.Enabled = user.Enabled;
-                exitingUser.Admin = user.Admin;
+                exitingUser.Role = user.Role;
 
                 await _userData.UpdateAsync(exitingUser);
                 _adminLogService.LogNeutral($"User account update for {user.UserName} succeeded.", LogCategory.Security);

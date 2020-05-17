@@ -1,6 +1,7 @@
 ﻿using MetadataExtractor.Formats.Exif;
 using SCS.HomePhotos.Model;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Service
@@ -19,13 +20,15 @@ namespace SCS.HomePhotos.Service
 
         string CreateThumbnail(string imageFilePath, string cacheSubfolder);
 
-        void OrientImage(string imageFilePath, ExifSubIfdDirectory exifData);
+        void OrientImage(string imageFilePath, ExifIfd0Directory exifData);
 
         Photo SavePhotoAndTags(string imageFilePath, string checksum, string cacheSubfolder, 
-            ImageLayoutInfo imageLayoutInfo, ExifSubIfdDirectory exifData, params string[] tags);
+            ImageLayoutInfo imageLayoutInfo, ExifIfd0Directory exifData, params string[] tags);
 
         ImageLayoutInfo GetImageLayoutInfo(string sourcePath);
 
-        ImageInfo GetImageInfo(ExifSubIfdDirectory exifData);
+        ImageInfo GetImageInfo(ExifIfd0Directory exifData);
+
+        Dictionary<string, string> GetImageMetadata(string imageFilePath);
     }
 }
