@@ -51,7 +51,7 @@ export class AuthenticationService {
 
                 localStorage.setItem('currentUser', JSON.stringify(updatedUser));
                 this.currentUserSubject.next(updatedUser);
-                // location.reload(true);
+                location.reload(true);
               },
               error => {
                   console.error(error);

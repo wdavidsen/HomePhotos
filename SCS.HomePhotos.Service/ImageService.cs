@@ -54,11 +54,12 @@ namespace SCS.HomePhotos.Service
 
                     var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
                     var metadata = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
-
-                    OrientImage(imageFilePath, metadata);
-
-                    var imageLayoutInfo = GetImageLayoutInfo(imageFilePath);
+                                        
                     var fullImagePath = CreateFullImage(imageFilePath, cacheFilePath);
+
+                    OrientImage(fullImagePath, metadata);
+                    var imageLayoutInfo = GetImageLayoutInfo(fullImagePath);
+
                     var smallImagePath = CreateSmallImage(fullImagePath, cacheFilePath);
                     CreateThumbnail(smallImagePath, cacheFilePath);
 

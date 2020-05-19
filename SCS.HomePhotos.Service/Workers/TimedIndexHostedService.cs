@@ -145,7 +145,11 @@ namespace SCS.HomePhotos.Workers
                 // to resume index after crash of power outage
                 _configService.DynamicConfig.IndexOnStartup = true;
 
-                ProcessDirectory(_indexCanellationToken, _internalCanellationToken, _configService.DynamicConfig.IndexPath);
+                var indexPaths = new string[] { 
+                    _configService.DynamicConfig.IndexPath, 
+                    _configService.DynamicConfig.MobileUploadsFolder 
+                };
+                ProcessDirectories(_indexCanellationToken, _internalCanellationToken, indexPaths);
                 _logger.LogInformation("Completed photo image index");
 
                 var nextStart = DateTime.Now + GetNextStartTime();
@@ -229,6 +233,14 @@ namespace SCS.HomePhotos.Workers
             _timer?.Dispose();
         }
 
+        private void ProcessDirectories(CancellationToken externalCancellationToken, CancellationToken internalCancellationToken, string[] directoryPaths)
+        {
+            foreach (var dir in directoryPaths)
+            {
+                ProcessDirectory(externalCancellationToken, internalCancellationToken, dir);
+            }
+        }
+            
         private void ProcessDirectory(CancellationToken externalCancellationToken, CancellationToken internalCancellationToken, string directoryPath)
         {
             _logger.LogInformation("Processing directory {DirectoryPath}.", directoryPath);
@@ -265,11 +277,13 @@ namespace SCS.HomePhotos.Workers
                                 {
                                     var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
                                     var exifData = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
-                                    imageService.OrientImage(imageFilePath, exifData);
-
-                                    var cacheFilePath = imageService.CreateCachePath(checksum, Path.GetExtension(imageFilePath));
-                                    var imageLayoutInfo = imageService.GetImageLayoutInfo(imageFilePath);
+                                    
+                                    var cacheFilePath = imageService.CreateCachePath(checksum, Path.GetExtension(imageFilePath));                                    
                                     var fullImagePath = imageService.CreateFullImage(imageFilePath, cacheFilePath);
+                                    
+                                    imageService.OrientImage(fullImagePath, exifData);
+                                    var imageLayoutInfo = imageService.GetImageLayoutInfo(fullImagePath);
+
                                     var smallImagePath = imageService.CreateSmallImage(fullImagePath, cacheFilePath);
                                     imageService.CreateThumbnail(smallImagePath, cacheFilePath);
                                     imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);

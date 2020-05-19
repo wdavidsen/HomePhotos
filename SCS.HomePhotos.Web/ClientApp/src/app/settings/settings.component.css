@@ -2,3 +2,7 @@
 button {
     margin-right: 10px;
 }
+
+.btn-index-label {
+    visibility: hidden;
+}

@@ -81,15 +81,47 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   addTag() {
+    const tag: Tag = {
+      tagId: 0,
+      tagName: 'foo'
+    };
 
-  }
-
-  deleteTags() {
-
+    this.tagService.addTag(tag)
+      .subscribe(t => {
+        this.tagChips.push(this.tagToChip(t));
+      },
+      err => this.toastr.error(err.message)
+    );
   }
 
   renameTag() {
+    const tag: Tag = {
+      tagId: 1,
+      tagName: 'foo'
+    };
 
+    this.tagService.updateTag(tag)
+      .subscribe(t => {
+        const chip = this.tagChips.find(c => c.id === t.tagId);
+
+        if (chip) {
+          chip.name = t.tagName;
+        }
+      },
+      err => this.toastr.error(err.message)
+    );
+  }
+
+  deleteTags() {
+    this.getSelectedChips().forEach(chip => {
+      this.tagService.deleteTag(chip.id)
+        .subscribe(() => {
+            this.toastr.success(`Deleted ${chip.name} successfully`);
+            this.tagChips.splice(this.tagChips.indexOf(chip), 1);
+          },
+          err => this.toastr.error(err.message)
+        );
+    });
   }
 
   copyTag() {
@@ -108,6 +140,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   private tagToChip(tag: Tag): TagChip {
     const chip = new TagChip();
+    chip.id = tag.tagId;
     chip.name = tag.tagName;
     chip.count = tag.photoCount;
     return chip;
@@ -126,7 +159,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       letter = chip.name.substring(0, 1).toUpperCase();
 
       if (letter !== prevLetter && idexes.indexOf(letter) >= 0) {
-        tagChips.splice(index, 0, {name: letter, isDivider: true, count: 0, selected: false}); // insert divider
+        tagChips.splice(index, 0, {name: letter, id: -1, isDivider: true, count: 0, selected: false}); // insert divider
       }
       prevLetter = letter;
     });

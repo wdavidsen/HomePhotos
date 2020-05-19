@@ -52,6 +52,7 @@ namespace SCS.HomePhotos.Web.Dto
             {
                 ConfigId = ConfigId,
                 CacheFolder = CacheFolder,
+                MobileUploadsFolder = MobileUploadsFolder,
                 IndexPath = IndexPath,
                 LargeImageSize = LargeImageSize,
                 SmallImageSize = SmallImageSize,

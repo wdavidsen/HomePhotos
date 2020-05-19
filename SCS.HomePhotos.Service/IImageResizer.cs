@@ -12,5 +12,7 @@ namespace SCS.HomePhotos.Service
         (Size original, Size rotated) Rotate(string sourcePath, int angle);
 
         ImageLayoutInfo GetImageLayoutInfo(string sourcePath);
+
+        void RemoveMetadata(string sourcePath);
     }
 }

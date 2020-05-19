@@ -52,7 +52,9 @@ namespace SCS.HomePhotos.Web
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminsOnly", policy => policy.RequireRole(RoleType.Admin.ToString()));
+                options.AddPolicy("Admins", policy => policy.RequireRole(RoleType.Admin.ToString()));
+                options.AddPolicy("Contributers", policy => policy.RequireRole(RoleType.Contributer.ToString(), RoleType.Admin.ToString()));
+                options.AddPolicy("Readers", policy => policy.RequireRole(RoleType.Reader.ToString(), RoleType.Contributer.ToString(), RoleType.Admin.ToString()));
             });
 
             // In production, the Angular files will be served from this directory

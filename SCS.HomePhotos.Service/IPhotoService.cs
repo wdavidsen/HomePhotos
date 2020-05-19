@@ -13,6 +13,8 @@ namespace SCS.HomePhotos.Service
         Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, int pageNum = 1, int pageSize = 200);
         Task<IEnumerable<Tag>> GetTags(bool includPhotoCounts = false);
         Task<Tag> GetTag(string tagName, bool createIfMissing = true);
+        Task DeleteTag(int tagId);
+        Task<Tag> SaveTag(Tag tag);
         Task SavePhoto(Photo photo);
         Task AssociateTags(Photo photo, params string[] tags);
         Task<Photo> GetPhotoByChecksum(string checksum);
@@ -21,5 +23,7 @@ namespace SCS.HomePhotos.Service
         Task<IEnumerable<Tag>> GetTagsByKeywords(string keywords, int pageNum, int pageSize);
         Task<IEnumerable<Tag>> GetTagsAndPhotos(params int[] photoIds);
         Task UpdatePhotoTags(List<int> photoIds, List<string> addTag, List<int> removeTagIds);
+        Task FlagPhotosForReprocessing();
+        Task DeletePhotoCache();
     }
 }

@@ -19,7 +19,7 @@
             <button type="button" class="btn btn-default navbar-btn" (click)="renameTag()" [disabled]="getSelectedChips().length !== 1"><i class="fa fa-pencil"></i> Rename</button>
             <button type="button" class="btn btn-default navbar-btn" (click)="copyTag()" [disabled]="getSelectedChips().length !== 1"><i class="fa fa-copy"></i> Copy</button>
             <button type="button" class="btn btn-default navbar-btn" (click)="combineTags()" [disabled]="getSelectedChips().length <= 1"><i class="fa fa-magic"></i> Combine</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="clearSelections()" [disabled]="getSelectedChips().length === 0"><i class="fa fa-magic"></i> Clear</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="clearSelections()" [disabled]="getSelectedChips().length === 0"><i class="fa fa-eraser"></i> Clear</button>
         </div>
     </div>
 </nav>

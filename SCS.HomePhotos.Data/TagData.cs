@@ -118,6 +118,13 @@ namespace SCS.HomePhotos.Data
             }
             else
             {
+                var existingTag = await GetAsync<Tag>(tag.TagId.Value);
+
+                if (existingTag == null)
+                {
+                    throw new InvalidOperationException($"Tag id {tag.TagId} was not found.");
+                }
+
                 await UpdateAsync(tag);
             }
 

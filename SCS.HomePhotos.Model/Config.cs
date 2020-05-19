@@ -37,6 +37,7 @@ namespace SCS.HomePhotos.Model
         {
             ConfigId = dynamicConfig.ConfigId;
             CacheFolder = dynamicConfig.CacheFolder;
+            MobileUploadsFolder = dynamicConfig.MobileUploadsFolder;
             IndexPath = dynamicConfig.IndexPath;
             ThumbnailSize = dynamicConfig.ThumbnailSize;
             SmallImageSize = dynamicConfig.SmallImageSize;

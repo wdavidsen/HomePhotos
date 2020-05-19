@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Web.Models;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
-    [Authorize(Policy = "AdminsOnly")]
+    [Authorize(Policy = "Admins")]
     [Route("api/[controller]")]
     public class UsersController : HomePhotosController
     {

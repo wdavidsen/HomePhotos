@@ -16,7 +16,27 @@ export class SettingsService {
         return this.http.get<Settings>(`${environment.apiUrl}/settings`);
     }
 
-    updateSettings(settings: Settings) {
-        return this.http.put<Settings>(`${environment.apiUrl}/settings`, settings);
+    updateSettings(settings: Settings, reprocessPhotos?: boolean): Observable<void> {
+        let url = `${environment.apiUrl}/settings`;
+
+        if (reprocessPhotos) {
+            url += '?reprocessPhotos=true';
+        }
+        return this.http.put<void>(url, settings);
+    }
+
+    indexNow(reprocessPhotos?: boolean): Observable<void> {
+        let url = `${environment.apiUrl}/settings/indexNow`;
+
+        if (reprocessPhotos) {
+            url += '?reprocessPhotos=true';
+        }
+        return this.http.put<void>(url, {});
+    }
+
+    clearCache(): Observable<void> {
+        const url = `${environment.apiUrl}/settings/clearCache`;
+
+        return this.http.put<void>(url, {});
     }
 }

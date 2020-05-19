@@ -200,5 +200,27 @@ namespace SCS.HomePhotos.Data
 
             return new DynamicParameters(values);
         }
+
+        public async Task FlagPhotosForReprocessing()
+        {
+            var sql = "UPDATE Photo SET ReprocessCache = 1";
+
+            using (var conn = GetDbConnection())
+            {
+                await conn.ExecuteScalarAsync(sql);
+            }
+        }
+
+        public async Task DeletePhotos()
+        {
+            var sql1 = "DELETE FROM PhotoTag";
+            var sql2 = "DELETE FROM Photo";
+
+            using (var conn = GetDbConnection())
+            {
+                await conn.ExecuteScalarAsync(sql1);
+                await conn.ExecuteScalarAsync(sql2);
+            }
+        }
     }
 }

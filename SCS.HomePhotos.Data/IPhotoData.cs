@@ -13,5 +13,7 @@ namespace SCS.HomePhotos.Data
         Task<IEnumerable<Tag>> GetTagsAndPhotos(int[] photoIds);
         Task<IEnumerable<Photo>> GetPhotosAndTags(params int[] photoIds);
         Task<Photo> SavePhoto(Photo photo);
+        Task FlagPhotosForReprocessing();
+        Task DeletePhotos();
     }
 }

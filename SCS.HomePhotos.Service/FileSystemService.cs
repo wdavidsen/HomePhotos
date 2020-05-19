@@ -1,10 +1,9 @@
-﻿using MetadataExtractor.Formats.Exif;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SCS.HomePhotos.Service.Workers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 
 namespace SCS.HomePhotos.Service
@@ -12,10 +11,10 @@ namespace SCS.HomePhotos.Service
     public class FileSystemService : IFileSystemService
     {
         private readonly ILogger<FileSystemService> _logger;
-
+        
         public FileSystemService(ILogger<FileSystemService> logger)
         {
-            _logger = logger;
+            _logger = logger;            
         }
 
         [SuppressMessage("Security", "SCS0006:Weak hashing function", Justification = "Hash is not being used for security purposes.")]
@@ -62,6 +61,17 @@ namespace SCS.HomePhotos.Service
         public void CreateDirectory(string path)
         {
             Directory.CreateDirectory(path);
+        }
+
+        public void DeleteDirectoryFiles(string cacheFolder, bool recursive = true)
+        {
+            foreach (var subdir in Directory.GetDirectories(cacheFolder))
+            {
+                var deletePath = subdir.TrimEnd('/', '\\') + "_ToDelete";
+
+                Directory.Move(subdir, deletePath);
+                Directory.Delete(deletePath, recursive);
+            }
         }
     }
 }

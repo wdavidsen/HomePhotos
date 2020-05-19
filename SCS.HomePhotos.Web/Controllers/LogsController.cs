@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
-    [Authorize(Policy = "AdminsOnly")]
+    [Authorize(Policy = "Admins")]
     [Route("api/[controller]")]
     [ApiController]
     public class LogsController : HomePhotosController
@@ -29,7 +26,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [HttpGet("latest", Name = "GetLatestLogs")]
         public async Task<IActionResult> GetLatestLogs(
             [FromQuery] int pageSize = 200,
-            [FromQuery] int pageNum = 1,            
+            [FromQuery] int pageNum = 1,
             [FromQuery] LogCategory? category = null,
             [FromQuery] LogSeverity? severity = null,
             [FromQuery] string sortBy = "Timestamp",

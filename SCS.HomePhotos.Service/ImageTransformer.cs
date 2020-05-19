@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.Primitives;
@@ -147,16 +148,18 @@ namespace SCS.HomePhotos.Service
         /// Rotates an image x degrees.
         /// </summary>
         /// <param name="sourcePath">The image to rotate.</param>
-        /// <param name="angle">The rotation angle.</param>
+        /// <param name="angle">The rotation angle.</param>        
         /// <returns>The original and rotated sizes.</returns>
         public (Size original, Size rotated) Rotate(string sourcePath, int angle)
         {
             using (var image = Image.Load<Rgba32>(sourcePath))
             {
-                Size original = image.Size();
+                var original = image.Size();
                 image.Mutate(x => x.Rotate(angle));
-                image.Save(sourcePath);
+                image.Metadata.ExifProfile.RemoveValue(ExifTag.Orientation);
 
+                image.Save(sourcePath);
+                
                 return (original, image.Size());
             }
         }
@@ -200,6 +203,19 @@ namespace SCS.HomePhotos.Service
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
+            }
+        }
+
+        /// <summary>
+        /// Removes image metadata from image.
+        /// </summary>
+        /// <param name="sourcePath">The image to rotate.</param>
+        public void RemoveMetadata(string sourcePath)
+        {
+            using (var image = Image.Load<Rgba32>(sourcePath))
+            {
+                image.Metadata.ExifProfile = null;
+                image.Save(sourcePath);
             }
         }
     }

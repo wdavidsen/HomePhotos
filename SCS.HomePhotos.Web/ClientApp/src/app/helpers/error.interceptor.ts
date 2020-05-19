@@ -33,7 +33,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
                             if (!isRefresh && currentUser) {
                                 this.authenticationService.updateToken();
-                                this.router.navigateByUrl(err.url);
+                                // this.router.navigateByUrl(err.url);
                             }
                             else if (!isLogin){
                                 this.authenticationService.logout();

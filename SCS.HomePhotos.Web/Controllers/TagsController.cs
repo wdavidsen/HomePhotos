@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -22,6 +23,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Readers")]
         public async Task<IActionResult> Get()
         {
             var tags = await _photoSevice.GetTags(true);
@@ -51,7 +53,7 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(dtos);
         }
 
-        [Authorize(Policy = "AdminsOnly")]
+        [Authorize(Policy = "Contributers")]
         [HttpPut("merge", Name = "MergeTags")]
         public async Task<IActionResult> MergeTags([FromBody]TagMergeInfo mergeInfo)
         {
@@ -65,7 +67,7 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
-        [Authorize(Policy = "AdminsOnly")]
+        [Authorize(Policy = "Contributers")]
         [HttpPut("copy", Name = "CopyTags")]
         public async Task<IActionResult> CopyTags([FromBody]TagCopyInfo copyInfo)
         {
@@ -79,7 +81,7 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
-        [Authorize(Policy = "AdminsOnly")]
+        [Authorize(Policy = "Contributers")]
         [HttpPost("batchTag", Name = "GetPhotosToTag")]
         public async Task<IActionResult> GetPhotosToTag([FromBody]int[] photoIds)
         {
@@ -93,7 +95,7 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(new BatchSelectTags(photoIds, photoTags));
         }
 
-        [Authorize(Policy = "AdminsOnly")]
+        [Authorize(Policy = "Contributers")]
         [HttpPut("batchTag", Name = "TagPhotos")]
         public async Task<IActionResult> TagPhotos([FromBody]BatchUpdateTags updateTags)
         {
@@ -103,6 +105,70 @@ namespace SCS.HomePhotos.Web.Controllers
             }
 
             await _photoSevice.UpdatePhotoTags(updateTags.PhotoIds, updateTags.GetAddedTagNames(), updateTags.GetRemovedTagIds());
+
+            return Ok();
+        }
+
+
+        [Authorize(Policy = "Contributers")]
+        [HttpPost(Name = "AddTag")]
+        public async Task<IActionResult> AddTag([FromBody]Dto.Tag tag)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try 
+            { 
+                var tagEntity = await _photoSevice.SaveTag(tag.ToModel());
+
+                return Ok(new Dto.Tag(tagEntity));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        [Authorize(Policy = "Contributers")]
+        [HttpPut(Name = "UpdateTag")]
+        public async Task<IActionResult> UpdateTag([FromBody]Dto.Tag tag)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try 
+            { 
+                var tagEntity = await _photoSevice.SaveTag(tag.ToModel());
+
+                return Ok(new Dto.Tag(tagEntity));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        [Authorize(Policy = "Contributers")]
+        [HttpDelete("{tagId}", Name = "DeleteTag")]
+        public async Task<IActionResult> DeleteTag([FromRoute]int tagId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await _photoSevice.DeleteTag(tagId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
 
             return Ok();
         }

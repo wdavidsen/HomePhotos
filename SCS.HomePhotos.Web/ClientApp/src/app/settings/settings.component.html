@@ -7,11 +7,19 @@
             <div *ngIf="f.indexPath.errors.required">Photos folder is required</div>
         </div>
     </div>
-    <div class="form-group">
-        <label for="cacheFolder">Photo index cache folder</label>
-        <input type="text" formControlName="cacheFolder" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.cacheFolder.errors }" />
-        <div *ngIf="submitted && f.cacheFolder.errors" class="invalid-feedback">
-            <div *ngIf="f.cacheFolder.errors.required">Photo index cache folder is required</div>
+    <div class="form-row">
+        <div class="form-group col-md-10">
+            <label for="cacheFolder">Photo index cache folder</label>
+            <input type="text" formControlName="cacheFolder" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.cacheFolder.errors }" />
+            <div *ngIf="submitted && f.cacheFolder.errors" class="invalid-feedback">
+                <div *ngIf="f.cacheFolder.errors.required">Photo index cache folder is required</div>
+            </div>
+        </div>
+        <div class="form-group col-md-2">   
+            <label class="btn-index-label">Clear Now</label>
+            <button type="button" class="form-control btn btn-light btn-index" (click)="clear()">                
+                Clear
+            </button>
         </div>
     </div>
     <div class="form-group">
@@ -21,11 +29,19 @@
             <div *ngIf="f.mobileUploadsFolder.errors.required">Mobile uploads folder is required</div>
         </div>
     </div>
-    <div class="form-group">
-        <label for="nextIndexTime">Next index time</label>
-        <input type="datetime-local" formControlName="nextIndexTime" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime.errors }" />
-        <div *ngIf="submitted && f.nextIndexTime.errors" class="invalid-feedback">
-            <div *ngIf="f.nextIndexTime.errors.required">Next index time is required</div>
+    <div class="form-row">
+        <div class="form-group col-md-10">
+            <label for="nextIndexTime">Next index time</label>
+            <input type="text" formControlName="nextIndexTime" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime.errors }" />
+            <div *ngIf="submitted && f.nextIndexTime.errors" class="invalid-feedback">
+                <div *ngIf="f.nextIndexTime.errors.required">Next index time is required</div>
+            </div>
+        </div>
+        <div class="form-group col-md-2">   
+            <label class="btn-index-label">Index Now</label>
+            <button type="button" class="form-control btn btn-light btn-index" (click)="promptForIndex()">                
+                Index Now
+            </button>
         </div>
     </div>
     <div class="form-group">
@@ -60,10 +76,34 @@
         <button [disabled]="loading" class="btn btn-primary">
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
             Save
-        </button> 
-        <button [disabled]="loading" class="btn btn-light">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Rebuild Photo Cache
         </button>
     </div>
 </form>
+
+<div bsModal #indexModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-index-now">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="dialog-index-now" class="modal-title pull-left">Photo Index</h4>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="cancelIndex.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Would you like to process <em>all</em> photo images, or only <em>new and changed</em> photo images? {{indexModalData.allOrNew}}</p>
+          <div class="custom-control custom-radio">
+            <input type="radio" id="processAllRadio" name="indexType" value="ALL" [(ngModel)]="indexModalData.allOrNew" class="custom-control-input">
+            <label class="custom-control-label" for="processAllRadio">All photo images</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" id="processNewRadio" name="indexType" value="NEW" [(ngModel)]="indexModalData.allOrNew" class="custom-control-input">
+            <label class="custom-control-label" for="processNewRadio">New and changed photos</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="index()">OK</button>
+            <button type="button" class="btn btn-secondary" (click)="cancelIndex()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>

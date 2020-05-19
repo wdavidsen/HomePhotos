@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Model;
+using SCS.HomePhotos.Service.Workers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,19 @@ namespace SCS.HomePhotos.Service
 
         private readonly IPhotoData _photoData;
         private readonly ITagData _tagData;
+        private readonly IFileSystemService _fileSystemService;
+        private readonly IDynamicConfig _dynamicConfig;
+        private readonly IBackgroundTaskQueue _backgroundTaskQueue;
 
-        public PhotoService(IPhotoData photoData, ITagData tagData, ILogger<PhotoService> logger)
+        public PhotoService(IPhotoData photoData, ITagData tagData, ILogger<PhotoService> logger, IFileSystemService fileSystemService, 
+            IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
         {
             _photoData = photoData;
             _tagData = tagData;
             _logger = logger;
+            _fileSystemService = fileSystemService;
+            _dynamicConfig = dynamicConfig;
+            _backgroundTaskQueue = backgroundTaskQueue;
         }
 
         public async Task<Photo> GetPhotoByChecksum(string checksum)
@@ -70,6 +78,22 @@ namespace SCS.HomePhotos.Service
         public async Task<Tag> GetTag(string tagName)
         {
             return await _tagData.GetTag(tagName);
+        }
+
+        public async Task DeleteTag(int tagId)
+        {
+            var tag = await _tagData.GetAsync<Tag>(tagId);
+
+            if (tag == null)
+            {
+                throw new InvalidOperationException($"Tag id {tagId} was not found.");
+            }
+            await _tagData.DeleteAsync(tag);
+        }
+
+        public async Task<Tag> SaveTag(Tag tag)
+        {
+            return await _tagData.SaveTag(tag);
         }
 
         public async Task<Tag> GetTag(string tagName, bool createIfMissing = true)
@@ -212,6 +236,29 @@ namespace SCS.HomePhotos.Service
             {
                 await _tagData.DeleteAsync(tag);
             }
+        }
+
+        public async Task FlagPhotosForReprocessing()
+        {
+            await _photoData.FlagPhotosForReprocessing();
+        }
+
+        public async Task DeletePhotoCache()
+        {
+            await _photoData.DeletePhotos();
+
+            _backgroundTaskQueue.QueueBackgroundWorkItem((token) =>
+            {
+                try
+                {
+                    _fileSystemService.DeleteDirectoryFiles(_dynamicConfig.CacheFolder);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Failed to delete cache folder: {_dynamicConfig.CacheFolder}");
+                }
+                return Task.CompletedTask;
+            });            
         }
     }
 }
