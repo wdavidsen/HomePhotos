@@ -5,6 +5,8 @@ import { Settings } from '../models/settings';
 import { map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap/modal';
+import { ConfirmDialogComponent, InputDialogComponent } from '../common-dialog';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-settings',
@@ -24,10 +26,13 @@ export class SettingsComponent implements OnInit {
     allOrNew: 'NEW'
   };
 
+  confirmModalRef: BsModalRef;
+
   constructor(
     private formBuilder: FormBuilder,
     private settingsService: SettingsService,
-    private toastr: ToastrService) {
+    private toastr: ToastrService,
+    private modalService: BsModalService) {
     }
 
   ngOnInit() {
@@ -55,12 +60,33 @@ export class SettingsComponent implements OnInit {
 
     // stop here if form is invalid
     if (this.settingsForm.invalid) {
-        return;
+      return;
     }
 
+    if (this.f.smallImageSize.dirty || this.f.largeImageSize.dirty || this.f.thumbnailSize.dirty)
+    {
+      const message = 'Would you like to update image sizes on the existing cache images during next index? If no, these settings will only apply to new photos added.';
+      const options = ConfirmDialogComponent.GetOptions('Existing Image Size', message, true);
+      this.confirmModalRef = this.modalService.show(ConfirmDialogComponent, options);
+
+      this.modalService.onHidden
+        .subscribe(() => {
+          if (this.confirmModalRef.content.cancelClicked) {
+            return;
+          }
+          this.save(this.confirmModalRef.content.yesClicked);
+        });
+    }
+    else {
+      this.save(false);
+    }
+  }
+
+  private save(reprocessPhotos: boolean) {
     this.loading = true;
     const newSettings = this.formToSettings();
-    this.settingsService.updateSettings(newSettings)
+
+    this.settingsService.updateSettings(newSettings, reprocessPhotos)
         .subscribe(
           data => {
             this.toastr.success('Successfully saved settings');
@@ -81,7 +107,10 @@ export class SettingsComponent implements OnInit {
   index() {
     this.settingsService.indexNow(this.indexModalData.allOrNew === 'ALL')
       .subscribe(
-        () => this.toastr.success('Indexing started successfully'),
+        (updatedSettings) => {
+          this.f.nextIndexTime.setValue(updatedSettings.nextIndexTime);
+          this.toastr.success('Indexing started successfully');
+        },
         () => this.toastr.error('Failed to start indexing')
       );
       this.indexModal.hide();
@@ -92,7 +121,16 @@ export class SettingsComponent implements OnInit {
   }
 
   promptForClear() {
-    // this.clearModal.show();
+    const message = 'Are you sure you want to clear the photo cache? This action may take several minutes to complete.';
+    const options = ConfirmDialogComponent.GetOptions('Clear Cache', message, true);
+    this.confirmModalRef = this.modalService.show(ConfirmDialogComponent, options);
+
+    this.modalService.onHidden
+      .subscribe(() => {
+        if (this.confirmModalRef.content.yesClicked) {
+          this.clear();
+        }
+      });
   }
 
   clear() {

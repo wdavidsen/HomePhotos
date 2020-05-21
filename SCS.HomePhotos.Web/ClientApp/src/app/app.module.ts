@@ -36,6 +36,7 @@ import { LogsComponent } from './logs/logs.component';
 import { UploadComponent } from './upload/upload.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.component';
+import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } from './common-dialog';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,9 @@ import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.compone
     ModalContentComponent,
     PhotoTaggerComponent,
     UploadPhotoTaggerComponent,
+    InputDialogComponent,
+    ConfirmDialogComponent,
+    AlertDialogComponent,
     TriCheckComponent,
     LogsComponent,
     UploadComponent
@@ -64,7 +68,10 @@ import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.compone
   entryComponents: [
     ModalContentComponent,
     PhotoTaggerComponent,
-    UploadPhotoTaggerComponent
+    UploadPhotoTaggerComponent,
+    InputDialogComponent,
+    ConfirmDialogComponent,
+    AlertDialogComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

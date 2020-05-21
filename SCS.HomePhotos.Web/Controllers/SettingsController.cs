@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Web.Dto;
 using System;
 using System.Threading.Tasks;
 
@@ -32,12 +33,18 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Dto.Settings settings, bool reprocessPhotos = false)
+        public async Task<IActionResult> Put([FromBody] Dto.Settings settings, bool reprocessPhotos = false)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+
+            if (reprocessPhotos && ImageSizeChanged(_dynamicConfig, settings))
+            {
+                await _photoService.FlagPhotosForReprocessing();
+            }
+
             _dynamicConfig.CacheFolder = settings.CacheFolder;
             _dynamicConfig.MobileUploadsFolder = settings.MobileUploadsFolder;
             _dynamicConfig.IndexPath = settings.IndexPath;
@@ -58,7 +65,9 @@ namespace SCS.HomePhotos.Web.Controllers
             }
             _dynamicConfig.NextIndexTime = DateTime.Now.AddSeconds(5);
 
-            return Ok();
+            var settings = new Dto.Settings(_dynamicConfig);
+
+            return Ok(settings);
         }
 
         [HttpPut("clearCache", Name = "ClearCache")]
@@ -67,6 +76,23 @@ namespace SCS.HomePhotos.Web.Controllers
             await _photoService.DeletePhotoCache();
 
             return Ok();
+        }
+
+        private bool ImageSizeChanged(IDynamicConfig dynamicConfig, Settings settings)
+        {
+            if (dynamicConfig.ThumbnailSize != settings.ThumbnailSize)
+            {
+                return true;
+            }
+            if (dynamicConfig.SmallImageSize != settings.SmallImageSize)
+            {
+                return true;
+            }
+            if (dynamicConfig.LargeImageSize != settings.LargeImageSize)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

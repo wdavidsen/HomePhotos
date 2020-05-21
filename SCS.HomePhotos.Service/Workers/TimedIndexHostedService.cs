@@ -46,7 +46,7 @@ namespace SCS.HomePhotos.Workers
             _configService = configService;            
             _adminlogger = dblogger;
 
-            configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
+            //configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
         }
 
         private void _config_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -273,7 +273,7 @@ namespace SCS.HomePhotos.Workers
 
                                 var existingPhoto = photoService.GetPhotoByChecksum(checksum).Result;
 
-                                if (existingPhoto == null || !CacheFileExists(existingPhoto))
+                                if (existingPhoto == null || existingPhoto.ReprocessCache || !CacheFileExists(existingPhoto))
                                 {
                                     var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
                                     var exifData = directories.OfType<ExifIfd0Directory>().FirstOrDefault();

@@ -62,9 +62,9 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _photoSevice.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds);
+            var finalTag = await _photoSevice.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds);
 
-            return Ok();
+            return Ok(finalTag);
         }
 
         [Authorize(Policy = "Contributers")]
@@ -76,9 +76,9 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _photoSevice.CopyTags(copyInfo.NewTagName, copyInfo.SourceTagId);
+            var newTag = await _photoSevice.CopyTags(copyInfo.NewTagName, copyInfo.SourceTagId);
 
-            return Ok();
+            return Ok(newTag);
         }
 
         [Authorize(Policy = "Contributers")]

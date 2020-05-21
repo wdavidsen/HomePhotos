@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TagService, SearchService, OrganizeService } from '../services';
 import { TagChip, Tag } from '../models';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { InputDialogComponent, ConfirmDialogComponent } from '../common-dialog';
 
 @Component({
   selector: 'app-tags',
@@ -15,6 +17,9 @@ export class TagsComponent implements OnInit, OnDestroy {
   tagChips: TagChip[] = [];
   organizeMode = false;
 
+  inputModalRef: BsModalRef;
+  confirmModalRef:  BsModalRef;
+
   private searchSubscription: Subscription;
   private organizeSubscription: Subscription;
 
@@ -22,7 +27,8 @@ export class TagsComponent implements OnInit, OnDestroy {
     private router: Router,
     private searchService: SearchService,
     private organizeService: OrganizeService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    private modalService: BsModalService) { }
 
   ngOnInit() {
     this.searchService.setHidden(false);
@@ -81,55 +87,176 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   addTag() {
-    const tag: Tag = {
-      tagId: 0,
-      tagName: 'foo'
-    };
+    const message = 'Please new tag name.';
+    const options = InputDialogComponent.GetOptions('New Tag Name', 'Name', message, '');
+    this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
-    this.tagService.addTag(tag)
-      .subscribe(t => {
-        this.tagChips.push(this.tagToChip(t));
-      },
-      err => this.toastr.error(err.message)
-    );
+    this.modalService.onHidden
+      .subscribe(() => {
+        if (this.inputModalRef.content.okClicked) {
+          this.addTagSubmit(this.inputModalRef.content.input);
+        }
+      })
+      .unsubscribe();
+  }
+
+  private addTagSubmit(tagName: string) {
+    if (tagName) {
+      const tag: Tag = {
+        tagId: 0,
+        tagName: tagName
+      };
+
+      this.tagService.addTag(tag)
+        .subscribe(t => {
+          this.tagChips.push(this.tagToChip(t));
+          this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
+          this.toastr.success('Added tag successfully');
+          this.clearSelections();
+        },
+        err => this.toastr.error('Failed to add tag')
+      );
+    }
   }
 
   renameTag() {
-    const tag: Tag = {
-      tagId: 1,
-      tagName: 'foo'
-    };
+    const chips = this.getSelectedChips();
 
-    this.tagService.updateTag(tag)
-      .subscribe(t => {
-        const chip = this.tagChips.find(c => c.id === t.tagId);
+    if (chips.length) {
+      const message = 'Please enter the new tag name.';
+      const options = InputDialogComponent.GetOptions('New Tag Name', 'Name', message, chips[0].name);
+      this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
-        if (chip) {
-          chip.name = t.tagName;
-        }
-      },
-      err => this.toastr.error(err.message)
-    );
+      this.modalService.onHidden
+        .subscribe(() => {
+          if (this.inputModalRef.content.okClicked) {
+            this.renameTagSubmit(chips[0].id, this.inputModalRef.content.input);
+          }
+        });
+    }
+  }
+
+  private renameTagSubmit(tagId: number, newTagName: string) {
+    if (newTagName && newTagName.length) {
+      const tag: Tag = {
+        tagId: tagId,
+        tagName: newTagName
+      };
+
+      this.tagService.updateTag(tag)
+        .subscribe(t => {
+          const chip = this.tagChips.find(c => c.id === t.tagId);
+
+          if (chip) {
+            chip.name = t.tagName;
+          }
+          this.toastr.success('Renamed tag successfully');
+          this.clearSelections();
+        },
+        err => this.toastr.error('Failed to rename tag')
+      );
+    }
   }
 
   deleteTags() {
-    this.getSelectedChips().forEach(chip => {
+    const chips = this.getSelectedChips();
+
+    if (chips.length) {
+      const message = 'Are you sure you want to delete the selected tags?';
+      const options = ConfirmDialogComponent.GetOptions('Delete Tags', message, true);
+      this.confirmModalRef = this.modalService.show(ConfirmDialogComponent, options);
+
+      this.modalService.onHidden
+          .subscribe(() => {
+            chips.forEach(chip => {
+              if (this.confirmModalRef.content.yesClicked) {
+                this.deleteTagsSubmit(chip);
+              }
+            });
+          });
+    }
+  }
+
+  private deleteTagsSubmit(chip: TagChip) {
+
+    if (chip && chip.id) {
       this.tagService.deleteTag(chip.id)
         .subscribe(() => {
             this.toastr.success(`Deleted ${chip.name} successfully`);
             this.tagChips.splice(this.tagChips.indexOf(chip), 1);
           },
-          err => this.toastr.error(err.message)
+          err => this.toastr.error(`Failed to deleted ${chip.name}`)
         );
-    });
+    }
   }
 
   copyTag() {
+    const chips = this.getSelectedChips();
 
+    if (chips.length) {
+      const message = 'Please enter a name for copied tag.';
+      const options = InputDialogComponent.GetOptions('Copied Tag Name', 'Name', message, chips[0].name);
+      this.inputModalRef = this.modalService.show(InputDialogComponent, options);
+
+      this.modalService.onHidden
+        .subscribe(() => {
+          if (this.inputModalRef.content.okClicked) {
+            this.copyTagSubmit(chips[0].id, this.inputModalRef.content.input);
+          }
+        });
+    }
+  }
+
+  private copyTagSubmit(sourceTagId: number, copyTagName: string) {
+
+    if (sourceTagId > 0 && copyTagName && copyTagName.length) {
+
+      this.tagService.copyTag(sourceTagId, copyTagName)
+        .subscribe(newTag => {
+          const chip = this.tagToChip(newTag);
+          this.tagChips.push(chip);
+          this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
+          this.toastr.success('Copied tag successfully');
+          this.clearSelections();
+        },
+        err => this.toastr.error('Failed to copy tag')
+      );
+    }
   }
 
   combineTags() {
+    const chips = this.getSelectedChips();
 
+    if (chips.length) {
+      const message = 'Please enter a name for the combined tags.';
+      const options = InputDialogComponent.GetOptions('Combined Tag Name', 'Name', message, chips[0].name);
+      this.inputModalRef = this.modalService.show(InputDialogComponent, options);
+
+      this.modalService.onHidden
+        .subscribe(() => {
+          if (this.inputModalRef.content.okClicked) {
+            this.combineTagsSubmit(chips.map(c => c.id), this.inputModalRef.content.input);
+          }
+        });
+    }
+  }
+
+  private combineTagsSubmit(sourceTagIds: number[], combinedTagName: string) {
+
+    if (sourceTagIds && sourceTagIds.length && combinedTagName && combinedTagName.length) {
+
+      this.tagService.mergeTags(sourceTagIds, combinedTagName)
+        .subscribe(newTag => {
+          sourceTagIds.forEach(id => this.tagChips.splice(this.tagChips.findIndex(c => c.id === id), 1));
+          const chip = this.tagToChip(newTag);
+          this.tagChips.push(chip);
+          this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
+          this.toastr.success('Combined tags successfully');
+          this.clearSelections();
+        },
+        err => this.toastr.error('Failed to combine tags')
+      );
+    }
   }
 
   private tagsToChips(photos: Tag[]): TagChip[] {

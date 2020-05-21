@@ -18,8 +18,8 @@ namespace SCS.HomePhotos.Service
         Task SavePhoto(Photo photo);
         Task AssociateTags(Photo photo, params string[] tags);
         Task<Photo> GetPhotoByChecksum(string checksum);
-        Task MergeTags(string newTagName, params int[] targetTagIds);
-        Task CopyTags(string newTagName, int? sourceTagId);
+        Task<Tag> MergeTags(string newTagName, params int[] targetTagIds);
+        Task<Tag> CopyTags(string newTagName, int? sourceTagId);
         Task<IEnumerable<Tag>> GetTagsByKeywords(string keywords, int pageNum, int pageSize);
         Task<IEnumerable<Tag>> GetTagsAndPhotos(params int[] photoIds);
         Task UpdatePhotoTags(List<int> photoIds, List<string> addTag, List<int> removeTagIds);

@@ -25,13 +25,13 @@ export class SettingsService {
         return this.http.put<void>(url, settings);
     }
 
-    indexNow(reprocessPhotos?: boolean): Observable<void> {
+    indexNow(reprocessPhotos?: boolean): Observable<Settings> {
         let url = `${environment.apiUrl}/settings/indexNow`;
 
         if (reprocessPhotos) {
             url += '?reprocessPhotos=true';
         }
-        return this.http.put<void>(url, {});
+        return this.http.put<Settings>(url, {});
     }
 
     clearCache(): Observable<void> {

@@ -17,7 +17,7 @@
         </div>
         <div class="form-group col-md-2">   
             <label class="btn-index-label">Clear Now</label>
-            <button type="button" class="form-control btn btn-light btn-index" (click)="clear()">                
+            <button type="button" class="form-control btn btn-light btn-index" (click)="promptForClear()">                
                 Clear
             </button>
         </div>
@@ -32,7 +32,7 @@
     <div class="form-row">
         <div class="form-group col-md-10">
             <label for="nextIndexTime">Next index time</label>
-            <input type="text" formControlName="nextIndexTime" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime.errors }" />
+            <input type="datetime" formControlName="nextIndexTime" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime.errors }" />
             <div *ngIf="submitted && f.nextIndexTime.errors" class="invalid-feedback">
                 <div *ngIf="f.nextIndexTime.errors.required">Next index time is required</div>
             </div>
