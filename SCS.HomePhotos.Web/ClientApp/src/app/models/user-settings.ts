@@ -1,3 +1,5 @@
 export class UserSettings {
-    thumbnailSize: string;
+  thumbnailSize: string;
+  slideshowSpeed: string;
+  autoStartSlideshow: boolean;
 }

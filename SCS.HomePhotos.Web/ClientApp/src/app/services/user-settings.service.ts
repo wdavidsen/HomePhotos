@@ -5,21 +5,27 @@ import { UserSettings } from '../models/user-settings';
 
 @Injectable({ providedIn: 'root' })
 export class UserSettingsService {
-    private sub = new Subject<UserSettings>();
+  private sub = new Subject<UserSettings>();
+  private key = "UserSettings";
 
-    constructor(localStorge: LocalStorageService) {
-    }
+  userSettings: UserSettings;
 
-    saveSettings(settings: UserSettings) {
+  constructor(private localStorge: LocalStorageService) {
+    this.userSettings = this.localStorge.get(this.key);
+    this.applySettings(this.userSettings);
+  }
 
-        this.applySettings(settings);
-    }
+  saveSettings(settings: UserSettings) {
+    this.userSettings = settings;
+    this.localStorge.set(this.key, settings);
+    this.applySettings(settings);
+  }
 
-    getSettings(): Observable<UserSettings> {
-        return this.sub.asObservable();
-    }
+  getSettings(): Observable<UserSettings> {
+    return this.sub.asObservable();
+  }
 
-    private applySettings(settings: UserSettings) {
-        this.sub.next(settings);
-    }
+  private applySettings(settings: UserSettings) {
+    this.sub.next(settings);
+  }
 }
