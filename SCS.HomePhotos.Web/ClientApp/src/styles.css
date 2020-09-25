@@ -1,6 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
 
-/* Provide sufficient contrast against white background */
+html {
+  font-size: 16px;
+}
+
 a {
   color: #0366d6;
 }
@@ -13,4 +15,42 @@ code {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
+}
+
+/** Phone **/
+@media only screen and (max-width: 767px), only screen and (max-device-width: 767px) {
+
+  html {
+    font-size: 16px;
+  }
+
+  .bar {
+    display: none;
+  }
+}
+
+/** Tablet **/
+@media only screen and (min-width : 768px) and (max-width : 1024px) {
+
+  html {
+    font-size: 16px;
+  }
+
+  .bar {
+    display: none;
+  }
+  
+}
+
+/** Tablet (landscape) **/
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
+
+  html {
+    font-size: 16px;
+  }
+  
+  .bar {
+    display: none;
+  }
+
 }

@@ -16,7 +16,7 @@ import { AlertComponent, OrganizeComponent } from './components';
 import { JwtInterceptor, ErrorInterceptor, AuthGuard } from './helpers';
 import { SettingsService } from './services/settings.service';
 import { AccountComponent } from './account/account.component';
-import { PhotosService, TagService, PageInfoService } from './services';
+import { PhotosService, TagService, PageInfoService, UserSettingsService } from './services';
 import { PageInfoComponent } from './components/page-info.component';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { SearchComponent } from './components/search.component';
@@ -30,6 +30,7 @@ import { AlertModule } from 'ngx-bootstrap/alert';
 import { ToastrModule } from 'ngx-toastr';
 import { ModalContentComponent } from './users/change-password-modal.component';
 import { PhotoTaggerComponent } from './photos/photo-tagger.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { TriCheckComponent } from './components/tri-check.component';
 import { LogService } from './services/log.service';
 import { LogsComponent } from './logs/logs.component';
@@ -37,6 +38,8 @@ import { UploadComponent } from './upload/upload.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.component';
 import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } from './common-dialog';
+import { LocalStorageService } from './services/local-storage.service';
+import { UserSettings } from './models/user-settings';
 
 @NgModule({
   declarations: [
@@ -57,6 +60,7 @@ import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } fr
     AccountComponent,
     ModalContentComponent,
     PhotoTaggerComponent,
+    UserSettingsComponent,
     UploadPhotoTaggerComponent,
     InputDialogComponent,
     ConfirmDialogComponent,
@@ -68,6 +72,7 @@ import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } fr
   entryComponents: [
     ModalContentComponent,
     PhotoTaggerComponent,
+    UserSettingsComponent,
     UploadPhotoTaggerComponent,
     InputDialogComponent,
     ConfirmDialogComponent,
@@ -111,10 +116,12 @@ import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } fr
   ],
   providers: [
     SettingsService,
+    UserSettingsService,
     PhotosService,
     BsModalRef,
     TagService,
     LogService,
+    LocalStorageService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],

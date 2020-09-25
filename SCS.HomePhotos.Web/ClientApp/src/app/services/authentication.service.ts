@@ -43,6 +43,8 @@ export class AuthenticationService {
             refreshToken: currentUser.refreshToken
         };
 
+        console.log('Updating token...');
+
         return this.http.post<any>(`${environment.apiUrl}/auth/refresh`, payload)
             .subscribe(tokenInfo => {
                 const updatedUser = Object.assign({}, currentUser);
@@ -51,12 +53,15 @@ export class AuthenticationService {
 
                 localStorage.setItem('currentUser', JSON.stringify(updatedUser));
                 this.currentUserSubject.next(updatedUser);
+
+                console.log('Token updated.');
                 location.reload(true);
               },
               error => {
-                  console.error(error);
-                  this.logout();
-                  location.reload(true);
+                console.error('Token update failed.');
+                console.error(error);
+                this.logout();
+                location.reload(true);
               });
     }
 

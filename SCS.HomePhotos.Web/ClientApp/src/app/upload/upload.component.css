@@ -64,5 +64,34 @@ input[type=file] {
 .files .image-tile .progress {
     margin: 3px 0;
 }
-        
+      
+.toolbar {
+    display: block;
+}
+	
+.toolbar-phone {
+    display: none;
+}
 			
+/** Phone **/
+@media only screen and (max-width: 767px), only screen and (max-device-width: 767px) {
+
+    .toolbar {
+        display: none;
+    }
+    .toolbar-phone {
+        display: block;
+    }
+
+}
+  
+/** Tablet **/
+@media only screen and (min-width : 768px) and (max-width : 1024px) {
+  
+}
+  
+/** Tablet (landscape) **/
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
+  
+
+}

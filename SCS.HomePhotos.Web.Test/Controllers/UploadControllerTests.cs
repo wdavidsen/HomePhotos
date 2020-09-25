@@ -23,14 +23,16 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         private readonly Mock<ILogger<UploadController>> _logger;
         private readonly Mock<IImageService> _imageService;
         private readonly Mock<IFileUploadService> _fileUploadService;
+        private readonly Mock<IAdminLogService> _adminLogService;
 
         public UploadControllerTests()
         {
             _logger = new Mock<ILogger<UploadController>>();
             _imageService = new Mock<IImageService>();
             _fileUploadService = new Mock<IFileUploadService>();
+            _adminLogService = new Mock<IAdminLogService>();
 
-            _uploadController = new UploadController(_logger.Object, _imageService.Object, _fileUploadService.Object);
+            _uploadController = new UploadController(_logger.Object, _imageService.Object, _fileUploadService.Object, _adminLogService.Object);
         }
 
         [Fact]

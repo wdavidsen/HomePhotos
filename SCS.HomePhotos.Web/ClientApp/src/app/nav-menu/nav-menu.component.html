@@ -1,22 +1,22 @@
 <header>
   <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
     <a href="#" class="navbar-brand">Home Photos</a>
-    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+    <button #navbarToggler type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse" [hidden]="hideMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
       <div class="navbar-nav" [hidden]="hideMenu">
-          <a href="#" class="nav-item nav-link active" 
+          <a href="#" (click)="collapseNav()" class="nav-item nav-link active" 
             [routerLinkActive]="['link-active']" 
             [routerLinkActiveOptions]="{ exact: true }" 
             [routerLink]="['/photos']">Photos</a>
 
-          <a href="#" class="nav-item nav-link active" 
+          <a href="#" (click)="collapseNav()" class="nav-item nav-link active" 
             [routerLinkActive]="['link-active']" 
             [routerLinkActiveOptions]="{ exact: true }" 
             [routerLink]="['/tags']">Tags</a>
 
-          <a href="#" class="nav-item nav-link active" [hidden]="hideUploadMenu" 
+          <a href="#" (click)="collapseNav()" class="nav-item nav-link active" [hidden]="hideUploadMenu" 
             [routerLinkActive]="['link-active']" 
             [routerLinkActiveOptions]="{ exact: true }" 
             [routerLink]="['/upload']">Upload</a>
@@ -24,15 +24,15 @@
           <div class="nav-item dropdown" [hidden]="hideMenuAdmin">
               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Admin</a>
               <div class="dropdown-menu">
-                <a href="#" class="dropdown-item" 
+                <a href="#" (click)="collapseNav()" class="dropdown-item" 
                   [routerLinkActive]="['link-active']" 
                   [routerLinkActiveOptions]="{ exact: true }" 
                   [routerLink]="['/settings']">Settings</a>              
-                <a href="#" class="dropdown-item" 
+                <a href="#" (click)="collapseNav()" class="dropdown-item" 
                   [routerLinkActive]="['link-active']" 
                   [routerLinkActiveOptions]="{ exact: true }" 
                   [routerLink]="['/users']">Users</a>              
-                <a href="#" class="dropdown-item" 
+                <a href="#" (click)="collapseNav()" class="dropdown-item" 
                   [routerLinkActive]="['link-active']" 
                   [routerLinkActiveOptions]="{ exact: true }" 
                   [routerLink]="['/logs']">Activity</a>                
@@ -40,13 +40,16 @@
           </div>
       </div>      
       <app-search [hidden]="hideSearch"></app-search>
+
       <div class="navbar-nav nav-right" [hidden]="hideMenu">
         <label class="nav-item nav-check" [hidden]="hideOrganize">
           <app-organize></app-organize>
         </label>
         <span class="bar" [hidden]="hideOrganize">|</span> 
         <a href="#" class="nav-link text-dark" (click)="logout()">Logout</a> <span class="bar">|</span>
-        <a href="#" class="nav-link text-dark" [routerLink]="['/account']">{{currentUser?.username}}</a> 
+        <a href="#" (click)="collapseNav()" class="nav-link text-dark" [routerLink]="['/account']">{{currentUser?.username}}</a>
+        <button (click)="showSettings()" class="btn btn-light options-item" type="button"><i class="fa fa-gear"></i></button>
+        <a href="#" class="nav-link text-dark options-item">Options</a> 
       </div>
     </div>    
   </nav>

@@ -112,7 +112,7 @@ export class UploadComponent implements OnInit {
       maxWidth: 120,
       maxHeight: 120,
       orientation: true,
-      canvas: false
+      canvas: true
     };
     loadImage(fileItem._file, (canvas) => {
       this.thumbnails[index + offset] = canvas.toDataURL();

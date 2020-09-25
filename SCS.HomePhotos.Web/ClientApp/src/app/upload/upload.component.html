@@ -2,7 +2,7 @@
 <hr/>
 
 <section>
-    <div>
+    <div class="toolbar">
         <button type="button" class="btn btn-primary" (click)="selectImages()">
             Select Images
         </button>
@@ -17,6 +17,23 @@
         </button>
         <button type="button" class="btn btn-secondary" (click)="tagPhotos()" [disabled]="!uploader.queue.length">
             Tag Photos
+        </button>
+    </div>
+    <div class="toolbar-phone">
+        <button type="button" class="btn btn-primary btn-sm" (click)="selectImages()">
+            Select
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+            Upload
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="cancelAll" [disabled]="!uploader.isUploading">
+            Cancel
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="removeAll()" [disabled]="!uploader.queue.length">
+            Clear
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="tagPhotos()" [disabled]="!uploader.queue.length">
+            Tag
         </button>
     </div>
 
@@ -47,7 +64,7 @@
         </div>
     </div>
 
-    <div [hidden]="uploader.queue.length < 25">
+    <div [hidden]="uploader.queue.length < 25" class="toolbar">
 
         <hr/>
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Web.Models;
 using System;
@@ -23,15 +24,18 @@ namespace SCS.HomePhotos.Web.Controllers
         private readonly ILogger<UploadController> _logger;
         private readonly IImageService _imageService;
         private readonly IFileUploadService _fileUploadService;
+        private readonly IAdminLogService _adminLogService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UploadController"/> class.
         /// </summary>
-        public UploadController(ILogger<UploadController> logger, IImageService imageService, IFileUploadService fileUploadService)
+        public UploadController(ILogger<UploadController> logger, IImageService imageService, IFileUploadService fileUploadService,
+            IAdminLogService adminLogService)
         {
             _logger = logger;
             _imageService = imageService;
             _fileUploadService = fileUploadService;
+            _adminLogService = adminLogService;
         }
 
         // [DisableRequestSizeLimit]
@@ -49,7 +53,7 @@ namespace SCS.HomePhotos.Web.Controllers
             var acceptedExtensions = new string[] { "JPG", "JPEG", "PNG", "GIF" };
 
             var files = HttpContext.Request.Form.Files;
-            var tags = (formdata.ContainsKey("tagList") && formdata["tagList"].Count > 0) ? formdata["tagList"].ToArray() : new string[] { };
+            var tags = (formdata.ContainsKey("tagList") && formdata["tagList"].Count > 0) ? formdata["tagList"].ToList() : new List<string>();
 
             foreach (var file in files)
             {
@@ -100,7 +104,10 @@ namespace SCS.HomePhotos.Web.Controllers
                         await file.CopyToAsync(stream);
                     }
 
-                    var cachePath = await _imageService.QueueMobileResize(filePath, false, tags);
+                    tags.Add($"{User.Identity.Name} Upload");
+
+                    var cachePath = await _imageService.QueueMobileResize(filePath, false, tags.ToArray());
+                    LogUpload(User.Identity.Name);
                 }
                 catch (Exception ex)
                 {
@@ -110,6 +117,21 @@ namespace SCS.HomePhotos.Web.Controllers
             }
 
             return Ok();
+        }
+
+        private void LogUpload(string username)
+        {
+            var msg = $"User {username} uploaded photos.";
+
+            var entry = new LogEntry
+            {
+                Message = msg,
+                Category = LogCategory.Upload,
+                Severity = LogSeverity.Neutral,
+                Timestamp = DateTime.Now
+            };
+
+            _adminLogService.AddLogEntry(entry, TimeSpan.FromMinutes(30));
         }
     }
 }

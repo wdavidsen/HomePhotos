@@ -20,6 +20,8 @@ namespace SCS.HomePhotos.Service
         private readonly IDynamicConfig _dynamicConfig;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
 
+        private string _noiseWords = "null";
+
         public PhotoService(IPhotoData photoData, ITagData tagData, ILogger<PhotoService> logger, IFileSystemService fileSystemService, 
             IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
         {
@@ -140,8 +142,12 @@ namespace SCS.HomePhotos.Service
 
         public async Task AssociateTags(Photo photo, params string[] tags)
         {
+            var noise = _noiseWords.Split(',');
+
             foreach (var tagName in tags)
             {
+                if (noise.Any(w => w.ToUpper() == tagName.ToUpper())) continue;
+
                 var tag = await GetTag(tagName, true);
                 await _tagData.AssociatePhotoTag(photo.PhotoId.Value, tag.TagId.Value);
             }

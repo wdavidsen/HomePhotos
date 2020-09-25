@@ -4,21 +4,19 @@ a.navbar-brand {
   word-break: break-all;
 }
 
-html {
-  font-size: 14px;
-}
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 .bar {
   margin: 7px 7px 0 7px;
+}
+
+button.options-item {
+  display: unset;
+}
+a.options-item {
+  display: none;
 }
 
 .nav-right a:hover {
@@ -28,4 +26,37 @@ html {
 .nav-check {
   margin-top: 8px;
   padding: 0;
+}
+
+
+/** Phone **/
+@media only screen and (max-width: 767px), only screen and (max-device-width: 767px) {
+
+  .bar {
+    display: none;
+  }
+  button.options-item {
+    display: none !important;
+  }
+  a.options-item {
+    display: block;
+  }
+}
+
+/** Tablet **/
+@media only screen and (min-width : 768px) and (max-width : 1024px) {
+
+
+  .bar {
+    display: none;
+  }
+}
+
+/** Tablet (landscape) **/
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
+
+  .bar {
+    display: none;
+  }
+
 }

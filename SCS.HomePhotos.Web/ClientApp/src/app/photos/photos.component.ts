@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { PhotosService } from '../services/photos.service';
-import { Thumbnail, Photo } from '../models';
+import { Thumbnail, Photo, User } from '../models';
 import { map, debounce } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { SearchService, OrganizeService } from '../services';
+import { SearchService, OrganizeService, AuthenticationService } from '../services';
 import { PageInfoService } from '../services/page-info.service';
 import { Subscription, Subject, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -33,6 +33,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
   private searchSubscription: Subscription;
   private bottomScrollSubscription: Subscription;
   private scrollSubject = new Subject<number>();
+  private currentUser: User;
 
   constructor(private photosService: PhotosService,
     private route: ActivatedRoute,
@@ -41,8 +42,11 @@ export class PhotosComponent implements OnInit, OnDestroy {
     private organizeService: OrganizeService,
     private toastr: ToastrService,
     private modalService: BsModalService,
-    private scrollService: ScrollService) {
-
+    private scrollService: ScrollService,
+    private authenticationService: AuthenticationService) {
+      this.authenticationService.currentUser.subscribe(user => {
+        this.currentUser = user;
+      });
     }
 
   @HostListener('document:scroll', ['$event'])
@@ -182,22 +186,24 @@ export class PhotosComponent implements OnInit, OnDestroy {
   }
 
   private loadPhotos() {
-    switch (this.mode) {
-      case 1:
-        this.photosService.getLatest(this.pageNum)
-          .pipe(map(photos => this.photosToThumbnails(photos)))
-          .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
+    if (this.currentUser) {
+      switch (this.mode) {
+        case 1:
+          this.photosService.getLatest(this.pageNum)
+            .pipe(map(photos => this.photosToThumbnails(photos)))
+            .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
+          break;
+        case 2:
+          this.photosService.getPhotosByTag(this.pageNum, this.tagName)
+            .pipe(map(photos => this.photosToThumbnails(photos)))
+            .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
+          break;
+        case 3:
+          this.photosService.searchPhotos(this.pageNum, this.keywords)
+            .pipe(map(photos => this.photosToThumbnails(photos)))
+            .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
         break;
-      case 2:
-        this.photosService.getPhotosByTag(this.pageNum, this.tagName)
-          .pipe(map(photos => this.photosToThumbnails(photos)))
-          .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
-        break;
-      case 3:
-        this.photosService.searchPhotos(this.pageNum, this.keywords)
-          .pipe(map(photos => this.photosToThumbnails(photos)))
-          .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
-      break;
+      }
     }
   }
 
@@ -235,9 +241,9 @@ export class PhotosComponent implements OnInit, OnDestroy {
 
     if (windowWidth < 768) {
         // display as center cropped square maximizing all space (for small screens)
-        const thumbsPerLine = Math.floor(windowWidth / (width + 4));
-        const extra = windowWidth - (thumbsPerLine * (width + 4));
-        extraPerThumb = Math.floor(extra / thumbsPerLine);
+        const thumbsPerLine = Math.floor(windowWidth / (width + 8));
+        const extra = windowWidth - (thumbsPerLine * (width + 8));
+        extraPerThumb = Math.floor((extra - 8) / thumbsPerLine);
     }
     else {
         // display with normal image aspect ratio (no cropping)

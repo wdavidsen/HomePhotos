@@ -13,5 +13,7 @@ namespace SCS.HomePhotos.Data
             DateTime timestampEnd);
 
         Task DeleteLogEntries(DateTime olderThanDate);
+
+        Task<LogEntry> GetExistingEntry(string message, TimeSpan age);
     }
 }

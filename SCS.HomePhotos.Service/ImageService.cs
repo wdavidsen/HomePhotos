@@ -64,7 +64,7 @@ namespace SCS.HomePhotos.Service
                     CreateThumbnail(smallImagePath, cacheFilePath);
 
                     var finalPath = GetMobileUploadPath(imageFilePath);
-                    File.Move(imageFilePath, finalPath);
+                    File.Move(imageFilePath, finalPath, true);
                     SavePhotoAndTags(finalPath, cacheFilePath, checksum, imageLayoutInfo, metadata, tags);
                 }
                 catch (Exception ex)
@@ -238,12 +238,21 @@ namespace SCS.HomePhotos.Service
 
             if (exifData != null)
             {
-                if (exifData.HasTagName(ExifDirectoryBase.TagDateTimeOriginal))
+                var dateTaken = exifData.GetDescription(ExifDirectoryBase.TagDateTime)
+                    ?? exifData.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
+
+                if (dateTaken != null)
                 {
-                    var dateTaken = exifData.GetDescription(ExifDirectoryBase.TagDateTime);
-                    var dateParts = dateTaken.Split(':', '-', '.', ' ', 'T');
-                    imageInfo.DateTaken = new DateTime(int.Parse(dateParts[0]), int.Parse(dateParts[1]), int.Parse(dateParts[2]),
-                        int.Parse(dateParts[3]), int.Parse(dateParts[4]), int.Parse(dateParts[5]));
+                    try
+                    {
+                        var dateParts = dateTaken.Split(':', '-', '.', ' ', 'T');
+                        imageInfo.DateTaken = new DateTime(int.Parse(dateParts[0]), int.Parse(dateParts[1]), int.Parse(dateParts[2]),
+                            int.Parse(dateParts[3]), int.Parse(dateParts[4]), int.Parse(dateParts[5]));
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Failed to parse EXIF date/time taken {dateTaken}.", dateTaken);
+                    }
                 }
 
                 var exifTag = exifData.GetDescription(ExifDirectoryBase.TagModel);

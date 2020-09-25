@@ -38,12 +38,6 @@ export class AccountComponent implements OnInit {
             this.accountInfo = data;
             this.setupForm(data);
             this.loading = false;
-        },
-        error => {
-            console.error(error);
-            this.toastr.warning(`Please login again`);
-            this.loading = false;
-            this.router.navigate(['/login']);
         });
   }
 

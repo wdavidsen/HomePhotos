@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent, InputDialogComponent } from '../common-dialog';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-settings',

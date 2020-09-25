@@ -7,3 +7,4 @@ export * from './page-info.service';
 export * from './search.service';
 export * from './organize.service';
 export * from './account.service';
+export * from './user-settings.service';

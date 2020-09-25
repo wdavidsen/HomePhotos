@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using SCS.HomePhotos.Model;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Data
@@ -10,9 +10,9 @@ namespace SCS.HomePhotos.Data
     {
         public LogData(IStaticConfig staticConfig) : base(staticConfig) { }
 
-        public async Task<DataList<LogEntry>> GetLogEntries(PageInfo pageInfo, 
-            LogCategory? category, 
-            LogSeverity? serverity, 
+        public async Task<DataList<LogEntry>> GetLogEntries(PageInfo pageInfo,
+            LogCategory? category,
+            LogSeverity? serverity,
             DateTime timestampStart,
             DateTime timestampEnd)
         {
@@ -49,6 +49,16 @@ namespace SCS.HomePhotos.Data
             {
                 await DeleteAsync(entry);
             }
+        }
+
+        public async Task<LogEntry> GetExistingEntry(string message, TimeSpan age)
+        {
+            var timespanCutoff = DateTime.Now - age;
+            var parameters = new { Message = message, TimespanCutoff = timespanCutoff };
+
+            var messages = await GetListPagedAsync<LogEntry>("Message = @Message AND Timespan >= @TimespanCutoff", parameters, "Timespan DESC", 1, 1);
+
+            return messages != null ? messages.FirstOrDefault() : null;
         }
     }
 }

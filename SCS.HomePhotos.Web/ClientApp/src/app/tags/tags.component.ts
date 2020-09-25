@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { TagService, SearchService, OrganizeService } from '../services';
-import { TagChip, Tag } from '../models';
+import { TagService, SearchService, OrganizeService, AuthenticationService } from '../services';
+import { TagChip, Tag, User } from '../models';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -22,13 +22,20 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   private searchSubscription: Subscription;
   private organizeSubscription: Subscription;
+  private dialogSubscription: Subscription;
+  private currentUser: User;
 
   constructor(private tagService: TagService,
     private router: Router,
     private searchService: SearchService,
     private organizeService: OrganizeService,
     private toastr: ToastrService,
-    private modalService: BsModalService) { }
+    private modalService: BsModalService,
+    private authenticationService: AuthenticationService) {
+      this.authenticationService.currentUser.subscribe(user => {
+        this.currentUser = user;
+      });
+    }
 
   ngOnInit() {
     this.searchService.setHidden(false);
@@ -40,16 +47,8 @@ export class TagsComponent implements OnInit, OnDestroy {
 
     this.searchSubscription = this.searchService.getKeywords()
       .subscribe(keywords => {
-        if (keywords) {
-          console.log(`Received search keywords: ${keywords}`);
-          this.tagService.searchTags(keywords)
-            .pipe(map(tags => this.tagsToChips(tags)))
-            .subscribe((chips => this.tagChips = this.insertIndexDividers(chips)));
-        }
-        else {
-          this.tagService.getTags()
-            .pipe(map(tags => this.tagsToChips(tags)))
-            .subscribe((chips => this.tagChips = this.insertIndexDividers(chips)));
+        if (this.currentUser) {
+          this.loadTags(keywords);
         }
       });
 
@@ -63,6 +62,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.searchSubscription.unsubscribe();
     this.organizeSubscription.unsubscribe();
+    this.clearDialogSubscription();
   }
 
   select(chip: TagChip) {
@@ -91,13 +91,27 @@ export class TagsComponent implements OnInit, OnDestroy {
     const options = InputDialogComponent.GetOptions('New Tag Name', 'Name', message, '');
     this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
-    this.modalService.onHidden
+    this.clearDialogSubscription();
+    this.dialogSubscription = this.modalService.onHidden
       .subscribe(() => {
         if (this.inputModalRef.content.okClicked) {
           this.addTagSubmit(this.inputModalRef.content.input);
         }
-      })
-      .unsubscribe();
+      });
+  }
+
+  private loadTags(keywords: string) {
+    if (keywords) {
+      console.log(`Received search keywords: ${keywords}`);
+      this.tagService.searchTags(keywords)
+        .pipe(map(tags => this.tagsToChips(tags)))
+        .subscribe((chips => this.tagChips = this.insertIndexDividers(chips)));
+    }
+    else {
+      this.tagService.getTags()
+        .pipe(map(tags => this.tagsToChips(tags)))
+        .subscribe((chips => this.tagChips = this.insertIndexDividers(chips)));
+    }
   }
 
   private addTagSubmit(tagName: string) {
@@ -127,7 +141,8 @@ export class TagsComponent implements OnInit, OnDestroy {
       const options = InputDialogComponent.GetOptions('New Tag Name', 'Name', message, chips[0].name);
       this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
-      this.modalService.onHidden
+      this.clearDialogSubscription();
+      this.dialogSubscription = this.modalService.onHidden
         .subscribe(() => {
           if (this.inputModalRef.content.okClicked) {
             this.renameTagSubmit(chips[0].id, this.inputModalRef.content.input);
@@ -166,7 +181,8 @@ export class TagsComponent implements OnInit, OnDestroy {
       const options = ConfirmDialogComponent.GetOptions('Delete Tags', message, true);
       this.confirmModalRef = this.modalService.show(ConfirmDialogComponent, options);
 
-      this.modalService.onHidden
+      this.clearDialogSubscription();
+      this.dialogSubscription = this.modalService.onHidden
           .subscribe(() => {
             chips.forEach(chip => {
               if (this.confirmModalRef.content.yesClicked) {
@@ -198,7 +214,8 @@ export class TagsComponent implements OnInit, OnDestroy {
       const options = InputDialogComponent.GetOptions('Copied Tag Name', 'Name', message, chips[0].name);
       this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
-      this.modalService.onHidden
+      this.clearDialogSubscription();
+      this.dialogSubscription = this.modalService.onHidden
         .subscribe(() => {
           if (this.inputModalRef.content.okClicked) {
             this.copyTagSubmit(chips[0].id, this.inputModalRef.content.input);
@@ -232,7 +249,8 @@ export class TagsComponent implements OnInit, OnDestroy {
       const options = InputDialogComponent.GetOptions('Combined Tag Name', 'Name', message, chips[0].name);
       this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
-      this.modalService.onHidden
+      this.clearDialogSubscription();
+      this.dialogSubscription = this.modalService.onHidden
         .subscribe(() => {
           if (this.inputModalRef.content.okClicked) {
             this.combineTagsSubmit(chips.map(c => c.id), this.inputModalRef.content.input);
@@ -256,6 +274,12 @@ export class TagsComponent implements OnInit, OnDestroy {
         },
         err => this.toastr.error('Failed to combine tags')
       );
+    }
+  }
+
+  private clearDialogSubscription(): void {
+    if (this.dialogSubscription) {
+      this.dialogSubscription.unsubscribe();
     }
   }
 

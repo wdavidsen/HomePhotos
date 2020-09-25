@@ -8,11 +8,11 @@
 </section>
 
 <nav class="navbar navbar-expand-md navbar-light bg-light fixed-bottom" [hidden]="!organizeMode">   
-    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#footerNavbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarCollapse">
+    <div class="collapse navbar-collapse" id="footerNavbarCollapse">
         <div class="navbar-nav">
             <button type="button" class="btn btn-default navbar-btn" (click)="showTagTool()" [disabled]="getSelectedThumbnails().length === 0"><i class="fa fa-tag"></i> Tag Photos</button>
             <button type="button" class="btn btn-default navbar-btn" (click)="selectAll()"><i class="fa fa-arrows-alt"></i> Select All</button>
