@@ -5,6 +5,10 @@ namespace SCS.HomePhotos.Web.Controllers
 {
     public class HomePhotosController : Controller
     {
+        public HomePhotosController()
+        {            
+        }
+
         public IActionResult Index()
         {
             return View();

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Service.Workers;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -31,13 +32,15 @@ namespace SCS.HomePhotos.Workers
         private readonly ILogger<TimedIndexHostedService> _logger;
         private readonly IConfigService _configService;        
         private readonly IAdminLogService _adminlogger;
+        private readonly IIndexEvents _indexEvents;
         private Timer _timer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TimedIndexHostedService"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IConfigService configService, IAdminLogService dblogger)
+        public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IConfigService configService, 
+            IAdminLogService dblogger, IIndexEvents indexEvents)
         {
             Name = "Image Indexer";
 
@@ -45,6 +48,7 @@ namespace SCS.HomePhotos.Workers
             _logger = logger;
             _configService = configService;            
             _adminlogger = dblogger;
+            _indexEvents = indexEvents;
 
             configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
         }
@@ -149,8 +153,13 @@ namespace SCS.HomePhotos.Workers
                     _configService.DynamicConfig.IndexPath, 
                     _configService.DynamicConfig.MobileUploadsFolder 
                 };
+
+                _indexEvents.IndexStarted?.Invoke();
+
                 ProcessDirectories(_indexCanellationToken, _internalCanellationToken, indexPaths);
                 _logger.LogInformation("Completed photo image index");
+
+                _indexEvents.IndexCompleted?.Invoke(); 
 
                 var nextStart = DateTime.Now + GetNextStartTime();
                 
@@ -175,7 +184,7 @@ namespace SCS.HomePhotos.Workers
             }
             catch (Exception ex)
             {
-                _logger.LogError(_adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
+                _logger.LogError(ex, _adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
                 StopTimer();
             }
             finally

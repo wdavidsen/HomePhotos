@@ -19,6 +19,8 @@ using SCS.HomePhotos.Web.Security;
 using SCS.HomePhotos.Workers;
 using System.Threading.Tasks;
 using SCS.HomePhotos.Model;
+using SCS.HomePhotos.Web.Hubs;
+using System;
 
 namespace SCS.HomePhotos.Web
 {
@@ -72,6 +74,8 @@ namespace SCS.HomePhotos.Web
                 });
             });
 
+            services.AddSignalR();
+
             // config
             var staticConfig = StaticConfig.Build(Configuration);
             var configData = new ConfigData(staticConfig);
@@ -83,8 +87,8 @@ namespace SCS.HomePhotos.Web
             var configService = new ConfigService(configData, dynamicConfig, staticConfig);
             SetDynamicConfig(configService).Wait();
             services.AddSingleton<IConfigService>(configService);
-
-            // background tasks
+            
+            // background tasks            
             services.AddHostedService<QueuedHostedService>();
             services.AddHostedService<TimedIndexHostedService>();
             services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
@@ -105,11 +109,15 @@ namespace SCS.HomePhotos.Web
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ISecurityService, SecurityService>();
             services.AddSingleton<IAdminLogService>(new AdminLogService(new LogData(staticConfig), staticConfig));
+            services.AddSingleton<IIndexEvents, IndexEvents>();
+            services.AddSingleton<IClientMessageSender, ClientMessageSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.ApplicationServices.GetService<IClientMessageSender>();
+
             // https://github.com/serilog/serilog-extensions-logging-file
             loggerFactory.AddFile(Configuration.GetSection("Logging"));
 
@@ -138,6 +146,10 @@ namespace SCS.HomePhotos.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<AdminNotifcationHub>("/admin-messages");
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
