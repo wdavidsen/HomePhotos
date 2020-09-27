@@ -22,7 +22,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpGet("latest", Name = "GetLatestPhotos")]
-        public async Task<IActionResult> GetLatestPhotos([FromQuery] int pageNum = 1, [FromQuery] int pageSize = 200)
+        public async Task<IActionResult> GetLatestPhotos([FromQuery] int pageNum = 1, [FromQuery] int pageSize = 400)
         {
             var photos = await _photoSevice.GetLatestPhotos(pageNum, pageSize);
 
@@ -37,7 +37,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpGet("byTag", Name = "GetPhotosByTag")]
-        public async Task<IActionResult> GetPhotosByTag([FromQuery] string tag, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 200)
+        public async Task<IActionResult> GetPhotosByTag([FromQuery] string tag, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 400)
         {
             if (string.IsNullOrWhiteSpace(tag))
             {
@@ -57,7 +57,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpGet("search", Name = "SearchPhotos")]
-        public async Task<IActionResult> SearchPhotos([FromQuery] string keywords, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 200)
+        public async Task<IActionResult> SearchPhotos([FromQuery] string keywords, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 400)
         {
             if (string.IsNullOrWhiteSpace(keywords))
             {
