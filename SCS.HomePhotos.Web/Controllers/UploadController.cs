@@ -82,13 +82,13 @@ namespace SCS.HomePhotos.Web.Controllers
                     }
 
                     // check image header bytes
-                    //using (var sourceStream = file.OpenReadStream())
-                    //{
-                    //    if (!ImageValidationHelper.ValidateImageHeaders(sourceStream))
-                    //    {
-                    //        return BadRequest();
-                    //    }
-                    //}
+                    using (var sourceStream = file.OpenReadStream())
+                    {
+                        if (!ImageValidationHelper.ValidateImageHeaders(sourceStream))
+                        {
+                            return BadRequest();
+                        }
+                    }
 
                     // file name should not exceed 255 characters
                     if (fileName.Length > 255)

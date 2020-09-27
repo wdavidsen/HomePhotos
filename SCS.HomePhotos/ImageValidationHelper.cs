@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace SCS.HomePhotos
 {
@@ -7,6 +8,32 @@ namespace SCS.HomePhotos
     /// </summary>
     public static class ImageValidationHelper
     {
+        private static readonly Dictionary<string, string[]> _jpegBytes;
+        private static readonly Dictionary<string, string[]> _pngBytes;
+        private static readonly Dictionary<string, string[]> _gifBytes;
+        
+        static ImageValidationHelper()
+        {
+            _jpegBytes = new Dictionary<string, string[]>
+            {
+                { "Type1", new string[] { "FF", "D8", "FF", "DB" } },
+                { "Type2", new string[] { "FF", "D8", "FF", "E0" } },
+                { "Type3", new string[] { "FF", "D8", "FF", "EE" } },
+                { "Type4", new string[] { "FF", "D8", "FF", "E1" } }
+            };
+
+            _pngBytes = new Dictionary<string, string[]>
+            {
+                { "Type1", new string[] { "89", "50", "4E", "47", "0D", "0A", "1A", "0A" } }
+            };
+
+            _gifBytes = new Dictionary<string, string[]>
+            {
+                { "Type1", new string[] { "47", "49", "46", "38", "37", "61" } },
+                { "Type2", new string[] { "47", "49", "46", "38", "39", "61" } },
+            };
+        }
+
         /// <summary>
         /// Verifies a file has the PNG header.
         /// </summary>
@@ -14,7 +41,7 @@ namespace SCS.HomePhotos
         /// <returns>True or false.</returns>
         public static bool ValidatePngHeader(string sourcePath)
         {
-            return ValidateImageHeader(sourcePath, "89", "50", "4E", "47");
+            return ValidateImageHeader(sourcePath, _pngBytes["Type1"]);
         }
 
         /// <summary>
@@ -24,7 +51,10 @@ namespace SCS.HomePhotos
         /// <returns>True or false.</returns>
         public static bool ValidateJpegHeader(string sourcePath)
         {
-            return ValidateImageHeader(sourcePath, "FF", "D8", "FF", "E0");
+            return ValidateImageHeader(sourcePath, _jpegBytes["Type1"])
+                || ValidateImageHeader(sourcePath, _jpegBytes["Type2"])
+                || ValidateImageHeader(sourcePath, _jpegBytes["Type3"])
+                || ValidateImageHeader(sourcePath, _jpegBytes["Type4"]);
         }
 
         /// <summary>
@@ -34,7 +64,7 @@ namespace SCS.HomePhotos
         /// <returns>True or false.</returns>
         public static bool ValidateGifHeader(string sourcePath)
         {
-            return ValidateImageHeader(sourcePath, "47", "49", "46");
+            return ValidateImageHeader(sourcePath, _gifBytes["Type1"]) || ValidateImageHeader(sourcePath, _gifBytes["Type2"]);
         }
 
         /// <summary>
@@ -64,8 +94,13 @@ namespace SCS.HomePhotos
             var data = new byte[8];
             sourceStream.Read(data, 0, data.Length);
 
-            // JPG / PNG / GIF
-            return CheckBytes(data, "FF", "D8", "FF", "E0") || CheckBytes(data, "89", "50", "4E", "47") || CheckBytes(data, "47", "49", "46");
+            return (CheckBytes(data, _jpegBytes["Type1"])
+                    || CheckBytes(data, _jpegBytes["Type2"])
+                    || CheckBytes(data, _jpegBytes["Type3"])
+                    || CheckBytes(data, _jpegBytes["Type4"])) // JPG
+                || CheckBytes(data, _pngBytes["Type1"]) // PNG
+                || (CheckBytes(data, _gifBytes["Type1"])
+                    || CheckBytes(data, _gifBytes["Type2"])); // GIF
         }
 
         /// <summary>
@@ -79,7 +114,7 @@ namespace SCS.HomePhotos
             var index = 0;
             foreach (var code in hexCodes)
             {
-                if (target[index].ToString("X") != code)
+                if (target[index].ToString("X").PadLeft(2, '0') != code)
                 {
                     return false;
                 }
