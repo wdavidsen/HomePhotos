@@ -46,7 +46,7 @@ namespace SCS.HomePhotos.Workers
             _configService = configService;            
             _adminlogger = dblogger;
 
-            //configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
+            configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
         }
 
         private void _config_PropertyChanged(object sender, PropertyChangedEventArgs e)
