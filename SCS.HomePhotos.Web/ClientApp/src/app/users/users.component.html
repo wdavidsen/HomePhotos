@@ -10,7 +10,7 @@
                 <th>Last Login</th>
                 <th>Failed Logins</th>
                 <th>Enabled</th>
-                <th>Admin</th>
+                <th>Role</th>
             </tr>
         </thead>
         <tbody>
@@ -21,7 +21,7 @@
                 <td>{{u.lastLogin | date:'medium'}}</td>
                 <td>{{u.failedLoginCount}}</td>
                 <td>{{u.enabled ? 'Yes' : 'No'}}</td>
-                <td>{{u.admin ? 'Yes' : 'No'}}</td>
+                <td>{{u.role}}</td>
             </tr>
         </tbody>
     </table>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Moq;
+using SCS.HomePhotos.Model;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -43,7 +44,7 @@ namespace SCS.HomePhotos.Web.Test.Mocks
             mock.Setup(m => m.GenerateToken(It.IsAny<IEnumerable<Claim>>()))
                 .Returns(token);
 
-            mock.Setup(m => m.GetUserClaims(It.IsAny<string>(), It.IsAny<bool>()))
+            mock.Setup(m => m.GetUserClaims(It.IsAny<string>(), It.IsAny<RoleType>()))
                 .Returns(claims);
 
             mock.SetupGet(p => p.ValidAudience)

@@ -17,7 +17,7 @@ namespace SCS.HomePhotos.Web.Dto
             LastLogin = user.LastLogin;
         }
 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
         [Required]
         public string Username { get; set; }

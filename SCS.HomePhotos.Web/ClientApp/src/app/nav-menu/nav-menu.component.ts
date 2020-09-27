@@ -30,7 +30,7 @@ export class NavMenuComponent implements OnInit {
       this.authenticationService.currentUser.subscribe(user => {
         this.currentUser = user;
         this.hideMenu = !this.currentUser;
-        this.hideMenuAdmin = !(this.currentUser && this.currentUser.admin);
+        this.hideMenuAdmin = !(this.currentUser && this.currentUser.role === 'Admin');
         this.hideUploadMenu = this.hideMenuAdmin;
       });
 

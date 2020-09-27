@@ -13,14 +13,14 @@ namespace SCS.HomePhotos.Web.Dto
             Username = user.UserName;
             FirstName = user.FirstName;
             LastName = user.LastName;
-            Enabled = user.Enabled;
-            Admin = user.Role == RoleType.Admin;
+            Enabled = user.Enabled;            
+            Role = user.Role;
             LastLogin = user.LastLogin;
             FailedLoginCount = user.FailedLoginCount;
             MustChangePassword = user.MustChangePassword;
         }
 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
         [Required]
         public string Username { get; set; }
@@ -35,7 +35,8 @@ namespace SCS.HomePhotos.Web.Dto
         public bool Enabled { get; set; }
 
         [Required]
-        public bool Admin { get; set; }
+        public RoleType Role { get; set; }
+
 
         public DateTime? LastLogin { get; set; }
 
@@ -52,7 +53,7 @@ namespace SCS.HomePhotos.Web.Dto
                 FirstName = FirstName,
                 LastName = LastName,
                 Enabled = Enabled,
-                Role = Admin ? RoleType.Admin : RoleType.Reader,
+                Role = Role,
                 LastLogin = LastLogin,
                 FailedLoginCount = FailedLoginCount,
                 MustChangePassword = MustChangePassword

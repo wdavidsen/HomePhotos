@@ -141,7 +141,7 @@ namespace SCS.HomePhotos.Service
         {
             var tokenList = new List<UserToken>();
             var user = await GetUser(userName);
-            var tokens = await _userTokenData.GetUserTokens(user.UserId, true);   
+            var tokens = await _userTokenData.GetUserTokens(user.UserId.Value, true);   
 
             if (tokens != null && tokens.Count() > 0)
             {
@@ -160,14 +160,14 @@ namespace SCS.HomePhotos.Service
         {
             var user = await GetUser(userName);
 
-            await _userTokenData.DeleteRefreshToken(user.UserId, refreshToken);
+            await _userTokenData.DeleteRefreshToken(user.UserId.Value, refreshToken);
         }
 
         public async Task DeleteAgentRefreshTokens(string userName, string agentIdentifier)
         {
             var user = await GetUser(userName);
 
-            await _userTokenData.DeleteAgentRefreshTokens(user.UserId, agentIdentifier);
+            await _userTokenData.DeleteAgentRefreshTokens(user.UserId.Value, agentIdentifier);
         }
 
         public async Task SaveRefreshToken(string userName, string newRefreshToken, string agentIdentifier, string issuer, string audience, DateTime expirationUtc)
@@ -176,7 +176,7 @@ namespace SCS.HomePhotos.Service
 
             var userToken = new UserToken
             {
-                UserId = user.UserId,
+                UserId = user.UserId.Value,
                 AgentIdentifier = agentIdentifier,
                 Refresh = true,
                 Token = newRefreshToken,
@@ -246,7 +246,7 @@ namespace SCS.HomePhotos.Service
 
             if (user.UserId > 0)
             {
-                var exitingUser = await _userData.GetAsync<User>(user.UserId);
+                var exitingUser = await _userData.GetAsync<User>(user.UserId.Value);
                 if (exitingUser == null)
                 {
                     throw new InvalidOperationException("User does not exist.");

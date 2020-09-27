@@ -115,7 +115,7 @@ export class UsersComponent implements OnInit {
     userRow.lastLogin = user.lastLogin;
     userRow.failedLoginCount = user.failedLoginCount;
     userRow.enabled = user.enabled;
-    userRow.admin = user.admin;
+    userRow.role = user.role;
 
     return userRow;
   }

@@ -16,6 +16,7 @@ export class UserDetailComponent implements OnInit {
   private currentUser: User;
   user: User;
   userForm: FormGroup;
+  roles = ['Reader', 'Contributer', 'Admin'];
   loading = false;
   submitted = false;
   changePasswordModalRef: BsModalRef;
@@ -75,11 +76,11 @@ export class UserDetailComponent implements OnInit {
     const tempUser = this.formToUser();
 
     this.userService.save(tempUser)
-        .subscribe(data => {
-          this.toastr.success(`User saved successfully`);
-          this.user = tempUser;
+      .subscribe(user => {
+          this.user = user;
+          this.toastr.success(`User saved successfully`);          
           this.loading = false;
-          this.setupForm(data);
+          this.setupForm(this.user);          
         },
         error => {
             console.error(error);
@@ -119,22 +120,22 @@ export class UserDetailComponent implements OnInit {
   private setupForm(data: User) {
 
     this.userForm = this.formBuilder.group({
-        username: [data ? data.username : '', Validators.required],
-        password: [data ? data.password : '', Validators.required],
-        passwordCompare: [data ? data.passwordCompare : '', Validators.required],
-        firstName: [data ? data.firstName : '', Validators.required],
-        lastName: [data ? data.lastName : '', Validators.required],
-        lastLogin: [data ? data.lastLogin : ''],
-        failedLoginCount: [data ? data.failedLoginCount : ''],
-        mustChangePassword: [data ? data.mustChangePassword : ''],
-        enabled: [data ? data.enabled : ''],
-        admin: [data ? data.admin : '']
-        });
+      username: [data.username, Validators.required],
+      password: [data.password, Validators.required],
+      passwordCompare: [data.passwordCompare, Validators.required],
+      firstName: [data.firstName, Validators.required],
+      lastName: [data.lastName, Validators.required],
+      role: [data.role, Validators.required],
+      lastLogin: [data.lastLogin],
+      failedLoginCount: [data.failedLoginCount],
+      mustChangePassword: [data.mustChangePassword],
+      enabled: [data.enabled]        
+    });
 
     if (data.userId > 0) {
-        this.userForm.get('username').disable();
-        this.userForm.get('password').disable();
-        this.userForm.get('passwordCompare').disable();
+      this.userForm.get('username').disable();
+      this.userForm.get('password').disable();
+      this.userForm.get('passwordCompare').disable();
     }
   }
 
@@ -148,7 +149,7 @@ export class UserDetailComponent implements OnInit {
     user.lastName = this.f.lastName.value;
     user.mustChangePassword = this.f.mustChangePassword.value;
     user.enabled = this.f.enabled.value;
-    user.admin = this.f.admin.value;
+    user.role = this.f.role.value;
 
     return user;
   }

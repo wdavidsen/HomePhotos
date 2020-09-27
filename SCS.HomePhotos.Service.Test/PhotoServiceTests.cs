@@ -26,7 +26,7 @@ namespace SCS.HomePhotos.Service.Test
             _tagData = new Mock<ITagData>();
             _logger = new Mock<ILogger<PhotoService>>();
 
-            _photoService = new PhotoService(_photoData.Object, _tagData.Object, _logger.Object);
+            _photoService = new PhotoService(_photoData.Object, _tagData.Object, _logger.Object, null, null, null);
         }
 
         [Fact]

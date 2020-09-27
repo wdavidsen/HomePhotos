@@ -5,6 +5,6 @@ button {
     text-align: right;
 }
 
-.spacer {
-    height: 30px;
+.return-link {
+    margin: 17px 0;
 }

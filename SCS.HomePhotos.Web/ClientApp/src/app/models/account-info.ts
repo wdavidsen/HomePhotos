@@ -6,7 +6,7 @@ export class AccountInfo {
     firstName: string;
     lastName: string;
     lastLogin: Date;
-    admin: Boolean;
+    role: string;
 
     static FromUser(user: User): AccountInfo {
         const a = new AccountInfo();
@@ -16,7 +16,7 @@ export class AccountInfo {
         a.firstName = user.firstName;
         a.lastName = user.lastName;
         a.lastLogin = user.lastLogin;
-        a.admin = user.admin;
+        a.role = user.role;
 
         return a;
     }

@@ -6,7 +6,7 @@ export class UserRow {
     lastLogin: Date;
     failedLoginCount: Number;
     enabled: Boolean;
-    admin: Boolean;
+    role: string;
 
     selected: boolean;
 }

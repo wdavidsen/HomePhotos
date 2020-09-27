@@ -26,7 +26,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _logger = new Mock<ILogger<SettingsController>>();
             _dynamicConfig = new Mock<IDynamicConfig>();
 
-            _settingsController = new SettingsController(_logger.Object, _dynamicConfig.Object);
+            _settingsController = new SettingsController(_logger.Object, _dynamicConfig.Object, null);
         }
 
         [Fact]
