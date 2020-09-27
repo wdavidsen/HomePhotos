@@ -10,8 +10,8 @@ export class UserSettingsService {
 
   userSettings: UserSettings;
 
-  constructor(private localStorge: LocalStorageService) {
-    this.userSettings = this.localStorge.get(this.key);
+  constructor(private localStorge: LocalStorageService) {    
+    this.userSettings = this.localStorge.get(this.key) || new UserSettings();
     this.applySettings(this.userSettings);
   }
 

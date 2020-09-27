@@ -3,13 +3,14 @@ import { PhotosService } from '../services/photos.service';
 import { Thumbnail, Photo, User } from '../models';
 import { map, debounce } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { SearchService, OrganizeService, AuthenticationService } from '../services';
+import { SearchService, OrganizeService, AuthenticationService, UserSettingsService } from '../services';
 import { PageInfoService } from '../services/page-info.service';
 import { Subscription, Subject, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { PhotoTaggerComponent } from './photo-tagger.component';
 import { ScrollService } from '../services/scroll.service';
+import { UserSettings } from '../models/user-settings';
 
 declare const blueimp: any;
 
@@ -32,20 +33,25 @@ export class PhotosComponent implements OnInit, OnDestroy {
   private organizeSubscription: Subscription;
   private searchSubscription: Subscription;
   private bottomScrollSubscription: Subscription;
+  private userSettingsSubscription: Subscription;
   private scrollSubject = new Subject<number>();
   private currentUser: User;
+  private userSettings: UserSettings;
 
   constructor(private photosService: PhotosService,
     private route: ActivatedRoute,
     private pageInfoService: PageInfoService,
     private searchService: SearchService,
     private organizeService: OrganizeService,
+    private userSettingsService: UserSettingsService,
     private toastr: ToastrService,
     private modalService: BsModalService,
     private scrollService: ScrollService,
     private authenticationService: AuthenticationService) {
       this.authenticationService.currentUser.subscribe(user => {
         this.currentUser = user;
+        this.userSettings = this.userSettingsService.userSettings;
+        this.thumbHeight = this.getThumbHeight(this.userSettings.thumbnailSize);
       });
     }
 
@@ -113,6 +119,20 @@ export class PhotosComponent implements OnInit, OnDestroy {
         this.pageNum++;
         this.loadPhotos();
       });
+
+    this.userSettingsSubscription = this.userSettingsService.getSettings()
+      .subscribe(settings => {
+        this.userSettings = settings;
+        this.thumbHeight = this.getThumbHeight(settings.thumbnailSize);
+        
+        this.thumbnails.forEach((thumb) => {
+          const ratio = thumb.thumbWidth / thumb.thumbHeight;
+          const width = Math.floor(this.thumbHeight * ratio);
+
+          thumb.thumbHeight = this.thumbHeight;
+          thumb.thumbWidth = width;
+        });
+      });
   }
 
   ngOnDestroy() {
@@ -133,11 +153,11 @@ export class PhotosComponent implements OnInit, OnDestroy {
   showLightbox(thumbnail: Thumbnail) {
     // https://github.com/blueimp/Gallery#lightbox-setup
     const options = {
-        event: window.event,
-        slideshowInterval: 5000,
-        startSlideshow: false,
-        fullScreen: false,
-        thumbnailIndicators: true
+      event: window.event,
+      slideshowInterval: this.getSlideshowSpeed(this.userSettings.slideshowSpeed),
+      startSlideshow: this.userSettings.autoStartSlideshow,
+      fullScreen: false,
+      thumbnailIndicators: true
     };
 
     const images: any[] = [];
@@ -252,5 +272,39 @@ export class PhotosComponent implements OnInit, OnDestroy {
     }
 
     return { height: height + extraPerThumb, width: width + extraPerThumb };
+  }
+
+  private getThumbHeight(type: string): number {
+    switch (type) {
+      case 'Largest':
+        return 200;
+      case 'Large':
+        return 150;
+      case 'Medium':
+        return 100;
+      case 'Small':
+        return 70;
+      case 'Smallest':
+        return 50;
+      default:
+        return 150;
+    }
+  }
+
+  private getSlideshowSpeed(type): number {
+    switch (type) {
+      case 'Fastest':
+        return 1500;
+      case 'Fast':
+        return 2750;
+      case 'Normal':
+        return 4000;
+      case 'Slow':
+        return 6000;
+      case 'Slowest':
+        return 9000;
+      default:
+        return 4000;
+    }
   }
 }

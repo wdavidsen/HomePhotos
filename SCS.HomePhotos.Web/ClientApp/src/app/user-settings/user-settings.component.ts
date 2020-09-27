@@ -18,8 +18,8 @@ export class UserSettingsComponent implements OnInit {
   userSettingsForm: FormGroup;
   loading = false;
   submitted = false;
-  thumbSizes = ['Large', 'Medium', 'Small'];
-  slideSpeeds = ['Fast', 'Normal', 'Slow'];
+  thumbSizes = ['Largest', 'Large', 'Medium', 'Small', 'Smallest'];
+  slideSpeeds = ['Fastest', 'Fast', 'Normal', 'Slow', 'Slowest'];
 
   constructor(
     private formBuilder: FormBuilder,
