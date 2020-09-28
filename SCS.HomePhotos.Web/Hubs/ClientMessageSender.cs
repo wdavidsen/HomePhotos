@@ -5,9 +5,9 @@ namespace SCS.HomePhotos.Web.Hubs
 {
     public class ClientMessageSender : IClientMessageSender
     {
-        private readonly IHubContext<AdminNotifcationHub, IAdminNotifcationHub> _notificationHub;
+        private readonly IHubContext<NotifcationHub, INotifcationHub> _notificationHub;
 
-        public ClientMessageSender(IIndexEvents indexEvents, IHubContext<AdminNotifcationHub, IAdminNotifcationHub> notificationHub)
+        public ClientMessageSender(IIndexEvents indexEvents, IHubContext<NotifcationHub, INotifcationHub> notificationHub)
         {
             indexEvents.IndexStarted = OnIndexStarted;
             indexEvents.IndexCompleted = OnIndexCompleted;
@@ -17,12 +17,12 @@ namespace SCS.HomePhotos.Web.Hubs
 
         public void OnIndexStarted()
         {
-            _notificationHub.Clients.All.SendMessage("Photo indexing started");
+            _notificationHub.Clients.All.SendAdminsMessage("info", "Photo indexing started");
         }
 
         public void OnIndexCompleted()
         {
-            _notificationHub.Clients.All.SendMessage("Photo indexing completed");
+            _notificationHub.Clients.All.SendAdminsMessage("info", "Photo indexing completed");
         }
     }
 }

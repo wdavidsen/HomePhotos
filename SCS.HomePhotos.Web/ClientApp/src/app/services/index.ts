@@ -8,3 +8,4 @@ export * from './search.service';
 export * from './organize.service';
 export * from './account.service';
 export * from './user-settings.service';
+export * from './signalr.service';

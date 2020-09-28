@@ -43,7 +43,7 @@ export class UserSettingsComponent implements OnInit {
     this.save();
   }
 
-  private save() {    
+  private save() {
     const settings = this.formToUserSettings();
     this.userSettingsService.saveSettings(settings);
 

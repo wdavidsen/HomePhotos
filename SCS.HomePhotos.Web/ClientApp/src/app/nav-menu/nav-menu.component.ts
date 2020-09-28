@@ -34,9 +34,9 @@ export class NavMenuComponent implements OnInit {
         this.hideUploadMenu = this.hideMenuAdmin;
       });
 
-      router.events
-        .pipe(filter(event => event instanceof NavigationEnd))
-        .subscribe(info => this.SetOrganize(<NavigationEnd>info));
+    router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(info => this.SetOrganize(<NavigationEnd>info));
   }
 
   ngOnInit() {

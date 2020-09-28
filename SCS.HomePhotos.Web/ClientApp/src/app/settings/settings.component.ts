@@ -108,9 +108,9 @@ export class SettingsComponent implements OnInit {
       .subscribe(
         (updatedSettings) => {
           this.f.nextIndexTime.setValue(updatedSettings.nextIndexTime);
-          this.toastr.success('Indexing started successfully');
+          this.toastr.success('Index triggered successfully');
         },
-        () => this.toastr.error('Failed to start indexing')
+        () => this.toastr.error('Failed to strigger index')
       );
       this.indexModal.hide();
   }

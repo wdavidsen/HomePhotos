@@ -148,7 +148,7 @@ namespace SCS.HomePhotos.Web
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<AdminNotifcationHub>("/admin-messages");
+                endpoints.MapHub<NotifcationHub>("/message-hub");
             });
             app.UseEndpoints(endpoints =>
             {

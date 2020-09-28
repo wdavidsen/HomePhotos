@@ -124,7 +124,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
       .subscribe(settings => {
         this.userSettings = settings;
         this.thumbHeight = this.getThumbHeight(settings.thumbnailSize);
-        
+
         this.thumbnails.forEach((thumb) => {
           const ratio = thumb.thumbWidth / thumb.thumbHeight;
           const width = Math.floor(this.thumbHeight * ratio);
