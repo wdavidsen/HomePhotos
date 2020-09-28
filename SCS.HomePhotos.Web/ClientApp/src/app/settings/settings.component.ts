@@ -113,7 +113,7 @@ export class SettingsComponent implements OnInit {
 
           this.toastr.success('Index triggered successfully');
         },
-        () => this.toastr.error('Failed to strigger index')
+        () => this.toastr.error('Failed to trigger index')
       );
       this.indexModal.hide();
   }

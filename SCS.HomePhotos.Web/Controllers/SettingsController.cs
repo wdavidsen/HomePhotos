@@ -33,6 +33,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpPut]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Put([FromBody] Dto.Settings settings, bool reprocessPhotos = false)
         {
             if (!ModelState.IsValid)
@@ -57,8 +58,11 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpPut("indexNow", Name = "UpdateIndex")]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateNow([FromQuery] bool reprocessPhotos = false)
         {
+            Console.WriteLine(User.Identity.Name);
+
             if (reprocessPhotos)
             {
                 await _photoService.FlagPhotosForReprocessing();
@@ -71,6 +75,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpPut("clearCache", Name = "ClearCache")]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> ClearCache()
         {
             await _photoService.DeletePhotoCache();

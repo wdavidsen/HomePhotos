@@ -4,7 +4,8 @@ import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap/modal'
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 import { UploadPhotoTaggerComponent } from './upload-photo-tagger.component';
-import { TagState } from '../models';
+import { TagState, User } from '../models';
+import { AuthenticationService } from '../services';
 
 declare const loadImage: any;
 
@@ -26,16 +27,23 @@ export class UploadComponent implements OnInit {
   thumbnails: Array<string> = [];
 
   private tagList: TagState[] = [];
+  private currentUser: User;
 
   constructor(
+    private authenticationService: AuthenticationService,
     private toastr: ToastrService,
     private modalService: BsModalService) {
+
+      this.authenticationService.currentUser.subscribe(user => {
+        this.currentUser = user;
+      });
 
       const options = {
         url: `${environment.apiUrl}/upload/imageUpload`,
         itemAlias: 'files',
         allowedMimeType: ['image/jpeg', 'image/png'],
-        parametersBeforeFiles: true
+        parametersBeforeFiles: true,
+        authToken: `Bearer ${this.currentUser.token}`
       };
       this.uploader = new FileUploader(options);
 

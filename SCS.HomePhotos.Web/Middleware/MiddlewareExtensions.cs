@@ -24,5 +24,15 @@ namespace SCS.HomePhotos.Web.Middleware
         {
             app.UseMiddleware<PhotoImageMiddleware>();
         }
+
+        /// <summary>
+        /// Adds the antiforgery token for SPA apps.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IApplicationBuilder UseAntiforgeryToken(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<AntiforgeryTokenMiddleware>();
+        }
     }
 }

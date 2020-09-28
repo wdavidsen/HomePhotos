@@ -65,6 +65,7 @@ namespace SCS.HomePhotos.Web
                 configuration.RootPath = "ClientApp/dist";
             });
 
+            services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
@@ -145,7 +146,7 @@ namespace SCS.HomePhotos.Web
 
             app.UseRouting();
             app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthorization();            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<NotifcationHub>("/message-hub");
@@ -170,6 +171,8 @@ namespace SCS.HomePhotos.Web
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+
+            app.UseAntiforgeryToken();
         }
         private async Task SetDynamicConfig(IConfigService configService)
         {

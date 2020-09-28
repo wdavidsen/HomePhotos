@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
-using SCS.HomePhotos.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -16,7 +16,8 @@ namespace SCS.HomePhotos.Web.Controllers
     /// <summary>
     /// Receives uploaded files.
     /// </summary>
-    //[Authorize]
+    [Authorize]
+    [Authorize(Roles = "Admin,Contributer")]
     [Route("api/[controller]")]
     [ApiController]
     public class UploadController : HomePhotosController
