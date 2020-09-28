@@ -94,8 +94,8 @@ namespace SCS.HomePhotos.Workers
         {
             if (_configService.DynamicConfig.NextIndexTime != null)
             {
-                var start = (DateTime.Now + StartTime).ToString("g");
-                var msg = $"Next photo index time set for {start}; reoccurance every {RunFrequency.Hours} hours.";
+                var start = (DateTime.UtcNow + StartTime).ToString("g");
+                var msg = $"Next photo index time set for {start} (UTC); reoccurance every {RunFrequency.Hours} hours.";
 
                 _timer = new Timer(DoWork, null, StartTime, RunFrequency);
                 _logger.LogInformation(_adminlogger.LogNeutral(msg, LogCategory.Index));
@@ -119,7 +119,7 @@ namespace SCS.HomePhotos.Workers
 
         private TimeSpan GetNextStartTime()
         {
-            TimeSpan timespan = _configService.DynamicConfig.NextIndexTime.Value - DateTime.Now;
+            TimeSpan timespan = _configService.DynamicConfig.NextIndexTime.Value - DateTime.UtcNow;
 
             while (timespan.Minutes < 0)
             {
@@ -161,9 +161,9 @@ namespace SCS.HomePhotos.Workers
 
                 _indexEvents.IndexCompleted?.Invoke(); 
 
-                var nextStart = DateTime.Now + GetNextStartTime();
+                var nextStart = DateTime.UtcNow + GetNextStartTime();
                 
-                var msg = $"Photo index completed. Next photo index time: {nextStart.ToString("g")}.";
+                var msg = $"Photo index completed. Next photo index time: {nextStart.ToString("g")} (UTC).";
                 _adminlogger.LogNeutral(msg, LogCategory.Index);
 
                 _configService.DynamicConfig.PropertyChanged -= _config_PropertyChanged;

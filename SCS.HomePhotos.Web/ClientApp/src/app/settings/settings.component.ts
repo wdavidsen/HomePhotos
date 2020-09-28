@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent, InputDialogComponent } from '../common-dialog';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-settings',
@@ -154,7 +155,8 @@ export class SettingsComponent implements OnInit {
       indexPath: [data ? data.indexPath : '', Validators.required],
       cacheFolder: [data ? data.cacheFolder : '', Validators.required],
       mobileUploadsFolder: [data ? data.mobileUploadsFolder : '', Validators.required],
-      nextIndexTime: [data ? data.nextIndexTime : ''],
+      nextIndexTime_date: [data && data.nextIndexTime ? moment(data.nextIndexTime).format('YYYY-MM-DD') : ''],
+      nextIndexTime_time: [data && data.nextIndexTime ? moment(data.nextIndexTime).format('HH:mm') : ''],
       indexFrequencyHours: [data ? data.indexFrequencyHours : '', Validators.required],
       largeImageSize: [data ? data.largeImageSize : '', Validators.required],
       smallImageSize: [data ? data.smallImageSize : '', Validators.required],
@@ -167,7 +169,7 @@ export class SettingsComponent implements OnInit {
     settings.indexPath = this.f.indexPath.value;
     settings.cacheFolder = this.f.cacheFolder.value;
     settings.mobileUploadsFolder = this.f.mobileUploadsFolder.value;
-    settings.nextIndexTime = this.f.nextIndexTime.value;
+    settings.nextIndexTime = moment(this.f.nextIndexTime_date.value + ' '  + this.f.nextIndexTime_time.value).toDate();
     settings.indexFrequencyHours = this.f.indexFrequencyHours.value;
     settings.smallImageSize = this.f.smallImageSize.value;
     settings.largeImageSize = this.f.largeImageSize.value;
