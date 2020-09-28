@@ -65,7 +65,7 @@ namespace SCS.HomePhotos.Service
 
                     var finalPath = GetMobileUploadPath(imageFilePath);
                     File.Move(imageFilePath, finalPath, true);
-                    SavePhotoAndTags(finalPath, cacheFilePath, checksum, imageLayoutInfo, metadata, tags);
+                    SavePhotoAndTags(existingPhoto, finalPath, cacheFilePath, checksum, imageLayoutInfo, metadata, tags);
                 }
                 catch (Exception ex)
                 {
@@ -197,26 +197,25 @@ namespace SCS.HomePhotos.Service
             return savePath;
         }
 
-        public Photo SavePhotoAndTags(string imageFilePath, string cacheFilePath, string checksum, 
+        public Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string cacheFilePath, string checksum,
             ImageLayoutInfo imageLayoutInfo, ExifIfd0Directory exifData, params string[] tags)
         {
             _logger.LogInformation("Saving photo with checksum {Checksum}.", checksum);
 
             var dirTags = _fileSystemService.GetDirectoryTags(imageFilePath);
             var imageInfo = GetImageInfo(exifData);
+            var photo = existingPhoto ?? new Photo();
 
-            var photo = new Photo
-            {
-                Name = Path.GetFileName(imageFilePath),
-                FileName = Path.GetFileName(cacheFilePath),
-                Checksum = checksum,
-                CacheFolder = Path.GetDirectoryName(cacheFilePath),
-                DateFileCreated = File.GetCreationTime(imageFilePath),
-                DateTaken = imageInfo.DateTaken,
-                ImageHeight = imageLayoutInfo.Height,
-                ImageWidth = imageLayoutInfo.Width
-            };
-
+            photo.Name = Path.GetFileName(imageFilePath);
+            photo.FileName = Path.GetFileName(cacheFilePath);
+            photo.Checksum = checksum;
+            photo.CacheFolder = Path.GetDirectoryName(cacheFilePath);
+            photo.DateFileCreated = File.GetCreationTime(imageFilePath);
+            photo.DateTaken = imageInfo.DateTaken;
+            photo.ImageHeight = imageLayoutInfo.Height;
+            photo.ImageWidth = imageLayoutInfo.Width;
+            photo.ReprocessCache = false;
+        
             var photoTags = dirTags.ToArray();
 
             if (tags != null && tags.Length > 0)

@@ -303,7 +303,7 @@ namespace SCS.HomePhotos.Service.Test
             
             //_imageTransformer.Setup(m => m.GetImageLayoutInfo(It.IsAny<string>())).Returns(imageLayoutInfo);
 
-            _imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);
+            _imageService.SavePhotoAndTags(null, imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);
 
             _fileSystemService.Verify(m => m.GetDirectoryTags(imageFilePath), Times.Once);
 

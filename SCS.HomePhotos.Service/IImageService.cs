@@ -22,7 +22,7 @@ namespace SCS.HomePhotos.Service
 
         void OrientImage(string imageFilePath, ExifIfd0Directory exifData);
 
-        Photo SavePhotoAndTags(string imageFilePath, string checksum, string cacheSubfolder, 
+        Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string checksum, string cacheSubfolder, 
             ImageLayoutInfo imageLayoutInfo, ExifIfd0Directory exifData, params string[] tags);
 
         ImageLayoutInfo GetImageLayoutInfo(string sourcePath);

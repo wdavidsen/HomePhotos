@@ -295,7 +295,7 @@ namespace SCS.HomePhotos.Workers
 
                                     var smallImagePath = imageService.CreateSmallImage(fullImagePath, cacheFilePath);
                                     imageService.CreateThumbnail(smallImagePath, cacheFilePath);
-                                    imageService.SavePhotoAndTags(imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);
+                                    imageService.SavePhotoAndTags(existingPhoto, imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);
                                 }
                                 else
                                 {
@@ -344,7 +344,7 @@ namespace SCS.HomePhotos.Workers
 
         private bool CacheFileExists(Photo existingPhoto)
         {
-            return File.Exists(Path.Combine(_configService.DynamicConfig.CacheFolder, existingPhoto.CacheFolder, existingPhoto.FileName));
+            return File.Exists(Path.Combine(_configService.DynamicConfig.CacheFolder, existingPhoto.CacheFolder, "Thumb", existingPhoto.FileName));
         }
     }
 }

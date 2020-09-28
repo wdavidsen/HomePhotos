@@ -194,6 +194,13 @@ namespace SCS.HomePhotos.Service
             return users;
         }
 
+        public async Task<IEnumerable<User>> GetUsers(RoleType role)
+        {
+            var users = await _userData.GetListAsync<User>("WHERE Role = @Role", new { Role = role.ToString() });
+
+            return users;
+        }
+
         public async Task<User> GetUser(int userId)
         {
             var user = await _userData.GetAsync<User>(userId);
