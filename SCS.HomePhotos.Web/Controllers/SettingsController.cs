@@ -63,7 +63,7 @@ namespace SCS.HomePhotos.Web.Controllers
             {
                 await _photoService.FlagPhotosForReprocessing();
             }
-            _dynamicConfig.NextIndexTime = DateTime.Now.AddSeconds(5);
+            _dynamicConfig.NextIndexTime = DateTime.UtcNow.AddSeconds(5);
 
             var settings = new Dto.Settings(_dynamicConfig);
 

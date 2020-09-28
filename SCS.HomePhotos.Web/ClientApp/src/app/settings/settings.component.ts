@@ -108,7 +108,9 @@ export class SettingsComponent implements OnInit {
     this.settingsService.indexNow(this.indexModalData.allOrNew === 'ALL')
       .subscribe(
         (updatedSettings) => {
-          this.f.nextIndexTime.setValue(updatedSettings.nextIndexTime);
+          this.f.nextIndexTime_date.setValue(moment(updatedSettings.nextIndexTime).format('YYYY-MM-DD'));
+          this.f.nextIndexTime_time.setValue(moment(updatedSettings.nextIndexTime).format('HH:mm'));
+
           this.toastr.success('Index triggered successfully');
         },
         () => this.toastr.error('Failed to strigger index')

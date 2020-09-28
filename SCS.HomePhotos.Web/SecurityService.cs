@@ -93,6 +93,7 @@ namespace SCS.HomePhotos.Web
                 new Claim(JwtRegisteredClaimNames.Typ, Guid.NewGuid().ToString())
             };
 
+            claims.Add(new Claim(ClaimTypes.Name, userName));
             claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
 
             return claims;

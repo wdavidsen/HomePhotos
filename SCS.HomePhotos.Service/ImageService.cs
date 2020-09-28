@@ -215,16 +215,19 @@ namespace SCS.HomePhotos.Service
             photo.ImageHeight = imageLayoutInfo.Height;
             photo.ImageWidth = imageLayoutInfo.Width;
             photo.ReprocessCache = false;
-        
-            var photoTags = dirTags.ToArray();
-
-            if (tags != null && tags.Length > 0)
-            {
-                Array.Copy(tags, photoTags, tags.Length);
-            }
 
             _photoService.SavePhoto(photo);
-            _photoService.AssociateTags(photo, photoTags);
+
+            if (existingPhoto == null)
+            {
+                var photoTags = dirTags.ToArray();
+
+                if (tags != null && tags.Length > 0)
+                {
+                    Array.Copy(tags, photoTags, tags.Length);
+                }
+                _photoService.AssociateTags(photo, photoTags);
+            }
 
             _logger.LogInformation("Saved photo to database.");
 
