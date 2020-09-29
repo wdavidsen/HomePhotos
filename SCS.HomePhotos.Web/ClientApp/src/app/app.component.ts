@@ -25,7 +25,18 @@ export class AppComponent {
           this.signalRService.listenForAdminMessages();
           this.signalRService.getMessages().subscribe((info) => {
             console.log(info.text);
-            toastr.show(info.message, '', { tapToDismiss: true, disableTimeOut: true }, info.type);
+
+            let toastFunc = toastr.info;
+            switch ((info.type || '').toLowwerCase()) {
+              case 'error':
+                toastFunc = toastr.error;
+                break;
+              case 'warn':
+                toastFunc = toastr.warning;
+                break;
+            }
+
+            toastFunc(info.message, info.title || '', { tapToDismiss: true, disableTimeOut: true });
           });
         }
       });
