@@ -35,7 +35,7 @@ namespace SCS.HomePhotos.Service
             _logger = logger;
         }
 
-        public async Task<string> QueueMobileResize(string imageFilePath, bool copyToTempFolder = true, params string[] tags)
+        public async Task<string> QueueMobileResize(string contextUserName, string imageFilePath, bool copyToTempFolder = true, params string[] tags)
         {
             var checksum = _fileSystemService.GetChecksum(imageFilePath);
             var existingPhoto = await _photoService.GetPhotoByChecksum(checksum);
@@ -46,32 +46,37 @@ namespace SCS.HomePhotos.Service
             }
             var cacheFilePath = CreateCachePath(checksum, Path.GetExtension(imageFilePath));
 
-            _queue.QueueBackgroundWorkItem((token) =>
+            _queue.QueueBackgroundWorkItem((token, notifier) =>
             {
-                try
+                return Task.Run(() => 
                 {
-                    token.ThrowIfCancellationRequested();
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
 
-                    var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
-                    var metadata = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
-                                        
-                    var fullImagePath = CreateFullImage(imageFilePath, cacheFilePath);
+                        var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
+                        var metadata = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
 
-                    OrientImage(fullImagePath, metadata);
-                    var imageLayoutInfo = GetImageLayoutInfo(fullImagePath);
+                        var fullImagePath = CreateFullImage(imageFilePath, cacheFilePath);
 
-                    var smallImagePath = CreateSmallImage(fullImagePath, cacheFilePath);
-                    CreateThumbnail(smallImagePath, cacheFilePath);
+                        OrientImage(fullImagePath, metadata);
+                        var imageLayoutInfo = GetImageLayoutInfo(fullImagePath);
 
-                    var finalPath = GetMobileUploadPath(imageFilePath);
-                    File.Move(imageFilePath, finalPath, true);
-                    SavePhotoAndTags(existingPhoto, finalPath, cacheFilePath, checksum, imageLayoutInfo, metadata, tags);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Failed to process image: {imageFilePath}");
-                }
-                return Task.CompletedTask;
+                        var smallImagePath = CreateSmallImage(fullImagePath, cacheFilePath);
+                        CreateThumbnail(smallImagePath, cacheFilePath);
+
+                        var finalPath = GetMobileUploadPath(imageFilePath);
+                        File.Move(imageFilePath, finalPath, true);
+                        SavePhotoAndTags(existingPhoto, finalPath, cacheFilePath, checksum, imageLayoutInfo, metadata, tags);
+
+                        notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ProcessMobilePhoto, contextUserName, true, imageFilePath));
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Failed to process image: {imageFilePath}");
+                        notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ProcessMobilePhoto, contextUserName, false, imageFilePath));
+                    }
+                });
             });
 
             return cacheFilePath;

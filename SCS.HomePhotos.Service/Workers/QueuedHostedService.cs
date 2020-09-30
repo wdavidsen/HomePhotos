@@ -15,16 +15,18 @@ namespace SCS.HomePhotos.Workers
     public class QueuedHostedService : BackgroundService
     {
         private readonly ILogger _logger;
+        private readonly IQueueEvents _queueEvents;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueuedHostedService"/> class.
         /// </summary>
         /// <param name="taskQueue">The task queue.</param>
         /// <param name="loggerFactory">The logger factory.</param>
-        public QueuedHostedService(IBackgroundTaskQueue taskQueue, ILoggerFactory loggerFactory)
+        public QueuedHostedService(IBackgroundTaskQueue taskQueue, ILoggerFactory loggerFactory, IQueueEvents queueEvents)
         {
             TaskQueue = taskQueue;
             _logger = loggerFactory.CreateLogger<QueuedHostedService>();
+            _queueEvents = queueEvents;
         }
 
         /// <summary>
@@ -47,7 +49,7 @@ namespace SCS.HomePhotos.Workers
                 var workItem = await TaskQueue.DequeueAsync(stoppingToken);
                 try
                 {
-                    await workItem(stoppingToken);
+                    await workItem(stoppingToken, _queueEvents);
                 }
                 catch (TaskCanceledException)
                 {

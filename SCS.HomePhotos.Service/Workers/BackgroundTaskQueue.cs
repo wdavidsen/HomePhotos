@@ -11,7 +11,7 @@ namespace SCS.HomePhotos.Workers
     /// </summary>
     public class BackgroundTaskQueue : IBackgroundTaskQueue
     {
-        private ConcurrentQueue<Func<CancellationToken, Task>> _workItems = new ConcurrentQueue<Func<CancellationToken, Task>>();
+        private ConcurrentQueue<Func<CancellationToken, IQueueEvents, Task>> _workItems = new ConcurrentQueue<Func<CancellationToken, IQueueEvents, Task>>();
         private SemaphoreSlim _signal = new SemaphoreSlim(0);
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace SCS.HomePhotos.Workers
         /// </summary>
         /// <param name="workItem">The work item.</param>
         /// <exception cref="ArgumentNullException">workItem</exception>
-        public void QueueBackgroundWorkItem(Func<CancellationToken, Task> workItem)
+        public void QueueBackgroundWorkItem(Func<CancellationToken, IQueueEvents, Task> workItem)
         {
             if (workItem == null)
             {
@@ -35,7 +35,7 @@ namespace SCS.HomePhotos.Workers
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The next task in queue.</returns>
-        public async Task<Func<CancellationToken, Task>> DequeueAsync(CancellationToken cancellationToken)
+        public async Task<Func<CancellationToken, IQueueEvents, Task>> DequeueAsync(CancellationToken cancellationToken)
         {
             await _signal.WaitAsync(cancellationToken);
             _workItems.TryDequeue(out var workItem);

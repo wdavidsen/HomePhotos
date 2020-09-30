@@ -161,7 +161,7 @@ namespace SCS.HomePhotos.Workers
 
                 _indexEvents.IndexCompleted?.Invoke(); 
 
-                var nextStart = DateTime.UtcNow + GetNextStartTime();
+                var nextStart = _configService.DynamicConfig.NextIndexTime + GetNextStartTime();
                 
                 var msg = $"Photo index completed. Next photo index time: {nextStart.ToString("g")} (UTC).";
                 _adminlogger.LogNeutral(msg, LogCategory.Index);

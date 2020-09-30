@@ -14,13 +14,13 @@ namespace SCS.HomePhotos.Service.Workers
         /// </summary>
         /// <param name="workItem">The work item.</param>
         /// <exception cref="ArgumentNullException">workItem</exception>
-        void QueueBackgroundWorkItem(Func<CancellationToken, Task> workItem);
+        void QueueBackgroundWorkItem(Func<CancellationToken, IQueueEvents, Task> workItem);
 
         /// <summary>
         /// Dequeues the next task.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The next task in queue.</returns>
-        Task<Func<CancellationToken, Task>> DequeueAsync(CancellationToken cancellationToken);
+        Task<Func<CancellationToken, IQueueEvents, Task>> DequeueAsync(CancellationToken cancellationToken);
     }
 }

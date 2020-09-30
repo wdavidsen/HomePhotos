@@ -242,21 +242,25 @@ namespace SCS.HomePhotos.Service
             await _photoData.FlagPhotosForReprocessing();
         }
 
-        public async Task DeletePhotoCache()
+        public async Task DeletePhotoCache(string contextUserName)
         {
             await _photoData.DeletePhotos();
 
-            _backgroundTaskQueue.QueueBackgroundWorkItem((token) =>
+            _backgroundTaskQueue.QueueBackgroundWorkItem((token, notifier) =>
             {
-                try
-                {
-                    _fileSystemService.DeleteDirectoryFiles(_dynamicConfig.CacheFolder);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Failed to delete cache folder: {_dynamicConfig.CacheFolder}");
-                }
-                return Task.CompletedTask;
+                return Task.Run(() => {
+
+                    try
+                    {
+                        _fileSystemService.DeleteDirectoryFiles(_dynamicConfig.CacheFolder);
+                        notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ClearCache, contextUserName, true));
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Failed to delete cache folder: {_dynamicConfig.CacheFolder}");
+                        notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ClearCache, contextUserName, true));
+                    }
+                });                
             });            
         }
     }

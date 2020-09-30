@@ -24,6 +24,6 @@ namespace SCS.HomePhotos.Service
         Task<IEnumerable<Tag>> GetTagsAndPhotos(params int[] photoIds);
         Task UpdatePhotoTags(List<int> photoIds, List<string> addTag, List<int> removeTagIds);
         Task FlagPhotosForReprocessing();
-        Task DeletePhotoCache();
+        Task DeletePhotoCache(string contextUserName);
     }
 }
