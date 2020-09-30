@@ -55,13 +55,13 @@ namespace SCS.HomePhotos.Service.Test
             _dynamicConfig.SetupGet(o => o.LargeImageSize).Returns(800);
             _dynamicConfig.SetupGet(o => o.ThumbnailSize).Returns(200);
 
-            var cachePath = await _imageService.QueueMobileResize(filePath);
+            var cachePath = await _imageService.QueueMobileResize("wdavidsen", filePath);
 
             try
             {
                 var token = new CancellationTokenSource().Token;
                 var workItem = await _queue.DequeueAsync(token);
-                await workItem(token);
+                await workItem(token, null);
             }
             catch (TaskCanceledException) { }
 
@@ -115,13 +115,13 @@ namespace SCS.HomePhotos.Service.Test
             _imageTransformer.Setup(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800))
                 .Throws<OutOfMemoryException>();
 
-            var cachePath = await _imageService.QueueMobileResize(filePath);
+            var cachePath = await _imageService.QueueMobileResize("wdavidsen", filePath);
 
             try
             {
                 var token = new CancellationTokenSource().Token;
                 var workItem = await _queue.DequeueAsync(token);
-                await workItem(token);
+                await workItem(token, null);
             }
             catch (TaskCanceledException) { }
 
@@ -163,13 +163,13 @@ namespace SCS.HomePhotos.Service.Test
             _imageTransformer.Setup(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 200))
                 .Throws<OutOfMemoryException>();
 
-            var cachePath = await _imageService.QueueMobileResize(filePath);
+            var cachePath = await _imageService.QueueMobileResize("wdavidsen", filePath);
 
             try
             {
                 var token = new CancellationTokenSource().Token;
                 var workItem = await _queue.DequeueAsync(token);
-                await workItem(token);
+                await workItem(token, null);
             }
             catch (TaskCanceledException) { }
 

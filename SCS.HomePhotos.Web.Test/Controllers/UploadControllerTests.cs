@@ -32,7 +32,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _fileUploadService = new Mock<IFileUploadService>();
             _adminLogService = new Mock<IAdminLogService>();
 
-            _uploadController = new UploadController(_logger.Object, _imageService.Object, _fileUploadService.Object, _adminLogService.Object);
+            _uploadController = new UploadController(_logger.Object, _imageService.Object, _fileUploadService.Object, _adminLogService.Object, null);
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var cachePath = "c1/A2A44CAE-2EC8-4610-BA4D-6995878B1183.jpg";
 
             _fileUploadService.Setup(m => m.CopyFile(formCollecton.Files[0], It.IsAny<string>(), FileMode.Create));
-            _imageService.Setup(m => m.QueueMobileResize(It.IsAny<string>(), false))
+            _imageService.Setup(m => m.QueueMobileResize(It.IsAny<string>(), It.IsAny<string>(), false))
                 .ReturnsAsync(cachePath);
 
             var response = await _uploadController.ImageUpload(formCollecton).ConfigureAwait(true);
@@ -52,7 +52,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _fileUploadService.Verify(m => m.CopyFile(formCollecton.Files[0], It.IsAny<string>(), FileMode.Create),
                 Times.Once);
 
-            _imageService.Verify(m => m.QueueMobileResize(It.IsAny<string>(), false),
+            _imageService.Verify(m => m.QueueMobileResize(It.IsAny<string>(), It.IsAny<string>(), false),
                 Times.Once);
         }
     }
