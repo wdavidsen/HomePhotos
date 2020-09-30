@@ -115,7 +115,9 @@ namespace SCS.HomePhotos.Web
             services.AddScoped<ISecurityService, SecurityService>();
             services.AddSingleton<IAdminLogService>(new AdminLogService(new LogData(staticConfig), staticConfig));
             services.AddSingleton<IIndexEvents, IndexEvents>();
+            services.AddSingleton<IQueueEvents, QueueEvents>();            
             services.AddSingleton<IClientMessageSender, ClientMessageSender>();
+            services.AddSingleton<IUploadTracker, UploadTracker>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

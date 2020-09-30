@@ -43,7 +43,6 @@ export class NavMenuComponent implements OnInit {
     this.searchService.getHidden()
       .subscribe(hidden => {
         this.hideSearch = (hidden !== false);
-        console.log(`Search hide state: ${hidden}`);
       });
 
     this.searchService.getKeywords()

@@ -20,23 +20,12 @@ export class AppComponent {
       this.authenticationService.currentUser.subscribe(user => {
         this.currentUser = user;
 
-        if (user.role === 'Admin') {
+        if (user && user.role === 'Admin') {
           this.signalRService.startConnection();
           this.signalRService.listenForAdminMessages();
           this.signalRService.getMessages().subscribe((info) => {
-            console.log(info.text);
-
-            let toastFunc = toastr.info;
-            switch ((info.type || '').toLowwerCase()) {
-              case 'error':
-                toastFunc = toastr.error;
-                break;
-              case 'warn':
-                toastFunc = toastr.warning;
-                break;
-            }
-
-            toastFunc(info.message, info.title || '', { tapToDismiss: true, disableTimeOut: true });
+            console.log(`${info.type}: ${info.message}`);
+            toastr.show(info.message, '', { tapToDismiss: true, disableTimeOut: true }, info.type);
           });
         }
       });

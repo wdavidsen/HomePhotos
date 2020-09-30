@@ -6,13 +6,17 @@ namespace SCS.HomePhotos.Web.Hubs
     public class ClientMessageSender : IClientMessageSender
     {
         private readonly IHubContext<NotifcationHub, INotifcationHub> _notificationHub;
+        private readonly IUploadTracker _uploadTracker;
 
-        public ClientMessageSender(IIndexEvents indexEvents, IHubContext<NotifcationHub, INotifcationHub> notificationHub)
+        public ClientMessageSender(IIndexEvents indexEvents, IQueueEvents queueEvents, IHubContext<NotifcationHub, INotifcationHub> notificationHub,
+            IUploadTracker uploadTracker)
         {
             indexEvents.IndexStarted = OnIndexStarted;
             indexEvents.IndexCompleted = OnIndexCompleted;
+            queueEvents.ItemProcessed = OnItemProcessed;
 
             _notificationHub = notificationHub;
+            _uploadTracker = uploadTracker;
         }
 
         public void OnIndexStarted()
@@ -23,6 +27,27 @@ namespace SCS.HomePhotos.Web.Hubs
         public void OnIndexCompleted()
         {
             _notificationHub.Clients.All.SendAdminsMessage("info", "Photo indexing completed");
+        }
+
+        public void OnItemProcessed(TaskCompleteInfo info)
+        {
+            switch (info.Type)
+            {
+                case TaskType.ClearCache:
+                    _notificationHub.Clients.All.SendAdminsMessage(
+                        info.Success.Value ? "success" : "error",
+                        info.Success.Value ? "Photo cache cleared" : "Failed to clear photo cache");
+                    break;
+                case TaskType.ProcessMobilePhoto:
+                    _uploadTracker.RemoveUpload((string)info.Data);
+
+                    if (_uploadTracker.IsProcessingDone(info.ContextUserName))
+                    { 
+                        var uploadCount = _uploadTracker.GetUploadCount(info.ContextUserName);
+                        _notificationHub.Clients.All.SendAdminsMessage("info", $"{info.ContextUserName} uploaded {uploadCount} photos"); 
+                    }
+                    break;
+            }
         }
     }
 }

@@ -76,7 +76,7 @@ namespace SCS.HomePhotos.Web.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> ClearCache()
         {
-            await _photoService.DeletePhotoCache();
+            await _photoService.DeletePhotoCache(User.Identity.Name);
 
             return Ok();
         }

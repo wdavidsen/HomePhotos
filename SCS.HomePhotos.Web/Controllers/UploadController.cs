@@ -26,17 +26,19 @@ namespace SCS.HomePhotos.Web.Controllers
         private readonly IImageService _imageService;
         private readonly IFileUploadService _fileUploadService;
         private readonly IAdminLogService _adminLogService;
+        private readonly IUploadTracker _uploadTracker;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UploadController"/> class.
         /// </summary>
         public UploadController(ILogger<UploadController> logger, IImageService imageService, IFileUploadService fileUploadService,
-            IAdminLogService adminLogService)
+            IAdminLogService adminLogService, IUploadTracker uploadTracker)
         {
             _logger = logger;
             _imageService = imageService;
             _fileUploadService = fileUploadService;
             _adminLogService = adminLogService;
+            _uploadTracker = uploadTracker;
         }
 
         // [DisableRequestSizeLimit]
@@ -105,10 +107,13 @@ namespace SCS.HomePhotos.Web.Controllers
                         await file.CopyToAsync(stream);
                     }
 
-                    tags.Add($"{User.Identity.Name} Upload");
+                    var user = User.Identity.Name;
+                    tags.Add($"{user} Upload");
 
-                    var cachePath = await _imageService.QueueMobileResize(filePath, false, tags.ToArray());
+                    var cachePath = await _imageService.QueueMobileResize(user, filePath, false, tags.ToArray());
                     LogUpload(User.Identity.Name);
+
+                    _uploadTracker.AddUpload(User.Identity.Name, filePath);
                 }
                 catch (Exception ex)
                 {
