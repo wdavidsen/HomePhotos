@@ -29,6 +29,12 @@ namespace SCS.HomePhotos.Web.Hubs
             }
         }
 
+        [HubMethodName("SendEveryoneMessage")]
+        public async Task SendEveryoneMessage(string type, string message)
+        {
+            await Clients.All.SendAdminsMessage(type, message);
+        }
+
         private async Task<IEnumerable<User>> GetAdmins()
         {
             var admins = await _accountService.GetUsers(RoleType.Admin);

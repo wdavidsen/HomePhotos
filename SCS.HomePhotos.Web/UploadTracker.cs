@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace SCS.HomePhotos.Web
 {
@@ -8,11 +9,15 @@ namespace SCS.HomePhotos.Web
     {
         private readonly Dictionary<string, int[]> _userCounts;
         private readonly List<UploadInfo> _items;
+        private readonly Timer _timer;
 
         public UploadTracker()
         {
             _items = new List<UploadInfo>();
             _userCounts = new Dictionary<string, int[]>();
+
+            var periodMs = 1000 * 60 * 5; // 5 mins
+            _timer = new Timer(ClearOldItems, null, periodMs, periodMs);
         }
 
         public void AddUpload(string userName, string file)
@@ -65,6 +70,23 @@ namespace SCS.HomePhotos.Web
         public void Clear()
         {
             _items.Clear();
+        }
+
+        private void ClearOldItems(object state)
+        {
+            var oldItems = _items.Where(i => i.Timestamp.AddMinutes(15) < DateTime.Now);
+            var groupedItems = oldItems.GroupBy(i => i.UserName);
+
+            foreach (var group in groupedItems)
+            {
+                var userName = group.Key;
+                _userCounts[userName] = new int[] { 0, 0 };
+
+                foreach (var item in group)
+                {
+                    _items.Remove(item);
+                }
+            }
         }
     }
 }

@@ -118,6 +118,7 @@ namespace SCS.HomePhotos.Web
             services.AddSingleton<IQueueEvents, QueueEvents>();            
             services.AddSingleton<IClientMessageSender, ClientMessageSender>();
             services.AddSingleton<IUploadTracker, UploadTracker>();
+            services.AddSingleton<IImageMetadataService, ImageMetadataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

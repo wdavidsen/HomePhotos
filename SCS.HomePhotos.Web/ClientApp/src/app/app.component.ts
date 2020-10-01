@@ -20,14 +20,17 @@ export class AppComponent {
       this.authenticationService.currentUser.subscribe(user => {
         this.currentUser = user;
 
+        this.signalRService.startConnection();
+        this.signalRService.listenForEveryoneMessages();
+
         if (user && user.role === 'Admin') {
-          this.signalRService.startConnection();
           this.signalRService.listenForAdminMessages();
-          this.signalRService.getMessages().subscribe((info) => {
-            console.log(`${info.type}: ${info.message}`);
-            toastr.show(info.message, '', { tapToDismiss: true, disableTimeOut: true }, info.type);
-          });
         }
+
+        this.signalRService.getMessages().subscribe((info) => {
+          console.log(`${info.type}: ${info.message}`);
+          toastr.show(info.message, '', { tapToDismiss: true, disableTimeOut: true }, info.type);
+        });
       });
 
       router.events

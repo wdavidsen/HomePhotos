@@ -27,6 +27,13 @@ export class SignalRService {
         });
     }
 
+    public listenForEveryoneMessages = () => {
+        this.hubConnection.on('SendEveryoneMessage', (type, message) => {
+            console.log(message);
+            this.subject.next({ type: type, message: message });
+        });
+    }
+
     getMessages(): Observable<any> {
         return this.subject.asObservable();
     }

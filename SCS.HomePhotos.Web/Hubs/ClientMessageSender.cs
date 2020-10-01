@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SCS.HomePhotos.Service.Workers;
+using System;
+using System.Threading;
 
 namespace SCS.HomePhotos.Web.Hubs
 {
@@ -7,7 +9,7 @@ namespace SCS.HomePhotos.Web.Hubs
     {
         private readonly IHubContext<NotifcationHub, INotifcationHub> _notificationHub;
         private readonly IUploadTracker _uploadTracker;
-
+        
         public ClientMessageSender(IIndexEvents indexEvents, IQueueEvents queueEvents, IHubContext<NotifcationHub, INotifcationHub> notificationHub,
             IUploadTracker uploadTracker)
         {
@@ -42,9 +44,9 @@ namespace SCS.HomePhotos.Web.Hubs
                     _uploadTracker.RemoveUpload((string)info.Data);
 
                     if (_uploadTracker.IsProcessingDone(info.ContextUserName))
-                    { 
+                    {
                         var uploadCount = _uploadTracker.GetUploadCount(info.ContextUserName);
-                        _notificationHub.Clients.All.SendAdminsMessage("info", $"{info.ContextUserName} uploaded {uploadCount} photos"); 
+                        _notificationHub.Clients.All.SendEveryoneMessage("info", $"{info.ContextUserName} uploaded {uploadCount} photos");
                     }
                     break;
             }
