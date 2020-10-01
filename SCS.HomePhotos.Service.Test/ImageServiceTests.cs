@@ -12,12 +12,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using MetadataExtractor.Formats.Exif;
+using System.Linq;
 
 namespace SCS.HomePhotos.Service.Test
 {
     public class ImageServiceTests
     {
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture;
 
         private readonly ImageService _imageService;
         private readonly IBackgroundTaskQueue _queue;
@@ -27,33 +28,41 @@ namespace SCS.HomePhotos.Service.Test
         private readonly Mock<IPhotoService> _photoService;
         private readonly Mock<IDynamicConfig> _dynamicConfig;
         private readonly Mock<ILogger<ImageService>> _logger;
+        private readonly Mock<IImageMetadataService> _metadataService;
 
         public ImageServiceTests()
         {
+            _fixture = new Fixture();
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
             _imageTransformer = new Mock<IImageTransformer>();
             _fileSystemService = new Mock<IFileSystemService>();
             _photoService = new Mock<IPhotoService>();
             _dynamicConfig = new Mock<IDynamicConfig>();
             _logger = new Mock<ILogger<ImageService>>();
+            _metadataService = new Mock<IImageMetadataService>();
 
             _queue = new BackgroundTaskQueue();
-            _imageService = new ImageService(_imageTransformer.Object, _fileSystemService.Object, _photoService.Object, _dynamicConfig.Object, _queue, _logger.Object);
+            _imageService = new ImageService(_imageTransformer.Object, _fileSystemService.Object, _photoService.Object, _dynamicConfig.Object, _queue, 
+                _logger.Object, _metadataService.Object);
         }
 
         [Fact]
         public async Task QueueMobileResize()
         {
-            var filePath = Path.Combine("photos", "party", "birthday.jpg");
-            var cacheDir = Path.Combine("home", "homePhotos", "cache");
+            var filePath = Path.Combine("MobileUploads", DateTime.Now.ToString("yyyy-MM"), "birthday.jpg");
+            var cacheDir = Path.Combine("homePhotos", "cache");
             var checksum = "abc123";
 
             _fileSystemService.Setup(m => m.GetChecksum(It.IsAny<string>())).Returns(checksum);
-            _fileSystemService.Setup(m => m.GetDirectoryTags(It.IsAny<string>())).Returns(new List<string> { "Tag1", "Tag2" });
-            
+            _fileSystemService.Setup(m => m.GetDirectoryTags(It.IsAny<string>())).Returns(new List<string> { "Tag1", "Tag2" });            
             _photoService.Setup(m => m.GetPhotoByChecksum(It.IsAny<string>())).ReturnsAsync(default(Photo));
+
             _dynamicConfig.SetupGet(o => o.CacheFolder).Returns(cacheDir);
             _dynamicConfig.SetupGet(o => o.LargeImageSize).Returns(800);
             _dynamicConfig.SetupGet(o => o.ThumbnailSize).Returns(200);
+            _dynamicConfig.SetupGet(o => o.MobileUploadsFolder).Returns("MobileUploads");
 
             var cachePath = await _imageService.QueueMobileResize("wdavidsen", filePath);
 
@@ -61,7 +70,7 @@ namespace SCS.HomePhotos.Service.Test
             {
                 var token = new CancellationTokenSource().Token;
                 var workItem = await _queue.DequeueAsync(token);
-                await workItem(token, null);
+                await workItem(token, new QueueEvents { ItemProcessed = (info) => { } });
             }
             catch (TaskCanceledException) { }
 
@@ -121,7 +130,7 @@ namespace SCS.HomePhotos.Service.Test
             {
                 var token = new CancellationTokenSource().Token;
                 var workItem = await _queue.DequeueAsync(token);
-                await workItem(token, null);
+                await workItem(token, new QueueEvents { ItemProcessed = (info) => { } });
             }
             catch (TaskCanceledException) { }
 
@@ -169,7 +178,7 @@ namespace SCS.HomePhotos.Service.Test
             {
                 var token = new CancellationTokenSource().Token;
                 var workItem = await _queue.DequeueAsync(token);
-                await workItem(token, null);
+                await workItem(token, new QueueEvents { ItemProcessed = (info) => { } });
             }
             catch (TaskCanceledException) { }
 

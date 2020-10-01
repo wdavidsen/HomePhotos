@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Workers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -22,10 +21,11 @@ namespace SCS.HomePhotos.Service
         private readonly IPhotoService _photoService;
         private readonly IDynamicConfig _dynamicConfig;
         private readonly IBackgroundTaskQueue _queue;
-
         private readonly ILogger<ImageService> _logger;
+        private readonly IImageMetadataService _metadataService;
 
-        public ImageService(IImageTransformer imageResizer, IFileSystemService imageinfoProvider, IPhotoService photoService, IDynamicConfig dynamicConfig, IBackgroundTaskQueue queue, ILogger<ImageService> logger)
+        public ImageService(IImageTransformer imageResizer, IFileSystemService imageinfoProvider, IPhotoService photoService, IDynamicConfig dynamicConfig,
+            IBackgroundTaskQueue queue, ILogger<ImageService> logger, IImageMetadataService metadataService)
         {
             _imageTransformer = imageResizer;
             _fileSystemService = imageinfoProvider;
@@ -33,6 +33,7 @@ namespace SCS.HomePhotos.Service
             _dynamicConfig = dynamicConfig;
             _queue = queue;
             _logger = logger;
+            _metadataService = metadataService;
         }
 
         public async Task<string> QueueMobileResize(string contextUserName, string imageFilePath, bool copyToTempFolder = true, params string[] tags)
@@ -48,15 +49,13 @@ namespace SCS.HomePhotos.Service
 
             _queue.QueueBackgroundWorkItem((token, notifier) =>
             {
-                return Task.Run(() => 
+                return Task.Run(() =>
                 {
                     try
                     {
                         token.ThrowIfCancellationRequested();
 
-                        var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
-                        var metadata = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
-
+                        var metadata = _metadataService.GetExifData(imageFilePath);
                         var fullImagePath = CreateFullImage(imageFilePath, cacheFilePath);
 
                         OrientImage(fullImagePath, metadata);
@@ -66,7 +65,8 @@ namespace SCS.HomePhotos.Service
                         CreateThumbnail(smallImagePath, cacheFilePath);
 
                         var finalPath = GetMobileUploadPath(imageFilePath);
-                        File.Move(imageFilePath, finalPath, true);
+                        _fileSystemService.MoveFile(imageFilePath, finalPath, true);
+
                         SavePhotoAndTags(existingPhoto, finalPath, cacheFilePath, checksum, imageLayoutInfo, metadata, tags);
 
                         notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ProcessMobilePhoto, contextUserName, true, imageFilePath));
@@ -84,7 +84,7 @@ namespace SCS.HomePhotos.Service
 
         private string GetMobileUploadPath(string sourcePath)
         {
-            var subfolder = DateTime.Today.ToString("yyyy-MM-dd");
+            var subfolder = DateTime.Today.ToString("yyyy-MM");
             var fullDir = Path.Combine(_dynamicConfig.MobileUploadsFolder, subfolder);
 
             Directory.CreateDirectory(fullDir);
@@ -181,7 +181,7 @@ namespace SCS.HomePhotos.Service
                             }
                         }
                     }
-                }                
+                }
             }
         }
 
@@ -268,26 +268,8 @@ namespace SCS.HomePhotos.Service
                 {
                     imageInfo.Tags.Add(exifTag);
                 }
-            }       
-            return imageInfo;
-        }
-
-        public Dictionary<string, string> GetImageMetadata(string imageFilePath)
-        {
-            var metadata = new Dictionary<string, string>();
-            var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
-
-            foreach (var directory in directories)
-            {
-                foreach (var tag in directory.Tags)
-                {
-                    if (!metadata.ContainsKey(tag.Name))
-                    {
-                        metadata.Add(tag.Name, tag.Description);
-                    }
-                }
             }
-            return metadata;
+            return imageInfo;
         }
     }
 }

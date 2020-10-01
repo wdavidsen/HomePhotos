@@ -33,6 +33,8 @@ namespace SCS.HomePhotos.Workers
         private readonly IConfigService _configService;        
         private readonly IAdminLogService _adminlogger;
         private readonly IIndexEvents _indexEvents;
+        private readonly IImageMetadataService _metadataService;
+
         private Timer _timer;
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace SCS.HomePhotos.Workers
         /// </summary>
         /// <param name="logger">The logger.</param>
         public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IConfigService configService, 
-            IAdminLogService dblogger, IIndexEvents indexEvents)
+            IAdminLogService dblogger, IIndexEvents indexEvents, IImageMetadataService metadataService)
         {
             Name = "Image Indexer";
 
@@ -49,6 +51,7 @@ namespace SCS.HomePhotos.Workers
             _configService = configService;            
             _adminlogger = dblogger;
             _indexEvents = indexEvents;
+            _metadataService = metadataService;
 
             configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
         }
@@ -284,9 +287,8 @@ namespace SCS.HomePhotos.Workers
 
                                 if (existingPhoto == null || existingPhoto.ReprocessCache || !CacheFileExists(existingPhoto))
                                 {
-                                    var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);
-                                    var exifData = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
-                                    
+                                    var exifData = _metadataService.GetExifData(imageFilePath);
+
                                     var cacheFilePath = imageService.CreateCachePath(checksum, Path.GetExtension(imageFilePath));                                    
                                     var fullImagePath = imageService.CreateFullImage(imageFilePath, cacheFilePath);
                                     

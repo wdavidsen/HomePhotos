@@ -13,7 +13,7 @@ namespace SCS.HomePhotos.Service.Test
 {
     public class PhotoServiceTests
     {
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture;
 
         private readonly PhotoService _photoService;
         private readonly Mock<IPhotoData> _photoData;
@@ -22,6 +22,10 @@ namespace SCS.HomePhotos.Service.Test
 
         public PhotoServiceTests()
         {
+            _fixture = new Fixture();
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
             _photoData = new Mock<IPhotoData>();
             _tagData = new Mock<ITagData>();
             _logger = new Mock<ILogger<PhotoService>>();
@@ -55,15 +59,15 @@ namespace SCS.HomePhotos.Service.Test
         {
             var photos = _fixture.CreateMany<Photo>(50);
 
-            _photoData.Setup(m => m.GetPhotos(DateTime.MinValue, DateTime.Today, true, 1, 50))
+            _photoData.Setup(m => m.GetPhotos(DateTime.MinValue, It.IsAny<DateTime>(), true, 1, 50))
                 .ReturnsAsync(photos);
 
             var results = await _photoService.GetLatestPhotos(1, 50);
 
-            _photoData.Verify(m => m.GetPhotos(DateTime.MinValue, DateTime.Today, true, 1, 50),
+            _photoData.Verify(m => m.GetPhotos(DateTime.MinValue, It.IsAny<DateTime>(), true, 1, 50),
                 Times.Once);
 
-            Assert.True(results.Count() == 50);
+            Assert.Equal(50, results.Count());
         }
 
         [Fact]
@@ -85,7 +89,7 @@ namespace SCS.HomePhotos.Service.Test
             _photoData.Verify(m => m.GetPhotos(It.IsAny<string[]>(), 1, 50),
                 Times.Once);
 
-            Assert.True(results.Count() == 50);
+            Assert.Equal(50, results.Count());
         }
 
         [Fact]
@@ -103,7 +107,7 @@ namespace SCS.HomePhotos.Service.Test
             _photoData.Verify(m => m.GetPhotos(startDate, endDate, false, 1, 50),
                 Times.Once);
 
-            Assert.True(results.Count() == 50);
+            Assert.Equal(50, results.Count());
         }
 
         [Fact]
@@ -124,52 +128,54 @@ namespace SCS.HomePhotos.Service.Test
         [Fact]
         public async Task GetTagDoNotCreate()
         {
-            var tag = "B-Day";
-            var tags = new List<Tag> { new Tag { TagName = tag } };
+            var tagName = "B-Day";
+            var tag = _fixture.Create<Tag>();
+            tag.TagName = tagName;
 
-           _tagData.Setup(m => m.GetListAsync<Tag>(It.IsAny<string>(), It.IsAny<object>()))
-                .ReturnsAsync(tags)
-                .Callback<string, object>((where, p) => {
-                    Assert.Equal("WHERE TagName = @TagName", where);
-                    Assert.Equal(tag, p.GetProperty("TagName").ToString());
-                });
+            _tagData.Setup(m => m.GetTag(tagName)).ReturnsAsync(tag);
+
             _tagData.Setup(m => m.SaveTag(It.IsAny<Tag>()));
 
-            var result = await _photoService.GetTag(tag, false);
+            var result = await _photoService.GetTag(tagName, false);
 
-            _tagData.Verify(m => m.GetListAsync<Tag>(It.IsAny<string>(), It.IsAny<object>()),
+            _tagData.Verify(m => m.GetTag(tagName),
                 Times.Once);
+
             _tagData.Verify(m => m.SaveTag(It.IsAny<Tag>()),
                 Times.Never);
 
             Assert.IsType<Tag>(result);
-            Assert.Equal(tag, result.TagName);
+            Assert.Equal(tagName, result.TagName);
         }
 
         [Fact]
         public async Task GetTagCreateMissing()
         {
-            var tag = "B-Day";
-            var tags = new List<Tag>();
+            var tagName = "B-Day";
+            var tag = null as Tag;
 
-            _tagData.Setup(m => m.GetListAsync<Tag>(It.IsAny<string>(), It.IsAny<object>()))
-                 .ReturnsAsync(tags)
-                 .Callback<string, object>((where, p) => {
-                     Assert.Equal("WHERE TagName = @TagName", where);
-                     Assert.Equal(tag, p.GetProperty("TagName").ToString());
-                 });
+            _tagData.Setup(m => m.GetTag(tagName)).ReturnsAsync(tag);
+
+            //_tagData.Setup(m => m.GetListAsync<Tag>(It.IsAny<string>(), It.IsAny<object>()))
+            //     .ReturnsAsync(tags)
+            //     .Callback<string, object>((where, p) => {
+            //         Assert.Equal("WHERE TagName = @TagName", where);
+            //         Assert.Equal(tag, p.GetProperty("TagName").ToString());
+            //     });
+
             _tagData.Setup(m => m.SaveTag(It.IsAny<Tag>()))
-                .ReturnsAsync(new Tag { TagName = tag });
+                .ReturnsAsync(new Tag { TagName = tagName });
 
-            var result = await _photoService.GetTag(tag, true);
+            var result = await _photoService.GetTag(tagName, true);
 
-            _tagData.Verify(m => m.GetListAsync<Tag>(It.IsAny<string>(), It.IsAny<object>()),
+            _tagData.Verify(m => m.GetTag(tagName),
                 Times.Once);
+
             _tagData.Verify(m => m.SaveTag(It.IsAny<Tag>()),
                 Times.Once);
 
             Assert.IsType<Tag>(result);
-            Assert.Equal(tag, result.TagName);
+            Assert.Equal(tagName, result.TagName);
         }
 
         [Fact]
@@ -187,17 +193,17 @@ namespace SCS.HomePhotos.Service.Test
         public async Task AssociateTags()
         {
             var photo = _fixture.Create<Photo>();
+            var tag = _fixture.Create<Tag>();
+
             var tags = _fixture.CreateMany<Tag>(3);
-
-            _tagData.Setup(m => m.GetListAsync<Tag>(It.IsAny<string>(), It.IsAny<object>()))
-                .ReturnsAsync(tags);
-
+            
             _tagData.Setup(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()));
 
+            _tagData.Setup(m => m.SaveTag(It.IsAny<Tag>()))
+                .ReturnsAsync(tag);
+            
             await _photoService.AssociateTags(photo, tags.Select(t => t.TagName).ToArray());
 
-            _tagData.Verify(m => m.GetListAsync<Tag>(It.IsAny<string>(), It.IsAny<object>()),
-                Times.Exactly(3));
             _tagData.Verify(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()),
                 Times.Exactly(3));
         }

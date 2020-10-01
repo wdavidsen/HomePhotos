@@ -28,7 +28,5 @@ namespace SCS.HomePhotos.Service
         ImageLayoutInfo GetImageLayoutInfo(string sourcePath);
 
         ImageInfo GetImageInfo(ExifIfd0Directory exifData);
-
-        Dictionary<string, string> GetImageMetadata(string imageFilePath);
     }
 }

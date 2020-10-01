@@ -10,5 +10,6 @@ namespace SCS.HomePhotos.Service
         long GetFileSize(string filePath);
         IEnumerable<string> GetDirectoryTags(string filePath);
         void DeleteDirectoryFiles(string cacheFolder, bool recursive = true);
+        void MoveFile(string sourcePath, string destinationPath, bool overwrite = false);
     }
 }

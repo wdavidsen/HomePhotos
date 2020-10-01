@@ -73,5 +73,10 @@ namespace SCS.HomePhotos.Service
                 Directory.Delete(deletePath, recursive);
             }
         }
+
+        public void MoveFile(string sourcePath, string destinationPath, bool overwrite = false)
+        {
+            File.Move(sourcePath, destinationPath, overwrite);
+        }
     }
 }
