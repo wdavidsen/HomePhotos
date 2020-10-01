@@ -27,6 +27,8 @@ namespace SCS.HomePhotos.Web.Test.Dtos
             Assert.Equal(dto.DateFileCreated, model.DateFileCreated);
             Assert.Equal(dto.DateTaken, model.DateTaken);
             Assert.Equal(dto.CacheFolder, model.CacheFolder);
+            Assert.Equal(dto.ImageHeight, model.ImageHeight);
+            Assert.Equal(dto.ImageWidth, model.ImageWidth);
         }
 
         [Fact]
@@ -41,6 +43,8 @@ namespace SCS.HomePhotos.Web.Test.Dtos
             Assert.Equal(model.DateFileCreated, dto.DateFileCreated);
             Assert.Equal(model.DateTaken, dto.DateTaken);
             Assert.Equal(model.CacheFolder, dto.CacheFolder);
+            Assert.Equal(model.ImageHeight, dto.ImageHeight);
+            Assert.Equal(model.ImageWidth, dto.ImageWidth);
         }
     }
 }

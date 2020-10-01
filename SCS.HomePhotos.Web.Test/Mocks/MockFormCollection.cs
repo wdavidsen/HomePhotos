@@ -4,17 +4,33 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace SCS.HomePhotos.Web.Test.Mocks
 {
     public class MockFormCollection : IFormCollection
     {
-        public StringValues this[string key] => new StringValues(new string[] {"tag1", "tag2"});
+        private string[] _tags;
+        private IFormFile _formFile;
+
+        public MockFormCollection()
+        {
+            _tags = new string[] { "tag1", "tag2" };
+        }
+        public MockFormCollection(params string[] tags)
+        {
+            _tags = tags;
+        }
+        public MockFormCollection(IFormFile file, params string[] tags)
+        {
+            _tags = tags;
+            _formFile = file;
+        }
+
+        public StringValues this[string key] => new StringValues(_tags);
 
         public int Count => 1;
 
-        public IFormFileCollection Files => new MockFormFileCollection();
+        public IFormFileCollection Files => new MockFormFileCollection(_formFile);
 
         public ICollection<string> Keys => new Collection<string> { "files", "tagList" };
 
@@ -36,91 +52,6 @@ namespace SCS.HomePhotos.Web.Test.Mocks
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public class MockFormFileCollection : IFormFileCollection
-    {
-        IFormFile file;
-
-        public MockFormFileCollection()
-        {
-            file = new MockFormFile();
-        }
-
-        public IFormFile this[string name] => file;
-
-        public IFormFile this[int index] => file;
-
-        public int Count => 1;
-
-        public IEnumerator<IFormFile> GetEnumerator()
-        {
-            return new FileEnumerator(new IFormFile[] { file });
-        }
-
-        public IFormFile GetFile(string name)
-        {
-            return file;
-        }
-
-        public IReadOnlyList<IFormFile> GetFiles(string name)
-        {
-            return new IFormFile[] { file };
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-    }
-
-    public class FileEnumerator : IEnumerator<IFormFile>
-    {
-        public IFormFile[] _files;
-        private int _position = -1;
-
-        public FileEnumerator(IFormFile[] files)
-        {
-            _files = files;
-        }
-
-        object IEnumerator.Current
-        {
-            get
-            {
-                return Current;
-            }
-        }
-
-        public IFormFile Current
-        {
-            get
-            {
-                try
-                {
-                    return _files[_position];
-                }
-                catch (IndexOutOfRangeException)
-                {
-                    throw new InvalidOperationException();
-                }
-            }
-        }
-
-        public bool MoveNext()
-        {
-            _position++;
-            return (_position < _files.Length);
-        }
-
-        public void Reset()
-        {
-            _position = -1;
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

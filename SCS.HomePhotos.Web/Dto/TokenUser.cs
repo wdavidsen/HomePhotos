@@ -1,4 +1,6 @@
-﻿namespace SCS.HomePhotos.Web.Dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SCS.HomePhotos.Web.Dto
 {
     public class TokenUser : User
     {
@@ -13,7 +15,10 @@
             RefreshToken = refreshToken;
         }
 
+        [Required]
         public string Token { get; set; }
+
+        [Required]
         public string RefreshToken { get; set; }
     }
 }

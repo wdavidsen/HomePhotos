@@ -9,9 +9,6 @@ using SCS.HomePhotos.Web.Models;
 using SCS.HomePhotos.Web.Security;
 using SCS.HomePhotos.Web.Test.Mocks;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 

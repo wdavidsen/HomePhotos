@@ -73,7 +73,13 @@ namespace SCS.HomePhotos.Web.Controllers
                     #region Validations
 
                     // check for invalid characters
-                    if (filePath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
+                    if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                    {
+                        return BadRequest();
+                    }
+
+                    // file name should not exceed 255 characters
+                    if (fileName.Length > 255)
                     {
                         return BadRequest();
                     }
@@ -92,12 +98,6 @@ namespace SCS.HomePhotos.Web.Controllers
                             return BadRequest();
                         }
                     }
-
-                    // file name should not exceed 255 characters
-                    if (fileName.Length > 255)
-                    {
-                        throw new InvalidOperationException($"Uploaded file name too long. Length: {fileName.Length}.");
-                    }
                     #endregion
 
                     filePath = Path.Combine(tempDir, fileName);
@@ -106,7 +106,7 @@ namespace SCS.HomePhotos.Web.Controllers
                     var user = User.Identity.Name;
                     tags.Add($"{user} Upload");
 
-                    var cachePath = await _imageService.QueueMobileResize(user, filePath, false, tags.ToArray());
+                    var cachePath = await _imageService.QueueMobileResize(user, filePath, tags.ToArray());
                     LogUpload(User.Identity.Name);
 
                     _uploadTracker.AddUpload(User.Identity.Name, filePath);

@@ -36,7 +36,7 @@ namespace SCS.HomePhotos.Service
             _metadataService = metadataService;
         }
 
-        public async Task<string> QueueMobileResize(string contextUserName, string imageFilePath, bool copyToTempFolder = true, params string[] tags)
+        public async Task<string> QueueMobileResize(string contextUserName, string imageFilePath, params string[] tags)
         {
             var checksum = _fileSystemService.GetChecksum(imageFilePath);
             var existingPhoto = await _photoService.GetPhotoByChecksum(checksum);

@@ -9,7 +9,7 @@ using Xunit;
 
 namespace SCS.HomePhotos.Web.Test.Controllers
 {
-    public class SettingsControllerTests
+    public class SettingsControllerTests : ControllerTestBase
     {
         private readonly Fixture _fixture = new Fixture();
 
@@ -53,6 +53,11 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var response = await _settingsController.Put(settings);
 
             Assert.IsType<OkResult>(response);
+        }
+
+        protected override void DisposeController()
+        {
+            _settingsController.Dispose();
         }
     }
 }

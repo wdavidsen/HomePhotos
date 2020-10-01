@@ -15,11 +15,11 @@ namespace SCS.HomePhotos.Web.Controllers
     [Route("api/[controller]")]
     public class UsersController : HomePhotosController
     {
-        private readonly ILogger<AuthController> _logger;
+        private readonly ILogger<UsersController> _logger;
         private readonly IAccountService _accountService;
         private readonly IStaticConfig _staticConfig;
 
-        public UsersController(ILogger<AuthController> logger, IAccountService accountService, IStaticConfig staticConfig)
+        public UsersController(ILogger<UsersController> logger, IAccountService accountService, IStaticConfig staticConfig)
         {
             _logger = logger;
             _accountService = accountService;

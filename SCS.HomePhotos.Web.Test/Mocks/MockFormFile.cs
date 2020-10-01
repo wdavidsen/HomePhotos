@@ -8,17 +8,34 @@ namespace SCS.HomePhotos.Web.Test.Mocks
 {
     public class MockFormFile : IFormFile
     {
-        public string ContentType => "image/jpg";
+        private string _fileName;
+        private string _contentType;
 
-        public string ContentDisposition => "form-data; name=\"files\"; filename=\"Whale Shark.jpg\"";
+        public MockFormFile()
+        {
+            _fileName = "Whale Shark.jpg";
+            _contentType = "image/jpg";
+        }
+        public MockFormFile(string fileName)
+        {
+            _fileName = fileName;
+            _contentType = $"image/{Path.GetFileNameWithoutExtension(fileName).TrimStart('.')}";
+        }
+
+        public string ContentType
+        {
+            get { return _contentType; }            
+        }
+
+        public string ContentDisposition => $"form-data; name=\"files\"; filename=\"{_fileName}\"";
 
         public IHeaderDictionary Headers => new HeaderDictionary();
 
         public long Length => 2000;
 
-        public string Name => "Whale Shark";
+        public string Name => Path.GetFileNameWithoutExtension(_fileName);
 
-        public string FileName => $"{AppDomain.CurrentDomain.BaseDirectory}\\Images\\Whale Shark.jpg";
+        public string FileName => $"{AppDomain.CurrentDomain.BaseDirectory}\\Images\\{_fileName}";
 
         public void CopyTo(Stream target)
         {

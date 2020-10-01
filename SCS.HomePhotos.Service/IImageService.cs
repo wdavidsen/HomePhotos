@@ -8,7 +8,7 @@ namespace SCS.HomePhotos.Service
 {
     public interface IImageService
     {
-        Task<string> QueueMobileResize(string contextUserName, string imageFilePath, bool copyToTempFolder = true, params string[] tags);
+        Task<string> QueueMobileResize(string contextUserName, string imageFilePath,  params string[] tags);
 
         string CreateCachePath(string checksum, string extension);
 

@@ -14,10 +14,10 @@ namespace SCS.HomePhotos.Web.Controllers
     [ApiController]
     public class LogsController : HomePhotosController
     {
-        private readonly ILogger<PhotosController> _logger;
+        private readonly ILogger<LogsController> _logger;
         private readonly IAdminLogService _adminLogService;
 
-        public LogsController(ILogger<PhotosController> logger, IAdminLogService adminLogService)
+        public LogsController(ILogger<LogsController> logger, IAdminLogService adminLogService)
         {
             _logger = logger;
             _adminLogService = adminLogService;
