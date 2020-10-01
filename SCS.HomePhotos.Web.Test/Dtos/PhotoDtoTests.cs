@@ -1,15 +1,18 @@
 ﻿using AutoFixture;
+using System.Linq;
 using Xunit;
 
 namespace SCS.HomePhotos.Web.Test.Dtos
 {
     public class PhotoDtoTests
     {
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture;
 
         public PhotoDtoTests()
         {
-
+            _fixture = new Fixture();
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]

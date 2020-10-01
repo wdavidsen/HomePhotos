@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
-using SCS.HomePhotos.Web.Test.Mocks;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -58,7 +57,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         /// <param name="controller">The controller to set HttpContext on.</param>
         /// <param name="method">The request method, e.g., GET, POST, etc.</param>
         /// <returns>A controller mock.</returns>
-        protected static void SetControllerContext(Controller controller, string method, string userName = null)
+        protected static void SetControllerContext(Controller controller, string method, string userName = null, IFormCollection forms = null)
         {
             if (controller == null)
             {
@@ -102,6 +101,11 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             };
 
             controllerContext.HttpContext.Request.Method = method;
+
+            if (forms != null)
+            {
+                controllerContext.HttpContext.Request.Form = forms;
+            }
 
             controller.ControllerContext = controllerContext;
             controller.Url = uriHelperMock.Object;

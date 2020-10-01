@@ -17,8 +17,7 @@ namespace SCS.HomePhotos.Web
         /// <returns>The file name.</returns>
         public static string GetFileName(this IFormFile file)
         {
-            return ContentDispositionHeaderValue.Parse(
-                            file.ContentDisposition).FileName.ToString().Trim('"');
+            return ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim('"');
         }
 
         /// <summary>

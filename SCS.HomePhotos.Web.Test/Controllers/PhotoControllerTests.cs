@@ -13,7 +13,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 {
     public class PhotoControllerTests
     {
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture;
 
         private readonly PhotosController _photosController;
         private readonly Mock<ILogger<PhotosController>> _logger;
@@ -21,6 +21,10 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 
         public PhotoControllerTests()
         {
+            _fixture = new Fixture();
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
             _logger = new Mock<ILogger<PhotosController>>();
             _photosService = new Mock<IPhotoService>();
 
@@ -30,16 +34,17 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task GetLatestDefault()
         {
-            var photos = _fixture.CreateMany<Model.Photo>(200);
+            const int photoCount = 400;
+            var photos = _fixture.CreateMany<Model.Photo>(photoCount);
 
-            _photosService.Setup(m => m.GetLatestPhotos(1, 200))
+            _photosService.Setup(m => m.GetLatestPhotos(1, photoCount))
                 .ReturnsAsync(photos);
 
             var response = await _photosController.GetLatestPhotos().ConfigureAwait(true);
 
             Assert.IsType<OkObjectResult>(response);
 
-            _photosService.Verify(m => m.GetLatestPhotos(1, 200),
+            _photosService.Verify(m => m.GetLatestPhotos(1, photoCount),
                 Times.Once);
 
             var value = ((OkObjectResult)response).Value;

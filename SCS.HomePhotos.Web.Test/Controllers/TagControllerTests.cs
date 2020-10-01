@@ -14,7 +14,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 {
     public class TagControllerTests
     {
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture;
 
         private readonly TagsController _tagsController;
         private readonly Mock<ILogger<TagsController>> _logger;
@@ -22,6 +22,10 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 
         public TagControllerTests()
         {
+            _fixture = new Fixture();
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
             _logger = new Mock<ILogger<TagsController>>();
             _photosService = new Mock<IPhotoService>();
 

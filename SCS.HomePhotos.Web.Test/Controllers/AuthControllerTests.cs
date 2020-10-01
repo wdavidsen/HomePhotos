@@ -180,7 +180,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         {
             var response = await _authController.Logout();
 
-            Assert.IsType<BadRequestObjectResult>(response);
+            Assert.IsType<ForbidResult>(response);
 
             _accountService.Verify(m => m.DeleteAgentRefreshTokens(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
@@ -188,7 +188,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task Refresh()
         {
-            var userName = "wdavidsen";
+            var userName = "jdoe";
             SetControllerContext(_authController, "POST", userName);
 
             var refreshToken = _securityService.Object.GenerateRefreshToken();
@@ -235,11 +235,17 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task RefreshInvalidToken()
         {
-            var userName = "wdavidsen";
+            var userName = "jdoe";
             SetControllerContext(_authController, "POST", userName);
 
             var refreshToken = _securityService.Object.GenerateRefreshToken();
             var token = _fixture.Create<string>();
+
+            _accountService.Setup(m => m.GetRefreshTokens(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+               .ReturnsAsync(new List<Model.UserToken>
+               {
+                    { new Model.UserToken { Token = refreshToken, Expiration = DateTime.UtcNow.AddDays(-1)} }
+               });
 
             var response = await _authController.Refresh(
                 new RefreshModel
@@ -249,7 +255,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 });
 
             _accountService.Verify(m => m.GetRefreshTokens(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
-                Times.Never);
+                Times.Once);
             _accountService.Verify(m => m.DeleteRefreshToken(userName, refreshToken),
                 Times.Never);
             _accountService.Verify(m => m.SaveRefreshToken(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()),
@@ -261,7 +267,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task RefreshNoRefreshTokens()
         {
-            var userName = "wdavidsen";
+            var userName = "jdoe";
             SetControllerContext(_authController, "POST", userName);
 
             var refreshToken = _securityService.Object.GenerateRefreshToken();
@@ -296,7 +302,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task RefreshOldRefreshTokens()
         {
-            var userName = "wdavidsen";
+            var userName = "jdoe";
             SetControllerContext(_authController, "POST", userName);
 
             var refreshToken = _securityService.Object.GenerateRefreshToken();

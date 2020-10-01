@@ -2,12 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Web.Controllers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -50,11 +46,11 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         }
 
         [Fact]
-        public void Put()
+        public async Task Put()
         {
             var settings = _fixture.Create<Dto.Settings>();
 
-            var response = _settingsController.Put(settings);
+            var response = await _settingsController.Put(settings);
 
             Assert.IsType<OkResult>(response);
         }

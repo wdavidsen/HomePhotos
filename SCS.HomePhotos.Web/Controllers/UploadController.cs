@@ -101,11 +101,7 @@ namespace SCS.HomePhotos.Web.Controllers
                     #endregion
 
                     filePath = Path.Combine(tempDir, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
+                    await _fileUploadService.CopyFile(file, filePath, FileMode.Create);
 
                     var user = User.Identity.Name;
                     tags.Add($"{user} Upload");

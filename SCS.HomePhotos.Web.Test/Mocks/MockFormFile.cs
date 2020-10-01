@@ -10,15 +10,15 @@ namespace SCS.HomePhotos.Web.Test.Mocks
     {
         public string ContentType => "image/jpg";
 
-        public string ContentDisposition => "content disposition";
+        public string ContentDisposition => "form-data; name=\"files\"; filename=\"Whale Shark.jpg\"";
 
         public IHeaderDictionary Headers => new HeaderDictionary();
 
         public long Length => 2000;
 
-        public string Name => "MyFile";
+        public string Name => "Whale Shark";
 
-        public string FileName => "c:\\temp\\MyFile.jpg";
+        public string FileName => $"{AppDomain.CurrentDomain.BaseDirectory}\\Images\\Whale Shark.jpg";
 
         public void CopyTo(Stream target)
         {
@@ -32,7 +32,7 @@ namespace SCS.HomePhotos.Web.Test.Mocks
 
         public Stream OpenReadStream()
         {
-            throw new NotImplementedException();
+            return new FileStream(FileName, FileMode.Open, FileAccess.Read);
         }
     }
 }

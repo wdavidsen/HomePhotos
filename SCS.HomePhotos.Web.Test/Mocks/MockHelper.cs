@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Moq;
 using SCS.HomePhotos.Model;
 using System;
@@ -36,6 +37,17 @@ namespace SCS.HomePhotos.Web.Test.Mocks
                     new SymmetricSecurityKey(Convert.FromBase64String("3loMQZr/i467EV5pPUlHJBdFgyOkiPERM+1xm8F8H3U=")), 
                     SecurityAlgorithms.HmacSha256));
 
+            var identity = new ClaimsIdentity(JwtBearerDefaults.AuthenticationScheme);
+            identity.AddClaims(new List<Claim>
+                {
+                    new Claim(identity.NameClaimType, username),
+                    new Claim(JwtRegisteredClaimNames.Sub, username),
+                    new Claim(JwtRegisteredClaimNames.UniqueName, username),
+                    new Claim(JwtRegisteredClaimNames.Typ, Guid.NewGuid().ToString())
+                });
+
+            var principal = new ClaimsPrincipal(identity);
+
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             mock.Setup(m => m.GenerateRefreshToken())
@@ -46,6 +58,9 @@ namespace SCS.HomePhotos.Web.Test.Mocks
 
             mock.Setup(m => m.GetUserClaims(It.IsAny<string>(), It.IsAny<RoleType>()))
                 .Returns(claims);
+
+            mock.Setup(m => m.GetPrincipalFromExpiredToken(It.IsAny<string>()))
+                .Returns(principal);
 
             mock.SetupGet(p => p.ValidAudience)
                 .Returns("https://localhost");
