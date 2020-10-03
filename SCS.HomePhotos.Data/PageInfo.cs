@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SCS.HomePhotos.Data
+﻿namespace SCS.HomePhotos.Data
 {
     public class PageInfo
     {

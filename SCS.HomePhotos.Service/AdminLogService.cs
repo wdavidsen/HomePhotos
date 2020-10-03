@@ -27,7 +27,7 @@ namespace SCS.HomePhotos.Service
 
             if (lastEntry == null)
             {
-                _logData.Insert(logEntry);
+                await _logData.InsertAsync(logEntry);
             }
             else
             {

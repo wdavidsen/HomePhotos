@@ -1,12 +1,9 @@
-﻿using SCS.HomePhotos.Model;
-
-namespace SCS.HomePhotos.Service
+﻿namespace SCS.HomePhotos.Service
 {
     public class ChangePasswordResult : AuthResult
     {
         public ChangePasswordResult()
         {
-
         }
 
         public bool PasswordUsedPreviously { get; set; }

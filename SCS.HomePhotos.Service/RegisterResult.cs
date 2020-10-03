@@ -5,6 +5,7 @@
         public RegisterResult()
         {
             UserNameTaken = false;
+            PasswordNotStrong = false;
         }
 
         public bool Success
