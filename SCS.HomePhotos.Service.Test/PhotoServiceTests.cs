@@ -154,14 +154,8 @@ namespace SCS.HomePhotos.Service.Test
             var tagName = "B-Day";
             var tag = null as Tag;
 
-            _tagData.Setup(m => m.GetTag(tagName)).ReturnsAsync(tag);
-
-            //_tagData.Setup(m => m.GetListAsync<Tag>(It.IsAny<string>(), It.IsAny<object>()))
-            //     .ReturnsAsync(tags)
-            //     .Callback<string, object>((where, p) => {
-            //         Assert.Equal("WHERE TagName = @TagName", where);
-            //         Assert.Equal(tag, p.GetProperty("TagName").ToString());
-            //     });
+            _tagData.Setup(m => m.GetTag(tagName))
+                .ReturnsAsync(tag);
 
             _tagData.Setup(m => m.SaveTag(It.IsAny<Tag>()))
                 .ReturnsAsync(new Tag { TagName = tagName });

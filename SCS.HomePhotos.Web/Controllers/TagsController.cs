@@ -64,7 +64,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             var finalTag = await _photoSevice.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds);
 
-            return Ok(finalTag);
+            return Ok(new Dto.Tag(finalTag));
         }
 
         [Authorize(Policy = "Contributers")]
@@ -78,7 +78,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             var newTag = await _photoSevice.CopyTags(copyInfo.NewTagName, copyInfo.SourceTagId);
 
-            return Ok(newTag);
+            return Ok(new Dto.Tag(newTag));
         }
 
         [Authorize(Policy = "Contributers")]
@@ -108,7 +108,6 @@ namespace SCS.HomePhotos.Web.Controllers
 
             return Ok();
         }
-
 
         [Authorize(Policy = "Contributers")]
         [HttpPost(Name = "AddTag")]
