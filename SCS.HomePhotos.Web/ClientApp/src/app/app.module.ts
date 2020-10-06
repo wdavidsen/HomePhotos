@@ -105,7 +105,6 @@ import { UserSettings } from './models/user-settings';
     PaginationModule.forRoot(),
     ModalModule.forRoot(),
     AlertModule.forRoot(),
-    ModalModule.forRoot(),
     TypeaheadModule.forRoot(),
     ToastrModule.forRoot({
       timeOut: 4000,

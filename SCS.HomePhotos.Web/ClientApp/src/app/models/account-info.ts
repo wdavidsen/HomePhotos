@@ -11,12 +11,12 @@ export class AccountInfo {
     static FromUser(user: User): AccountInfo {
         const a = new AccountInfo();
 
-        a.userId = user.userId;
-        a.username = user.username;
-        a.firstName = user.firstName;
-        a.lastName = user.lastName;
-        a.lastLogin = user.lastLogin;
-        a.role = user.role;
+        a.userId = user != null ? user.userId : 0;
+        a.username = user != null ? user.username : '';
+        a.firstName = user != null ? user.firstName : '';
+        a.lastName = user != null ? user.lastName : '';
+        a.lastLogin = user != null ? user.lastLogin : new Date();
+        a.role = user != null ? user.role : '';
 
         return a;
     }
