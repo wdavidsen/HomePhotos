@@ -3,9 +3,11 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Model;
+using SCS.HomePhotos.Service.Workers;
+using SCS.HomePhotos.Workers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -19,6 +21,9 @@ namespace SCS.HomePhotos.Service.Test
         private readonly Mock<IPhotoData> _photoData;
         private readonly Mock<ITagData> _tagData;
         private readonly Mock<ILogger<PhotoService>> _logger;
+        private readonly Mock<IFileSystemService> _fileSystemService;
+        private readonly Mock<IDynamicConfig> _dynamicCache;
+        private readonly IBackgroundTaskQueue _backgroundQueue;
 
         public PhotoServiceTests()
         {
@@ -29,8 +34,12 @@ namespace SCS.HomePhotos.Service.Test
             _photoData = new Mock<IPhotoData>();
             _tagData = new Mock<ITagData>();
             _logger = new Mock<ILogger<PhotoService>>();
+            _fileSystemService = new Mock<IFileSystemService>();
+            _dynamicCache = new Mock<IDynamicConfig>();
+            _backgroundQueue = new BackgroundTaskQueue();
 
-            _photoService = new PhotoService(_photoData.Object, _tagData.Object, _logger.Object, null, null, null);
+            _photoService = new PhotoService(_photoData.Object, _tagData.Object, _logger.Object, _fileSystemService.Object,
+                _dynamicCache.Object, _backgroundQueue);
         }
 
         [Fact]
@@ -41,7 +50,8 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoData.Setup(m => m.GetListAsync<Photo>(It.IsAny<string>(), It.IsAny<object>()))
                 .ReturnsAsync(photos)
-                .Callback<string, object>((where, p) => {
+                .Callback<string, object>((where, p) =>
+                {
                     Assert.StartsWith("WHERE ", where);
                     Assert.Equal(checksum, p.GetProperty("Checksum").ToString());
                 });
@@ -78,7 +88,8 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoData.Setup(m => m.GetPhotos(It.IsAny<string[]>(), 1, 50))
                 .ReturnsAsync(photos)
-                .Callback<string[], int, int>((t, p, s) => {
+                .Callback<string[], int, int>((t, p, s) =>
+                {
                     Assert.Equal(1, p);
                     Assert.Equal(50, s);
                     Assert.Equal(tags.Count(), t.Count());
@@ -190,16 +201,115 @@ namespace SCS.HomePhotos.Service.Test
             var tag = _fixture.Create<Tag>();
 
             var tags = _fixture.CreateMany<Tag>(3);
-            
+
             _tagData.Setup(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()));
 
             _tagData.Setup(m => m.SaveTag(It.IsAny<Tag>()))
                 .ReturnsAsync(tag);
-            
+
             await _photoService.AssociateTags(photo, tags.Select(t => t.TagName).ToArray());
 
             _tagData.Verify(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()),
                 Times.Exactly(3));
+        }
+
+        [Fact]
+        public async Task FlagPhotosForReprocessingTest()
+        {
+            _photoData.Setup(m => m.FlagPhotosForReprocessing());
+
+            await _photoService.FlagPhotosForReprocessing();
+
+            _photoData.Verify(m => m.FlagPhotosForReprocessing(), Times.Once);
+        }
+
+        [Fact]
+        public async Task DeletePhotoCache()
+        {
+            var completeInfo = new TaskCompleteInfo(TaskType.ClearCache, "wdavidsen", true);
+
+            _photoData.Setup(m => m.DeletePhotos());
+            _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()));
+            
+            await _photoService.DeletePhotoCache(completeInfo.ContextUserName);
+
+            try
+            {
+                var token = new CancellationTokenSource().Token;
+                var workItem = await _backgroundQueue.DequeueAsync(token);
+                await workItem(token, new QueueEvents { ItemProcessed = (info) => { } });
+            }
+            catch (TaskCanceledException) { }
+
+            _photoData.Verify(m => m.DeletePhotos(),
+                Times.Once);
+            _fileSystemService.Verify(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task DeletePhotoCacheEventFired()
+        {
+            var completeInfo = new TaskCompleteInfo(TaskType.ClearCache, "wdavidsen", true);
+
+            _photoData.Setup(m => m.DeletePhotos());
+            _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()));
+
+            await _photoService.DeletePhotoCache(completeInfo.ContextUserName);
+
+            var queueEvents = new Mock<IQueueEvents>();
+            queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) => {
+                Assert.Equal(completeInfo.Type, info.Type);
+                Assert.Equal(completeInfo.Success, info.Success);
+                Assert.Equal(completeInfo.ContextUserName, info.ContextUserName);
+            });
+
+            try
+            {
+                var token = new CancellationTokenSource().Token;
+                var workItem = await _backgroundQueue.DequeueAsync(token);
+                await workItem(token, queueEvents.Object);
+            }
+            catch (TaskCanceledException) { }
+        }
+
+        [Fact]
+        public async Task DeletePhotoCacheHandlesException()
+        {
+            var completeInfo = new TaskCompleteInfo(TaskType.ClearCache, "wdavidsen", false);
+
+            _photoData.Setup(m => m.DeletePhotos());
+            
+            _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()))
+                .Throws(new Exception("Some error"));
+            
+            /* _logger.Setup(m => m.Log<FormattedLogValues>(LogLevel.Error, 0, It.IsAny<string>(), It.IsAny<Exception>(), It.IsAny<Func<FormattedLogValues, Exception, string>>())); */
+            
+            await _photoService.DeletePhotoCache(completeInfo.ContextUserName);
+
+            var queueEvents = new Mock<IQueueEvents>();
+            queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) => {
+                Assert.Equal(completeInfo.Type, info.Type);
+                Assert.Equal(completeInfo.Success, info.Success);
+                Assert.Equal(completeInfo.ContextUserName, info.ContextUserName);
+            });
+
+            try
+            {
+                var token = new CancellationTokenSource().Token;
+                var workItem = await _backgroundQueue.DequeueAsync(token);
+                await workItem(token, queueEvents.Object);
+            }
+            catch (TaskCanceledException) { }
+
+            _photoData.Verify(m => m.DeletePhotos(),
+                Times.Once);
+            _fileSystemService.Verify(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()),
+                Times.Once);
+            
+            /* _logger.Verify(m => m.Log(It.IsAny<LogLevel>(), 0, It.IsAny<PhotoService>(), It.IsAny<Exception>(), It.IsAny<Func<PhotoService, Exception, string>>()),
+                Times.Once); */
+
         }
     }
 }

@@ -21,7 +21,7 @@ namespace SCS.HomePhotos.Service.Test
         private readonly Fixture _fixture;
 
         private readonly ImageService _imageService;
-        private readonly IBackgroundTaskQueue _queue;
+        private readonly IBackgroundTaskQueue _backgroundQueue;
 
         private readonly Mock<IImageTransformer> _imageTransformer;
         private readonly Mock<IFileSystemService> _fileSystemService;
@@ -43,8 +43,8 @@ namespace SCS.HomePhotos.Service.Test
             _logger = new Mock<ILogger<ImageService>>();
             _metadataService = new Mock<IImageMetadataService>();
 
-            _queue = new BackgroundTaskQueue();
-            _imageService = new ImageService(_imageTransformer.Object, _fileSystemService.Object, _photoService.Object, _dynamicConfig.Object, _queue, 
+            _backgroundQueue = new BackgroundTaskQueue();
+            _imageService = new ImageService(_imageTransformer.Object, _fileSystemService.Object, _photoService.Object, _dynamicConfig.Object, _backgroundQueue, 
                 _logger.Object, _metadataService.Object);
         }
 
@@ -69,7 +69,7 @@ namespace SCS.HomePhotos.Service.Test
             try
             {
                 var token = new CancellationTokenSource().Token;
-                var workItem = await _queue.DequeueAsync(token);
+                var workItem = await _backgroundQueue.DequeueAsync(token);
                 await workItem(token, new QueueEvents { ItemProcessed = (info) => { } });
             }
             catch (TaskCanceledException) { }
@@ -109,6 +109,43 @@ namespace SCS.HomePhotos.Service.Test
         }
 
         [Fact]
+        public async Task QueueMobileResizeEventFired()
+        {
+            var filePath = Path.Combine("MobileUploads", DateTime.Now.ToString("yyyy-MM"), "birthday.jpg");
+            var cacheDir = Path.Combine("homePhotos", "cache");
+            var checksum = "abc123";
+            var completeInfo = new TaskCompleteInfo(TaskType.ProcessMobilePhoto, "wdavidsen", true);
+
+            _fileSystemService.Setup(m => m.GetChecksum(It.IsAny<string>())).Returns(checksum);
+            _fileSystemService.Setup(m => m.GetDirectoryTags(It.IsAny<string>())).Returns(new List<string> { "Tag1", "Tag2" });
+            _photoService.Setup(m => m.GetPhotoByChecksum(It.IsAny<string>())).ReturnsAsync(default(Photo));
+
+            _dynamicConfig.SetupGet(o => o.CacheFolder).Returns(cacheDir);
+            _dynamicConfig.SetupGet(o => o.LargeImageSize).Returns(800);
+            _dynamicConfig.SetupGet(o => o.ThumbnailSize).Returns(200);
+            _dynamicConfig.SetupGet(o => o.MobileUploadsFolder).Returns("MobileUploads");
+
+            var cachePath = await _imageService.QueueMobileResize(completeInfo.ContextUserName, filePath);
+
+            var queueEvents = new Mock<IQueueEvents>();
+            queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) => {
+                Assert.Equal(completeInfo.Type, info.Type);
+                Assert.Equal(completeInfo.Success, info.Success);
+                Assert.Equal(completeInfo.ContextUserName, info.ContextUserName);
+                Assert.NotNull(info.Data);
+                Assert.Equal(filePath, info.Data.ToString());
+            });
+
+            try
+            {
+                var token = new CancellationTokenSource().Token;
+                var workItem = await _backgroundQueue.DequeueAsync(token);
+                await workItem(token, queueEvents.Object);
+            }
+            catch (TaskCanceledException) { }
+        }
+
+        [Fact]
         public async Task QueueMobileResizeFullResizeFailed()
         {
             var filePath = Path.Combine("photos", "party", "birthday.jpg");
@@ -129,7 +166,7 @@ namespace SCS.HomePhotos.Service.Test
             try
             {
                 var token = new CancellationTokenSource().Token;
-                var workItem = await _queue.DequeueAsync(token);
+                var workItem = await _backgroundQueue.DequeueAsync(token);
                 await workItem(token, new QueueEvents { ItemProcessed = (info) => { } });
             }
             catch (TaskCanceledException) { }
@@ -177,7 +214,7 @@ namespace SCS.HomePhotos.Service.Test
             try
             {
                 var token = new CancellationTokenSource().Token;
-                var workItem = await _queue.DequeueAsync(token);
+                var workItem = await _backgroundQueue.DequeueAsync(token);
                 await workItem(token, new QueueEvents { ItemProcessed = (info) => { } });
             }
             catch (TaskCanceledException) { }

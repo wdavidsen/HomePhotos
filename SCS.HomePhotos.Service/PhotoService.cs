@@ -222,21 +222,6 @@ namespace SCS.HomePhotos.Service
             }
         }
 
-        private async Task<IEnumerable<Tag>> GetUnusedTags()
-        {
-            var tagStats = await _tagData.GetTagAndPhotoCount();
-
-            return tagStats.Where(ts => ts.PhotoCount == 0);
-        }
-
-        private async Task DeleteUnusedTags()
-        {
-            foreach (var tag in await GetUnusedTags())
-            {
-                await _tagData.DeleteAsync(tag);
-            }
-        }
-
         public async Task FlagPhotosForReprocessing()
         {
             await _photoData.FlagPhotosForReprocessing();
@@ -258,10 +243,25 @@ namespace SCS.HomePhotos.Service
                     catch (Exception ex)
                     {
                         _logger.LogError(ex, $"Failed to delete cache folder: {_dynamicConfig.CacheFolder}");
-                        notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ClearCache, contextUserName, true));
+                        notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ClearCache, contextUserName, false));
                     }
-                });                
-            });            
+                });
+            });
+        }
+
+        private async Task<IEnumerable<Tag>> GetUnusedTags()
+        {
+            var tagStats = await _tagData.GetTagAndPhotoCount();
+
+            return tagStats.Where(ts => ts.PhotoCount == 0);
+        }
+
+        private async Task DeleteUnusedTags()
+        {
+            foreach (var tag in await GetUnusedTags())
+            {
+                await _tagData.DeleteAsync(tag);
+            }
         }
     }
 }
