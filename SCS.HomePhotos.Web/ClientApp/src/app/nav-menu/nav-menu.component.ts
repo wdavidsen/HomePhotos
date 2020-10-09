@@ -27,7 +27,7 @@ export class NavMenuComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private searchService: SearchService,
     private modalService: BsModalService) {
-      this.authenticationService.currentUser.subscribe(user => {
+      this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
         this.hideMenu = !this.currentUser;
         this.hideMenuAdmin = !(this.currentUser && this.currentUser.role === 'Admin');

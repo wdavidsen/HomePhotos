@@ -17,7 +17,7 @@ export class AppComponent {
 
   constructor (private router: Router, private authenticationService: AuthenticationService, private signalRService: SignalRService,
     private toastr: ToastrService) {
-      this.authenticationService.currentUser.subscribe(user => {
+      this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
 
         this.signalRService.startConnection();

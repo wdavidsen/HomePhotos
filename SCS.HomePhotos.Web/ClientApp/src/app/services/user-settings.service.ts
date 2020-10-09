@@ -6,11 +6,11 @@ import { UserSettings } from '../models/user-settings';
 @Injectable({ providedIn: 'root' })
 export class UserSettingsService {
   private sub = new Subject<UserSettings>();
-  private key = "UserSettings";
+  private key = 'UserSettings';
 
   userSettings: UserSettings;
 
-  constructor(private localStorge: LocalStorageService) {    
+  constructor(private localStorge: LocalStorageService) {
     this.userSettings = this.localStorge.get(this.key) || new UserSettings();
     this.applySettings(this.userSettings);
   }

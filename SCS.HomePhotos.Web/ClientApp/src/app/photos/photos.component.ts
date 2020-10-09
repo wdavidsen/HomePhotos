@@ -25,8 +25,8 @@ export class PhotosComponent implements OnInit, OnDestroy {
   tagName: string;
   organizeMode = false;
   taggerModalRef: BsModalRef;
-
-  private keywords: string;
+  keywords: string;
+  
   private pageNum = 1;
   private mode = 1;
   private previousScroll = 0;
@@ -48,7 +48,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
     private modalService: BsModalService,
     private scrollService: ScrollService,
     private authenticationService: AuthenticationService) {
-      this.authenticationService.currentUser.subscribe(user => {
+      this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
         this.userSettings = this.userSettingsService.userSettings;
         this.thumbHeight = this.getThumbHeight(this.userSettings.thumbnailSize);
@@ -93,6 +93,10 @@ export class PhotosComponent implements OnInit, OnDestroy {
 
     this.searchSubscription = this.searchService.getKeywords()
       .subscribe(keywords => {
+        if (!this.keywords && !keywords) {
+          return;
+        }
+
         if (keywords) {
           console.log(`Received search keywords: ${keywords}`);
           this.keywords = keywords;

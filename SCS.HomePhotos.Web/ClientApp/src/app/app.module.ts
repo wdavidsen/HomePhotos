@@ -40,6 +40,7 @@ import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.compone
 import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } from './common-dialog';
 import { LocalStorageService } from './services/local-storage.service';
 import { UserSettings } from './models/user-settings';
+import { routes } from './app.routes';
 
 @NgModule({
   declarations: [
@@ -84,22 +85,7 @@ import { UserSettings } from './models/user-settings';
     FormsModule,
     ReactiveFormsModule,
     AngularFontAwesomeModule,
-    RouterModule.forRoot([
-      { path: '', component: PhotosComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-      { path: 'photos/:tagName', component: PhotosComponent, canActivate: [AuthGuard] },
-      { path: 'tags', component: TagsComponent, canActivate: [AuthGuard] },
-      { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
-      { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegisterComponent },
-      { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
-      { path: 'users/:userId', component: UserDetailComponent, canActivate: [AuthGuard] },
-      { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
-      { path: 'logs', component: LogsComponent, canActivate: [AuthGuard] },
-      { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
-
-      // otherwise redirect to home
-      { path: '**', redirectTo: '' }
-    ]),
+    RouterModule.forRoot(routes),
     BrowserAnimationsModule,
     TypeaheadModule.forRoot(),
     PaginationModule.forRoot(),

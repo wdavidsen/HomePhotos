@@ -8,29 +8,19 @@ import { IndividualConfig, ToastrService } from 'ngx-toastr';
 
 import { AccountComponent } from './account.component';
 
-const toastrService = {
-  success: (
-    message?: string,
-    title?: string,
-    override?: Partial<IndividualConfig>
-  ) => {},
-  error: (
-    message?: string,
-    title?: string,
-    override?: Partial<IndividualConfig>
-  ) => {},
-};
-
 describe('AccountComponent', () => {
   let component: AccountComponent;
   let fixture: ComponentFixture<AccountComponent>;
+  let mockToastr;
 
   beforeEach(async(() => {
+    mockToastr = jasmine.createSpyObj(['success', 'error']);
+
     TestBed.configureTestingModule({
       declarations: [ AccountComponent ],
       imports: [ReactiveFormsModule, HttpClientModule, RouterTestingModule, ModalModule.forRoot()],
       providers: [
-        { provide: ToastrService, useValue: toastrService }
+        { provide: ToastrService, useValue: mockToastr }
       ]
     })
     .compileComponents();

@@ -29,7 +29,7 @@ export class UserDetailComponent implements OnInit {
     private userService: UserService,
     private toastr: ToastrService,
     private modalService: BsModalService) {
-      this.authenticationService.currentUser.subscribe(user => {
+      this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
       });
     }

@@ -32,7 +32,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private modalService: BsModalService,
     private authenticationService: AuthenticationService) {
-      this.authenticationService.currentUser.subscribe(user => {
+      this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
       });
     }
@@ -306,15 +306,18 @@ export class TagsComponent implements OnInit, OnDestroy {
     let letter = '';
     let prevLetter = '';
 
+    const dividedChips: TagChip[] = [];
+
     tagChips.forEach((chip, index) => {
       letter = chip.name.substring(0, 1).toUpperCase();
+      dividedChips.push(chip);
 
       if (letter !== prevLetter && idexes.indexOf(letter) >= 0) {
-        tagChips.splice(index, 0, {name: letter, id: -1, isDivider: true, count: 0, selected: false}); // insert divider
+        dividedChips.push({name: letter, id: -1, isDivider: true, count: 0, selected: false});
       }
       prevLetter = letter;
     });
 
-    return tagChips;
+    return dividedChips;
   }
 }

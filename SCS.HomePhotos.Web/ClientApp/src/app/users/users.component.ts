@@ -22,7 +22,7 @@ export class UsersComponent implements OnInit {
     private userService: UserService,
     private toastr: ToastrService) {
 
-      this.authenticationService.currentUser.subscribe(user => {
+      this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
       });
     }

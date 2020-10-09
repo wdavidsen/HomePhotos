@@ -12,27 +12,18 @@ import { SettingsComponent } from './settings.component';
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
   let fixture: ComponentFixture<SettingsComponent>;
-
-  const toastrService = {
-    success: (
-      message?: string,
-      title?: string,
-      override?: Partial<IndividualConfig>
-    ) => {},
-    error: (
-      message?: string,
-      title?: string,
-      override?: Partial<IndividualConfig>
-    ) => {},
-  };
+  let mockToastr, mockSettingsService;
 
   beforeEach(async(() => {
+    mockToastr = jasmine.createSpyObj(['success', 'error']);
+    mockSettingsService = jasmine.createSpyObj(['getSettings', 'updateSettings', 'indexNow', 'clearCache']);
+
     TestBed.configureTestingModule({
       declarations: [ SettingsComponent ],
       imports: [ReactiveFormsModule, HttpClientModule, RouterTestingModule, ModalModule, FormsModule, ModalModule.forRoot()],
       providers: [
         SettingsService,
-        { provide: ToastrService, useValue: toastrService }
+        { provide: ToastrService, useValue: mockToastr }
       ]
     })
     .compileComponents();
