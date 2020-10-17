@@ -1,8 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrService } from 'ngx-toastr';
+import { of, Subject } from 'rxjs';
+import { User } from '../models';
 import { AuthenticationService } from '../services';
 
 import { LoginComponent } from './login.component';
@@ -11,6 +13,14 @@ describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let mockToastr, mockAuthenticationService;
+
+  const setupForm = (data) => {
+    const formBuilder = TestBed.get(FormBuilder);
+    component.loginForm = formBuilder.group({
+      username: [data.username, Validators.required],
+      password: [data.password, Validators.required]
+    });
+  };
 
   beforeEach(async(() => {
     mockToastr = jasmine.createSpyObj(['success', 'error']);
@@ -35,5 +45,41 @@ describe('LoginComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should initialize', () => {
+    expect(component.loginForm).toBeTruthy();
+  });
+
+  it('should save form', () => {
+    setupForm( {username: 'wdavidsen', password: 'password1'} );
+    mockAuthenticationService.login.and.returnValue(of(new User()));
+
+    component.onSubmit();
+
+    expect(mockAuthenticationService.login).toHaveBeenCalledTimes(1);
+    expect(mockToastr.success).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not save incomplete form', () => {
+    setupForm( {username: 'wdavidsen', password: null} );
+    mockAuthenticationService.login.and.returnValue(of(new User()));
+
+    component.onSubmit();
+
+    expect(mockAuthenticationService.login).toHaveBeenCalledTimes(0);
+    expect(mockToastr.success).toHaveBeenCalledTimes(0);
+  });
+
+  it('should handle save form error', () => {
+    setupForm( {username: 'wdavidsen', password: 'password1'} );
+    const sub = new Subject<User>();
+    mockAuthenticationService.login.and.returnValue(sub.asObservable());
+
+    sub.error('some error');
+    component.onSubmit();
+
+    expect(mockAuthenticationService.login).toHaveBeenCalledTimes(1);
+    expect(mockToastr.error).toHaveBeenCalledTimes(1);
   });
 });

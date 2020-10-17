@@ -5,7 +5,6 @@ import { AccountService, AuthenticationService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalContentComponent } from '../users/change-password-modal.component';
-import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -21,7 +20,6 @@ export class AccountComponent implements OnInit {
   changePasswordModalRef: BsModalRef;
 
   constructor(private authenticationService: AuthenticationService,
-    private router: Router,
     private accountService: AccountService,
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
@@ -55,17 +53,17 @@ export class AccountComponent implements OnInit {
     const tempUser = this.formToUser();
 
     this.accountService.save(tempUser)
-        .subscribe(data => {
-          this.toastr.success(`Saved successfully`);
-          this.accountInfo = tempUser;
+      .subscribe(data => {
+        this.toastr.success(`Saved successfully`);
+        this.accountInfo = tempUser;
+        this.loading = false;
+        this.setupForm(data);
+      },
+      error => {
+          console.error(error);
+          this.toastr.error(`Failed to save`);
           this.loading = false;
-          this.setupForm(data);
-        },
-        error => {
-            console.error(error);
-            this.toastr.error(`Failed to save`);
-            this.loading = false;
-        });
+      });
   }
 
   changePassword() {
@@ -83,7 +81,7 @@ export class AccountComponent implements OnInit {
         username: [data ? data.username : '', Validators.required],
         firstName: [data ? data.firstName : '', Validators.required],
         lastName: [data ? data.lastName : '', Validators.required],
-        });
+      });
   }
 
   private formToUser(): AccountInfo {

@@ -7,7 +7,8 @@ export class LocalStorageService {
   set(key: string, data: any): void {
     try {
       localStorage.setItem(key, JSON.stringify(data));
-    } catch (e) {
+    }
+    catch (e) {
       console.error('Error saving to local storage', e);
     }
   }
@@ -15,7 +16,8 @@ export class LocalStorageService {
   get(key: string) {
     try {
       return JSON.parse(localStorage.getItem(key));
-    } catch (e) {
+    }
+    catch (e) {
       console.error('Error getting data from local storage', e);
       return null;
     }

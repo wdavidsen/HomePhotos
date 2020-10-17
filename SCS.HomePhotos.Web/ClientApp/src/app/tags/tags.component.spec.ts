@@ -1,10 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { IndividualConfig, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { Tag, TagChip } from '../models';
 import { TagService } from '../services';
@@ -102,15 +100,25 @@ describe('TagsComponent', () => {
   });
 
   it('should select a tag', () => {
-    component.tagChips = tagChips;
+    const chips = [...tagChips];
     component.organizeMode = true;
+    component.tagChips = chips;
     fixture.detectChanges();
 
-    component.select(tagChips[2]);
-    expect(tagChips[2].selected).toBe(true);
+    component.select(tagChips[0]);
 
-    component.select(tagChips[2]);
-    expect(tagChips[2].selected).toBe(false);
+    expect(tagChips[0].selected).toBe(true);
+  });
+
+  it('should unselect a tag', () => {
+    const chips = [...tagChips];
+    component.organizeMode = true;
+    component.tagChips = chips;
+    fixture.detectChanges();
+
+    component.select(tagChips[0]);
+
+    expect(tagChips[0].selected).toBe(false);
   });
 
   it('should get selected tags', () => {

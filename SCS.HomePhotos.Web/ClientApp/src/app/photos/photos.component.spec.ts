@@ -7,14 +7,12 @@ import { AuthenticationService, PhotosService, SearchService, UserSettingsServic
 import { PhotosComponent } from './photos.component';
 import { LocalStorageService } from '../services/local-storage.service';
 import { ToastrService } from 'ngx-toastr';
-import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { Observable, of } from 'rxjs';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { of } from 'rxjs';
 import { UserSettings } from '../models/user-settings';
 import { Photo } from '../models';
 import { ActivatedRoute, Router, Routes } from '@angular/router';
 import { ActivatedRouteStub } from 'test/activated-route-stub';
-import { expressionType } from '@angular/compiler/src/output/output_ast';
-import { assert } from 'console';
 
 describe('PhotosComponent', () => {
   let component: PhotosComponent;
@@ -44,6 +42,7 @@ describe('PhotosComponent', () => {
 
     mockPhotoService.getLatest.and.returnValue(of(photoList));
     mockPhotoService.getPhotosByTag.and.returnValue(of(photoList));
+    mockPhotoService.searchPhotos.and.returnValue(of(photoList));
     mockAuthenticationService.getCurrentUser.and.returnValue(of({userId: 1, username: 'wdavidsen'}));
     mockUserSettingsService.userSettings.and.returnValue(settings);
     mockUserSettingsService.getSettings.and.returnValue(of(settings));
@@ -140,6 +139,17 @@ describe('PhotosComponent', () => {
 
     expect(mockPhotoService.getLatest).toHaveBeenCalledTimes(1);
     expect(component.keywords).toBeNull();
+  });
+
+  it('should render thumbnails', () => {
+    const firstThumb = component.thumbnails[0];
+
+    expect(fixture.nativeElement.querySelectorAll('.photo-list div').length).toBe(2);
+
+    const style = fixture.nativeElement.querySelector('.photo-list div:first-child').getAttribute('style');
+    expect(style).toContain(`url("${firstThumb.thumbUrl}")`);
+    expect(style).toContain(`height: ${firstThumb.thumbHeight}px`);
+    expect(style).toContain(`width: ${firstThumb.thumbWidth}px`);
   });
 
   it('should select all photos', () => {

@@ -26,7 +26,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
   organizeMode = false;
   taggerModalRef: BsModalRef;
   keywords: string;
-  
+
   private pageNum = 1;
   private mode = 1;
   private previousScroll = 0;
@@ -50,7 +50,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService) {
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
-        this.userSettings = this.userSettingsService.userSettings;
+        this.userSettingsService.getSettings().subscribe(settings => this.userSettings = settings);
         this.thumbHeight = this.getThumbHeight(this.userSettings.thumbnailSize);
       });
     }

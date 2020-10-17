@@ -30,8 +30,11 @@ export class NavMenuComponent implements OnInit {
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
         this.hideMenu = !this.currentUser;
-        this.hideMenuAdmin = !(this.currentUser && this.currentUser.role === 'Admin');
-        this.hideUploadMenu = this.hideMenuAdmin;
+
+        const isAdmin = this.currentUser && this.currentUser.role === 'Admin';
+        this.hideMenuAdmin = !isAdmin;
+        this.hideUploadMenu = !isAdmin;
+        this.hideOrganize = !isAdmin;
       });
 
     router.events
@@ -46,7 +49,7 @@ export class NavMenuComponent implements OnInit {
       });
 
     this.searchService.getKeywords()
-      .subscribe(hidden => {
+      .subscribe(() => {
         this.collapseNav();
       });
   }
@@ -86,6 +89,7 @@ export class NavMenuComponent implements OnInit {
   }
 
   private SetOrganize(navInfo: NavigationEnd): void {
-    this.hideOrganize = !/\/$|\/photos|\/tags/.test(navInfo.url);
+    const isAdmin = this.currentUser && this.currentUser.role === 'Admin';
+    this.hideOrganize = !isAdmin || !/\/$|\/photos|\/tags/.test(navInfo.url);
   }
 }

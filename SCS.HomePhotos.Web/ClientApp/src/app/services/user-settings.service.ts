@@ -7,8 +7,7 @@ import { UserSettings } from '../models/user-settings';
 export class UserSettingsService {
   private sub = new Subject<UserSettings>();
   private key = 'UserSettings';
-
-  userSettings: UserSettings;
+  private userSettings: UserSettings;
 
   constructor(private localStorge: LocalStorageService) {
     this.userSettings = this.localStorge.get(this.key) || new UserSettings();

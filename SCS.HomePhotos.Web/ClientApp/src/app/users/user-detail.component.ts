@@ -78,9 +78,9 @@ export class UserDetailComponent implements OnInit {
     this.userService.save(tempUser)
       .subscribe(user => {
           this.user = user;
-          this.toastr.success(`User saved successfully`);          
+          this.toastr.success(`User saved successfully`);
           this.loading = false;
-          this.setupForm(this.user);          
+          this.setupForm(this.user);
         },
         error => {
             console.error(error);
@@ -129,7 +129,7 @@ export class UserDetailComponent implements OnInit {
       lastLogin: [data.lastLogin],
       failedLoginCount: [data.failedLoginCount],
       mustChangePassword: [data.mustChangePassword],
-      enabled: [data.enabled]        
+      enabled: [data.enabled]
     });
 
     if (data.userId > 0) {

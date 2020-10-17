@@ -5,7 +5,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-      <div class="navbar-nav" [hidden]="hideMenu">
+      <div class="navbar-nav" [hidden]="hideMenu" id="mainMenu">
           <a href="#" (click)="collapseNav()" class="nav-item nav-link active" 
             [routerLinkActive]="['link-active']" 
             [routerLinkActiveOptions]="{ exact: true }" 
@@ -21,7 +21,7 @@
             [routerLinkActiveOptions]="{ exact: true }" 
             [routerLink]="['/upload']">Upload</a>
           
-          <div class="nav-item dropdown" [hidden]="hideMenuAdmin">
+          <div class="nav-item dropdown" [hidden]="hideMenuAdmin" id="adminMenu">
               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Admin</a>
               <div class="dropdown-menu">
                 <a href="#" (click)="collapseNav()" class="dropdown-item" 
@@ -41,8 +41,8 @@
       </div>      
       <app-search [hidden]="hideSearch"></app-search>
 
-      <div class="navbar-nav nav-right" [hidden]="hideMenu">
-        <label class="nav-item nav-check" [hidden]="hideOrganize">
+      <div class="navbar-nav nav-right" [hidden]="hideMenu" id="rightMenu">
+        <label class="nav-item nav-check" [hidden]="hideOrganize" id="organizeSection">
           <app-organize></app-organize>
         </label>
         <span class="bar" [hidden]="hideOrganize">|</span> 

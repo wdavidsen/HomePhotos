@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { LogEntry, PageInfo, DataList } from '../models';
+import { PageInfo, DataList } from '../models';
 
 @Injectable()
 export class LogService {

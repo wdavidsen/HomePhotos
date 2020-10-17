@@ -68,8 +68,10 @@ export class UsersComponent implements OnInit {
 
     this.getUpdatableUsers(action).forEach(userRow => {
         const user = this._users.find(u => u.userId === userRow.userId);
-        user.enabled = enabled;
-        this.userService.save(user)
+        const userToUpdate = {...user};
+        userToUpdate.enabled = enabled;
+
+        this.userService.save(userToUpdate)
             .subscribe(
                 savedUser => {
                     userRow.enabled = user.enabled = savedUser.enabled;

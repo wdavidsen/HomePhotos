@@ -2,6 +2,13 @@ export class User {
   constructor() {
     this.userId = null;
     this.role = 'Reader';
+    this.username = null;
+    this.firstName = null;
+    this.lastName = null;
+    this.token = null;
+    this.refreshToken = null;
+    this.lastLogin = null;
+    this.failedLoginCount = 0;
     this.mustChangePassword = true;
     this.enabled = true;
   }
