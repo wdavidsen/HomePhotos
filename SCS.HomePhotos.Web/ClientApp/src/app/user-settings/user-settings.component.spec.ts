@@ -24,9 +24,13 @@ describe('UserSettingsComponent', () => {
   beforeEach(async(() => {
     mockToastr = jasmine.createSpyObj(['success', 'error']);
     mockModalRef = jasmine.createSpyObj(['hide']);
-    mockUserSettingsService = jasmine.createSpyObj(['getSettings', 'saveSettings']);
+    mockUserSettingsService = {
+      saveSettings: (s) => {},
+      get userSettings() { return null; }
+    };
 
-    mockUserSettingsService.getSettings.and.returnValue(of({...userSettings}));
+    spyOn(mockUserSettingsService, 'saveSettings');
+    spyOnProperty(mockUserSettingsService, 'userSettings', 'get').and.returnValue({...userSettings});
 
     TestBed.configureTestingModule({
       declarations: [ UserSettingsComponent ],

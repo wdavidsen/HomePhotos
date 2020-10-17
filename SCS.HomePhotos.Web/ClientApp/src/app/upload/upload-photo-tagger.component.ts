@@ -17,6 +17,7 @@ export class UploadPhotoTaggerComponent implements OnInit {
     tagStates: TagState[];
 
     constructor(
+        public bsModalRef: BsModalRef,
         private tagService: TagService,
         private toastr: ToastrService) {}
 

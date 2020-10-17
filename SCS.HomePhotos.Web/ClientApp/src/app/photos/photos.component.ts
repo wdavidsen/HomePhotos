@@ -50,7 +50,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService) {
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
-        this.userSettingsService.getSettings().subscribe(settings => this.userSettings = settings);
+        this.userSettings = this.userSettingsService.userSettings;
         this.thumbHeight = this.getThumbHeight(this.userSettings.thumbnailSize);
       });
     }

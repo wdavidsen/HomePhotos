@@ -4,6 +4,7 @@ import { UserSettingsService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { UserSettings } from '../models/user-settings';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-settings',
@@ -27,7 +28,7 @@ export class UserSettingsComponent implements OnInit {
     private toastr: ToastrService) {}
 
   ngOnInit() {
-    this.userSettingsService.getSettings().subscribe(settings => this.userSettings = settings);
+    this.userSettings = this.userSettingsService.userSettings;
     this.setupForm(this.userSettings);
   }
 
