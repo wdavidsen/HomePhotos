@@ -1,0 +1,63 @@
+<h2>Activity</h2>
+
+<nav class="filter-bar">
+    <form class="form-inline float-right">
+        <label class="my-1 mr-2" for="categorySelect">Category</label>
+        <select class="custom-select my-1 mr-sm-2" name="categorySelect" [(ngModel)]="filters.category" (change)="filtersChanged($event)">
+            <option value="">All</option>
+            <option value="General">General</option>
+            <option value="Index">Index</option>
+            <option value="Security">Security</option>            
+            <option value="Upload">Upload</option>
+        </select>
+
+        <label class="my-1 mr-2" for="severitySelect">Severity</label>
+        <select class="custom-select my-1 mr-sm-2" name="severitySelect" [(ngModel)]="filters.severity" (change)="filtersChanged($event)">
+            <option value="">All</option>
+            <option value="Neutral">Neutral</option>
+            <option value="Elevated">Elevated</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
+        </select>
+    </form>
+</nav>
+
+<section>
+    <table class="table table-sm table-striped table-bordered listing table-log">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Message</th>
+                <th>Category</th>
+                <th>Severity</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let l of logEntries">
+                <td>{{l.timestamp | date:'medium'}}</td>
+                <td>{{l.message}}</td>
+                <td>{{l.category}}</td>
+                <td>{{l.severity}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <nav class="pager-bar">
+        <form class="form-inline">
+            <label class="my-1 mr-2" for="categorySelect">Page Size</label>
+            <select class="custom-select my-1 mr-sm-2" name="pageSizeSelect" [(ngModel)]="pageInfo.pageSize" (change)="pageSizeChanged($event)">
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+                <option value="30">30</option>                
+                <option value="35">35</option> 
+                <option value="40">40</option> 
+            </select>
+    
+            <div class="pager-log">
+                <pagination [itemsPerPage]=pageInfo.pageSize [totalItems]="pageInfo.totalRecords" (pageChanged)="pageChanged($event)"></pagination>
+            </div>
+        </form>
+    </nav>
+</section>
