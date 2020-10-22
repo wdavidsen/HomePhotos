@@ -18,11 +18,10 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private authenticationService: AuthenticationService,
-        private toastr: ToastrService
-    ) {
-        // redirect to home if already logged in
+        private toastr: ToastrService)
+    {
         if (this.authenticationService.currentUserValue) {
-            this.router.navigate(['/']);
+            authenticationService.logout();
         }
     }
 

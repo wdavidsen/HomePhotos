@@ -8,7 +8,7 @@
     "build:ssr": "ng run SCS.HomePhotos.Web:server:dev",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e --port"
   },
   "private": true,
   "dependencies": {

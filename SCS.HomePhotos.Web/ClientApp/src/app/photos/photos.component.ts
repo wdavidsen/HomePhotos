@@ -11,6 +11,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { PhotoTaggerComponent } from './photo-tagger.component';
 import { ScrollService } from '../services/scroll.service';
 import { UserSettings } from '../models/user-settings';
+import { environment } from 'src/environments/environment';
 
 declare const blueimp: any;
 
@@ -251,7 +252,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
 
     thumb.photoId = photo.photoId;
     thumb.selected = false;
-    thumb.thumbUrl = `/photo-image/${photo.cacheFolder}/${photo.fileName}`;
+    thumb.thumbUrl = `${environment.serverUrl}/photo-image/${photo.cacheFolder}/${photo.fileName}`;
     thumb.thumbHeight = heightWidth.height;
     thumb.thumbWidth = heightWidth.width;
 
