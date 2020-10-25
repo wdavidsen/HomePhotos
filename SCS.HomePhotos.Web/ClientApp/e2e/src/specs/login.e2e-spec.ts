@@ -1,7 +1,7 @@
 import { $, browser, protractor } from 'protractor';
 import { LoginPage } from '../pages/login.po';
 
-describe('Login', () => {
+xdescribe('Login', () => {
   let page: LoginPage;
   const EC = protractor.ExpectedConditions;
 

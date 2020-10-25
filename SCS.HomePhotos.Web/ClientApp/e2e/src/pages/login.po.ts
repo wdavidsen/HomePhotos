@@ -1,6 +1,8 @@
-import { $, $$, browser, by, element } from 'protractor';
+import { $, $$, browser, protractor } from 'protractor';
 
 export class LoginPage {
+  EC = protractor.ExpectedConditions;
+
   usernameInputCss = 'input[formcontrolname=username]';
   passwordInputCss = 'input[formcontrolname=password]';
   loginButtonCss = 'button.btn-primary';
@@ -16,7 +18,7 @@ export class LoginPage {
     return $(this.headerTextCss).getText();
   }
 
-  login(usernmae, password) {
+  async login(usernmae, password) {
     const usernameInput = $(this.usernameInputCss);
     const passwordInput = $(this.passwordInputCss);
 
@@ -25,7 +27,7 @@ export class LoginPage {
 
     const loginButton = $(this.loginButtonCss);
 
-    return loginButton.click();
+    await loginButton.click();
   }
 
   register() {
