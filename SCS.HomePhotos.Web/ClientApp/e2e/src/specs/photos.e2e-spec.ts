@@ -1,4 +1,3 @@
-import { $, browser, promise, protractor } from 'protractor';
 import { E2eUtil } from '../e2e-util';
 import { AppPage } from '../pages/app.po';
 import { LoginPage } from '../pages/login.po';
@@ -7,9 +6,6 @@ import { PhotosPage } from '../pages/photos.po';
 describe('Photos', () => {
     const appPage = new AppPage();
     const photosPage = new PhotosPage();
-    const EC = protractor.ExpectedConditions;
-
-    const shadowboxCss = '.blueimp-gallery .slides';
 
     beforeEach(async () => {
         const loginPage = new LoginPage();
@@ -26,16 +22,49 @@ describe('Photos', () => {
         expect(links.length).toBeGreaterThan(0);
     });
 
-    xit('should show shadow box', async () => {
+    it('should show shadow box', async () => {
         await photosPage.clickPhoto(0);
 
-        browser.wait(EC.presenceOf($(shadowboxCss)), 5000);
+        E2eUtil.browserWaitFor(photosPage.shadowboxCss);
     });
 
-    xit('should select photo', async () => {
-        appPage.setOrganizeMode(true);
+    it('should select photo', async () => {
+        await appPage.setOrganizeMode(true);
         await photosPage.clickPhoto(0);
 
         expect(photosPage.isSelected(0)).toBe(true);
+    });
+
+    it('should toggle toolbar', async () => {
+        await appPage.setOrganizeMode(true);
+        const toolbar = photosPage.getToolbar();
+
+        expect(toolbar.isDisplayed()).toBe(true);
+        await appPage.setOrganizeMode(false);
+        expect(toolbar.isDisplayed()).toBe(false);
+    });
+
+    it('should toggle photo selection', async () => {
+        await appPage.setOrganizeMode(true);
+        const selectButton = photosPage.getSelectAllButton();
+        const clearButton = photosPage.getClearButton();
+
+        await selectButton.click();
+        let photos = photosPage.getSelectedPhotos();
+        expect(photos.count()).toBeGreaterThan(0);
+
+        await clearButton.click();
+        photos = photosPage.getSelectedPhotos();
+        expect(photos.count()).toBe(0);
+    });
+
+    it('should show photo tagger', async () => {
+        await appPage.setOrganizeMode(true);
+        await photosPage.clickPhoto(0);
+
+        const tagButton = photosPage.getTagPhotosButton();
+        expect(tagButton.isEnabled()).toBe(true);
+        await tagButton.click();
+        expect(photosPage.getTaggerModal().isDisplayed()).toBe(true);
     });
 });

@@ -1,10 +1,13 @@
-import { $, $$, browser, ElementFinder, promise, protractor } from 'protractor';
+import { $, $$, browser, ElementArrayFinder, ElementFinder, promise, protractor } from 'protractor';
 
 type PromiseVoid = promise.Promise<void>;
 
 export class PhotosPage {
     EC = protractor.ExpectedConditions;
     photosCss = '.photo-list div';
+    shadowboxCss = '.blueimp-gallery .slides';
+    toolbarCss = 'nav.navbar.fixed-bottom';
+    taggerModalCss = 'app-photo-tagger';
 
     navigateTo() {
         browser.get('/photos');
@@ -29,10 +32,38 @@ export class PhotosPage {
     async isSelected(index: number): Promise<boolean> {
         const photo = this.getPhoto(index);
         const classes = await photo.getAttribute('class');
-        return classes.split(' ').some(c => c === '.selected');
+        return classes.split(' ').some(c => c === 'selected');
     }
 
-    private getPhoto(index: number): ElementFinder {
-        return $(this.photosCss + `:nth-child(${index})`);
+    getPhotos(): ElementArrayFinder {
+        return $$(this.photosCss);
+    }
+
+    getSelectedPhotos(): ElementArrayFinder {
+        return $$(this.photosCss + '.selected');
+    }
+
+    getPhoto(index: number): ElementFinder {
+        return $(this.photosCss + `:nth-child(${index + 1})`);
+    }
+
+    getToolbar(): ElementFinder {
+        return $(this.toolbarCss);
+    }
+
+    getTagPhotosButton(): ElementFinder {
+        return $(this.toolbarCss + ' button.navbar-btn:nth-child(1)');
+    }
+
+    getSelectAllButton(): ElementFinder {
+        return $(this.toolbarCss + ' button.navbar-btn:nth-child(2)');
+    }
+
+    getClearButton(): ElementFinder {
+        return $(this.toolbarCss + ' button.navbar-btn:nth-child(3)');
+    }
+
+    getTaggerModal(): ElementFinder {
+        return $(this.taggerModalCss);
     }
 }

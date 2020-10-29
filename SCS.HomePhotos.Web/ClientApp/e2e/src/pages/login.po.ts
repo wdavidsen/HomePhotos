@@ -1,4 +1,7 @@
-import { $, $$, browser, protractor } from 'protractor';
+import { $, $$, browser, promise, protractor } from 'protractor';
+
+type PromiseVoid = promise.Promise<void>;
+type PromiseString = promise.Promise<string>;
 
 export class LoginPage {
   EC = protractor.ExpectedConditions;
@@ -10,15 +13,15 @@ export class LoginPage {
   invalidTextCss = '.invalid-feedback';
   headerTextCss = '.app-container h2';
 
-  navigateTo() {
+  navigateTo(): PromiseVoid {
     return browser.get('/login');
   }
 
-  getMainHeading() {
+  getMainHeading(): PromiseString {
     return $(this.headerTextCss).getText();
   }
 
-  async login(usernmae, password) {
+  async login(usernmae, password): Promise<void> {
     const usernameInput = $(this.usernameInputCss);
     const passwordInput = $(this.passwordInputCss);
 
@@ -30,13 +33,13 @@ export class LoginPage {
     await loginButton.click();
   }
 
-  register() {
+  register(): PromiseVoid {
     const registerLink = $(this.registerLinkCss);
 
     return registerLink.click();
   }
 
-  async getInvalidMessages() {
+  async getInvalidMessages(): Promise<string[]> {
     const messages: string[] = [];
 
     await $$(this.invalidTextCss).each(async (e) => messages.push(await e.getText()));
