@@ -31,7 +31,7 @@ namespace SCS.HomePhotos.Data
         public async Task<IEnumerable<TagStat>> GetTagAndPhotoCount()
         {
             var sql = @"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount 
-                        FROM Tag t JOIN PhotoTag pt ON t.TagId = pt.TagId JOIN Photo p ON pt.PhotoId = p.PhotoId 
+                        FROM Tag t LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
                         GROUP BY t.TagName, t.TagId 
                         ORDER BY t.TagName";
 
@@ -49,8 +49,8 @@ namespace SCS.HomePhotos.Data
 
             var _sql = $@"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount, {{0}} as Weight  
                          FROM Photo p
-                         JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
-                         JOIN Tag t ON pt.TagId = t.TagId ";
+                         LEFT JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
+                         LEFT JOIN Tag t ON pt.TagId = t.TagId ";
 
             var _where1 = $"{Environment.NewLine}WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
             var _where2 = $"{Environment.NewLine}WHERE t.TagName <> '' ";
@@ -112,7 +112,7 @@ namespace SCS.HomePhotos.Data
 
         public async Task<Tag> SaveTag(Tag tag)
         {
-            if (tag.TagId == null)
+            if (tag.TagId == null || tag.TagId == 0)
             {
                 tag.TagId = await InsertAsync(tag);
             }
