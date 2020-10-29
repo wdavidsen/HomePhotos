@@ -8,7 +8,11 @@
     "build:ssr": "ng run SCS.HomePhotos.Web:server:dev",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e --port"
+    "e2e": "ng e2e",
+    "e2e-app": "ng e2e --specs ./src/specs/app.e2e-spec.ts",
+    "e2e-login": "ng e2e --specs ./src/specs/login.e2e-spec.ts",
+    "e2e-photos": "ng e2e --specs ./src/specs/photos.e2e-spec.ts",
+    "e2e-tags": "ng e2e --specs ./src/specs/tags.e2e-spec.ts"
   },
   "private": true,
   "dependencies": {
