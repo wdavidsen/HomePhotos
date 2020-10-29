@@ -17,8 +17,9 @@ export class InputDialogComponent {
 
     constructor(private bsModalRef: BsModalRef) {}
 
-    static GetOptions(title: string, label: string, message: string, defaultValue: string): ModalOptions {
+    static GetOptions(className: string, title: string, label: string, message: string, defaultValue: string): ModalOptions {
         return {
+            class: className,
             ignoreBackdropClick: false,
             keyboard: true,
             initialState: {

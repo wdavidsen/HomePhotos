@@ -17,8 +17,9 @@ export class ConfirmDialogComponent {
 
     constructor(private bsModalRef: BsModalRef) {}
 
-    static GetOptions(title: string, message: string, showCancel: boolean): ModalOptions {
+    static GetOptions(className: string, title: string, message: string, showCancel: boolean): ModalOptions {
         return {
+            class: className,
             ignoreBackdropClick: !showCancel,
             keyboard: showCancel,
             initialState: {

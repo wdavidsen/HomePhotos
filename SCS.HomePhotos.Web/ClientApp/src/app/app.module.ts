@@ -39,7 +39,6 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.component';
 import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } from './common-dialog';
 import { LocalStorageService } from './services/local-storage.service';
-import { UserSettings } from './models/user-settings';
 import { routes } from './app.routes';
 
 @NgModule({

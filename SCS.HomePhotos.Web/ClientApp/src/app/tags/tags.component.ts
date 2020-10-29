@@ -88,7 +88,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   addTag() {
     const message = 'Please new tag name.';
-    const options = InputDialogComponent.GetOptions('New Tag Name', 'Name', message, '');
+    const options = InputDialogComponent.GetOptions('tag-add-dialog', 'New Tag Name', 'Name', message, '');
     this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
     this.clearDialogSubscription();
@@ -138,7 +138,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
     if (chips.length) {
       const message = 'Please enter the new tag name.';
-      const options = InputDialogComponent.GetOptions('New Tag Name', 'Name', message, chips[0].name);
+      const options = InputDialogComponent.GetOptions('tag-rename-dialog', 'New Tag Name', 'Name', message, chips[0].name);
       this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
       this.clearDialogSubscription();
@@ -178,7 +178,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
     if (chips.length) {
       const message = 'Are you sure you want to delete the selected tags?';
-      const options = ConfirmDialogComponent.GetOptions('Delete Tags', message, true);
+      const options = ConfirmDialogComponent.GetOptions('confirm-delete-dialog', 'Delete Tags', message, true);
       this.confirmModalRef = this.modalService.show(ConfirmDialogComponent, options);
 
       this.clearDialogSubscription();
@@ -211,7 +211,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
     if (chips.length) {
       const message = 'Please enter a name for copied tag.';
-      const options = InputDialogComponent.GetOptions('Copied Tag Name', 'Name', message, chips[0].name);
+      const options = InputDialogComponent.GetOptions('tag-copy-dialog', 'Copied Tag Name', 'Name', message, chips[0].name);
       this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
       this.clearDialogSubscription();
@@ -246,7 +246,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
     if (chips.length) {
       const message = 'Please enter a name for the combined tags.';
-      const options = InputDialogComponent.GetOptions('Combined Tag Name', 'Name', message, chips[0].name);
+      const options = InputDialogComponent.GetOptions('tag-combine-dialog', 'Combined Tag Name', 'Name', message, chips[0].name);
       this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
       this.clearDialogSubscription();
@@ -293,7 +293,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     const chip = new TagChip();
     chip.id = tag.tagId;
     chip.name = tag.tagName;
-    chip.count = tag.photoCount;
+    chip.count = tag.photoCount > 0 ? tag.photoCount : 0;
     return chip;
   }
 

@@ -66,7 +66,7 @@ export class SettingsComponent implements OnInit {
     if (this.f.smallImageSize.dirty || this.f.largeImageSize.dirty || this.f.thumbnailSize.dirty)
     {
       const message = 'Would you like to update image sizes on the existing cache images during next index? If no, these settings will only apply to new photos added.';
-      const options = ConfirmDialogComponent.GetOptions('Existing Image Size', message, true);
+      const options = ConfirmDialogComponent.GetOptions('confirm-resize-dialog', 'Existing Image Size', message, true);
       this.confirmModalRef = this.modalService.show(ConfirmDialogComponent, options);
 
       this.modalService.onHidden
@@ -124,7 +124,7 @@ export class SettingsComponent implements OnInit {
 
   promptForClear() {
     const message = 'Are you sure you want to clear the photo cache? This action may take several minutes to complete.';
-    const options = ConfirmDialogComponent.GetOptions('Clear Cache', message, true);
+    const options = ConfirmDialogComponent.GetOptions('confirm-clear-dialog', 'Clear Cache', message, true);
     this.confirmModalRef = this.modalService.show(ConfirmDialogComponent, options);
 
     this.modalService.onHidden
