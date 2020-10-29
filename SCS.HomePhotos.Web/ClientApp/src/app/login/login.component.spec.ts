@@ -24,7 +24,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async(() => {
     mockToastr = jasmine.createSpyObj(['success', 'error']);
-    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login']);
+    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'logout']);
 
     TestBed.configureTestingModule({
       declarations: [ LoginComponent ],

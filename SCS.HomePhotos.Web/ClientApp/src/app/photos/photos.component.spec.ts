@@ -91,7 +91,7 @@ describe('PhotosComponent', () => {
     expect(component.thumbnails[0].selected).toBe(false);
     expect(component.thumbnails[0].thumbHeight).toBe(150);
     expect(component.thumbnails[0].thumbWidth).toBe(200);
-    expect(component.thumbnails[0].thumbUrl).toBe('/photo-image/ab/file1.jpg');
+    expect(component.thumbnails[0].thumbUrl).toContain('/photo-image/ab/file1.jpg');
   });
 
   it('should initialize with tag route param', () => {
@@ -117,7 +117,7 @@ describe('PhotosComponent', () => {
     expect(component.thumbnails[0].selected).toBe(false);
     expect(component.thumbnails[0].thumbHeight).toBe(150);
     expect(component.thumbnails[0].thumbWidth).toBe(200);
-    expect(component.thumbnails[0].thumbUrl).toBe('/photo-image/ab/file1.jpg');
+    expect(component.thumbnails[0].thumbUrl).toContain('/photo-image/ab/file1.jpg');
   });
 
   it('should search photos by keyword', () => {
