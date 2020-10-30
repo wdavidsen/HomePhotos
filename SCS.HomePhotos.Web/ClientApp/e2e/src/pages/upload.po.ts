@@ -1,4 +1,4 @@
-import { $, browser, ElementFinder, promise } from 'protractor';
+import { $, $$, browser, ElementFinder, promise } from 'protractor';
 
 type PromiseVoid = promise.Promise<void>;
 
@@ -17,27 +17,31 @@ export class UploadPage {
     }
 
     getSelectButton(): ElementFinder {
-        return $(this.selectButtonCss);
+        return $$(this.selectButtonCss).first();
     }
 
     getUploadButton(): ElementFinder {
-        return $(this.uploadButtonCss);
+        return $$(this.uploadButtonCss).first();
     }
 
     getCancelButton(): ElementFinder {
-        return $(this.cancelButtonCss);
+        return $$(this.cancelButtonCss).first();
     }
 
     getClearButton(): ElementFinder {
-        return $(this.clearButtonCss);
+        return $$(this.clearButtonCss).first();
     }
 
     getTagPhotosButton(): ElementFinder {
-        return $(this.tagButtonCss);
+        return $$(this.tagButtonCss).first();
     }
 
     getImageSuccessCss(index: number): string {
         return this.fileTilesCss + `:nth-child(${index + 2}) span.text-success`;
+    }
+
+    async getImageCount(): Promise<number> {
+        return await $$(this.fileTilesCss).count();
     }
 
     async getImageFileSize(index: number): Promise<string> {
