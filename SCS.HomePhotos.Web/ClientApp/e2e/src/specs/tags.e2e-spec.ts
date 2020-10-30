@@ -20,7 +20,7 @@ describe('Tags', () => {
         await loginPage.login('wdavidsen', 'Pass@123');
         await E2eUtil.browserWaitFor(photosPage.photosCss);
         await tagsPage.navigateTo();
-        await E2eUtil.browserWaitFor('.tag-cloud');
+        await E2eUtil.browserWaitFor(tagsPage.tagsCss);
         await appPage.setOrganizeMode(false);
     });
 

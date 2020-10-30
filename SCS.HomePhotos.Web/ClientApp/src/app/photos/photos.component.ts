@@ -190,12 +190,15 @@ export class PhotosComponent implements OnInit, OnDestroy {
     const selections = this.getSelectedThumbnails();
 
     if (selections.length) {
-      const initialState = {
-        title: 'Photo Tagger',
-        photoIds: selections.map(s => s.photoId)
+      const options = {
+        class: 'photo-tagger-dialog',
+        initialState: {
+          title: 'Photo Tagger',
+          photoIds: selections.map(s => s.photoId)
+        }
       };
 
-      this.taggerModalRef = this.modalService.show(PhotoTaggerComponent, {initialState});
+      this.taggerModalRef = this.modalService.show(PhotoTaggerComponent, options);
     }
   }
 

@@ -12,7 +12,8 @@
     "e2e-app": "ng e2e --specs ./src/specs/app.e2e-spec.ts",
     "e2e-login": "ng e2e --specs ./src/specs/login.e2e-spec.ts",
     "e2e-photos": "ng e2e --specs ./src/specs/photos.e2e-spec.ts",
-    "e2e-tags": "ng e2e --specs ./src/specs/tags.e2e-spec.ts"
+    "e2e-tags": "ng e2e --specs ./src/specs/tags.e2e-spec.ts",
+    "e2e-upload": "ng e2e --specs ./src/specs/upload.e2e-spec.ts"
   },
   "private": true,
   "dependencies": {

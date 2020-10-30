@@ -4,10 +4,11 @@ type PromiseVoid = promise.Promise<void>;
 
 export class PhotosPage {
     EC = protractor.ExpectedConditions;
-    photosCss = '.photo-list div';
+    photosCss = '#photoList div';
     shadowboxCss = '.blueimp-gallery .slides';
     toolbarCss = 'nav.navbar.fixed-bottom';
-    taggerModalCss = 'app-photo-tagger';
+    taggerModalCss = '.photo-tagger-dialog';
+    buttonCssFormat = 'button.navbar-btn:nth-child({number})';
 
     navigateTo() {
         browser.get('/photos');
@@ -52,18 +53,22 @@ export class PhotosPage {
     }
 
     getTagPhotosButton(): ElementFinder {
-        return $(this.toolbarCss + ' button.navbar-btn:nth-child(1)');
+        return this.getButton(1);
     }
 
     getSelectAllButton(): ElementFinder {
-        return $(this.toolbarCss + ' button.navbar-btn:nth-child(2)');
+        return this.getButton(2);
     }
 
     getClearButton(): ElementFinder {
-        return $(this.toolbarCss + ' button.navbar-btn:nth-child(3)');
+        return this.getButton(3);
     }
 
     getTaggerModal(): ElementFinder {
         return $(this.taggerModalCss);
+    }
+
+    private getButton(index: number): ElementFinder {
+        return $(this.toolbarCss + ' ' + this.buttonCssFormat.replace('{number}', index.toString()));
     }
 }
