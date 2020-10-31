@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService, AuthenticationService } from '../services';
+import { UserService, AuthService } from '../services';
 import { User } from '../models';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
@@ -23,7 +23,7 @@ export class UserDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private authenticationService: AuthenticationService,
+    private authenticationService: AuthService,
     private router: Router,
     private formBuilder: FormBuilder,
     private userService: UserService,

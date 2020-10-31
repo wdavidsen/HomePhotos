@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AuthenticationService, SearchService } from '../services';
+import { AuthService, SearchService } from '../services';
 
 import { LocalStorageService } from '../services/local-storage.service';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
@@ -46,7 +46,7 @@ describe('NavMenuComponent', () => {
         SearchService,
         { provide: Router, useValue: mockRouter },
         { provide: SearchService, useValue: mockSearchService },
-        { provide: AuthenticationService, useValue: mockAuthenticationService },
+        { provide: AuthService, useValue: mockAuthenticationService },
         { provide: BsModalService, useValue: mockModalService }],
         schemas: [NO_ERRORS_SCHEMA]
     })

@@ -1,10 +1,11 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { User } from '../models';
-import { AuthenticationService, SearchService } from '../services';
+import { AuthService, SearchService } from '../services';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { UserSettingsComponent } from '../user-settings/user-settings.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav-menu',
@@ -24,9 +25,10 @@ export class NavMenuComponent implements OnInit {
   hideUploadMenu = true;
 
   constructor (private router: Router,
-    private authenticationService: AuthenticationService,
+    private authenticationService: AuthService,
     private searchService: SearchService,
-    private modalService: BsModalService) {
+    private modalService: BsModalService,
+    private toastr: ToastrService) {
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
         this.hideMenu = !this.currentUser;
@@ -63,8 +65,18 @@ export class NavMenuComponent implements OnInit {
   }
 
   logout() {
-    this.authenticationService.logout();
-    this.router.navigate(['/login']);
+    this.authenticationService.logout()
+      .subscribe(
+        () => {
+            this.toastr.success('Sign-out successful');
+            this.router.navigate(['/login']);
+        },
+        error => {
+            console.error(error);
+            this.toastr.error('Sign-out failed');
+        });
+
+    // this.router.navigate(['/login']);
     this.collapseNav();
   }
 

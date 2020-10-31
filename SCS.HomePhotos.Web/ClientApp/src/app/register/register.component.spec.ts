@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrService } from 'ngx-toastr';
 import { of, Subject } from 'rxjs';
-import { AccountService, AuthenticationService } from '../services';
+import { AccountService, AuthService } from '../services';
 
 import { RegisterComponent } from './register.component';
 
@@ -35,7 +35,7 @@ describe('RegisterComponent', () => {
       declarations: [ RegisterComponent ],
       imports: [ReactiveFormsModule, HttpClientModule, RouterTestingModule],
       providers: [
-        { provide: AuthenticationService, useValue: mockAuthenticationService },
+        { provide: AuthService, useValue: mockAuthenticationService },
         { provide: AccountService, useValue: mockAccountService },
         { provide: ToastrService, useValue: mockToastr }
       ]

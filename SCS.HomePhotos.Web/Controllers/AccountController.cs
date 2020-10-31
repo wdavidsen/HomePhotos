@@ -70,7 +70,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             return Ok(new TokenResultModel
             {
-                Token = newJwtToken,
+                Jwt = newJwtToken,
                 RefreshToken = newRefreshToken
             });
         }
@@ -102,7 +102,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             return Ok(new TokenResultModel
             {
-                Token = newJwtToken,
+                Jwt = newJwtToken,
                 RefreshToken = newRefreshToken
             });
         }

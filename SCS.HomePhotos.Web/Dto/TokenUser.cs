@@ -11,12 +11,12 @@ namespace SCS.HomePhotos.Web.Dto
             Username = user.UserName;
             FirstName = user.FirstName;
             LastName = user.LastName;
-            Token = token;
+            Jwt = token;
             RefreshToken = refreshToken;
         }
 
         [Required]
-        public string Token { get; set; }
+        public string Jwt { get; set; }
 
         [Required]
         public string RefreshToken { get; set; }

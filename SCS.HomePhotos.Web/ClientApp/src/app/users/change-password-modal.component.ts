@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AccountService, UserService } from '../services';
 import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { PasswordChange } from '../models';
 
 @Component({
     selector: 'app-modal-content',
@@ -36,23 +37,20 @@ export class ModalContentComponent implements OnInit {
         if (!this.changePasswordForm.valid) {
             return;
         }
+        const changeInfo: PasswordChange = {
+            userName: this.f.username.value,
+            currentPassword: this.f.currentPassword.value,
+            newPassword: this.f.newPassword.value,
+            newPasswordCompare: this.f.newPasswordCompare.value
+        };
 
         let result: Observable<any>;
-        const username = this.f.username.value;
-        const currentPassword = this.f.currentPassword.value;
-        const newPassword = this.f.newPassword.value;
-        const newPasswordCompare = this.f.newPasswordCompare.value;
-
-        if (this.adminMode) {
-            result = this.userService.changePassword(username, currentPassword, newPassword, newPasswordCompare);
-        }
-        else {
-            result = this.accountService.changePassword(currentPassword, newPassword, newPasswordCompare);
-        }
+        result = (this.adminMode) ? this.userService.changePassword(changeInfo) : this.accountService.changePassword(changeInfo);
 
         result.subscribe(
             () => {
                 this.toastr.success('Successfully changed password');
+                this.bsModalRef.hide();
             },
             error => {
                 console.error(error);

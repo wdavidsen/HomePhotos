@@ -5,7 +5,7 @@ export class User {
     this.username = null;
     this.firstName = null;
     this.lastName = null;
-    this.token = null;
+    this.jwt = null;
     this.refreshToken = null;
     this.lastLogin = null;
     this.failedLoginCount = 0;
@@ -19,7 +19,7 @@ export class User {
   firstName: string;
   lastName: string;
   role: string;
-  token: string;
+  jwt: string;
   refreshToken: string;
   lastLogin: Date;
   failedLoginCount: Number;

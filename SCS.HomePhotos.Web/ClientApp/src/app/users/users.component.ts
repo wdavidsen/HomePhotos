@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService, AuthenticationService } from '../services';
+import { UserService, AuthService } from '../services';
 import { UserRow, User } from '../models';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -18,7 +18,7 @@ export class UsersComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private authenticationService: AuthenticationService,
+    private authenticationService: AuthService,
     private userService: UserService,
     private toastr: ToastrService) {
 

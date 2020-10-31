@@ -8,7 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
 import { ActivatedRouteStub } from 'test/activated-route-stub';
 import { User } from '../models';
-import { AuthenticationService, UserService } from '../services';
+import { AuthService, UserService } from '../services';
 import { UserDetailComponent } from './user-detail.component';
 
 describe('UserDetailComponent', () => {
@@ -59,7 +59,7 @@ describe('UserDetailComponent', () => {
       imports: [ReactiveFormsModule, HttpClientModule, RouterTestingModule],
       providers: [
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: AuthenticationService, useValue: mockAuthenticationService },
+        { provide: AuthService, useValue: mockAuthenticationService },
         { provide: UserService, useValue: mockUserService},
         { provide: BsModalService, useValue: mockModalService },
         { provide: ToastrService, useValue: mockToastr }

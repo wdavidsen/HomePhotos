@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
-import { AuthenticationService } from '../services';
+import { AuthService } from '../services';
 import { UploadComponent } from './upload.component';
 
 describe('UploadComponent', () => {
@@ -24,7 +24,7 @@ describe('UploadComponent', () => {
       declarations: [ UploadComponent ],
       imports: [HttpClientModule, RouterTestingModule, ModalModule.forRoot()],
       providers: [
-        { provide: AuthenticationService, useValue: mockAuthenticationService },
+        { provide: AuthService, useValue: mockAuthenticationService },
         { provide: BsModalService, useValue: mockModalService },
         { provide: ToastrService, useValue: mockToastr }
       ],

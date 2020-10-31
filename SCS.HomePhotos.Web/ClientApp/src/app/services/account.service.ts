@@ -2,24 +2,30 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-import { User, AccountInfo } from '../models';
-import { Observable } from 'rxjs';
+import { User, AccountInfo, Tokens, PasswordChange } from '../models';
+import { Observable, of } from 'rxjs';
+import { catchError, mapTo, tap } from 'rxjs/operators';
+import { AuthService } from './auth.service';
+import { Token } from '@angular/compiler/src/ml_parser/lexer';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private authService: AuthService) { }
 
     register(user: User) {
         return this.http.post(`${environment.apiUrl}/account/register`, user);
     }
 
-    changePassword(currectPassword: string, newPassword: string, newPasswordCompare: string): Observable<any> {
-        const data = {
-            currectPassword: currectPassword,
-            newPassword: newPassword,
-            newPasswordCompare: newPasswordCompare
-        };
-        return this.http.post(`${environment.apiUrl}/account/changePassword`, data);
+    changePassword(changeInfo: PasswordChange): Observable<any> {
+
+        return this.http.post<Tokens>(`${environment.apiUrl}/account/changePassword`, changeInfo)
+            .pipe(
+                tap(tokens => this.authService.storeTokens(tokens)),
+                mapTo(true),
+                catchError(error => {
+                    alert(error.error);
+                    return of(false);
+                }));
     }
 
     info(user: AccountInfo): Observable<AccountInfo> {

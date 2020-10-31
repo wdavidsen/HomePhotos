@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AccountComponent } from './account/account.component';
-import { AuthGuard } from './helpers';
+import { AuthGuard } from './pipeline';
 import { LoginComponent } from './login/login.component';
 import { LogsComponent } from './logs/logs.component';
 import { PhotosComponent } from './photos/photos.component';

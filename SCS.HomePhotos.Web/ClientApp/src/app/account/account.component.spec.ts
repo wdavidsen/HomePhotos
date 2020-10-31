@@ -7,7 +7,7 @@ import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { IndividualConfig, ToastrService } from 'ngx-toastr';
 import { of, Subject } from 'rxjs';
 import { AccountInfo } from '../models';
-import { AccountService, AuthenticationService } from '../services';
+import { AccountService, AuthService } from '../services';
 
 import { AccountComponent } from './account.component';
 
@@ -39,7 +39,7 @@ describe('AccountComponent', () => {
       declarations: [ AccountComponent ],
       imports: [ReactiveFormsModule, HttpClientModule, RouterTestingModule, ModalModule.forRoot()],
       providers: [
-        { provide: AuthenticationService, useValue: mockAuthenticationService },
+        { provide: AuthService, useValue: mockAuthenticationService },
         { provide: AccountService, useValue: mockAccountService },
         { provide: BsModalService, useValue: mockModalService },
         { provide: ToastrService, useValue: mockToastr }

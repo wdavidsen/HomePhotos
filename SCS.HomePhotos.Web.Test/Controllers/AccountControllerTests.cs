@@ -173,9 +173,9 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 
             var loginResult = value as TokenResultModel;
 
-            Assert.NotNull(loginResult.Token);
+            Assert.NotNull(loginResult.Jwt);
             Assert.NotNull(loginResult.RefreshToken);
-            Assert.True(loginResult.Token.Length > 50);
+            Assert.True(loginResult.Jwt.Length > 50);
             Assert.True(loginResult.RefreshToken.Length > 30);
         }
 

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { AuthenticationService, SignalRService } from './services';
+import { AuthService, SignalRService } from './services';
 import { User } from './models';
 import { filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
@@ -15,7 +15,7 @@ export class AppComponent {
   title = 'app';
   containerClass = 'container';
 
-  constructor (private router: Router, private authenticationService: AuthenticationService, private signalRService: SignalRService,
+  constructor (private router: Router, private authenticationService: AuthService, private signalRService: SignalRService,
     private toastr: ToastrService) {
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;

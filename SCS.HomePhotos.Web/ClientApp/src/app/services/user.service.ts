@@ -2,21 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-import { User } from '../models';
+import { PasswordChange, User } from '../models';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
     constructor(private http: HttpClient) { }
 
-    changePassword(userName: string, currectPassword: string, newPassword: string, newPasswordCompare: string): Observable<any> {
-        const data = {
-            userName: userName,
-            currectPassword: currectPassword,
-            newPassword: newPassword,
-            newPasswordCompare: newPasswordCompare
-        };
-        return this.http.post(`${environment.apiUrl}/users/changePassword`, data);
+    changePassword(changeInfo: PasswordChange): Observable<any> {
+        return this.http.post(`${environment.apiUrl}/users/changePassword`, changeInfo);
     }
 
     get(userId: number): Observable<User> {

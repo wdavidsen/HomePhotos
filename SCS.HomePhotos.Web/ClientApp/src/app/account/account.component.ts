@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountInfo } from '../models';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { AccountService, AuthenticationService } from '../services';
+import { AccountService, AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalContentComponent } from '../users/change-password-modal.component';
@@ -19,7 +19,7 @@ export class AccountComponent implements OnInit {
   submitted = false;
   changePasswordModalRef: BsModalRef;
 
-  constructor(private authenticationService: AuthenticationService,
+  constructor(private authenticationService: AuthService,
     private accountService: AccountService,
     private formBuilder: FormBuilder,
     private toastr: ToastrService,

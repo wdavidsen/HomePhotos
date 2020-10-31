@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
-import { AuthenticationService, UserService } from '../services';
+import { AuthService, UserService } from '../services';
 import { UsersComponent } from './users.component';
 
 describe('UsersComponent', () => {
@@ -45,7 +45,7 @@ describe('UsersComponent', () => {
       declarations: [ UsersComponent ],
       imports: [ReactiveFormsModule, HttpClientModule, RouterTestingModule],
       providers: [
-        { provide: AuthenticationService, useValue: mockAuthenticationService },
+        { provide: AuthService, useValue: mockAuthenticationService },
         { provide: Router, useValue: mockRouter },
         { provide: UserService, useValue: mockUserService},
         { provide: ToastrService, useValue: mockToastr }

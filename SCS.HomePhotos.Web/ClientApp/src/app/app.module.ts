@@ -13,7 +13,6 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { SettingsComponent } from './settings/settings.component';
 import { AlertComponent, OrganizeComponent } from './components';
-import { JwtInterceptor, ErrorInterceptor, AuthGuard } from './helpers';
 import { SettingsService } from './services/settings.service';
 import { AccountComponent } from './account/account.component';
 import { PhotosService, TagService, PageInfoService, UserSettingsService } from './services';
@@ -40,6 +39,7 @@ import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.compone
 import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } from './common-dialog';
 import { LocalStorageService } from './services/local-storage.service';
 import { routes } from './app.routes';
+import { TokenInterceptor } from './pipeline';
 
 @NgModule({
   declarations: [
@@ -106,8 +106,7 @@ import { routes } from './app.routes';
     TagService,
     LogService,
     LocalStorageService,
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

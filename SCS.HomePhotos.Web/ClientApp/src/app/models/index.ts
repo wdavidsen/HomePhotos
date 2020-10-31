@@ -10,7 +10,8 @@ export * from './account-info';
 export * from './log-entry';
 export * from './page-info';
 export * from './data-list';
-
+export * from './tokens';
+export * from './password-change';
 
 
 

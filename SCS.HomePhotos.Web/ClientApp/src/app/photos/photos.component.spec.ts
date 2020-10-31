@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AuthenticationService, PhotosService, SearchService, UserSettingsService } from '../services';
+import { AuthService, PhotosService, SearchService, UserSettingsService } from '../services';
 
 import { PhotosComponent } from './photos.component';
 import { LocalStorageService } from '../services/local-storage.service';
@@ -54,7 +54,7 @@ describe('PhotosComponent', () => {
         LocalStorageService,
         SearchService,
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: AuthenticationService, useValue: mockAuthenticationService },
+        { provide: AuthService, useValue: mockAuthenticationService },
         { provide: UserSettingsService, useValue: mockUserSettingsService },
         { provide: PhotosService, useValue: mockPhotoService },
         { provide: BsModalService, useValue: mockModalService },

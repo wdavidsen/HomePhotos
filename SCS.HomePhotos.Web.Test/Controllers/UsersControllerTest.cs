@@ -151,7 +151,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         {
             var user = _fixture.Create<User>();
             var userDto = new Dto.TokenUser(user);
-            userDto.Token = null;
+            userDto.Jwt = null;
 
             _usersController.ModelState.AddModelError("Token", "Token is required");
 

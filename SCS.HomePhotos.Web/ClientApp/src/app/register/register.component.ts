@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import { AccountService, AuthenticationService } from '../services';
+import { AccountService, AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({ templateUrl: 'register.component.html' })
@@ -15,7 +15,7 @@ export class RegisterComponent implements OnInit {
     constructor (
         private formBuilder: FormBuilder,
         private router: Router,
-        private authenticationService: AuthenticationService,
+        private authenticationService: AuthService,
         private accountService: AccountService,
         private toastr: ToastrService) {
 

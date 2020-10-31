@@ -76,7 +76,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             return Ok(new Dto.TokenUser(result.User)
             {
-                Token = newJwtToken,
+                Jwt = newJwtToken,
                 RefreshToken = newRefreshToken
             });
         }
@@ -112,7 +112,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             try
             {
-                principal = _securityService.GetPrincipalFromExpiredToken(model.Token);
+                principal = _securityService.GetPrincipalFromExpiredToken(model.Jwt);
             }
             catch (SecurityTokenException)
             {
@@ -146,7 +146,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             return Ok(new TokenResultModel
             {
-                Token = newJwtToken,
+                Jwt = newJwtToken,
                 RefreshToken = newRefreshToken
             });
         }

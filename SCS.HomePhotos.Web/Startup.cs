@@ -144,6 +144,7 @@ namespace SCS.HomePhotos.Web
             app.UseCors("AllowAllOrigins");
             //app.UseHttpsRedirection();            
             app.UseStaticFiles();
+            app.UsePhotoImageMiddleware();
 
             if (!env.IsDevelopment())
             {
@@ -152,8 +153,7 @@ namespace SCS.HomePhotos.Web
 
             app.UseRouting();
             app.UseAuthentication();
-            app.UseAuthorization();
-            app.UsePhotoImageMiddleware();
+            app.UseAuthorization();            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<NotifcationHub>("/message-hub");

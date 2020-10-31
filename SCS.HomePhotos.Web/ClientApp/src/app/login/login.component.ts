@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import { AuthenticationService } from '../services';
+import { AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({ templateUrl: 'login.component.html' })
@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private authenticationService: AuthenticationService,
+        private authenticationService: AuthService,
         private toastr: ToastrService)
     {
         if (this.authenticationService.currentUserValue) {
@@ -51,12 +51,12 @@ export class LoginComponent implements OnInit {
             .pipe(first())
             .subscribe(
                 data => {
-                    this.toastr.success('Login successful');
+                    this.toastr.success('Sign-in successful');
                     this.router.navigate([this.returnUrl]);
                 },
                 error => {
                     console.error(error);
-                    this.toastr.error('Login failed');
+                    this.toastr.error('Sign-in failed');
                     this.loading = false;
                 });
     }

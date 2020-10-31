@@ -5,7 +5,7 @@ import { FileUploader, FileItem } from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 import { UploadPhotoTaggerComponent } from './upload-photo-tagger.component';
 import { TagState, User } from '../models';
-import { AuthenticationService } from '../services';
+import { AuthService } from '../services';
 
 declare const loadImage: any;
 
@@ -30,7 +30,7 @@ export class UploadComponent implements OnInit {
   private currentUser: User;
 
   constructor(
-    private authenticationService: AuthenticationService,
+    private authenticationService: AuthService,
     private toastr: ToastrService,
     private modalService: BsModalService) {
 

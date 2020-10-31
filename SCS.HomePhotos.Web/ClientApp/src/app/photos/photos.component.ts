@@ -3,7 +3,7 @@ import { PhotosService } from '../services/photos.service';
 import { Thumbnail, Photo, User } from '../models';
 import { map, debounce } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { SearchService, OrganizeService, AuthenticationService, UserSettingsService } from '../services';
+import { SearchService, OrganizeService, AuthService, UserSettingsService } from '../services';
 import { PageInfoService } from '../services/page-info.service';
 import { Subscription, Subject, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -48,7 +48,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private modalService: BsModalService,
     private scrollService: ScrollService,
-    private authenticationService: AuthenticationService) {
+    private authenticationService: AuthService) {
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
         this.userSettings = this.userSettingsService.userSettings;

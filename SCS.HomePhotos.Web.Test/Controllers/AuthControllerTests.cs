@@ -92,9 +92,9 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 
             var loginResult = value as Dto.TokenUser;
 
-            Assert.NotNull(loginResult.Token);
+            Assert.NotNull(loginResult.Jwt);
             Assert.NotNull(loginResult.RefreshToken);
-            Assert.True(loginResult.Token.Length > 50);
+            Assert.True(loginResult.Jwt.Length > 50);
             Assert.True(loginResult.RefreshToken.Length > 30);
             Assert.Equal(user.UserName, loginResult.Username);
             Assert.Equal(user.FirstName, loginResult.FirstName);
@@ -208,7 +208,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 new RefreshModel
                 {
                     RefreshToken = refreshToken,
-                    Token = token
+                    Jwt = token
                 });
 
             _accountService.Verify(m => m.GetRefreshTokens(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
@@ -226,9 +226,9 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 
             var loginResult = value as TokenResultModel;
 
-            Assert.NotNull(loginResult.Token);
+            Assert.NotNull(loginResult.Jwt);
             Assert.NotNull(loginResult.RefreshToken);
-            Assert.True(loginResult.Token.Length > 50);
+            Assert.True(loginResult.Jwt.Length > 50);
             Assert.True(loginResult.RefreshToken.Length > 30);
         }
 
@@ -251,7 +251,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 new RefreshModel
                 {
                     RefreshToken = refreshToken,
-                    Token = token
+                    Jwt = token
                 });
 
             _accountService.Verify(m => m.GetRefreshTokens(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
@@ -286,7 +286,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 new RefreshModel
                 {
                     RefreshToken = refreshToken,
-                    Token = token
+                    Jwt = token
                 });
 
             _accountService.Verify(m => m.GetRefreshTokens(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
@@ -322,7 +322,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 new RefreshModel
                 {
                     RefreshToken = refreshToken,
-                    Token = token
+                    Jwt = token
                 });
 
             _accountService.Verify(m => m.GetRefreshTokens(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { TagService, SearchService, OrganizeService, AuthenticationService } from '../services';
+import { TagService, SearchService, OrganizeService, AuthService } from '../services';
 import { TagChip, Tag, User } from '../models';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -31,7 +31,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     private organizeService: OrganizeService,
     private toastr: ToastrService,
     private modalService: BsModalService,
-    private authenticationService: AuthenticationService) {
+    private authenticationService: AuthService) {
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
       });
