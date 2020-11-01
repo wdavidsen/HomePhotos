@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Web.Hubs;
 using System;
-using SCS.HomePhotos.Web.Filters;
+// using SCS.HomePhotos.Web.Filters;
 
 namespace SCS.HomePhotos.Web
 {
@@ -38,7 +38,7 @@ namespace SCS.HomePhotos.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<JwtAuthentication>(Configuration.GetSection("JwtAuthentication"));
-            services.AddControllersWithViews(options => options.Filters.AddService(typeof(AngularAntiforgeryCookieResultFilter)))
+            services.AddControllersWithViews()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(options =>
                 {
@@ -49,7 +49,6 @@ namespace SCS.HomePhotos.Web
                     options.SerializerSettings.TypeNameHandling = TypeNameHandling.None;
                 });
 
-            services.AddTransient<AngularAntiforgeryCookieResultFilter>();
             services.AddAntiforgery(opts => opts.HeaderName = "X-XSRF-Token");            
             
             services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
@@ -179,7 +178,7 @@ namespace SCS.HomePhotos.Web
                 }
             });
 
-            //app.UseAntiforgeryToken();
+            // app.UseAntiforgeryToken();
         }
         private async Task SetDynamicConfig(IConfigService configService)
         {

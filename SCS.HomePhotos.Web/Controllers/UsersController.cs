@@ -48,6 +48,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpPost("", Name = "AddUser")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddUser([FromBody]Dto.PasswordUser user)
         {
             if (!ModelState.IsValid)
@@ -61,7 +62,8 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpPut("{userId}", Name = "UpdateUser")]
-        public async Task<IActionResult> UpdateUser([FromBody]Dto.TokenUser user)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateUser([FromBody]Dto.User user)
         {
             if (!ModelState.IsValid)
             {
@@ -74,6 +76,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpDelete("{userId}", Name = "DeleteUser")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUser([FromRoute]int userId)
         {
             await _accountService.DeleteUser(userId);
@@ -82,6 +85,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [HttpPost("{userId}/changePassword", Name = "ChangePassword")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordModel changePasswordModel)
         {
             var result = await _accountService.ChangePassword(changePasswordModel.UserName, changePasswordModel.CurrentPassword, changePasswordModel.NewPassword);

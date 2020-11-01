@@ -36,6 +36,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Middleware\AntitforgeryTokenMiddleware.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SCS.HomePhotos.Service\SCS.HomePhotos.Service.csproj" />
     <ProjectReference Include="..\SCS.HomePhotos.Data\SCS.HomePhotos.Data.csproj" />
     <ProjectReference Include="..\SCS.HomePhotos.Model\SCS.HomePhotos.Model.csproj" />

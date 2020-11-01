@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { of, Observable, BehaviorSubject } from 'rxjs';
-import { catchError, mapTo, tap } from 'rxjs/operators';
+import { catchError, mapTo, switchMap, tap } from 'rxjs/operators';
 import { Tokens } from '../models/tokens';
 import { environment } from '../../environments/environment';
 import { User } from '../models';
@@ -36,6 +36,7 @@ export class AuthService {
     return this.http.post<User>(`${environment.apiUrl}/auth/login`, { username, password })
       .pipe(
         tap(user => this.doLoginUser(user)),
+        switchMap(() => this.http.get(`${environment.apiUrl}/antiforgery`)),
         mapTo(true),
         catchError(error => {
           alert(error.error);

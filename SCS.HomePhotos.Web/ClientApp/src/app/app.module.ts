@@ -40,6 +40,7 @@ import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } fr
 import { LocalStorageService } from './services/local-storage.service';
 import { routes } from './app.routes';
 import { TokenInterceptor } from './pipeline';
+import { CsrfHeaderInterceptor } from './pipeline/csrf-header.interceptor';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import { TokenInterceptor } from './pipeline';
     TagService,
     LogService,
     LocalStorageService,
+    { provide: HTTP_INTERCEPTORS, useClass: CsrfHeaderInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

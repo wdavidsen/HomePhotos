@@ -30,9 +30,9 @@ namespace SCS.HomePhotos.Web.Middleware
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IApplicationBuilder UseAntiforgeryToken(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<AntiforgeryTokenMiddleware>();
-        }
+        //public static IApplicationBuilder UseAntiforgeryToken(this IApplicationBuilder builder)
+        //{
+        //    return builder.UseMiddleware<AntiforgeryTokenMiddleware>();
+        //}
     }
 }
