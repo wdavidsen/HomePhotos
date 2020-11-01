@@ -43,7 +43,7 @@ export class UploadComponent implements OnInit {
         itemAlias: 'files',
         allowedMimeType: ['image/jpeg', 'image/png'],
         parametersBeforeFiles: true,
-        authToken: `Bearer ${this.currentUser.token}`
+        authToken: `Bearer ${authenticationService.getJwtToken()}`
       };
       this.uploader = new FileUploader(options);
 
