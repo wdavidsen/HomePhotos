@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SCS.HomePhotos.Web.Controllers
@@ -19,7 +20,7 @@ namespace SCS.HomePhotos.Web.Controllers
         public IActionResult Get()
         {
             var tokens = _antiForgery.GetAndStoreTokens(HttpContext);
-            Response.Cookies.Append("XSRF-REQUEST-TOKEN", tokens.RequestToken, new Microsoft.AspNetCore.Http.CookieOptions
+            Response.Cookies.Append("XSRF-REQUEST-TOKEN", tokens.RequestToken, new CookieOptions
             {
                 HttpOnly = false
             });

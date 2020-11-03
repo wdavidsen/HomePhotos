@@ -83,6 +83,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         [Authorize]
         [HttpPost("logout")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             var userName = User?.Identity?.Name;

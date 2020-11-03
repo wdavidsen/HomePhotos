@@ -54,6 +54,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [Authorize(Policy = "Contributers")]
+        [ValidateAntiForgeryToken]
         [HttpPut("merge", Name = "MergeTags")]
         public async Task<IActionResult> MergeTags([FromBody]TagMergeInfo mergeInfo)
         {
@@ -68,6 +69,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [Authorize(Policy = "Contributers")]
+        [ValidateAntiForgeryToken]
         [HttpPut("copy", Name = "CopyTags")]
         public async Task<IActionResult> CopyTags([FromBody]TagCopyInfo copyInfo)
         {
@@ -96,6 +98,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [Authorize(Policy = "Contributers")]
+        [ValidateAntiForgeryToken]
         [HttpPut("batchTag", Name = "TagPhotos")]
         public async Task<IActionResult> TagPhotos([FromBody]BatchUpdateTags updateTags)
         {
@@ -110,6 +113,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [Authorize(Policy = "Contributers")]
+        [ValidateAntiForgeryToken]
         [HttpPost(Name = "AddTag")]
         public async Task<IActionResult> AddTag([FromBody]Dto.Tag tag)
         {
@@ -131,6 +135,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [Authorize(Policy = "Contributers")]
+        [ValidateAntiForgeryToken]
         [HttpPut(Name = "UpdateTag")]
         public async Task<IActionResult> UpdateTag([FromBody]Dto.Tag tag)
         {
@@ -152,6 +157,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [Authorize(Policy = "Contributers")]
+        [ValidateAntiForgeryToken]
         [HttpDelete("{tagId}", Name = "DeleteTag")]
         public async Task<IActionResult> DeleteTag([FromRoute]int tagId)
         {

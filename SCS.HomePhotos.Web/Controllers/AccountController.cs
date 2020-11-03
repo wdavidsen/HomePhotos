@@ -33,6 +33,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterModel model)
         {
@@ -76,6 +77,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [Authorize]
+        [ValidateAntiForgeryToken]
         [HttpPost("changePassword")]
         public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordModel model)
         {
@@ -117,6 +119,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [Authorize]
+        [ValidateAntiForgeryToken]
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]Dto.AccountInfo accountInfo)
         {
