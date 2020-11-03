@@ -20,7 +20,15 @@ export class TokenInterceptor implements HttpInterceptor {
     return next.handle(request)
         .pipe(catchError(error => {
             if (error instanceof HttpErrorResponse && error.status === 401) {
-                return this.handle401Error(request, next);
+
+                if (request.url.endsWith('auth/refresh')) {
+                    this.isRefreshing = false;
+                    this.authService.doLogoutUser();
+                    return throwError(error);
+                }
+                else {
+                    return this.handle401Error(request, next);
+                }
             }
             else {
                 return throwError(error);

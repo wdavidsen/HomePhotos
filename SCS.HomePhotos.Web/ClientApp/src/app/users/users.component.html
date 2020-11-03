@@ -15,7 +15,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let u of users" (click)="select(u)" [ngClass]="{'row-selected': u.selected}" (dblclick)="editUser(u)">
-                <td>{{u.userId}}</td>
+                <td>{{u.username}}</td>
                 <td>{{u.firstName}}</td>
                 <td>{{u.lastName}}</td>
                 <td>{{u.lastLogin | date:'medium'}}</td>

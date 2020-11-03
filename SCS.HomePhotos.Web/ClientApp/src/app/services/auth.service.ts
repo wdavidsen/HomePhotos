@@ -37,23 +37,15 @@ export class AuthService {
       .pipe(
         tap(user => this.doLoginUser(user)),
         switchMap(() => this.http.get(`${environment.apiUrl}/antiforgery`)),
-        mapTo(true),
-        catchError(error => {
-          alert(error.error);
-          return of(false);
-        }));
+        mapTo(true));
   }
 
   logout() {
     return this.http.post(`${environment.apiUrl}/auth/logout`, {
       'refreshToken': this.getRefreshToken()
-    }).pipe(
-      tap(() => this.doLogoutUser()),
-      mapTo(true),
-      catchError(error => {
-        alert(error.error);
-        return of(false);
-      }));
+    })
+    .pipe(
+      tap(() => this.doLogoutUser()));
   }
 
   isLoggedIn() {
@@ -87,7 +79,7 @@ export class AuthService {
     this.currentUserSubject.next(user);
   }
 
-  private doLogoutUser() {
+  doLogoutUser() {
     this.removeTokens();
 
     localStorage.removeItem(this.CURRENT_USER);
