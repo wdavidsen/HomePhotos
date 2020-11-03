@@ -1,6 +1,4 @@
-import { $, $$, browser, ElementFinder, promise } from 'protractor';
-
-type PromiseVoid = promise.Promise<void>;
+import { $, $$, browser, ElementFinder } from 'protractor';
 
 export class UploadPage {
     componentCss = 'app-upload';
