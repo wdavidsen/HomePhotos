@@ -15,7 +15,7 @@ describe('UploadComponent', () => {
 
   beforeEach(async(() => {
     mockToastr = jasmine.createSpyObj(['success', 'error']);
-    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'getCurrentUser']);
+    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'getCurrentUser', 'getJwtToken']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
 
     mockAuthenticationService.getCurrentUser.and.returnValue(of({username: 'wdavidsen'}));

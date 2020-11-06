@@ -7,11 +7,12 @@ import { Observable, of, Subject } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { NavMenuComponent } from './nav-menu.component';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 describe('NavMenuComponent', () => {
   let component: NavMenuComponent;
   let fixture: ComponentFixture<NavMenuComponent>;
-  let mockAuthenticationService, mockSearchService, mockModalService, mockRouter;
+  let mockAuthenticationService, mockSearchService, mockModalService, mockRouter, mockToastr;
 
   const navSubject = new Subject<NavigationEnd>();
   const showSearchSubject = new Subject<any>();
@@ -30,6 +31,7 @@ describe('NavMenuComponent', () => {
     }
 
   beforeEach(async(() => {
+    mockToastr = jasmine.createSpyObj(['success', 'error']);
     mockSearchService = jasmine.createSpyObj(['getHidden', 'getKeywords']);
     mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'logout']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
@@ -37,6 +39,7 @@ describe('NavMenuComponent', () => {
 
     mockSearchService.getHidden.and.returnValue(showSearchSubject.asObservable());
     mockSearchService.getKeywords.and.returnValue(of(null));
+    mockAuthenticationService.logout.and.returnValue(of(null));
 
     TestBed.configureTestingModule({
       declarations: [ NavMenuComponent ],
@@ -47,7 +50,8 @@ describe('NavMenuComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: SearchService, useValue: mockSearchService },
         { provide: AuthService, useValue: mockAuthenticationService },
-        { provide: BsModalService, useValue: mockModalService }],
+        { provide: BsModalService, useValue: mockModalService },
+        { provide: ToastrService, useValue: mockToastr }],
         schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
