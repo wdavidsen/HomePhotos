@@ -1,5 +1,3 @@
-import { assert } from 'console';
-import { browser } from 'protractor';
 import { E2eUtil } from '../e2e-util';
 import { LoginPage } from '../pages/login.po';
 import { PhotosPage } from '../pages/photos.po';
@@ -21,7 +19,7 @@ describe('Users', () => {
         await E2eUtil.browserWaitFor(usersPage.toolbarCss);
     });
 
-    xit('should display users', async () => {
+    it('should display users', async () => {
         const rowData = await usersPage.getRowData(0);
 
         expect(rowData.userId).toBeTruthy();
@@ -33,7 +31,7 @@ describe('Users', () => {
         expect(rowData.role).toBeTruthy();
     });
 
-    xit('should enable/disable toolbar buttons', async () => {
+    it('should enable/disable toolbar buttons', async () => {
         expect(usersPage.getNewButton().isEnabled()).toBe(true);
         expect(usersPage.getEditButton().isEnabled()).toBe(false);
         expect(usersPage.getDeleteButton().isEnabled()).toBe(false);
@@ -49,7 +47,7 @@ describe('Users', () => {
         expect(usersPage.getDisableButton().isEnabled()).toBe(true);
     });
 
-    xit('should navigate to user details', async () => {
+    it('should navigate to user details', async () => {
         await usersPage.clickRow(0);
         await usersPage.getEditButton().click();
 

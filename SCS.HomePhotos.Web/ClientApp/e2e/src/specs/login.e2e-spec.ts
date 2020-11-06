@@ -1,42 +1,41 @@
 import { $, browser, protractor } from 'protractor';
+import { E2eUtil } from '../e2e-util';
+import { AppPage } from '../pages/app.po';
 import { LoginPage } from '../pages/login.po';
 
 describe('Login', () => {
-  let page: LoginPage;
-  const EC = protractor.ExpectedConditions;
+  let loginPage: LoginPage;
+  let appPage: AppPage;
 
-  beforeEach(() => {
-    page = new LoginPage();
-    page.navigateTo();
+  beforeEach(async () => {
+    loginPage = new LoginPage();
+    appPage = new AppPage();
+    await loginPage.navigateTo();
   });
 
-  it('should display heading', () => {
-    expect(page.getMainHeading()).toEqual('Sign-In');
+  it('should navigate to registration page', async () => {
+    await loginPage.getRegisterLink().click();
+    E2eUtil.browserWaitFor(loginPage.registerHeadingCss);
   });
 
   it('should login with valid cred', async () => {
-    await page.login('wdavidsen', 'Pass@123');
-    browser.wait(EC.presenceOf($('.photo-list')), 5000);
+    await loginPage.login('wdavidsen', 'Pass@123');
+    E2eUtil.browserWaitFor('.photo-list');
   });
 
   it('should not login with blank username', async () => {
-    await page.login('', 'password1');
+    await loginPage.login('', 'password1');
 
-    const messages = await page.getInvalidMessages();
+    const messages = await loginPage.getInvalidMessages();
     expect(messages.length).toBe(1);
     expect(messages).toContain('Username is required');
   });
 
   it('should not login with blank password', async () => {
-    await page.login('wdavidsen', '');
+    await loginPage.login('wdavidsen', '');
 
-    const messages = await page.getInvalidMessages();
+    const messages = await loginPage.getInvalidMessages();
     expect(messages.length).toBe(1);
     expect(messages).toContain('Password is required');
-  });
-
-  it('should navigate to registration page', async () => {
-    await page.register();
-    browser.wait(EC.urlContains('/register'), 5000);
   });
 });

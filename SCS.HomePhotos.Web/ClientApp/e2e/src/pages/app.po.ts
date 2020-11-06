@@ -1,10 +1,12 @@
-import { $, browser, by, element, promise } from 'protractor';
+import { $, browser, ElementFinder, promise } from 'protractor';
 
 type PromiseVoid = promise.Promise<void>;
 type PromiseString = promise.Promise<string>;
 
 export class AppPage {
   organizeCheckCss = '#organizeSection > app-organize > input';
+  logoutLinkCss = '#rightMenu > a:nth-child(3)';
+  accountLinkCss = '#rightMenu > a:nth-child(5)';
 
   navigateTo(): PromiseVoid {
     return browser.get('/');
@@ -18,6 +20,10 @@ export class AppPage {
     const menuLink = $(`a[routerlink="/${pageName}"]`);
 
     return menuLink.click();
+  }
+
+  getLogoutLink(): ElementFinder {
+    return $(this.logoutLinkCss);
   }
 
   async toggleOrganizeMode(): Promise<void> {

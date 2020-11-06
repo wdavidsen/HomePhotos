@@ -1,4 +1,4 @@
-import { $, $$, browser, promise, protractor } from 'protractor';
+import { $, $$, browser, ElementFinder, promise, protractor } from 'protractor';
 
 type PromiseVoid = promise.Promise<void>;
 type PromiseString = promise.Promise<string>;
@@ -9,9 +9,10 @@ export class LoginPage {
   usernameInputCss = 'input[formcontrolname=username]';
   passwordInputCss = 'input[formcontrolname=password]';
   loginButtonCss = 'button.btn-primary';
-  registerLinkCss = 'a[routerlink="/register"]';
+  registerLinkCss = 'a.btn-link';
   invalidTextCss = '.invalid-feedback';
   headerTextCss = '.app-container h2';
+  registerHeadingCss = 'form.register-form';
 
   navigateTo(): PromiseVoid {
     return browser.get('/login');
@@ -33,10 +34,8 @@ export class LoginPage {
     await loginButton.click();
   }
 
-  register(): PromiseVoid {
-    const registerLink = $(this.registerLinkCss);
-
-    return registerLink.click();
+  getRegisterLink(): ElementFinder {
+    return $(this.registerLinkCss);
   }
 
   async getInvalidMessages(): Promise<string[]> {
