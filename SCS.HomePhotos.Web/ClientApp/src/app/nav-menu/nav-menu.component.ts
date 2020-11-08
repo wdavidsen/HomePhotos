@@ -80,6 +80,12 @@ export class NavMenuComponent implements OnInit {
     this.collapseNav();
   }
 
+  showAccountInfo() {
+    this.collapseNav();
+
+    this.router.navigate(['/account']);
+  }
+
   showSettings() {
     this.collapseNav();
 

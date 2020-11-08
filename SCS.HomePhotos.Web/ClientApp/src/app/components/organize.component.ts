@@ -3,7 +3,8 @@ import { OrganizeService } from '../services';
 
 @Component({
     selector: 'app-organize',
-    templateUrl: 'organize.component.html'
+    templateUrl: 'organize.component.html',
+    styleUrls: ['./organize.component.css']
 })
 export class OrganizeComponent implements OnInit, OnDestroy {
     enabled = false;

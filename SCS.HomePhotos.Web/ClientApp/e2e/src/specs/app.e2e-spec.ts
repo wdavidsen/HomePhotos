@@ -9,6 +9,6 @@ describe('App', () => {
 
   it('should display title', () => {
     page.navigateTo();
-    expect(page.getTitle()).toEqual('Home Photos');
+    expect(page.getTitle()).toEqual('ePhotoBox');
   });
 });

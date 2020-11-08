@@ -8,15 +8,8 @@ a.navbar-brand {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
-.bar {
-  margin: 7px 7px 0 7px;
-}
-
 button.options-item {
   display: unset;
-}
-a.options-item {
-  display: none;
 }
 
 .nav-right a:hover {
@@ -28,35 +21,81 @@ a.options-item {
   padding: 0;
 }
 
+a.navbar-brand {
+  white-space: nowrap;
+}
+
+.menu-icon {
+  display: none;
+}
+
+.menu-icon-right {
+  display: inline !important;
+}
+
+a.nav-item {
+  margin: 0 5px;
+  padding-left: 5px;
+  white-space: nowrap;
+}
+
+a.link-active {
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+div.dropdown-menu > a.link-active {
+  background-color: #f8f9fa;
+  border-radius: 3px;
+}
+
+#rightMenu .right-menu-text {
+  display: none;
+}
 
 /** Phone **/
 @media only screen and (max-width: 767px), only screen and (max-device-width: 767px) {
 
-  .bar {
-    display: none;
+  #mainMenu {
+    margin-top: 8px;
   }
-  button.options-item {
-    display: none !important;
+  #mainMenu .menu-icon {
+    display: inline;
   }
-  a.options-item {
-    display: block;
+  #rightMenu {
+    text-align: left;
+  }
+  #rightMenu .right-menu-text {
+    display: inline;
+    padding-left: 3px;
+  }
+  #rightMenu a.nav-item {
+    margin: 0 5px;
+    padding: 4px;    
+  }
+  div.dropdown {
+    padding-left: 11px;
+  }
+  #rightMenu div.dropdown-menu {
+    background-color: transparent;
+    border: 0;
+    margin: 0;
+    padding: 0
+  }
+  #rightMenu div.dropdown-menu a.dropdown-item {
+    padding: .15rem .5rem;
+  }
+  #rightMenu div.dropdown-menu .search-form {
+    margin: 1rem .5rem !important;
   }
 }
 
 /** Tablet **/
 @media only screen and (min-width : 768px) and (max-width : 1024px) {
 
-
-  .bar {
-    display: none;
-  }
 }
 
 /** Tablet (landscape) **/
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
-
-  .bar {
-    display: none;
-  }
 
 }
