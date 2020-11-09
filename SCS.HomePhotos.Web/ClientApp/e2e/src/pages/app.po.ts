@@ -4,7 +4,7 @@ type PromiseVoid = promise.Promise<void>;
 type PromiseString = promise.Promise<string>;
 
 export class AppPage {
-  organizeCheckCss = '#organizeSection > app-organize > input';
+  organizeCheckCss = '#organizeSection app-organize input';
   logoutLinkCss = '#rightMenu > a:nth-child(3)';
   accountLinkCss = '#rightMenu > a:nth-child(5)';
 
