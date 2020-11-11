@@ -26,6 +26,9 @@ export class TokenInterceptor implements HttpInterceptor {
                     this.authService.doLogoutUser();
                     return throwError(error);
                 }
+                else if (request.url.endsWith('auth/login')) {
+                    return throwError(error);
+                }
                 else {
                     return this.handle401Error(request, next);
                 }

@@ -53,10 +53,22 @@ export class LoginComponent implements OnInit {
                 () => {
                     this.toastr.success('Sign-in successful');
                     this.router.navigate([this.returnUrl]);
+                    this.loading = false;
                 },
-                error => {
-                    console.error(error);
-                    this.toastr.error('Sign-in failed');
+                response => {
+                    console.error(response.error);
+                    switch (response.error.id) {
+                        case 'PasswordChangeNeeded':
+                            this.toastr.warning(response.error.message);
+                            this.router.navigate([this.returnUrl]);
+                            break;
+                        case 'LoginFailed':
+                            this.toastr.warning(response.error.message);
+                            break;
+                        default:
+                            this.toastr.error('Sign-in failed');
+                            break;
+                    }
                     this.loading = false;
                 });
     }

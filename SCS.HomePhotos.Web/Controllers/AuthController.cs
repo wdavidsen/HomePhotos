@@ -62,7 +62,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 }
                 else
                 {
-                    return Unauthorized(new ProblemModel { Id = "LoginFailed", Message = "Login failed" });
+                    return BadRequest(new ProblemModel { Id = "LoginFailed", Message = "Incorrect Username/Password" });
                 }
             }
 
