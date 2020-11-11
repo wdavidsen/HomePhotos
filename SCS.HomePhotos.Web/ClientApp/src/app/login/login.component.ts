@@ -56,18 +56,23 @@ export class LoginComponent implements OnInit {
                     this.loading = false;
                 },
                 response => {
-                    console.error(response.error);
-                    switch (response.error.id) {
-                        case 'PasswordChangeNeeded':
-                            this.toastr.warning(response.error.message);
-                            this.router.navigate([this.returnUrl]);
-                            break;
-                        case 'LoginFailed':
-                            this.toastr.warning(response.error.message);
-                            break;
-                        default:
-                            this.toastr.error('Sign-in failed');
-                            break;
+                    if (response.status > 99 && response.status < 600) {
+                        console.error(response.error);
+                        switch (response.error.id) {
+                            case 'PasswordChangeNeeded':
+                                this.toastr.warning(response.error.message);
+                                this.router.navigate([this.returnUrl]);
+                                break;
+                            case 'LoginFailed':
+                                this.toastr.warning(response.error.message);
+                                break;
+                            default:
+                                this.toastr.error('Sign-in failed');
+                                break;
+                        }
+                    }
+                    else {
+                        this.toastr.error('Server unreachable');
                     }
                     this.loading = false;
                 });
