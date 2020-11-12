@@ -40,14 +40,19 @@ namespace SCS.HomePhotos.Web.Hubs
                         info.Success.Value ? "success" : "error",
                         info.Success.Value ? "Photo cache cleared" : "Failed to clear photo cache");
                     break;
+
                 case TaskType.ProcessMobilePhoto:
                     _uploadTracker.RemoveUpload((string)info.Data);
 
-                    if (_uploadTracker.IsProcessingDone(info.ContextUserName))
-                    {
-                        var uploadCount = _uploadTracker.GetUploadCount(info.ContextUserName);
-                        _notificationHub.Clients.All.SendEveryoneMessage("info", $"{info.ContextUserName} uploaded {uploadCount} photos");
-                    }
+                    var timer = new Timer((state) => {
+
+                        if (_uploadTracker.IsProcessingDone(info.ContextUserName))
+                        {
+                            var uploadCount = _uploadTracker.GetUploadCount(info.ContextUserName);
+                            _notificationHub.Clients.All.SendEveryoneMessage("info", $"{info.ContextUserName} uploaded {uploadCount} photos");
+                        }
+                    }, null, 1000 * 2, 0);
+
                     break;
             }
         }
