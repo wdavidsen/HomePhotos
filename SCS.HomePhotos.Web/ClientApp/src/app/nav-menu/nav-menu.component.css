@@ -69,24 +69,24 @@ div.dropdown-menu > a.link-active {
     display: inline;
     padding-left: 3px;
   }
-  #rightMenu a.nav-item {
-    margin: 0 5px;
-    padding: 4px;    
-  }
   div.dropdown {
     padding-left: 11px;
   }
-  #rightMenu div.dropdown-menu {
+  div.dropdown-menu {
     background-color: transparent;
     border: 0;
     margin: 0;
-    padding: 0
+    padding: 0;
+    margin-bottom: 10px;
   }
   #rightMenu div.dropdown-menu a.dropdown-item {
     padding: .15rem .5rem;
   }
   #rightMenu div.dropdown-menu .search-form {
     margin: 1rem .5rem !important;
+  }
+  #rightMenu a {
+    text-decoration: none;
   }
 }
 

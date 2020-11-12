@@ -28,11 +28,11 @@
 </section>
 
 <nav class="navbar navbar-expand-md navbar-light bg-light fixed-bottom">   
-    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#footerNavbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarCollapse">
+    <div class="collapse navbar-collapse" id="footerNavbarCollapse">
         <div class="navbar-nav">
             <button type="button" class="btn btn-default navbar-btn"(click)="addNewUser()"><i class="fa fa-user"></i> New</button>
             <button type="button" class="btn btn-default navbar-btn"(click)="editUser(getSelectedUsers()[0])" [disabled]="getSelectedUsers().length !== 1"><i class="fa fa-edit"></i> Edit</button>
