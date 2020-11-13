@@ -88,6 +88,9 @@ div.dropdown-menu > a.link-active {
   #rightMenu a {
     text-decoration: none;
   }
+  #rightMenu > label {
+    margin: 23px 0 12px 0;
+  }
 }
 
 /** Tablet **/

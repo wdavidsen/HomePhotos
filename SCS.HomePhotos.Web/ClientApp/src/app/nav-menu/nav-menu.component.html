@@ -45,11 +45,11 @@
         <label class="nav-item nav-check" [hidden]="hideOrganize" id="organizeSection">
           <app-organize></app-organize>
         </label>    
-        <a (click)="logout()" class="nav-item nav-link options-item" type="button" title="Sign-out">
+        <!-- <a (click)="logout()" class="nav-item nav-link options-item" type="button" title="Sign-out">
           <i class="fa fa-sign-out menu-icon menu-icon-right"></i> <span class="right-menu-text">Sign-out</span>
-        </a>
-        <a (click)="showAccountInfo()" class="nav-item nav-link options-item" type="button" [title]="currentUser?.username">
-          <i class="fa fa-user menu-icon menu-icon-right"></i> <span class="right-menu-text">{{currentUser?.username}}</span>
+        </a> -->
+        <a (click)="showAccountInfo()" class="nav-item nav-link options-item" type="button" title="{{'Account: ' + currentUser?.username}}">
+          <i class="fa fa-user menu-icon menu-icon-right"></i> <span class="right-menu-text">Account: {{currentUser?.username}}</span>
         </a>
         <a (click)="showSettings()" class="nav-item nav-link options-item" type="button" title="Options">
           <i class="fa fa-gear menu-icon menu-icon-right"></i> <span class="right-menu-text">Options</span>
