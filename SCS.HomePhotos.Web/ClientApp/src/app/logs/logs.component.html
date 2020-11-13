@@ -28,16 +28,16 @@
             <tr>
                 <th>Time</th>
                 <th>Message</th>
-                <th>Category</th>
-                <th>Severity</th>
+                <th class="phone-hide">Category</th>
+                <th class="phone-hide">Severity</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let l of logEntries">
-                <td>{{l.timestamp | date:'medium'}}</td>
+                <td>{{l.timestamp | date:'short'}}</td>
                 <td>{{l.message}}</td>
-                <td>{{l.category}}</td>
-                <td>{{l.severity}}</td>
+                <td class="phone-hide">{{l.category}}</td>
+                <td class="phone-hide">{{l.severity}}</td>
             </tr>
         </tbody>
     </table>
@@ -56,7 +56,7 @@
             </select>
     
             <div class="pager-log">
-                <pagination [itemsPerPage]=pageInfo.pageSize [totalItems]="pageInfo.totalRecords" (pageChanged)="pageChanged($event)"></pagination>
+                <pagination [itemsPerPage]=pageInfo.pageSize [totalItems]="pageInfo.totalRecords" [rotate]="true" [maxSize]="5" [boundaryLinks]="true" (pageChanged)="pageChanged($event)"></pagination>
             </div>
         </form>
     </nav>
