@@ -132,10 +132,10 @@ export class PhotosComponent implements OnInit, OnDestroy {
 
         this.thumbnails.forEach((thumb) => {
           const ratio = thumb.thumbWidth / thumb.thumbHeight;
-          const width = Math.floor(this.thumbHeight * ratio);
+          const dims = this.calculateThumbSize(ratio, this.thumbHeight);
 
-          thumb.thumbHeight = this.thumbHeight;
-          thumb.thumbWidth = width;
+          thumb.thumbHeight = dims.height;
+          thumb.thumbWidth = dims.width;
         });
       });
   }
@@ -251,7 +251,8 @@ export class PhotosComponent implements OnInit, OnDestroy {
 
   private photoToThumbnail(photo: Photo): Thumbnail {
     const thumb = new Thumbnail();
-    const heightWidth = this.calculateThumbSize(photo, this.thumbHeight);
+    const ratio = photo.imageWidth / photo.imageHeight;
+    const heightWidth = this.calculateThumbSize(ratio, this.thumbHeight);
 
     thumb.photoId = photo.photoId;
     thumb.selected = false;
@@ -262,7 +263,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
     return thumb;
   }
 
-  private calculateThumbSize(photo: Photo, height: number) {
+  private calculateThumbSize(ratio: number, height: number) {
     let width = height;
     let extraPerThumb = 0;
     const windowWidth = window.innerWidth;
@@ -275,7 +276,6 @@ export class PhotosComponent implements OnInit, OnDestroy {
     }
     else {
         // display with normal image aspect ratio (no cropping)
-        const ratio = photo.imageWidth / photo.imageHeight;
         width = Math.floor(height * ratio);
     }
 
