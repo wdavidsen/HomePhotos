@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalContentComponent } from '../users/change-password-modal.component';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-account',
@@ -19,7 +20,8 @@ export class AccountComponent implements OnInit {
   submitted = false;
   changePasswordModalRef: BsModalRef;
 
-  constructor(private authenticationService: AuthService,
+  constructor(private router: Router,
+    private authenticationService: AuthService,
     private accountService: AccountService,
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
@@ -73,6 +75,19 @@ export class AccountComponent implements OnInit {
         userName: this.accountInfo.username
     };
     this.changePasswordModalRef = this.modalService.show(ModalContentComponent, {initialState});
+  }
+
+  logout() {
+    this.authenticationService.logout()
+      .subscribe(
+        () => {
+            this.toastr.success('Sign-out successful');
+            this.router.navigate(['/login']);
+        },
+        error => {
+            console.error(error);
+            this.toastr.error('Sign-out failed');
+        });
   }
 
   private setupForm(data: AccountInfo) {

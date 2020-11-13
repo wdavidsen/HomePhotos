@@ -7,8 +7,8 @@
                 <th>User Id</th>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>Last Login</th>
-                <th>Failed Logins</th>
+                <th class="phone-hide">Last Login</th>
+                <th class="phone-hide">Failed Logins</th>
                 <th>Enabled</th>
                 <th>Role</th>
             </tr>
@@ -18,8 +18,8 @@
                 <td>{{u.username}}</td>
                 <td>{{u.firstName}}</td>
                 <td>{{u.lastName}}</td>
-                <td>{{u.lastLogin | date:'medium'}}</td>
-                <td>{{u.failedLoginCount}}</td>
+                <td class="phone-hide">{{u.lastLogin | date:'medium'}}</td>
+                <td class="phone-hide">{{u.failedLoginCount}}</td>
                 <td>{{u.enabled ? 'Yes' : 'No'}}</td>
                 <td>{{u.role}}</td>
             </tr>

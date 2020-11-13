@@ -17,6 +17,8 @@ code {
   border-color: #1861ac;
 }
 
+
+
 /** Phone **/
 @media only screen and (max-width: 767px), only screen and (max-device-width: 767px) {
 
@@ -26,6 +28,14 @@ code {
 
   .bar {
     display: none;
+  }
+
+  .phone-show {
+    display: inline-block !important;
+  }
+
+  .phone-hide {
+    display: none !important;
   }
 }
 
@@ -40,6 +50,9 @@ code {
     display: none;
   }
   
+  .tablet-show {
+    display: none !important;
+  }
 }
 
 /** Tablet (landscape) **/
