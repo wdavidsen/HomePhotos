@@ -57,9 +57,9 @@ export class AuthService {
         jwt: this.getJwtToken(),
         refreshToken: this.getRefreshToken()
     })
-    .pipe(tap((tokens: Tokens) => {
-        this.storeTokens(tokens);
-    }));
+    .pipe(
+      tap((tokens: Tokens) => this.storeTokens(tokens)),
+      switchMap(() => this.http.get(`${environment.apiUrl}/antiforgery`)));
   }
 
   getJwtToken() {
