@@ -41,6 +41,21 @@ namespace SCS.HomePhotos.Data
             }
         }
 
+        public async Task<TagStat> GetTagAndPhotoCount(string tagName)
+        {
+            var sql = @"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount 
+                        FROM Tag t LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
+                        WHERE TagName = @TagName
+                        GROUP BY t.TagName, t.TagId 
+                        ORDER BY t.TagName";
+
+            using (var conn = GetDbConnection())
+            {
+                return await conn.QuerySingleAsync<TagStat>(sql, new { TagName = tagName });
+            }
+        }
+
+
         public async Task<IEnumerable<TagStat>> GetTags(string keywords, int pageNum = 0, int pageSize = 200)
         {
             var offset = (pageNum - 1) * pageSize;

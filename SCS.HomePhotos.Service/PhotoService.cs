@@ -153,7 +153,7 @@ namespace SCS.HomePhotos.Service
             }
         }
 
-        public async Task<Tag> MergeTags(string newTagName, params int[] targetTagIds)
+        public async Task<TagStat> MergeTags(string newTagName, params int[] targetTagIds)
         {
             var newTag = await GetTag(newTagName, true);
             var tagsToDelete = new List<string>();
@@ -162,8 +162,8 @@ namespace SCS.HomePhotos.Service
             {
                 foreach (var assoc in await _tagData.GetPhotoTagAssociations(tagId))
                 {
-                    var photoTag = await _tagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);
-                    var tag = await _tagData.GetAsync<Tag>(photoTag.TagId);
+                    await _tagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);
+                    var tag = await _tagData.GetAsync<Tag>(tagId);
                     
                     if (!tag.TagName.Equals(newTagName, StringComparison.CurrentCultureIgnoreCase))
                     {
@@ -172,8 +172,10 @@ namespace SCS.HomePhotos.Service
                 }
             }
             await DeleteUnusedTags(tagsToDelete.ToArray());
+            
+            var tagStat = await _tagData.GetTagAndPhotoCount(newTagName);
 
-            return newTag;
+            return tagStat;
         }
         
         public async Task<Tag> CopyTags(string newTagName, int? sourceTagId)

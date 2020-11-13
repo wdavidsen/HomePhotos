@@ -13,6 +13,8 @@ namespace SCS.HomePhotos.Service
 
         Task<IEnumerable<TagStat>> GetTagAndPhotoCount();
 
+        Task<TagStat> GetTagAndPhotoCount(string tagName);
+
         Task<Tag> SaveTag(Tag tag);
 
         Task<IEnumerable<PhotoTag>> GetPhotoTagAssociations(int tagId);
