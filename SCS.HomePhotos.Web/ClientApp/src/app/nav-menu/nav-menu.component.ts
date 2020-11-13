@@ -15,6 +15,8 @@ import { ToastrService } from 'ngx-toastr';
 export class NavMenuComponent implements OnInit {
   @ViewChild('navbarToggler', {static: true})
   navbarToggler: ElementRef;
+  @ViewChild('navbarMenu', {static: true})
+  navbarMenu: ElementRef;
   userSettingsModalRef: BsModalRef;
   isExpanded = false;
   currentUser: User;
@@ -41,7 +43,7 @@ export class NavMenuComponent implements OnInit {
 
     router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(info => this.SetOrganize(<NavigationEnd>info));
+      .subscribe(info => this.onNavigation(<NavigationEnd>info));
   }
 
   ngOnInit() {
@@ -76,7 +78,6 @@ export class NavMenuComponent implements OnInit {
             this.toastr.error('Sign-out failed');
         });
 
-    // this.router.navigate(['/login']);
     this.collapseNav();
   }
 
@@ -100,13 +101,19 @@ export class NavMenuComponent implements OnInit {
     return this.navbarToggler.nativeElement.offsetParent !== null;
   }
 
+  navBarCollapsed() {
+    return (<string>this.navbarMenu.nativeElement.className).indexOf('show') < 0;
+  }
+
   collapseNav() {
-    if (this.navBarTogglerIsVisible()) {
+    if (this.navBarTogglerIsVisible() && !this.navBarCollapsed()) {
       this.navbarToggler.nativeElement.click();
     }
   }
 
-  private SetOrganize(navInfo: NavigationEnd): void {
+  private onNavigation(navInfo: NavigationEnd): void {
+    this.collapseNav();
+
     const isAdmin = this.currentUser && this.currentUser.role === 'Admin';
     this.hideOrganize = !isAdmin || !/\/$|\/photos|\/tags/.test(navInfo.url);
   }

@@ -4,7 +4,7 @@
     <button #navbarToggler type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse" [hidden]="hideMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+    <div #navbarMenu class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
       <div class="navbar-nav" [hidden]="hideMenu" id="mainMenu">
           <a href="#" (click)="collapseNav()" class="nav-item nav-link" 
             [routerLinkActive]="['link-active']" 
