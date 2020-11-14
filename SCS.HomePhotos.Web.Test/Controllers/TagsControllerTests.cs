@@ -85,7 +85,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task MergeTags()
         {
-            var tag = _fixture.Create<Tag>();
+            var tag = _fixture.Create<TagStat>();
             var newName = tag.TagName;
             var mergeInfo = new TagMergeInfo { NewTagName = newName, SourceTagIds = new int[] { 1, 2, 3 } };
 
@@ -112,7 +112,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task MergeTagsInvalid()
         {
-            var tag = _fixture.Create<Tag>();
+            var tag = _fixture.Create<TagStat>();
             var newName = tag.TagName;
             var mergeInfo = new TagMergeInfo { NewTagName = newName, SourceTagIds = new int[] { 1, 2, 3 } };
 
