@@ -92,7 +92,9 @@
             ],
             "scripts": [],
             "assets": [
-              "src/assets"
+              "src/assets",
+              "src/robots.txt",
+              "src/favicon.ico"
             ]
           }
         },

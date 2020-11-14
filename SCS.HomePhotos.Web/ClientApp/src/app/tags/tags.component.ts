@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { InputDialogComponent, ConfirmDialogComponent } from '../common-dialog';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-tags',
@@ -30,6 +31,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private organizeService: OrganizeService,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private modalService: BsModalService,
     private authenticationService: AuthService) {
       this.authenticationService.getCurrentUser().subscribe(user => {

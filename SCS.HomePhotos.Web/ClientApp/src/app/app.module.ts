@@ -43,6 +43,8 @@ import { TokenInterceptor } from './pipeline';
 import { CsrfHeaderInterceptor } from './pipeline/csrf-header.interceptor';
 import { UnauthorizedComponent } from './errors/unauthorized.component';
 import { NotFoundComponent } from './errors/not-found.component';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { ProgressInterceptor } from './pipeline/progress.interceptor';
 
 @NgModule({
   declarations: [
@@ -91,6 +93,7 @@ import { NotFoundComponent } from './errors/not-found.component';
     AngularFontAwesomeModule,
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
+    NgxSpinnerModule,
     TypeaheadModule.forRoot(),
     PaginationModule.forRoot(),
     ModalModule.forRoot(),
@@ -104,6 +107,7 @@ import { NotFoundComponent } from './errors/not-found.component';
     FileUploadModule
   ],
   providers: [
+    NgxSpinnerService,
     SettingsService,
     UserSettingsService,
     PhotosService,
@@ -111,6 +115,7 @@ import { NotFoundComponent } from './errors/not-found.component';
     TagService,
     LogService,
     LocalStorageService,
+    { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: CsrfHeaderInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ],
