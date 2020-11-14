@@ -31,6 +31,6 @@ export const routes: Routes = [
     { path: 'unauthorized', component: UnauthorizedComponent },
     { path: 'notfound', component: NotFoundComponent },
 
-    // otherwise redirect to home
+    // 404
     { path: '**', redirectTo: '/notfound' }
 ];
