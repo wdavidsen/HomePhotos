@@ -10,20 +10,27 @@ import { TagsComponent } from './tags/tags.component';
 import { UploadComponent } from './upload/upload.component';
 import { UserDetailComponent } from './users/user-detail.component';
 import { UsersComponent } from './users/users.component';
+import { AuthAdminGuard } from './pipeline/auth-admin.guard';
+import { UnauthorizedComponent } from './errors/unauthorized.component';
+import { AuthUploadGuard } from './pipeline/auth-upload.guard';
+import { NotFoundComponent } from './errors/not-found.component';
 
 export const routes: Routes = [
     { path: '', component: PhotosComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+    { path: 'photos', component: PhotosComponent, canActivate: [AuthGuard] },
     { path: 'photos/:tagName', component: PhotosComponent, canActivate: [AuthGuard] },
     { path: 'tags', component: TagsComponent, canActivate: [AuthGuard] },
-    { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
+    { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard, AuthAdminGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
-    { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
-    { path: 'users/:userId', component: UserDetailComponent, canActivate: [AuthGuard] },
+    { path: 'users', component: UsersComponent, canActivate: [AuthGuard, AuthAdminGuard] },
+    { path: 'users/:userId', component: UserDetailComponent, canActivate: [AuthGuard, AuthAdminGuard] },
     { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
-    { path: 'logs', component: LogsComponent, canActivate: [AuthGuard] },
-    { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
+    { path: 'logs', component: LogsComponent, canActivate: [AuthGuard, AuthAdminGuard] },
+    { path: 'upload', component: UploadComponent, canActivate: [AuthGuard, AuthUploadGuard] },
+    { path: 'unauthorized', component: UnauthorizedComponent },
+    { path: 'notfound', component: NotFoundComponent },
 
     // otherwise redirect to home
-    { path: '**', redirectTo: '' }
+    { path: '**', redirectTo: '/notfound' }
 ];

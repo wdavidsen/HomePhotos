@@ -41,6 +41,8 @@ import { LocalStorageService } from './services/local-storage.service';
 import { routes } from './app.routes';
 import { TokenInterceptor } from './pipeline';
 import { CsrfHeaderInterceptor } from './pipeline/csrf-header.interceptor';
+import { UnauthorizedComponent } from './errors/unauthorized.component';
+import { NotFoundComponent } from './errors/not-found.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,9 @@ import { CsrfHeaderInterceptor } from './pipeline/csrf-header.interceptor';
     AlertDialogComponent,
     TriCheckComponent,
     LogsComponent,
-    UploadComponent
+    UploadComponent,
+    UnauthorizedComponent,
+    NotFoundComponent
   ],
   entryComponents: [
     ModalContentComponent,

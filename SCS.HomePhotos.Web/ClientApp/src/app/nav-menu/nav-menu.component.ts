@@ -36,9 +36,11 @@ export class NavMenuComponent implements OnInit {
         this.hideMenu = !this.currentUser;
 
         const isAdmin = this.currentUser && this.currentUser.role === 'Admin';
+        const isContributer = this.currentUser && this.currentUser.role === 'Contributer';
+
         this.hideMenuAdmin = !isAdmin;
-        this.hideUploadMenu = !isAdmin;
-        this.hideOrganize = !isAdmin;
+        this.hideUploadMenu = !(isAdmin || isContributer);
+        this.hideOrganize = !(isAdmin || isContributer);
       });
 
     router.events
@@ -115,6 +117,8 @@ export class NavMenuComponent implements OnInit {
     this.collapseNav();
 
     const isAdmin = this.currentUser && this.currentUser.role === 'Admin';
-    this.hideOrganize = !isAdmin || !/\/$|\/photos|\/tags/.test(navInfo.url);
+    const isContributer = this.currentUser && this.currentUser.role === 'Contributer';
+
+    this.hideOrganize = !(isAdmin || isContributer) || !/\/$|\/photos|\/tags/.test(navInfo.url);
   }
 }
