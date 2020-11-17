@@ -41,7 +41,6 @@ export class ProgressInterceptor implements HttpInterceptor {
             }
           },
           err => {
-            alert('error' + err);
             this.removeRequest(req);
             observer.error(err);
           },

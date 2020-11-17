@@ -4,7 +4,7 @@ import { of, Observable, BehaviorSubject } from 'rxjs';
 import { catchError, mapTo, switchMap, tap } from 'rxjs/operators';
 import { Tokens } from '../models/tokens';
 import { environment } from '../../environments/environment';
-import { User } from '../models';
+import { PasswordChange, User } from '../models';
 
 // based on: https://angular-academy.com/angular-jwt/
 @Injectable({
@@ -34,6 +34,14 @@ export class AuthService {
 
   login(username, password): Observable<boolean> {
     return this.http.post<User>(`${environment.apiUrl}/auth/login`, { username, password })
+      .pipe(
+        tap(user => this.doLoginUser(user)),
+        switchMap(() => this.http.get(`${environment.apiUrl}/antiforgery`)),
+        mapTo(true));
+  }
+
+  loginWithPasswordChange(changeInfo: PasswordChange){
+    return this.http.post<User>(`${environment.apiUrl}/auth/loginWithPasswordChange`, changeInfo)
       .pipe(
         tap(user => this.doLoginUser(user)),
         switchMap(() => this.http.get(`${environment.apiUrl}/antiforgery`)),

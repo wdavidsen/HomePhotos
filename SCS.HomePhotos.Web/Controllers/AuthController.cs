@@ -81,6 +81,45 @@ namespace SCS.HomePhotos.Web.Controllers
             });
         }
 
+        [AllowAnonymous]
+        [HttpPost("loginWithPasswordChange")]
+        public async Task<IActionResult> LoginWithPasswordChange([FromBody] ChangePasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var agentId = GetAgentIdentifier();
+            var loginResult = await _accountService.Authenticate(model.UserName, model.CurrentPassword);
+
+            if (!(loginResult.Success || loginResult.MustChangePassword))
+            {
+                return BadRequest(new ProblemModel { Id = "LoginFailed", Message = "Incorrect Username/Password" });
+            }
+
+            var changePasswordResult = await _accountService.ChangePassword(model.UserName, model.CurrentPassword, model.NewPassword);
+
+            if (!changePasswordResult.Success)
+            {
+                return BadRequest((new ProblemModel { Id = "CurrentPasswordFailed", Message = "Current password validation failed." }));
+            }
+
+            var claims = _securityService.GetUserClaims(model.UserName, loginResult.User.Role);
+            var newJwtToken = _securityService.GenerateToken(claims);
+            var newRefreshToken = _securityService.GenerateRefreshToken();
+
+            await _accountService.DeleteAgentRefreshTokens(model.UserName, agentId);
+            await _accountService.SaveRefreshToken(model.UserName, newRefreshToken, agentId,
+                _jwtAuthentication.ValidIssuer, _jwtAuthentication.ValidAudience, DateTime.UtcNow.AddDays(_staticConfig.RefreshTokenExpirationDays));
+
+            return Ok(new Dto.TokenUser(loginResult.User)
+            {
+                Jwt = newJwtToken,
+                RefreshToken = newRefreshToken
+            });
+        }
+
         [Authorize]
         [HttpPost("logout")]
         [ValidateAntiForgeryToken]

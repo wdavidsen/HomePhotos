@@ -106,7 +106,7 @@ namespace SCS.HomePhotos.Service
         {
             var authResult = await Authenticate(userName, currentPassword);
 
-            if (!authResult.Success)
+            if (!(authResult.Success || authResult.MustChangePassword))
             {
                 _adminLogService.LogElevated($"Password change for {userName} rejected (invalid password).", LogCategory.Security);
                 return new ChangePasswordResult(authResult);
@@ -263,6 +263,7 @@ namespace SCS.HomePhotos.Service
                 exitingUser.LastName = user.LastName;
                 exitingUser.Enabled = user.Enabled;
                 exitingUser.Role = user.Role;
+                exitingUser.MustChangePassword = user.MustChangePassword;
 
                 await _userData.UpdateAsync(exitingUser);
                 _adminLogService.LogNeutral($"User account update for {user.UserName} succeeded.", LogCategory.Security);

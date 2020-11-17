@@ -14,8 +14,12 @@ import { PasswordChange } from '../models';
 export class ModalContentComponent implements OnInit {
     title: string;
     adminMode: boolean;
+    loginMode: boolean;
     userName: string;
     changePasswordForm: FormGroup;
+    changeInfo: PasswordChange;
+    message: string;
+    closeText = 'Close';
 
     constructor(
         public bsModalRef: BsModalRef,
@@ -24,28 +28,37 @@ export class ModalContentComponent implements OnInit {
         private userService: UserService,
         private toastr: ToastrService) {}
 
-    ngOnInit() {
+      ngOnInit() {
         this.changePasswordForm = this.formBuilder.group({
-            username: [this.userName, Validators.required],
-            currentPassword: ['', [Validators.required, Validators.minLength(8)]],
-            newPassword: ['', [Validators.required, Validators.minLength(8)]],
-            newPasswordCompare: ['', [Validators.required, Validators.minLength(8)]]
+            username: [this.userName, [Validators.required]],
+            currentPassword: [null, [Validators.required, Validators.minLength(8)]],
+            newPassword: [null, [Validators.required, Validators.minLength(8)]],
+            newPasswordCompare: [null, [Validators.required, Validators.minLength(8)]]
         });
+
+      if (this.loginMode) {
+        this.changePasswordForm.get('username').disable();
+        this.changePasswordForm.get('currentPassword').disable();
+      }
     }
 
     onSubmit() {
         if (!this.changePasswordForm.valid) {
             return;
         }
-        const changeInfo: PasswordChange = {
+        this.changeInfo = {
             userName: this.f.username.value,
             currentPassword: this.f.currentPassword.value,
             newPassword: this.f.newPassword.value,
             newPasswordCompare: this.f.newPasswordCompare.value
         };
 
+        if (this.loginMode) {
+            this.bsModalRef.hide();
+        }
+
         let result: Observable<any>;
-        result = (this.adminMode) ? this.userService.changePassword(changeInfo) : this.accountService.changePassword(changeInfo);
+        result = (this.adminMode) ? this.userService.changePassword(this.changeInfo) : this.accountService.changePassword(this.changeInfo);
 
         result.subscribe(
             () => {

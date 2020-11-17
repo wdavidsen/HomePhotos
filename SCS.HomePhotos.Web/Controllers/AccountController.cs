@@ -91,7 +91,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             if (!result.Success)
             {
-                return Unauthorized((new ProblemModel { Id = "CurrentPasswordFailed", Message = "Current password validation failed." }));
+                return BadRequest(new ProblemModel { Id = "CurrentPasswordFailed", Message = "Current password validation failed." });
             }
 
             var claims = _securityService.GetUserClaims(model.UserName, result.User.Role);
