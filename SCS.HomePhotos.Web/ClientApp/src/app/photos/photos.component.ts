@@ -162,7 +162,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
       slideshowInterval: this.getSlideshowSpeed(this.userSettings.slideshowSpeed),
       startSlideshow: this.userSettings.autoStartSlideshow,
       fullScreen: false,
-      thumbnailIndicators: true
+      thumbnailIndicators: window.innerWidth > 1024
     };
 
     const images: any[] = [];
