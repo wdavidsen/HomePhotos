@@ -8,7 +8,7 @@
 <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
   <div class="form-group">
     <label for="usernameInput">User id</label>
-    <input type="text" formControlName="username" class="form-control" id="usernameInput" />
+    <input type="text" formControlName="username" class="form-control" id="usernameInput" [readonly]="user.userId" />
     <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
       <div *ngIf="f.username.errors.required">Password is required</div>
     </div>
