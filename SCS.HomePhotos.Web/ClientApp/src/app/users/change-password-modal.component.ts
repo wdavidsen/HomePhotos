@@ -5,6 +5,7 @@ import { AccountService, UserService } from '../services';
 import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { PasswordChange } from '../models';
+import { MustMatch } from '../validators/must-match.validator';
 
 @Component({
     selector: 'app-modal-content',
@@ -19,7 +20,7 @@ export class ModalContentComponent implements OnInit {
     changePasswordForm: FormGroup;
     changeInfo: PasswordChange;
     message: string;
-    closeText = 'Close';
+    okText = 'Change Password';
 
     constructor(
         public bsModalRef: BsModalRef,
@@ -34,6 +35,8 @@ export class ModalContentComponent implements OnInit {
             currentPassword: [null, [Validators.required, Validators.minLength(8)]],
             newPassword: [null, [Validators.required, Validators.minLength(8)]],
             newPasswordCompare: [null, [Validators.required, Validators.minLength(8)]]
+        }, {
+            validator: MustMatch('newPassword', 'newPasswordCompare')
         });
 
       if (this.loginMode) {
@@ -55,6 +58,7 @@ export class ModalContentComponent implements OnInit {
 
         if (this.loginMode) {
             this.bsModalRef.hide();
+            return;
         }
 
         let result: Observable<any>;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 import { PasswordChange } from '../models';
 
 @Component({ templateUrl: 'login.component.html' })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
     loginForm: FormGroup;
     loading = false;
     submitted = false;
@@ -19,6 +19,8 @@ export class LoginComponent implements OnInit {
     changePasswordModalRef: BsModalRef;
 
     private dialogSubscription: Subscription;
+    private loginSubscription: Subscription;
+    private loginWithPasswordChangeSubscription: Subscription;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -31,6 +33,17 @@ export class LoginComponent implements OnInit {
     {
         if (this.authenticationService.currentUserValue) {
             authenticationService.logout();
+        }
+    }
+    ngOnDestroy(): void {
+        if (this.dialogSubscription) {
+            this.dialogSubscription.unsubscribe();
+        }
+        if (this.loginSubscription) {
+            this.loginSubscription.unsubscribe();
+        }
+        if (this.loginWithPasswordChangeSubscription) {
+            this.loginWithPasswordChangeSubscription.unsubscribe();
         }
     }
 
@@ -59,7 +72,7 @@ export class LoginComponent implements OnInit {
         const password = this.f.password.value;
 
         this.loading = true;
-        this.authenticationService.login(username, password)
+        this.loginSubscription = this.authenticationService.login(username, password)
             .subscribe(
                 () => {
                     this.toastr.success('Sign-in successful');
@@ -97,7 +110,7 @@ export class LoginComponent implements OnInit {
         };
         const initialState = {
             title: 'Change Password',
-            closeText: 'OK',
+            okText: 'OK',
             message: 'Please change your password to continue.',
             loginMode: true,
             userName: username,
@@ -112,7 +125,7 @@ export class LoginComponent implements OnInit {
               changeInfo.newPassword = changeForm.get('newPassword').value;
               changeInfo.newPasswordCompare = changeForm.get('newPasswordCompare').value;
 
-              this.authenticationService.loginWithPasswordChange(changeInfo)
+              this.loginWithPasswordChangeSubscription = this.authenticationService.loginWithPasswordChange(changeInfo)
                 .subscribe(
                     () => {
                         this.toastr.success('Sign-in with password change successful');
