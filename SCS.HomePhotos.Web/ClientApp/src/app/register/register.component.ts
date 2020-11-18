@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 
 import { AccountService, AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
+import { MustMatch } from '../validators/must-match.validator';
 
 @Component({ templateUrl: 'register.component.html' })
 export class RegisterComponent implements OnInit {
@@ -26,12 +27,15 @@ export class RegisterComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.authenticationService.loadCsrfToken().subscribe();
         this.registerForm = this.formBuilder.group({
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             username: ['', Validators.required],
             password: ['', [Validators.required, Validators.minLength(8)]],
             passwordCompare: ['', [Validators.required, Validators.minLength(8)]]
+        }, {
+            validator: MustMatch('password', 'passwordCompare')
         });
     }
 
@@ -52,7 +56,7 @@ export class RegisterComponent implements OnInit {
             .subscribe(
                 data => {
                     this.toastr.success('Registration successful');
-                    this.router.navigate(['/login']);
+                    this.router.navigate(['/register-success']);
                 },
                 error => {
                     console.error(error);

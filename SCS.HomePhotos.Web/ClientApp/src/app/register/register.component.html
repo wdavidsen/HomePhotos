@@ -35,6 +35,7 @@
         <div *ngIf="submitted && f.passwordCompare.errors" class="invalid-feedback">
             <div *ngIf="f.passwordCompare.errors.required">Confirm confirmation is required</div>
             <div *ngIf="f.passwordCompare.errors.minlength">Confirm confirmation must be at least 8 characters</div>
+            <div *ngIf="f.newPasswordCompare.errors.mustMatch">Confirmation password and new password must match</div>
         </div>
     </div>
     <div class="form-group">

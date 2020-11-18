@@ -14,6 +14,7 @@ import { AuthAdminGuard } from './pipeline/auth-admin.guard';
 import { UnauthorizedComponent } from './errors/unauthorized.component';
 import { AuthUploadGuard } from './pipeline/auth-upload.guard';
 import { NotFoundComponent } from './errors/not-found.component';
+import { RegisterSuccessComponent } from './register/register-success.component';
 
 export const routes: Routes = [
     { path: '', component: PhotosComponent, pathMatch: 'full', canActivate: [AuthGuard] },
@@ -23,6 +24,7 @@ export const routes: Routes = [
     { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard, AuthAdminGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
+    { path: 'register-success', component: RegisterSuccessComponent },
     { path: 'users', component: UsersComponent, canActivate: [AuthGuard, AuthAdminGuard] },
     { path: 'users/:userId', component: UserDetailComponent, canActivate: [AuthGuard, AuthAdminGuard] },
     { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },

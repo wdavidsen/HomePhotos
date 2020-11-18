@@ -45,6 +45,7 @@ import { UnauthorizedComponent } from './errors/unauthorized.component';
 import { NotFoundComponent } from './errors/not-found.component';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { ProgressInterceptor } from './pipeline/progress.interceptor';
+import { RegisterSuccessComponent } from './register/register-success.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { ProgressInterceptor } from './pipeline/progress.interceptor';
     TagsComponent,
     LoginComponent,
     RegisterComponent,
+    RegisterSuccessComponent,
     SettingsComponent,
     UsersComponent,
     UserDetailComponent,
