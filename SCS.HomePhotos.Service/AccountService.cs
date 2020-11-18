@@ -94,7 +94,7 @@ namespace SCS.HomePhotos.Service
 
             var newUser = new User(user);
             newUser.PasswordHash = PasswordHash.CreateHash(password);
-            newUser.Enabled = true;
+            newUser.Enabled = false;
 
             await _userData.InsertAsync(newUser);
             _adminLogService.LogNeutral($"New user registration for {user.UserName} succeeded.", LogCategory.Security);
