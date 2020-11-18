@@ -10,7 +10,7 @@ namespace SCS.HomePhotos.Web.Models
         [Required]
         public string Password { get; set; }
 
-        [Compare(nameof(RegisterModel.Password))]
+        [Compare(nameof(Password))]
         public string PasswordCompare { get; set; }
 
         public string FirstName { get; set; }

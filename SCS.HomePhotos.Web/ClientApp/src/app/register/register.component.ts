@@ -52,16 +52,26 @@ export class RegisterComponent implements OnInit {
 
         this.loading = true;
         this.accountService.register(this.registerForm.value)
-            .pipe(first())
             .subscribe(
-                data => {
+                () => {
                     this.toastr.success('Registration successful');
                     this.router.navigate(['/register-success']);
                 },
-                error => {
-                    console.error(error);
-                    this.toastr.error('Registration failed');
-                    this.loading = false;
+                response => {
+                    if (response.status > 99 && response.status < 600) {
+                        switch (response.error.id) {
+                            case 'UserNameTaken':
+                            case 'PasswordStrength':
+                                this.toastr.warning(response.error.message);
+                                break;
+                            default:
+                                this.toastr.error('Registration failed');
+                                break;
+                        }
+                    }
+                    else {
+                        this.toastr.error('Server unreachable');
+                    }
                 });
     }
 }
