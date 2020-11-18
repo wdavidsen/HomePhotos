@@ -56,24 +56,11 @@ namespace SCS.HomePhotos.Web.Controllers
                 }
                 else
                 {
-                    return Unauthorized();
+                    return BadRequest();
                 }
             }
 
-            var agentId = GetAgentIdentifier();
-            var claims = _securityService.GetUserClaims(model.UserName, RoleType.Reader);
-            var newJwtToken = _securityService.GenerateToken(claims);
-            var newRefreshToken = _securityService.GenerateRefreshToken();
-
-            await _accountService.DeleteAgentRefreshTokens(model.UserName, agentId);
-            await _accountService.SaveRefreshToken(model.UserName, newRefreshToken, agentId,
-                _securityService.ValidIssuer, _securityService.ValidAudience, DateTime.UtcNow.AddDays(_staticConfig.RefreshTokenExpirationDays));
-
-            return Ok(new TokenResultModel
-            {
-                Jwt = newJwtToken,
-                RefreshToken = newRefreshToken
-            });
+            return Ok();
         }
 
         [Authorize]
