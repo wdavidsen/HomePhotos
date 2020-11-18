@@ -31,7 +31,7 @@ export class PhotoTaggerComponent implements OnInit {
 
     saveTags() {
         const updates = this.tagStates
-            .filter(ts => !ts.indeterminate && (ts.checked || ts.tagId > 0) && this.dirtyTags.find(dt => dt === ts.tagName));
+            .filter(ts => !ts.indeterminate && this.dirtyTags.find(dt => dt === ts.tagName));
 
         this.tagService.updatePhotoTags(this.photoIds, updates)
             .subscribe(
