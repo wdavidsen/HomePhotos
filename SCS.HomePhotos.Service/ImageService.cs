@@ -149,7 +149,7 @@ namespace SCS.HomePhotos.Service
             return savePath;
         }
 
-        public void OrientImage(string imageFilePath, ExifIfd0Directory exifData)
+        public void OrientImage(string imageFilePath, ExifSubIfdDirectory exifData)
         {
             if (exifData != null)
             {
@@ -203,7 +203,7 @@ namespace SCS.HomePhotos.Service
         }
 
         public Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string cacheFilePath, string checksum,
-            ImageLayoutInfo imageLayoutInfo, ExifIfd0Directory exifData, params string[] tags)
+            ImageLayoutInfo imageLayoutInfo, ExifSubIfdDirectory exifData, params string[] tags)
         {
             _logger.LogInformation("Saving photo with checksum {Checksum}.", checksum);
 
@@ -239,7 +239,7 @@ namespace SCS.HomePhotos.Service
             return photo;
         }
 
-        public ImageInfo GetImageInfo(ExifIfd0Directory exifData)
+        public ImageInfo GetImageInfo(ExifSubIfdDirectory exifData)
         {
             var imageInfo = new ImageInfo();
 

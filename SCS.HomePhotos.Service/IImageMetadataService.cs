@@ -4,6 +4,6 @@ namespace SCS.HomePhotos.Service
 {
     public interface IImageMetadataService
     {
-        ExifIfd0Directory GetExifData(string imageFilePath);
+        ExifSubIfdDirectory GetExifData(string imageFilePath);
     }
 }
