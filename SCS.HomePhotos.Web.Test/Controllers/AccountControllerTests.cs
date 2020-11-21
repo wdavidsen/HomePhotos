@@ -75,11 +75,11 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _accountService.Verify(m => m.Register(It.IsAny<Model.User>(), registerModel.Password),
                 Times.Once);
             _accountService.Verify(m => m.DeleteAgentRefreshTokens(registerModel.UserName, It.IsAny<string>()),
-               Times.Once);
+               Times.Never);
             _accountService.Verify(m => m.SaveRefreshToken(registerModel.UserName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()),
-                Times.Once);
+                Times.Never);
 
-            Assert.IsType<OkObjectResult>(response);
+            Assert.IsType<OkResult>(response);
         }
 
         [Fact]
@@ -209,9 +209,9 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _accountService.Verify(m => m.SaveRefreshToken(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()),
                 Times.Never);
 
-            Assert.IsType<UnauthorizedObjectResult>(response);
+            Assert.IsType<BadRequestObjectResult>(response);
 
-            var value = ((UnauthorizedObjectResult)response).Value;
+            var value = ((BadRequestObjectResult)response).Value;
 
             Assert.IsType<ProblemModel>(value);
         }

@@ -238,7 +238,7 @@ namespace SCS.HomePhotos.Service.Test
                {
                    Assert.NotNull(u.PasswordHash);
                    Assert.True(u.PasswordHash.Length > 30);
-                   Assert.True(u.Enabled);
+                   Assert.False(u.Enabled);
                    Assert.Null(u.LastLogin);
                    Assert.False(u.MustChangePassword);
                    Assert.Equal(userName, u.UserName);

@@ -129,7 +129,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _accountService.Verify(m => m.SaveRefreshToken(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()),
                 Times.Never);
 
-            Assert.IsType<UnauthorizedObjectResult>(response);
+            Assert.IsType<BadRequestObjectResult>(response);
         }
 
         [Fact]
