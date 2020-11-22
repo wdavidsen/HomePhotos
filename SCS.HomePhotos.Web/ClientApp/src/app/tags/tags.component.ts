@@ -17,6 +17,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class TagsComponent implements OnInit, OnDestroy {
   tagChips: TagChip[] = [];
   organizeMode = false;
+  filterLetter: string = null;
 
   inputModalRef: BsModalRef;
   confirmModalRef:  BsModalRef;
@@ -84,8 +85,12 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.tagChips.forEach(thumb => thumb.selected = false);
   }
 
+  toggleFilter(tagName: string) {
+    this.filterLetter = this.filterLetter === null ? tagName : null;
+  }
+
   matchesFilter(tagName: string): boolean {
-    return true;
+    return this.filterLetter === null || tagName.startsWith(this.filterLetter);
   }
 
   addTag() {
@@ -315,7 +320,14 @@ export class TagsComponent implements OnInit, OnDestroy {
       dividedChips.push(chip);
 
       if (letter !== prevLetter && idexes.indexOf(letter) >= 0) {
-        dividedChips.push({name: letter, id: -1, isDivider: true, count: 0, selected: false});
+        const divider: TagChip = {
+          name: letter,
+          id: -1,
+          isDivider: true,
+          count: 0,
+          selected: false
+        };
+        dividedChips.splice(dividedChips.length - 2, 0, divider);
       }
       prevLetter = letter;
     });
