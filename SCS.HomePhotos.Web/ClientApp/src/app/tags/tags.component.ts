@@ -327,7 +327,7 @@ export class TagsComponent implements OnInit, OnDestroy {
           count: 0,
           selected: false
         };
-        dividedChips.splice(dividedChips.length - 2, 0, divider);
+        dividedChips.splice(dividedChips.length - 1, 0, divider);
       }
       prevLetter = letter;
     });
