@@ -39,13 +39,14 @@ import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.compone
 import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } from './common-dialog';
 import { LocalStorageService } from './services/local-storage.service';
 import { routes } from './app.routes';
-import { TokenInterceptor } from './pipeline';
-import { CsrfHeaderInterceptor } from './pipeline/csrf-header.interceptor';
+import { TokenInterceptor } from './framework';
+import { CsrfHeaderInterceptor } from './framework/csrf-header.interceptor';
 import { UnauthorizedComponent } from './errors/unauthorized.component';
 import { NotFoundComponent } from './errors/not-found.component';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-import { ProgressInterceptor } from './pipeline/progress.interceptor';
+import { ProgressInterceptor } from './framework/progress.interceptor';
 import { RegisterSuccessComponent } from './register/register-success.component';
+import { SecurePipe } from './framework/secure.pipe';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import { RegisterSuccessComponent } from './register/register-success.component'
     LogsComponent,
     UploadComponent,
     UnauthorizedComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    SecurePipe
   ],
   entryComponents: [
     ModalContentComponent,

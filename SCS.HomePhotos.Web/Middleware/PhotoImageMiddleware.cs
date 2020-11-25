@@ -27,6 +27,12 @@ namespace SCS.HomePhotos.Web.Middleware
             if (request.Method.Equals("GET", StringComparison.InvariantCultureIgnoreCase)
                     && httpContext.Request.Path.Value.StartsWith(Constants.CacheRoute, StringComparison.InvariantCultureIgnoreCase))
             {
+                if (!httpContext.User.Identity.IsAuthenticated)
+                {
+                    httpContext.Response.StatusCode = 401;
+                    return;
+                }
+
                 var folderAndFile = httpContext.Request.Path.Value.Substring(Constants.CacheRoute.Length).Trim('/').Split('/');
                 var size = httpContext.Request.Query.ContainsKey("type") ? httpContext.Request.Query["type"].ToString().ToLower() : "thumb";
 

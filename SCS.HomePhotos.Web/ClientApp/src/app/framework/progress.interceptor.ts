@@ -27,9 +27,10 @@ export class ProgressInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    this.requests.push(req);
-
-    this.spinner.show();
+    if (req.url.indexOf('/photo-image') === -1 ) {
+      this.requests.push(req);
+      this.spinner.show();
+    }
 
     return Observable.create(observer => {
       const subscription = next.handle(req)

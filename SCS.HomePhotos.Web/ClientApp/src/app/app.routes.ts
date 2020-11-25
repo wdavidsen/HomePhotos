@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AccountComponent } from './account/account.component';
-import { AuthGuard } from './pipeline';
+import { AuthGuard } from './framework';
 import { LoginComponent } from './login/login.component';
 import { LogsComponent } from './logs/logs.component';
 import { PhotosComponent } from './photos/photos.component';
@@ -10,9 +10,9 @@ import { TagsComponent } from './tags/tags.component';
 import { UploadComponent } from './upload/upload.component';
 import { UserDetailComponent } from './users/user-detail.component';
 import { UsersComponent } from './users/users.component';
-import { AuthAdminGuard } from './pipeline/auth-admin.guard';
+import { AuthAdminGuard } from './framework/auth-admin.guard';
 import { UnauthorizedComponent } from './errors/unauthorized.component';
-import { AuthUploadGuard } from './pipeline/auth-upload.guard';
+import { AuthUploadGuard } from './framework/auth-upload.guard';
 import { NotFoundComponent } from './errors/not-found.component';
 import { RegisterSuccessComponent } from './register/register-success.component';
 
