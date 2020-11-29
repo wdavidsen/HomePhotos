@@ -1,4 +1,3 @@
-// loader-interceptor.service.ts
 import { Injectable } from '@angular/core';
 import { HttpResponse, HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -26,7 +25,6 @@ export class ProgressInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
     if (req.url.indexOf('/photo-image') === -1 ) {
       this.requests.push(req);
       this.spinner.show();
@@ -49,7 +47,7 @@ export class ProgressInterceptor implements HttpInterceptor {
             this.removeRequest(req);
             observer.complete();
           });
-      // remove request from queue when cancelled
+
       return () => {
         this.removeRequest(req);
         subscription.unsubscribe();
