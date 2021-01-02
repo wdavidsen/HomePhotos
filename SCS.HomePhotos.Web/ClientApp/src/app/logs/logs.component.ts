@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LogService } from '../services/log.service';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination/pagination.component';
 import { tap } from 'rxjs/operators';
+import { AuthService } from '../services';
 
 @Component({
   selector: 'app-logs',
@@ -21,7 +22,9 @@ export class LogsComponent implements OnInit {
 
   constructor(
     private logService: LogService,
-    private toastr: ToastrService) {
+    private toastr: ToastrService,
+    private authenticationService: AuthService) {
+      this.authenticationService.loadCsrfToken().subscribe();
     }
 
   filtersChanged(event: any): void {

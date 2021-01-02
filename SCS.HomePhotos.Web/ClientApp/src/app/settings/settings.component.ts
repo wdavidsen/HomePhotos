@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent, InputDialogComponent } from '../common-dialog';
 import * as moment from 'moment';
+import { AuthService } from '../services';
 
 @Component({
   selector: 'app-settings',
@@ -29,6 +30,7 @@ export class SettingsComponent implements OnInit {
   confirmModalRef: BsModalRef;
 
   constructor(
+    private authenticationService: AuthService,
     private formBuilder: FormBuilder,
     private settingsService: SettingsService,
     private toastr: ToastrService,
@@ -36,6 +38,7 @@ export class SettingsComponent implements OnInit {
     }
 
   ngOnInit() {
+    this.authenticationService.loadCsrfToken().subscribe();
     this.setupForm(new Settings());
 
     this.settingsService.getSettings()

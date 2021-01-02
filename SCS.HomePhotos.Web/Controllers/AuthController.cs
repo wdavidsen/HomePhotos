@@ -9,6 +9,7 @@ using SCS.HomePhotos.Web.Models;
 using SCS.HomePhotos.Web.Security;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -122,7 +123,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         [Authorize]
         [HttpPost("logout")]
-        [ValidateAntiForgeryToken]
+        [SuppressMessage("Security", "SCS0016:Controller method is vulnerable to CSRF", Justification = "Anti-forgery detection deemed unecessary for logging out.")]
         public async Task<IActionResult> Logout()
         {
             var userName = User?.Identity?.Name;

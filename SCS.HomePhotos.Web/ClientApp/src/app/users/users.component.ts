@@ -22,6 +22,7 @@ export class UsersComponent implements OnInit {
     private userService: UserService,
     private toastr: ToastrService) {
 
+      this.authenticationService.loadCsrfToken().subscribe();
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
       });

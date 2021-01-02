@@ -31,6 +31,7 @@ export class AccountComponent implements OnInit {
     this.accountInfo = new AccountInfo();
     this.setupForm(this.accountInfo);
 
+    this.authenticationService.loadCsrfToken().subscribe();
     this.authenticationService.getCurrentUser()
       .pipe(map(u => AccountInfo.FromUser(u)))
       .subscribe(

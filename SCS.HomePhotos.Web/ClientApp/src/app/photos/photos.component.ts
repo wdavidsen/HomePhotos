@@ -49,6 +49,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
     private modalService: BsModalService,
     private scrollService: ScrollService,
     private authenticationService: AuthService) {
+      this.authenticationService.loadCsrfToken().subscribe();
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
         this.userSettings = this.userSettingsService.userSettings;
