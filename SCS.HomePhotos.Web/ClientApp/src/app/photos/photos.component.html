@@ -1,8 +1,8 @@
 <section class="mainbar">
 
     <div class="row photo-list" id="photoList">
-        <div *ngFor="let t of thumbnails" [ngClass]="{selected: t.selected}" (click)="select(t, $event)">
-            <img [src]="t.thumbUrl | secure | async" [ngStyle]="{ height: t.thumbHeight + 'px', width : t.thumbWidth + 'px'}" />
+        <div *ngFor="let t of thumbnails" [ngClass]="{selected: t.selected}" (click)="select(t, $event)"
+            [ngStyle]="{ background : 'url(' + t.thumbUrl + ')', height: t.thumbHeight + 'px', width : t.thumbWidth + 'px'}">
         </div>
     </div>
 </section>

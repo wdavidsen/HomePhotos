@@ -27,12 +27,6 @@ namespace SCS.HomePhotos.Web.Middleware
             if (request.Method.Equals("GET", StringComparison.InvariantCultureIgnoreCase)
                     && httpContext.Request.Path.Value.StartsWith(Constants.CacheRoute, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (!httpContext.User.Identity.IsAuthenticated)
-                {
-                    httpContext.Response.StatusCode = 401;
-                    return;
-                }
-
                 var folderAndFile = httpContext.Request.Path.Value.Substring(Constants.CacheRoute.Length).Trim('/').Split('/');
                 var size = httpContext.Request.Query.ContainsKey("type") ? httpContext.Request.Query["type"].ToString().ToLower() : "thumb";
 
@@ -54,6 +48,7 @@ namespace SCS.HomePhotos.Web.Middleware
                 }
 
                 httpContext.Response.Headers.Add("Cache-Control", "Private");
+                // httpContext.Response.Headers.Add("Expires", "Sat, 01 Jan 2025 00:00:00 GMT");
 
                 var cachePath = Path.Combine(dynamicConfig.CacheFolder.TrimEnd('/', '\\'), folderAndFile[0], size, folderAndFile[1]);
                 await httpContext.Response.SendFileAsync(cachePath);
