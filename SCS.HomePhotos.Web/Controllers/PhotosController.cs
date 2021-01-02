@@ -14,11 +14,13 @@ namespace SCS.HomePhotos.Web.Controllers
     {
         private readonly ILogger<PhotosController> _logger;
         private readonly IPhotoService _photoSevice;
+        private readonly IStaticConfig _staticConfig;
 
-        public PhotosController(ILogger<PhotosController> logger, IPhotoService photoSevice)
+        public PhotosController(ILogger<PhotosController> logger, IPhotoService photoSevice, IStaticConfig staticConfig)
         {
             _logger = logger;
             _photoSevice = photoSevice;
+            _staticConfig = staticConfig;
         }
 
         [HttpGet("latest", Name = "GetLatestPhotos")]
@@ -30,6 +32,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             foreach (var photo in photos)
             {
+                photo.FileName = photo.FileName.Encrypt(_staticConfig.ImagePasscode);
                 dtos.Add(new Dto.Photo(photo));
             }
 
@@ -50,6 +53,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             foreach (var photo in photos)
             {
+                photo.FileName = photo.FileName.Encrypt(_staticConfig.ImagePasscode);
                 dtos.Add(new Dto.Photo(photo));
             }
 
@@ -70,6 +74,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             foreach (var photo in photos)
             {
+                photo.FileName = photo.FileName.Encrypt(_staticConfig.ImagePasscode);
                 dtos.Add(new Dto.Photo(photo));
             }
 

@@ -19,8 +19,9 @@ namespace SCS.HomePhotos.Web.Middleware
         /// </summary>
         /// <param name="httpContext">The request.</param>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
+        /// <param name="staticConfig">The static configuration.</param>
         /// <returns>A void task.</returns>
-        public async Task InvokeAsync(HttpContext httpContext, IDynamicConfig dynamicConfig)
+        public async Task InvokeAsync(HttpContext httpContext, IDynamicConfig dynamicConfig, IStaticConfig staticConfig)
         {
             var request = httpContext.Request;
 
@@ -50,7 +51,10 @@ namespace SCS.HomePhotos.Web.Middleware
                 httpContext.Response.Headers.Add("Cache-Control", "Private");
                 // httpContext.Response.Headers.Add("Expires", "Sat, 01 Jan 2025 00:00:00 GMT");
 
-                var cachePath = Path.Combine(dynamicConfig.CacheFolder.TrimEnd('/', '\\'), folderAndFile[0], size, folderAndFile[1]);
+                var folder = folderAndFile[0];
+                var file = folderAndFile[1].Decrypt(staticConfig.ImagePasscode);
+
+                var cachePath = Path.Combine(dynamicConfig.CacheFolder.TrimEnd('/', '\\'), folder, size, file);
                 await httpContext.Response.SendFileAsync(cachePath);
             }
             else

@@ -21,5 +21,7 @@
         int LogRetentionDays { get; set; }
 
         PasswordRequirements PasswordRequirements { get; set; }
+
+        string ImagePasscode { get; set; }
     }
 }

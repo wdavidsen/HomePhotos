@@ -24,6 +24,8 @@ namespace SCS.HomePhotos
 
         public PasswordRequirements PasswordRequirements { get; set; }
 
+        public string ImagePasscode { get; set; }
+
         public static StaticConfig Build(IConfiguration config)
         {
             var instance = new StaticConfig();

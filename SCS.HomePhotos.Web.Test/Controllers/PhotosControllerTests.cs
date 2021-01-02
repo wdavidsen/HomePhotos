@@ -18,6 +18,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         private readonly PhotosController _photosController;
         private readonly Mock<ILogger<PhotosController>> _logger;
         private readonly Mock<IPhotoService> _photosService;
+        private readonly Mock<IStaticConfig> _staticConfig;
 
         public PhotosControllerTests()
         {
@@ -27,8 +28,11 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 
             _logger = new Mock<ILogger<PhotosController>>();
             _photosService = new Mock<IPhotoService>();
+            _staticConfig = new Mock<IStaticConfig>();
 
-            _photosController = new PhotosController(_logger.Object, _photosService.Object);
+            _staticConfig.SetupGet(p => p.ImagePasscode).Returns("somepasscode");
+
+            _photosController = new PhotosController(_logger.Object, _photosService.Object, _staticConfig.Object);
         }
 
         [Fact]
