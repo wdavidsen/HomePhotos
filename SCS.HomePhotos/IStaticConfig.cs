@@ -23,5 +23,7 @@
         PasswordRequirements PasswordRequirements { get; set; }
 
         string ImagePasscode { get; set; }
+
+        int PhotoExpirationDays { get; set; }
     }
 }

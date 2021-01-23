@@ -26,6 +26,8 @@ namespace SCS.HomePhotos
 
         public string ImagePasscode { get; set; }
 
+        public int PhotoExpirationDays { get; set; }
+
         public static StaticConfig Build(IConfiguration config)
         {
             var instance = new StaticConfig();

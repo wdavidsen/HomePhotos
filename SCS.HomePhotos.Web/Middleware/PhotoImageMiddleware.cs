@@ -28,7 +28,7 @@ namespace SCS.HomePhotos.Web.Middleware
             if (request.Method.Equals("GET", StringComparison.InvariantCultureIgnoreCase)
                     && httpContext.Request.Path.Value.StartsWith(Constants.CacheRoute, StringComparison.InvariantCultureIgnoreCase))
             {
-                var folderAndFile = httpContext.Request.Path.Value.Substring(Constants.CacheRoute.Length).Trim('/').Split('/');
+                var folderAndFileInfo = httpContext.Request.Path.Value.Substring(Constants.CacheRoute.Length).Trim('/').Split('/');
                 var size = httpContext.Request.Query.ContainsKey("type") ? httpContext.Request.Query["type"].ToString().ToLower() : "thumb";
 
                 switch (size)
@@ -49,10 +49,19 @@ namespace SCS.HomePhotos.Web.Middleware
                 }
 
                 httpContext.Response.Headers.Add("Cache-Control", "Private");
-                // httpContext.Response.Headers.Add("Expires", "Sat, 01 Jan 2025 00:00:00 GMT");
+                httpContext.Response.Headers.Add("Expires", DateTime.UtcNow.AddDays(staticConfig.PhotoExpirationDays).ToString("u"));
 
-                var folder = folderAndFile[0];
-                var file = folderAndFile[1].Decrypt(staticConfig.ImagePasscode);
+                var folder = folderAndFileInfo[0];
+                var fileInfo = folderAndFileInfo[1].Decrypt(staticConfig.ImagePasscode);
+                var fileInfoParts = fileInfo.Split('|');
+                var file = fileInfoParts[0];
+                var expiration = DateTime.Parse(fileInfoParts[1]);
+
+                if (expiration < DateTime.UtcNow.ToStartOfDay())
+                {
+                    httpContext.Response.StatusCode = 400;
+                    return;
+                }
 
                 var cachePath = Path.Combine(dynamicConfig.CacheFolder.TrimEnd('/', '\\'), folder, size, file);
                 await httpContext.Response.SendFileAsync(cachePath);

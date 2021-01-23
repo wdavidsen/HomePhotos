@@ -48,10 +48,10 @@ namespace SCS.HomePhotos.Web.Middleware
             catch (Exception ex)
             {
                 var eventProperties = new StringBuilder(512);
-                eventProperties.Append($"RequestPath={httpContext.Request.Path}");
-                eventProperties.Append($"RequestMethod={httpContext.Request.Method}");
-                eventProperties.Append($"UserName={httpContext?.User.Identity.Name}");
-                eventProperties.Append($"IsAuthenticated={httpContext?.User.Identity.IsAuthenticated}");
+                eventProperties.Append($"; RequestPath={httpContext.Request.Path}");
+                eventProperties.Append($"; RequestMethod={httpContext.Request.Method}");
+                eventProperties.Append($"; UserName={httpContext?.User.Identity.Name}");
+                eventProperties.Append($"; IsAuthenticated={httpContext?.User.Identity.IsAuthenticated}");
 
                 var logger = logFactory.CreateLogger<ExceptionMiddleware>();
                 var errorCode = DateTime.Now.Ticks.ToString("x", CultureInfo.CurrentCulture);

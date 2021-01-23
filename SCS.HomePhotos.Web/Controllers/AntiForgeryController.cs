@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace SCS.HomePhotos.Web.Controllers
     // from: https://www.blinkingcaret.com/2018/11/29/asp-net-core-web-api-antiforgery/
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AntiForgeryController : Controller
     {
         private IAntiforgery _antiForgery;

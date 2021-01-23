@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -32,7 +33,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             foreach (var photo in photos)
             {
-                photo.FileName = photo.FileName.Encrypt(_staticConfig.ImagePasscode);
+                photo.FileName = GetEncryptedFileName(photo.FileName);
                 dtos.Add(new Dto.Photo(photo));
             }
 
@@ -53,7 +54,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             foreach (var photo in photos)
             {
-                photo.FileName = photo.FileName.Encrypt(_staticConfig.ImagePasscode);
+                photo.FileName = GetEncryptedFileName(photo.FileName);
                 dtos.Add(new Dto.Photo(photo));
             }
 
@@ -73,12 +74,18 @@ namespace SCS.HomePhotos.Web.Controllers
             var dtos = new List<Dto.Photo>();
 
             foreach (var photo in photos)
-            {
-                photo.FileName = photo.FileName.Encrypt(_staticConfig.ImagePasscode);
+            {             
+                photo.FileName = GetEncryptedFileName(photo.FileName);
                 dtos.Add(new Dto.Photo(photo));
             }
 
             return Ok(dtos);
+        }
+
+        private string GetEncryptedFileName(string fileName)
+        {
+            var expiration = DateTime.UtcNow.ToStartOfDay().AddDays(_staticConfig.PhotoExpirationDays);
+            return $"{fileName}|{expiration}".Encrypt(_staticConfig.ImagePasscode);
         }
     }
 }
