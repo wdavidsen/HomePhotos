@@ -42,6 +42,14 @@
     </div>
   </div>
   <div class="form-group">
+    <label for="emailAddressInput">Email</label>
+    <input type="text" formControlName="emailAddress" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.emailAddress.errors }" id="emailAddressInput" />
+    <div *ngIf="submitted && f.emailAddress.errors" class="invalid-feedback">
+        <div *ngIf="f.emailAddress.errors.required">Email is required</div>
+        <div *ngIf="f.emailAddress.errors.email">Invalid email address</div>
+    </div>
+</div>   
+  <div class="form-group">
     <label for="roleSelect">Role</label>
     <select class="form-control" formControlName="role" id="roleSelect">
       <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>

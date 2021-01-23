@@ -17,13 +17,16 @@ namespace SCS.HomePhotos.Web.Models
 
         public string LastName { get; set; }
 
+        public string EmailAddress { get; set; }
+
         public Model.User ToUser()
         {
             return new Model.User
             {
                 UserName = UserName,
                 FirstName = FirstName,
-                LastName = LastName
+                LastName = LastName,
+                EmailAddress = EmailAddress
             };
         }
     }

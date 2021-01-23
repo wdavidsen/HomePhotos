@@ -13,6 +13,8 @@ namespace SCS.HomePhotos.Web.Dto
             Username = user.UserName;
             FirstName = user.FirstName;
             LastName = user.LastName;
+            EmailAddress = user.EmailAddress;
+            AvatarImage = user.AvatarImage;
             Enabled = user.Enabled;            
             Role = user.Role;
             LastLogin = user.LastLogin;
@@ -30,6 +32,10 @@ namespace SCS.HomePhotos.Web.Dto
 
         [Required]
         public string LastName { get; set; }
+
+        public string EmailAddress { get; set; }
+
+        public string AvatarImage { get; set; }
 
         [Required]
         public bool Enabled { get; set; }
@@ -52,6 +58,8 @@ namespace SCS.HomePhotos.Web.Dto
                 UserName = Username,
                 FirstName = FirstName,
                 LastName = LastName,
+                EmailAddress = EmailAddress,
+                AvatarImage = AvatarImage,
                 Enabled = Enabled,
                 Role = Role,
                 LastLogin = LastLogin,

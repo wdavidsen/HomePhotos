@@ -229,6 +229,7 @@ namespace SCS.HomePhotos.Service.Test
             var userName = "jdoe";
             var firstName = "John";
             var lastName = "Doe";
+            var emailAddress = "jdoe@gmail.com";
 
             var user = default(User);
 
@@ -244,13 +245,15 @@ namespace SCS.HomePhotos.Service.Test
                    Assert.Equal(userName, u.UserName);
                    Assert.Equal(firstName, u.FirstName);
                    Assert.Equal(lastName, u.LastName);
+                   Assert.Equal(emailAddress, u.EmailAddress);
                });
 
             var userToCreate = new User 
             { 
                 UserName = userName,
                 FirstName = firstName,
-                LastName = lastName
+                LastName = lastName,
+                EmailAddress = emailAddress
             };
             var result = await _accountService.Register(userToCreate, password);
 

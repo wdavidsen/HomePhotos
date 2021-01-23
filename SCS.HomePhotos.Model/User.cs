@@ -25,6 +25,8 @@ namespace SCS.HomePhotos.Model
             PasswordHash = user.PasswordHash;
             FirstName = user.FirstName;
             LastName = user.LastName;
+            EmailAddress = user.EmailAddress;
+            AvatarImage = user.AvatarImage;
             Enabled = user.Enabled;
             Role = user.Role;
             LastLogin = user.LastLogin;
@@ -42,6 +44,10 @@ namespace SCS.HomePhotos.Model
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
+        public string EmailAddress { get; set; }
+
+        public string AvatarImage { get; set; }
 
         public bool Enabled { get; set; }
 

@@ -184,17 +184,17 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task ChangePassword()
         {
-            var model = _fixture.Create<ChangePasswordModel>();
+            var model = _fixture.Create<ResetPasswordModel>();
             model.NewPasswordCompare = model.NewPassword;
 
             var result = new ChangePasswordResult(new AuthResult());
 
-            _accountService.Setup(m => m.ChangePassword(model.UserName, model.CurrentPassword, model.NewPassword))
+            _accountService.Setup(m => m.ResetPassword(model.UserName, model.NewPassword))
                 .ReturnsAsync(result);
 
-            var response = await _usersController.ChangePassword(model);
+            var response = await _usersController.ResetPassword(model);
 
-            _accountService.Verify(m => m.ChangePassword(model.UserName, model.CurrentPassword, model.NewPassword),
+            _accountService.Verify(m => m.ResetPassword(model.UserName, model.NewPassword),
                 Times.Once);
 
             Assert.IsType<OkObjectResult>(response);

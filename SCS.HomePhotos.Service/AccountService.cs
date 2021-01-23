@@ -137,6 +137,26 @@ namespace SCS.HomePhotos.Service
             };
         }
 
+        public async Task<ChangePasswordResult> ResetPassword(string userName, string newPassword)
+        {
+            var user = await GetUser(userName, false);            
+            var passwordCheckHash = PasswordHash.CreateHashSameSalt(user.PasswordHash, newPassword);
+
+            user.PasswordHash = PasswordHash.CreateHash(newPassword);
+            user.PasswordHistory += $"\n{passwordCheckHash}";
+            user.LastLogin = DateTime.Now;
+            user.FailedLoginCount = 0;
+            user.MustChangePassword = false;
+
+            await _userData.UpdateAsync(user);
+            _adminLogService.LogNeutral($"Password reset for {user.UserName} succeeded.", LogCategory.Security);
+
+            return new ChangePasswordResult
+            {
+                User = user
+            };
+        }
+
         public async Task<List<UserToken>> GetRefreshTokens(string userName, string issuer, string audience, string agentIdentifier)
         {
             var tokenList = new List<UserToken>();
@@ -236,7 +256,8 @@ namespace SCS.HomePhotos.Service
             }
 
             exitingUser.FirstName = user.FirstName;
-            exitingUser.LastName = user.LastName;                        
+            exitingUser.LastName = user.LastName;
+            exitingUser.EmailAddress = user.EmailAddress;
 
             await _userData.UpdateAsync(exitingUser);
             _adminLogService.LogNeutral($"User account update for {user.UserName} succeeded.", LogCategory.Security);
@@ -261,6 +282,7 @@ namespace SCS.HomePhotos.Service
 
                 exitingUser.FirstName = user.FirstName;
                 exitingUser.LastName = user.LastName;
+                exitingUser.EmailAddress = user.EmailAddress;
                 exitingUser.Enabled = user.Enabled;
                 exitingUser.Role = user.Role;
                 exitingUser.MustChangePassword = user.MustChangePassword;

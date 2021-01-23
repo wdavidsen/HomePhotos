@@ -86,9 +86,9 @@ namespace SCS.HomePhotos.Web.Controllers
 
         [HttpPost("{userId}/changePassword", Name = "ChangePassword")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordModel changePasswordModel)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel changePasswordModel)
         {
-            var result = await _accountService.ChangePassword(changePasswordModel.UserName, changePasswordModel.CurrentPassword, changePasswordModel.NewPassword);
+            var result = await _accountService.ResetPassword(changePasswordModel.UserName, changePasswordModel.NewPassword);
 
             return Ok(result);
         }

@@ -12,7 +12,9 @@ namespace SCS.HomePhotos.Web.Dto
             UserId = user.UserId;
             Username = user.UserName;
             FirstName = user.FirstName;
-            LastName = user.LastName;            
+            LastName = user.LastName;
+            EmailAddress = user.EmailAddress;
+            AvatarImage = user.AvatarImage;
             Admin = user.Role == RoleType.Admin;
             LastLogin = user.LastLogin;
         }
@@ -28,6 +30,10 @@ namespace SCS.HomePhotos.Web.Dto
         [Required]
         public string LastName { get; set; }
 
+        public string EmailAddress { get; set; }
+
+        public string AvatarImage { get; set; }
+
         [Required]
         public bool Admin { get; set; }
 
@@ -40,7 +46,9 @@ namespace SCS.HomePhotos.Web.Dto
                 UserId = UserId,
                 UserName = Username,
                 FirstName = FirstName,
-                LastName = LastName,                
+                LastName = LastName,       
+                EmailAddress = EmailAddress,
+                AvatarImage = AvatarImage,
                 Role = Admin ? RoleType.Admin : RoleType.Reader,
                 LastLogin = LastLogin                
             };

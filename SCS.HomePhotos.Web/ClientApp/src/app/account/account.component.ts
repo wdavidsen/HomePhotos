@@ -97,6 +97,7 @@ export class AccountComponent implements OnInit {
         username: [data ? data.username : '', Validators.required],
         firstName: [data ? data.firstName : '', Validators.required],
         lastName: [data ? data.lastName : '', Validators.required],
+        emailAddress: [data ? data.emailAddress : '', Validators.email],
       });
   }
 
@@ -106,6 +107,7 @@ export class AccountComponent implements OnInit {
     accountInfo.username = this.f.username.value;
     accountInfo.firstName = this.f.firstName.value;
     accountInfo.lastName = this.f.lastName.value;
+    accountInfo.emailAddress = this.f.emailAddress.value;
 
     return accountInfo;
   }

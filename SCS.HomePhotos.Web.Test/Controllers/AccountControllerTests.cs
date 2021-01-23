@@ -55,7 +55,8 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 FirstName = "Bill",
                 LastName = "Davis",
                 Password = "654321",
-                PasswordCompare = "654321"
+                PasswordCompare = "654321",
+                EmailAddress = "wdavidsen@gmail.com"
             };
 
             _accountService.Setup(m => m.Register(It.IsAny<Model.User>(), registerModel.Password))
@@ -65,6 +66,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                     Assert.Equal(registerModel.UserName, model.UserName);
                     Assert.Equal(registerModel.FirstName, model.FirstName);
                     Assert.Equal(registerModel.LastName, model.LastName);
+                    Assert.Equal(registerModel.EmailAddress, model.EmailAddress);
                     Assert.Equal(registerModel.Password, password);
                     Assert.Equal(registerModel.PasswordCompare, password);
                 });

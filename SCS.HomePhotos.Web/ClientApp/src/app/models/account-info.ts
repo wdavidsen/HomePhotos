@@ -7,6 +7,7 @@ export class AccountInfo {
     lastName: string;
     lastLogin: Date;
     role: string;
+    emailAddress: string;
 
     static FromUser(user: User): AccountInfo {
         const a = new AccountInfo();
@@ -15,6 +16,7 @@ export class AccountInfo {
         a.username = user != null ? user.username : '';
         a.firstName = user != null ? user.firstName : '';
         a.lastName = user != null ? user.lastName : '';
+        a.emailAddress = user != null ? user.emailAddress : '';
         a.lastLogin = user != null ? user.lastLogin : new Date();
         a.role = user != null ? user.role : '';
 

@@ -126,6 +126,7 @@ export class UserDetailComponent implements OnInit {
       passwordCompare: [data.passwordCompare, Validators.required],
       firstName: [data.firstName, Validators.required],
       lastName: [data.lastName, Validators.required],
+      emailAddress: [data.emailAddress, Validators.email],
       role: [data.role, Validators.required],
       lastLogin: [data.lastLogin],
       failedLoginCount: [data.failedLoginCount],
@@ -148,6 +149,7 @@ export class UserDetailComponent implements OnInit {
     user.passwordCompare = this.f.passwordCompare.value;
     user.firstName = this.f.firstName.value;
     user.lastName = this.f.lastName.value;
+    user.emailAddress = this.f.emailAddress.value;
     user.mustChangePassword = this.f.mustChangePassword.value;
     user.enabled = this.f.enabled.value;
     user.role = this.f.role.value;

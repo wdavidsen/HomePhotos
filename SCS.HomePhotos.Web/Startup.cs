@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Web.Hubs;
 using System;
+using Microsoft.AspNetCore.Http;
 // using SCS.HomePhotos.Web.Filters;
 
 namespace SCS.HomePhotos.Web
@@ -49,7 +50,11 @@ namespace SCS.HomePhotos.Web
                     options.SerializerSettings.TypeNameHandling = TypeNameHandling.None;
                 });
 
-            services.AddAntiforgery(opts => opts.HeaderName = "X-XSRF-Token");            
+            services.AddAntiforgery(options =>
+            {
+                options.HeaderName = "X-XSRF-Token";
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            });
             
             services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
