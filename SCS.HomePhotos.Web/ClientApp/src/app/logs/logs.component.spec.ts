@@ -4,8 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrService } from 'ngx-toastr';
-import { of, Subject } from 'rxjs';
+import { of } from 'rxjs';
 import { DataList, LogEntry, PageInfo } from '../models';
+import { AuthService } from '../services';
 import { LogService } from '../services/log.service';
 import { LogsComponent } from './logs.component';
 
@@ -14,11 +15,12 @@ describe('LogsComponent', () => {
     let fixture: ComponentFixture<LogsComponent>;
     let router;
 
-    let mockToastr, mockLogService;
+    let mockToastr, mockLogService, mockAuthenticationService;
 
     beforeEach(async(() => {
         mockToastr = jasmine.createSpyObj(['error']);
         mockLogService = jasmine.createSpyObj(['getLatest']);
+        mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'loadCsrfToken']);
 
         const logEntries: LogEntry[] = [
             { timestamp: new Date(), message: 'message 1', category: 'General', serverity: 'Neutral' },
@@ -29,14 +31,17 @@ describe('LogsComponent', () => {
         const dataList = new DataList(logEntries, pageInfo);
 
         mockLogService.getLatest.and.returnValue(of(dataList));
+        mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
 
         TestBed.configureTestingModule({
             declarations: [LogsComponent],
             imports: [FormsModule, RouterTestingModule],
             providers: [
               { provide: LogService, useValue: mockLogService },
-              { provide: ToastrService, useValue: mockToastr }],
-              schemas: [NO_ERRORS_SCHEMA]
+              { provide: ToastrService, useValue: mockToastr },
+              { provide: AuthService, useValue: mockAuthenticationService }
+            ],
+            schemas: [NO_ERRORS_SCHEMA]
           })
           .compileComponents();
     }));

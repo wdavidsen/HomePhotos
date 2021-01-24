@@ -33,11 +33,12 @@ describe('UsersComponent', () => {
     mockUsers = [{...users[0]}, {...users[1]}, {...users[2]}];
 
     mockToastr = jasmine.createSpyObj(['success', 'error']);
-    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'getCurrentUser']);
+    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'getCurrentUser', 'loadCsrfToken']);
     mockUserService = jasmine.createSpyObj(['getAll', 'delete', 'save']);
     mockRouter = new RouterStub();
     mockRouter.navigate = jasmine.createSpy();
 
+    mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
     mockAuthenticationService.getCurrentUser.and.returnValue(of(mockUsers[0]));
     mockUserService.getAll.and.returnValue(of(mockUsers));
 

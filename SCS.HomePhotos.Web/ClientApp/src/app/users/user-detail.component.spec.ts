@@ -16,7 +16,7 @@ describe('UserDetailComponent', () => {
   let fixture: ComponentFixture<UserDetailComponent>;
   let mockToastr, mockAuthenticationService, mockUserService, mockModalService, mockActivatedRoute, mockRouter;
 
-  const user: User = { userId: 1, username: 'wdavidsen', password: 'password1', passwordCompare: 'password1', firstName: 'Bill', lastName: 'Davidsen',
+  const user: User = { userId: 1, username: 'wdavidsen', password: 'password1', passwordCompare: 'password1', firstName: 'Bill', lastName: 'Davidsen', emailAddress: 'wdavidsen@gmail.com',
     role: 'Admin', lastLogin: new Date(), failedLoginCount: 0, mustChangePassword: false, enabled: true, jwt: null, refreshToken: null};
 
   const setupEditForm = (data) => {
@@ -27,6 +27,7 @@ describe('UserDetailComponent', () => {
         passwordCompare: [data.passwordCompare, Validators.required],
         firstName: [data.firstName, Validators.required],
         lastName: [data.lastName, Validators.required],
+        emailAddress: [data.emailAddress, Validators.email],
         role: [data.role, Validators.required],
         lastLogin: [data.lastLogin],
         failedLoginCount: [data.failedLoginCount],
@@ -46,11 +47,12 @@ describe('UserDetailComponent', () => {
     mockActivatedRoute = new ActivatedRouteStub({ userId: null });
 
     mockToastr = jasmine.createSpyObj(['success', 'error']);
-    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'getCurrentUser']);
+    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'getCurrentUser', 'loadCsrfToken']);
     mockUserService = jasmine.createSpyObj(['get', 'delete', 'save']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
     mockRouter = new RouterStub();
 
+    mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
     mockAuthenticationService.getCurrentUser.and.returnValue(of({username: 'jdoe', role: 'Admin'}));
     mockUserService.get.and.returnValue(of(user));
 
@@ -194,7 +196,7 @@ describe('UserDetailComponent', () => {
   });
 
   it('should render form for new user', () => {
-    expect(fixture.nativeElement.querySelectorAll('.form-group input[type=text]').length).toBe(3);
+    expect(fixture.nativeElement.querySelectorAll('.form-group input[type=text]').length).toBe(4);
     expect(fixture.nativeElement.querySelectorAll('.form-group input[type=password]').length).toBe(2);
     expect(fixture.nativeElement.querySelectorAll('.form-group select').length).toBe(1);
   });
@@ -205,7 +207,7 @@ describe('UserDetailComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelectorAll('.form-group input[type=text]').length).toBe(3);
+    expect(fixture.nativeElement.querySelectorAll('.form-group input[type=text]').length).toBe(4);
     expect(fixture.nativeElement.querySelectorAll('.form-group input[type=password]').length).toBe(0);
     expect(fixture.nativeElement.querySelectorAll('.form-group select').length).toBe(1);
   });

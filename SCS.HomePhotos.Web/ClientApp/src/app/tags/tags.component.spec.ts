@@ -5,14 +5,16 @@ import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { Tag, TagChip } from '../models';
-import { TagService } from '../services';
+import { AuthService, TagService } from '../services';
 
 import { TagsComponent } from './tags.component';
 
 describe('TagsComponent', () => {
   let component: TagsComponent;
   let fixture: ComponentFixture<TagsComponent>;
-  let mockToastr, mockTagService;
+  let mockToastr, mockTagService, mockAuthenticationService;
+
+  const currentUser = {userId: 1, username: 'wdavidsen', firstName: 'Bill', lastName: 'Davidsen', emailAddress: 'wdavidsen@gmail.com'};
 
   const tags: Tag[] = [
     { tagId: 1, tagName: 'a tag1', photoCount: 5 },
@@ -28,9 +30,12 @@ describe('TagsComponent', () => {
   ];
 
   beforeEach(async(() => {
+    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'loadCsrfToken']);
     mockToastr = jasmine.createSpyObj(['success', 'error']);
     mockTagService = jasmine.createSpyObj(['getTags', 'searchTags', 'addTag', 'updateTag', 'deleteTag', 'copyTag', 'mergeTags', ]);
 
+    mockAuthenticationService.getCurrentUser.and.returnValue(of(currentUser));
+    mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
     mockTagService.getTags.and.returnValue(of(tags));
 
     TestBed.configureTestingModule({
@@ -38,8 +43,8 @@ describe('TagsComponent', () => {
       imports: [HttpClientModule, RouterTestingModule, ModalModule.forRoot()],
       // schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        TagService,
         BsModalService,
+        { provide: AuthService, useValue: mockAuthenticationService },
         { provide: ToastrService, useValue: mockToastr },
         { provide: TagService, useValue: mockTagService }
       ]

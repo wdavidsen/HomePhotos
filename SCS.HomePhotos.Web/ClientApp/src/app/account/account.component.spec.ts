@@ -1,10 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { IndividualConfig, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { of, Subject } from 'rxjs';
 import { AccountInfo } from '../models';
 import { AccountService, AuthService } from '../services';
@@ -16,24 +15,26 @@ describe('AccountComponent', () => {
   let fixture: ComponentFixture<AccountComponent>;
   let mockToastr, mockAuthenticationService, mockAccountService, mockModalService;
 
-  const currentUser = {userId: 1, username: 'wdavidsen', firstName: 'Bill', lastName: 'Davidsen'};
+  const currentUser = {userId: 1, username: 'wdavidsen', firstName: 'Bill', lastName: 'Davidsen', emailAddress: 'wdavidsen@gmail.com'};
 
   const setupEditForm = (data) => {
     const formBuilder = TestBed.get(FormBuilder);
       component.accountForm = formBuilder.group({
         username: [data.username, Validators.required],
         firstName: [data.firstName, Validators.required],
-        lastName: [data.lastName, Validators.required]
+        lastName: [data.lastName, Validators.required],
+        emailAddress: [data.emailAddress, Validators.email]
     });
   };
 
   beforeEach(async(() => {
     mockToastr = jasmine.createSpyObj(['success', 'error']);
-    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser']);
+    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'loadCsrfToken']);
     mockAccountService = jasmine.createSpyObj(['save']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
 
     mockAuthenticationService.getCurrentUser.and.returnValue(of(currentUser));
+    mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
 
     TestBed.configureTestingModule({
       declarations: [ AccountComponent ],

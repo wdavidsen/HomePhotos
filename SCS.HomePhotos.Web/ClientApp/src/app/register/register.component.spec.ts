@@ -27,9 +27,11 @@ describe('RegisterComponent', () => {
   };
 
   beforeEach(async(() => {
-    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser']);
+    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'loadCsrfToken']);
     mockAccountService = jasmine.createSpyObj(['register']);
     mockToastr = jasmine.createSpyObj(['success', 'error']);
+
+    mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
 
     TestBed.configureTestingModule({
       declarations: [ RegisterComponent ],

@@ -36,13 +36,14 @@ describe('PhotosComponent', () => {
 
     mockToastr = jasmine.createSpyObj(['success', 'error']);
     mockPhotoService = jasmine.createSpyObj(['getLatest', 'getPhotosByTag', 'searchPhotos']);
-    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser']);
+    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'loadCsrfToken']);
     mockUserSettingsService = jasmine.createSpyObj(['userSettings', 'getSettings']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
 
     mockPhotoService.getLatest.and.returnValue(of(photoList));
     mockPhotoService.getPhotosByTag.and.returnValue(of(photoList));
     mockPhotoService.searchPhotos.and.returnValue(of(photoList));
+    mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
     mockAuthenticationService.getCurrentUser.and.returnValue(of({userId: 1, username: 'wdavidsen'}));
     mockUserSettingsService.userSettings.and.returnValue(settings);
     mockUserSettingsService.getSettings.and.returnValue(of(settings));

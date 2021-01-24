@@ -33,7 +33,7 @@ describe('NavMenuComponent', () => {
   beforeEach(async(() => {
     mockToastr = jasmine.createSpyObj(['success', 'error']);
     mockSearchService = jasmine.createSpyObj(['getHidden', 'getKeywords']);
-    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'logout']);
+    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'logout', 'loadCsrfToken']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
     mockRouter = new RouterStub();
 
@@ -151,6 +151,24 @@ describe('NavMenuComponent', () => {
 
     beforeEach(() => {
       mockAuthenticationService.getCurrentUser.and.returnValue(of({userId: 1, username: 'jdoe', role: 'Contributer'}));
+      navSubject.next(new NavigationEnd(0, '/photos', null));
+      showSearchSubject.next(false);
+
+      fixture = TestBed.createComponent(NavMenuComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should not render admin menu', () => {
+      expect(component.hideMenuAdmin).toBe(true);
+      expect(fixture.nativeElement.querySelector('#adminMenu').getAttribute('hidden')).not.toBeNull();
+    });
+  });
+
+  describe('Non-Contributer Context', () => {
+
+    beforeEach(() => {
+      mockAuthenticationService.getCurrentUser.and.returnValue(of({userId: 1, username: 'jdoe', role: 'Reader'}));
       navSubject.next(new NavigationEnd(0, '/photos', null));
       showSearchSubject.next(false);
 
