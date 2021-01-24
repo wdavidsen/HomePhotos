@@ -66,8 +66,10 @@ export class ChangePasswordModalComponent implements OnInit {
             },
             response => {
                 if (response.error && response.error.id) {
-                    switch (response.error.id) {
+                  switch (response.error.id) {
                         case 'CurrentPasswordFailed':
+                        case 'PasswordStrength':
+                        case 'InvalidRequestPayload':
                             this.toastr.warning(response.error.message);
                             break;
                         default:

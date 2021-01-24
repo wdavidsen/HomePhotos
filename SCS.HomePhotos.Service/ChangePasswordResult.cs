@@ -8,6 +8,8 @@
 
         public bool PasswordUsedPreviously { get; set; }
 
+        public bool PasswordNotStrong { get; internal set; }
+
         public override bool Success => base.Success && !PasswordUsedPreviously;
 
         public ChangePasswordResult(AuthResult authResult)

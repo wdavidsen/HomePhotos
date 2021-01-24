@@ -104,12 +104,20 @@ namespace SCS.HomePhotos.Service
 
         public async Task<ChangePasswordResult> ChangePassword(string userName, string currentPassword, string newPassword)
         {
-            var authResult = await Authenticate(userName, currentPassword);
+            var result = new ChangePasswordResult(await Authenticate(userName, currentPassword));
 
-            if (!(authResult.Success || authResult.MustChangePassword))
+            if (!(result.Success || result.MustChangePassword))
             {
                 _adminLogService.LogElevated($"Password change for {userName} rejected (invalid password).", LogCategory.Security);
-                return new ChangePasswordResult(authResult);
+                return new ChangePasswordResult(result);
+            }
+
+            var strongPassword = IsStrongPassword(newPassword);
+
+            if (!strongPassword)
+            {
+                result.PasswordNotStrong = true;
+                return result;
             }
 
             var user = await GetUser(userName, false);
@@ -137,8 +145,17 @@ namespace SCS.HomePhotos.Service
             };
         }
 
-        public async Task<User> ResetPassword(string userName, string newPassword)
+        public async Task<ChangePasswordResult> ResetPassword(string userName, string newPassword)
         {
+            var strongPassword = IsStrongPassword(newPassword);
+            var result = new ChangePasswordResult();
+
+            if (!strongPassword)
+            {
+                result.PasswordNotStrong = true;
+                return result;
+            }
+
             var user = await GetUser(userName, false);            
             var passwordCheckHash = PasswordHash.CreateHashSameSalt(user.PasswordHash, newPassword);
 
@@ -149,9 +166,10 @@ namespace SCS.HomePhotos.Service
             user.MustChangePassword = false;
 
             await _userData.UpdateAsync(user);
+            result.User = user;
             _adminLogService.LogNeutral($"Password reset for {user.UserName} succeeded.", LogCategory.Security);
 
-            return user;
+            return result;
         }
 
         public async Task<List<UserToken>> GetRefreshTokens(string userName, string issuer, string audience, string agentIdentifier)

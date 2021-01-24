@@ -49,7 +49,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             var agentId = GetAgentIdentifier();
@@ -88,7 +88,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             var agentId = GetAgentIdentifier();
@@ -145,7 +145,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             var agentId = GetAgentIdentifier();

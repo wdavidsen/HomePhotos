@@ -58,14 +58,15 @@ export class RegisterComponent implements OnInit {
                     this.router.navigate(['/register-success']);
                 },
                 response => {
-                    if (response.status > 99 && response.status < 600) {
+                    if (response.error && response.error.id) {
                         switch (response.error.id) {
                             case 'UserNameTaken':
                             case 'PasswordStrength':
+                            case 'InvalidRequestPayload':
                                 this.toastr.warning(response.error.message);
                                 break;
                             default:
-                                this.toastr.error('Registration failed');
+                                this.toastr.error(response.error.message);
                                 break;
                         }
                     }

@@ -60,7 +60,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             var finalTag = await _photoSevice.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds);
@@ -75,7 +75,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             var newTag = await _photoSevice.CopyTags(copyInfo.NewTagName, copyInfo.SourceTagId);
@@ -89,7 +89,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             var photoTags = await _photoSevice.GetTagsAndPhotos(photoIds);
@@ -104,7 +104,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             await _photoSevice.UpdatePhotoTags(updateTags.PhotoIds, updateTags.GetAddedTagNames(), updateTags.GetRemovedTagIds());
@@ -119,7 +119,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             try 
@@ -141,7 +141,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             try 
@@ -163,7 +163,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             try

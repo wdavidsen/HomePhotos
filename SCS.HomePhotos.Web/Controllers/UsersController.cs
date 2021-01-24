@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Web.Models;
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -54,7 +53,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             var updatedUser = await _accountService.SaveUser(user.ToModel(), user.Password);
@@ -68,7 +67,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             var updatedUser = await _accountService.SaveUser(user.ToModel());
@@ -101,7 +100,19 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest();
             }
 
-            await _accountService.ResetPassword(resetPasswordModel.UserName, resetPasswordModel.NewPassword);
+            var result = await _accountService.ResetPassword(resetPasswordModel.UserName, resetPasswordModel.NewPassword);
+
+            if (!result.Success)
+            {
+                if (result.PasswordNotStrong)
+                {
+                    return BadRequest(new ProblemModel { Id = "PasswordStrength", Message = "Password needs to be stronger." });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
 
             return Ok();
         }

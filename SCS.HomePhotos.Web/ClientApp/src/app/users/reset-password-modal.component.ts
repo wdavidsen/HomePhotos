@@ -55,11 +55,19 @@ export class ResetPasswordModalComponent implements OnInit {
                 this.bsModalRef.hide();
             },
             response => {
-                if (response.error && response.error.message) {
-                    this.toastr.error(response.error.message);
+                if (response.error && response.error.id) {
+                    switch (response.error.id) {
+                        case 'PasswordStrength':
+                        case 'InvalidRequestPayload':
+                            this.toastr.warning(response.error.message);
+                            break;
+                        default:
+                            this.toastr.error(response.error.message);
+                            break;
+                    }
                 }
                 else {
-                    this.toastr.error('Change password failed');
+                    this.toastr.error('Reset password failed');
                 }
             }
         );

@@ -18,6 +18,6 @@ namespace SCS.HomePhotos.Service
         public bool UserDisabled { get; set; }
         public bool PasswordMismatch { get; set; }
 
-        public User User { get; set; }
+        public User User { get; set; }        
     }
 }

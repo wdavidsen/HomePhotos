@@ -39,7 +39,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             var result = await _accountService.Register(model.ToUser(), model.Password);
@@ -70,7 +70,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ProblemModel(ModelState));
             }
 
             var agentId = GetAgentIdentifier();
@@ -78,7 +78,18 @@ namespace SCS.HomePhotos.Web.Controllers
 
             if (!result.Success)
             {
-                return BadRequest(new ProblemModel { Id = "CurrentPasswordFailed", Message = "Current password validation failed." });
+                if (result.PasswordMismatch)
+                {
+                    return BadRequest(new ProblemModel { Id = "CurrentPasswordFailed", Message = "Current password validation failed." });
+                }
+                else if (result.PasswordNotStrong)
+                {
+                    return BadRequest(new ProblemModel { Id = "PasswordStrength", Message = "Password needs to be stronger." });
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
 
             var claims = _securityService.GetUserClaims(model.UserName, result.User.Role);
