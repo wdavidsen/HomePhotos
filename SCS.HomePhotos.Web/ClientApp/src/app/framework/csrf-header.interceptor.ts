@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 export class CsrfHeaderInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-        if (request.method === 'POST' || request.method === 'PUT') {
+        if (request.method === 'POST' || request.method === 'PUT' || request.method === 'DELETE') {
             const requestToken = this.getCookieValue('XSRF-REQUEST-TOKEN');
 
             if (requestToken === null || requestToken === '') {
