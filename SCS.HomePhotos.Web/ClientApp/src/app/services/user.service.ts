@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 export class UserService {
     constructor(private http: HttpClient) { }
 
-    changePassword(changeInfo: PasswordChange): Observable<any> {
-        return this.http.post(`${environment.apiUrl}/users/changePassword`, changeInfo);
+    resetPassword(userId: number, changeInfo: PasswordChange): Observable<any> {
+        return this.http.post(`${environment.apiUrl}/users/${userId}/resetPassword`, changeInfo);
     }
 
     get(userId: number): Observable<User> {

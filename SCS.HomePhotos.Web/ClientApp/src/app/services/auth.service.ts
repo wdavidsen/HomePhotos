@@ -81,8 +81,10 @@ export class AuthService {
   }
 
   storeTokens(tokens: Tokens) {
-    localStorage.setItem(this.JWT_TOKEN, tokens.jwt);
-    localStorage.setItem(this.REFRESH_TOKEN, tokens.refreshToken);
+    if (tokens !== null) {
+      localStorage.setItem(this.JWT_TOKEN, tokens.jwt);
+      localStorage.setItem(this.REFRESH_TOKEN, tokens.refreshToken);
+    }
   }
 
   private doLoginUser(user: User) {

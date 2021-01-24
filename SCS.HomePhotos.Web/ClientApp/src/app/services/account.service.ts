@@ -6,7 +6,6 @@ import { User, AccountInfo, Tokens, PasswordChange } from '../models';
 import { Observable, of } from 'rxjs';
 import { catchError, mapTo, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { Token } from '@angular/compiler/src/ml_parser/lexer';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -19,13 +18,7 @@ export class AccountService {
     changePassword(changeInfo: PasswordChange): Observable<any> {
 
         return this.http.post<Tokens>(`${environment.apiUrl}/account/changePassword`, changeInfo)
-            .pipe(
-                tap(tokens => this.authService.storeTokens(tokens)),
-                mapTo(true),
-                catchError(error => {
-                    alert(error.error);
-                    return of(false);
-                }));
+            .pipe(tap(tokens => this.authService.storeTokens(tokens)));
     }
 
     info(user: AccountInfo): Observable<AccountInfo> {

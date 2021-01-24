@@ -1,20 +1,18 @@
 import { OnInit, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AccountService, UserService } from '../services';
-import { Observable } from 'rxjs';
+import { AccountService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { PasswordChange } from '../models';
 import { MustMatch } from '../validators/must-match.validator';
 
 @Component({
-    selector: 'app-modal-content',
+    selector: 'app-change-password-modal',
     templateUrl: './change-password-modal.component.html'
   })
 
-export class ModalContentComponent implements OnInit {
+export class ChangePasswordModalComponent implements OnInit {
     title: string;
-    adminMode: boolean;
     loginMode: boolean;
     userName: string;
     changePasswordForm: FormGroup;
@@ -26,7 +24,6 @@ export class ModalContentComponent implements OnInit {
         public bsModalRef: BsModalRef,
         private formBuilder: FormBuilder,
         private accountService: AccountService,
-        private userService: UserService,
         private toastr: ToastrService) {}
 
       ngOnInit() {
@@ -39,8 +36,9 @@ export class ModalContentComponent implements OnInit {
             validator: MustMatch('newPassword', 'newPasswordCompare')
         });
 
+      this.changePasswordForm.get('username').disable();
+
       if (this.loginMode) {
-        this.changePasswordForm.get('username').disable();
         this.changePasswordForm.get('currentPassword').disable();
       }
     }
@@ -61,17 +59,25 @@ export class ModalContentComponent implements OnInit {
             return;
         }
 
-        let result: Observable<any>;
-        result = (this.adminMode) ? this.userService.changePassword(this.changeInfo) : this.accountService.changePassword(this.changeInfo);
-
-        result.subscribe(
-            () => {
+        this.accountService.changePassword(this.changeInfo)
+            .subscribe(() => {
                 this.toastr.success('Successfully changed password');
                 this.bsModalRef.hide();
             },
-            error => {
-                console.error(error);
-                this.toastr.success('Failed to change password');
+            response => {
+                if (response.error && response.error.id) {
+                    switch (response.error.id) {
+                        case 'CurrentPasswordFailed':
+                            this.toastr.warning(response.error.message);
+                            break;
+                        default:
+                            this.toastr.error(response.error.message);
+                            break;
+                    }
+                }
+                else {
+                    this.toastr.error('Change password failed');
+                }
             }
         );
     }

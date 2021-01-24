@@ -4,7 +4,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AccountService, AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { ModalContentComponent } from '../users/change-password-modal.component';
+import { ChangePasswordModalComponent } from './change-password-modal.component';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -72,10 +72,9 @@ export class AccountComponent implements OnInit {
   changePassword() {
     const initialState = {
         title: 'Change Password',
-        adminMode: false,
         userName: this.accountInfo.username
     };
-    this.changePasswordModalRef = this.modalService.show(ModalContentComponent, {initialState});
+    this.changePasswordModalRef = this.modalService.show(ChangePasswordModalComponent, {initialState});
   }
 
   logout() {

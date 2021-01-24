@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
 
 import { AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ModalContentComponent } from '../users/change-password-modal.component';
+import { ChangePasswordModalComponent } from '../account/change-password-modal.component';
 import { Subscription } from 'rxjs';
 import { PasswordChange } from '../models';
 
@@ -116,7 +115,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             userName: username,
             changeInfo: changeInfo
         };
-        this.changePasswordModalRef = this.modalService.show(ModalContentComponent, {initialState});
+        this.changePasswordModalRef = this.modalService.show(ChangePasswordModalComponent, {initialState});
 
         this.dialogSubscription = this.modalService.onHidden
           .subscribe(() => {

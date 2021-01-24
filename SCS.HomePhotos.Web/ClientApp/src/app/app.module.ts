@@ -27,7 +27,8 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ModalModule, BsModalRef } from 'ngx-bootstrap/modal';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { ToastrModule } from 'ngx-toastr';
-import { ModalContentComponent } from './users/change-password-modal.component';
+import { ChangePasswordModalComponent } from './account/change-password-modal.component';
+import { ResetPasswordModalComponent } from './users/reset-password-modal.component';
 import { PhotoTaggerComponent } from './photos/photo-tagger.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { TriCheckComponent } from './components/tri-check.component';
@@ -66,7 +67,8 @@ import { SecurePipe } from './framework/secure.pipe';
     OrganizeComponent,
     SearchComponent,
     AccountComponent,
-    ModalContentComponent,
+    ChangePasswordModalComponent,
+    ResetPasswordModalComponent,
     PhotoTaggerComponent,
     UserSettingsComponent,
     UploadPhotoTaggerComponent,
@@ -81,7 +83,8 @@ import { SecurePipe } from './framework/secure.pipe';
     SecurePipe
   ],
   entryComponents: [
-    ModalContentComponent,
+    ChangePasswordModalComponent,
+    ResetPasswordModalComponent,
     PhotoTaggerComponent,
     UserSettingsComponent,
     UploadPhotoTaggerComponent,

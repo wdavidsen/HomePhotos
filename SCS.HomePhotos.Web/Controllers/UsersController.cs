@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -84,13 +85,25 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
-        [HttpPost("{userId}/changePassword", Name = "ChangePassword")]
+        [HttpPost("{userId}/resetPassword", Name = "ResetPassword")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel changePasswordModel)
+        public async Task<IActionResult> ResetPassword([FromRoute] int userId, [FromBody] ResetPasswordModel resetPasswordModel)
         {
-            var result = await _accountService.ResetPassword(changePasswordModel.UserName, changePasswordModel.NewPassword);
+            var user = await _accountService.GetUser(userId);
 
-            return Ok(result);
+            if (user ==  null)
+            {
+                return NotFound();
+            }
+
+            if (user.UserName != resetPasswordModel.UserName)
+            {
+                return BadRequest();
+            }
+
+            await _accountService.ResetPassword(resetPasswordModel.UserName, resetPasswordModel.NewPassword);
+
+            return Ok();
         }
     }
 }

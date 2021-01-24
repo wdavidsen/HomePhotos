@@ -137,7 +137,7 @@ namespace SCS.HomePhotos.Service
             };
         }
 
-        public async Task<ChangePasswordResult> ResetPassword(string userName, string newPassword)
+        public async Task<User> ResetPassword(string userName, string newPassword)
         {
             var user = await GetUser(userName, false);            
             var passwordCheckHash = PasswordHash.CreateHashSameSalt(user.PasswordHash, newPassword);
@@ -151,10 +151,7 @@ namespace SCS.HomePhotos.Service
             await _userData.UpdateAsync(user);
             _adminLogService.LogNeutral($"Password reset for {user.UserName} succeeded.", LogCategory.Security);
 
-            return new ChangePasswordResult
-            {
-                User = user
-            };
+            return user;
         }
 
         public async Task<List<UserToken>> GetRefreshTokens(string userName, string issuer, string audience, string agentIdentifier)

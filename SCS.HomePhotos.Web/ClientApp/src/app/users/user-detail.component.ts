@@ -5,7 +5,7 @@ import { UserService, AuthService } from '../services';
 import { User } from '../models';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { ModalContentComponent } from './change-password-modal.component';
+import { ResetPasswordModalComponent } from './reset-password-modal.component';
 
 @Component({
   selector: 'app-user-detail',
@@ -19,7 +19,7 @@ export class UserDetailComponent implements OnInit {
   roles = ['Reader', 'Contributer', 'Admin'];
   loading = false;
   submitted = false;
-  changePasswordModalRef: BsModalRef;
+  resetPasswordModalRef: BsModalRef;
 
   constructor(
     private route: ActivatedRoute,
@@ -112,10 +112,10 @@ export class UserDetailComponent implements OnInit {
   resetPassword() {
     const initialState = {
         title: 'Reset Password',
-        adminMode: true,
+        userId: this.user.userId,
         userName: this.user.username
     };
-    this.changePasswordModalRef = this.modalService.show(ModalContentComponent, {initialState});
+    this.resetPasswordModalRef = this.modalService.show(ResetPasswordModalComponent, {initialState});
   }
 
   private setupForm(data: User) {
