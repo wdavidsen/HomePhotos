@@ -48,6 +48,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { ProgressInterceptor } from './framework/progress.interceptor';
 import { RegisterSuccessComponent } from './register/register-success.component';
 import { SecurePipe } from './framework/secure.pipe';
+import { AccountAvatardModalComponent } from './account/account-avatar-modal.component';
+import { AngularCropperjsModule } from 'angular-cropperjs';
 
 @NgModule({
   declarations: [
@@ -68,6 +70,7 @@ import { SecurePipe } from './framework/secure.pipe';
     SearchComponent,
     AccountComponent,
     ChangePasswordModalComponent,
+    AccountAvatardModalComponent,
     ResetPasswordModalComponent,
     PhotoTaggerComponent,
     UserSettingsComponent,
@@ -111,7 +114,8 @@ import { SecurePipe } from './framework/secure.pipe';
       positionClass: 'toast-bottom-right',
       preventDuplicates: true
     }),
-    FileUploadModule
+    FileUploadModule,
+    AngularCropperjsModule
   ],
   providers: [
     NgxSpinnerService,

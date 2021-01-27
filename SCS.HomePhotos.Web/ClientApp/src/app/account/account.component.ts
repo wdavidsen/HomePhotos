@@ -7,6 +7,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ChangePasswordModalComponent } from './change-password-modal.component';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { AccountAvatardModalComponent } from './account-avatar-modal.component';
 
 @Component({
   selector: 'app-account',
@@ -19,6 +20,7 @@ export class AccountComponent implements OnInit {
   loading = false;
   submitted = false;
   changePasswordModalRef: BsModalRef;
+  accountAvatarModalRef: BsModalRef;
 
   constructor(private router: Router,
     private authenticationService: AuthService,
@@ -75,6 +77,14 @@ export class AccountComponent implements OnInit {
         userName: this.accountInfo.username
     };
     this.changePasswordModalRef = this.modalService.show(ChangePasswordModalComponent, {initialState});
+  }
+
+  changeAvatar() {
+    const initialState = {
+      title: 'Profile Picture',
+      userName: this.accountInfo.username
+    };
+    this.accountAvatarModalRef = this.modalService.show(AccountAvatardModalComponent, {initialState});
   }
 
   logout() {
