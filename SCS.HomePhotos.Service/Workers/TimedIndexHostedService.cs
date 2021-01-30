@@ -124,7 +124,7 @@ namespace SCS.HomePhotos.Workers
         {
             TimeSpan timespan = _configService.DynamicConfig.NextIndexTime.Value - DateTime.UtcNow;
 
-            while (timespan.Minutes < 0)
+            while (timespan.TotalMilliseconds < 0)
             {
                 timespan = timespan.Add(TimeSpan.FromHours(_configService.DynamicConfig.IndexFrequencyHours));
             }
