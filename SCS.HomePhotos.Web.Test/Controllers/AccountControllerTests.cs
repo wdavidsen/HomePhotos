@@ -24,6 +24,8 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         private readonly Mock<IAccountService> _accountService;
         private readonly Mock<IStaticConfig> _staticConfig;
         private readonly Mock<ISecurityService> _securityService;
+        private readonly Mock<IFileUploadService> _fileUploadService;        
+        private readonly Mock<IDynamicConfig> _dynamicConfig;
 
         public AccountControllerTests()
         {
@@ -31,6 +33,8 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _jwtAuthentication = new Mock<IOptions<JwtAuthentication>>();
             _accountService = new Mock<IAccountService>();
             _staticConfig = new Mock<IStaticConfig>();
+            _fileUploadService = new Mock<IFileUploadService>();
+            _dynamicConfig = new Mock<IDynamicConfig>();
             _securityService = MockHelper.GetMockSecurityService("jdoe", false);
 
             _jwtAuthentication.SetupGet(p => p.Value).Returns(new JwtAuthentication
@@ -43,7 +47,8 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _staticConfig.SetupGet(p => p.RefreshTokenExpirationDays).Returns(1);
             _staticConfig.SetupGet(p => p.TokenExpirationMinutes).Returns(15);
 
-            _accountController = new AccountController(_logger.Object, _accountService.Object, _staticConfig.Object, _securityService.Object);
+            _accountController = new AccountController(_logger.Object, _accountService.Object, _staticConfig.Object, 
+                _securityService.Object, _fileUploadService.Object, _dynamicConfig.Object);
         }
 
         [Fact]
@@ -182,18 +187,20 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         }
 
         [Fact]
-        public async Task ChangePasswordFailed()
+        public async Task ChangePasswordPasswordNotStrong()
         {
             var userName = "wdavidsen";
             var password = _fixture.Create<string>();
-            var newPassword = _fixture.Create<string>();
+            var newPassword = "password1";
+
+            var expectedErrorCode = "PasswordStrength";
 
             SetControllerContext(_accountController, "POST");
-
+            
             _accountService.Setup(m => m.ChangePassword(userName, password, newPassword))
                 .ReturnsAsync(new ChangePasswordResult
                 {
-                    UserDisabled = true
+                   PasswordNotStrong = true
                 });
 
             var response = await _accountController.ChangePassword(
@@ -201,7 +208,8 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 {
                     UserName = userName,
                     CurrentPassword = password,
-                    NewPassword = newPassword
+                    NewPassword = newPassword,
+                    NewPasswordCompare = newPassword
                 });
 
             _accountService.Verify(m => m.ChangePassword(userName, password, newPassword),
@@ -216,14 +224,17 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var value = ((BadRequestObjectResult)response).Value;
 
             Assert.IsType<ProblemModel>(value);
+            Assert.Equal(((ProblemModel)value).Id, expectedErrorCode);
         }
 
         [Fact]
-        public async Task ChangePasswordPasswordMismatch()
+        public async Task ChangePasswordModelPasswordMismatch()
         {
             var userName = "wdavidsen";
             var password = _fixture.Create<string>();
             var newPassword = _fixture.Create<string>();
+
+            var expectedErrorCode = "InvalidRequestPayload";
 
             SetControllerContext(_accountController, "POST");
             _accountController.ModelState.AddModelError("mismatch", "mismatch");
@@ -254,7 +265,8 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 
             var value = ((BadRequestObjectResult)response).Value;
 
-            Assert.IsType<SerializableError>(value);
+            Assert.IsType<ProblemModel>(value);
+            Assert.Equal(((ProblemModel)value).Id, expectedErrorCode);
         }
 
         protected override void DisposeController()

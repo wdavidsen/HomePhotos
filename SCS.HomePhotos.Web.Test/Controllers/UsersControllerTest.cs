@@ -184,24 +184,29 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task ChangePassword()
         {
+            var user = _fixture.Create<User>();
             var model = _fixture.Create<ResetPasswordModel>();
+
+            model.UserName = user.UserName;            
             model.NewPasswordCompare = model.NewPassword;
 
             var result = new ChangePasswordResult(new AuthResult());
 
+            _accountService.Setup(m => m.GetUser(user.UserId.Value))
+                .ReturnsAsync(user);
+
             _accountService.Setup(m => m.ResetPassword(model.UserName, model.NewPassword))
                 .ReturnsAsync(result);
 
-            var response = await _usersController.ResetPassword(model);
+            var response = await _usersController.ResetPassword(user.UserId.Value, model);
+
+            _accountService.Verify(m => m.GetUser(user.UserId.Value),
+                Times.Once);
 
             _accountService.Verify(m => m.ResetPassword(model.UserName, model.NewPassword),
                 Times.Once);
 
-            Assert.IsType<OkObjectResult>(response);
-
-            var value = ((OkObjectResult)response).Value;
-
-            Assert.IsType<ChangePasswordResult>(value);            
+            Assert.IsType<OkResult>(response);         
         }
 
         protected override void DisposeController()

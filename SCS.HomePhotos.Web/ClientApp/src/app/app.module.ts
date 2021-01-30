@@ -87,6 +87,7 @@ import { AngularCropperjsModule } from 'angular-cropperjs';
   ],
   entryComponents: [
     ChangePasswordModalComponent,
+    AccountAvatardModalComponent,
     ResetPasswordModalComponent,
     PhotoTaggerComponent,
     UserSettingsComponent,

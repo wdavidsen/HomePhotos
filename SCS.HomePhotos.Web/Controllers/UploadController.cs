@@ -85,10 +85,10 @@ namespace SCS.HomePhotos.Web.Controllers
                     }
 
                     // check for valid extensions
-                    if (!acceptedExtensions.Any(e => e == extension.TrimStart('.').ToUpper()))
+                    if (!Constants.AcceptedExtensions.Any(e => e == extension.ToUpper()))
                     {
                         return BadRequest();
-                    }
+                    }   
 
                     // check image header bytes
                     using (var sourceStream = file.OpenReadStream())

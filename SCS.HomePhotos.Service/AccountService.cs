@@ -298,6 +298,7 @@ namespace SCS.HomePhotos.Service
                 exitingUser.FirstName = user.FirstName;
                 exitingUser.LastName = user.LastName;
                 exitingUser.EmailAddress = user.EmailAddress;
+                exitingUser.AvatarImage = user.AvatarImage;
                 exitingUser.Enabled = user.Enabled;
                 exitingUser.Role = user.Role;
                 exitingUser.MustChangePassword = user.MustChangePassword;

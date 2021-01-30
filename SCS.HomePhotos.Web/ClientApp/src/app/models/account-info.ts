@@ -8,6 +8,7 @@ export class AccountInfo {
     lastLogin: Date;
     role: string;
     emailAddress: string;
+    avatarImage: string;
 
     static FromUser(user: User): AccountInfo {
         const a = new AccountInfo();
@@ -17,6 +18,7 @@ export class AccountInfo {
         a.firstName = user != null ? user.firstName : '';
         a.lastName = user != null ? user.lastName : '';
         a.emailAddress = user != null ? user.emailAddress : '';
+        a.avatarImage = user != null ? user.avatarImage : '';
         a.lastLogin = user != null ? user.lastLogin : new Date();
         a.role = user != null ? user.role : '';
 

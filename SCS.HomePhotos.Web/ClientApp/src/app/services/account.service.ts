@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-import { User, AccountInfo, Tokens, PasswordChange } from '../models';
+import { User, AccountInfo, Tokens, PasswordChange, AvatarUpdate } from '../models';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
@@ -20,6 +20,13 @@ export class AccountService {
 
         return this.http.post<Tokens>(`${environment.apiUrl}/account/changePassword`, changeInfo)
             .pipe(tap(tokens => this.authService.storeTokens(tokens)));
+    }
+
+    updateAvatar(file: File): Observable<AvatarUpdate> {
+        const formData = new FormData();
+        formData.append('image', file, file.name);
+
+        return this.http.put<AvatarUpdate>(`${environment.apiUrl}/account/updateAvatar`, formData);
     }
 
     info(user: AccountInfo): Observable<AccountInfo> {

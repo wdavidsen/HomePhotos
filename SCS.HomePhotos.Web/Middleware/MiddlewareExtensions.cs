@@ -26,13 +26,12 @@ namespace SCS.HomePhotos.Web.Middleware
         }
 
         /// <summary>
-        /// Adds the antiforgery token for SPA apps.
+        /// Adds the avatar image middleware to the request pipeline.
         /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        //public static IApplicationBuilder UseAntiforgeryToken(this IApplicationBuilder builder)
-        //{
-        //    return builder.UseMiddleware<AntiforgeryTokenMiddleware>();
-        //}
+        /// <param name="app">The application builder.</param>
+        public static void UseAvatarImageMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<AvatarImageMiddleware>();
+        }
     }
 }

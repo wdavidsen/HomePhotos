@@ -13,5 +13,14 @@ namespace SCS.HomePhotos.Web
                 await formFile.CopyToAsync(stream);
             }
         }
+
+        public void CreateDirectory(string directoryPath)
+        {
+            if (Path.HasExtension(directoryPath))
+            {
+                directoryPath = Path.GetDirectoryName(directoryPath);
+            }
+            Directory.CreateDirectory(directoryPath);
+        }
     }
 }

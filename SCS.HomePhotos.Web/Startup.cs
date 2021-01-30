@@ -161,6 +161,8 @@ namespace SCS.HomePhotos.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseAvatarImageMiddleware();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<NotifcationHub>("/message-hub");

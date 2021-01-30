@@ -122,5 +122,28 @@ namespace SCS.HomePhotos
             }
             return true;
         }
+
+        /// <summary>
+        /// Get extension of an image file.
+        /// </summary>
+        /// <param name="sourcePath"></param>
+        /// <returns>String values ".jpeg", ".png", ".gif", or null.</returns>
+        public static string GetExtension(string sourcePath)
+        {
+            if (ValidateJpegHeader(sourcePath))
+            {
+                return ".jpeg";
+            }
+            else if (ValidatePngHeader(sourcePath))
+            {
+                return ".png";
+            }
+            else if (ValidateGifHeader(sourcePath))
+            {
+                return ".gif";
+            }
+
+            return null;
+        }
     }
 }

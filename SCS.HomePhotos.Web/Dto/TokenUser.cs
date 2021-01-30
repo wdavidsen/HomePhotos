@@ -11,6 +11,9 @@ namespace SCS.HomePhotos.Web.Dto
             Username = user.UserName;
             FirstName = user.FirstName;
             LastName = user.LastName;
+            EmailAddress = user.EmailAddress;
+            AvatarImage = user.AvatarImage;
+
             Jwt = token;
             RefreshToken = refreshToken;
         }

@@ -6,6 +6,7 @@ export class User {
     this.firstName = null;
     this.lastName = null;
     this.emailAddress = null;
+    this.avatarImage = null;
     this.jwt = null;
     this.refreshToken = null;
     this.lastLogin = null;
@@ -20,6 +21,7 @@ export class User {
   firstName: string;
   lastName: string;
   emailAddress: string;
+  avatarImage: string;
   role: string;
   jwt: string;
   refreshToken: string;

@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Web.Models;
 using System;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -20,16 +23,22 @@ namespace SCS.HomePhotos.Web.Controllers
         private readonly IAccountService _accountService;
         private readonly IStaticConfig _staticConfig;
         private readonly ISecurityService _securityService;
+        private readonly IFileUploadService _fileUploadService;
+        private readonly IDynamicConfig _dynamicConfig;
 
         public AccountController(ILogger<AccountController> logger,
             IAccountService accountService,
             IStaticConfig staticConfig,
-            ISecurityService securityService)
+            ISecurityService securityService,
+            IFileUploadService fileUploadService,
+            IDynamicConfig dynamicConfig)
         {
             _logger = logger;
             _accountService = accountService;
             _staticConfig = staticConfig;
             _securityService = securityService;
+            _fileUploadService = fileUploadService;
+            _dynamicConfig = dynamicConfig;
         }
 
         [AllowAnonymous]
@@ -105,6 +114,70 @@ namespace SCS.HomePhotos.Web.Controllers
                 Jwt = newJwtToken,
                 RefreshToken = newRefreshToken
             });
+        }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [HttpPut("updateAvatar")]
+        public async Task<IActionResult> UpdateAvatar([FromForm] AvatarModel model)
+        {
+            string fileName = "";
+            string filePath = "";
+            string newFileName = "";
+
+            try
+            {
+                fileName = model.Image.GetFileName();
+
+                var extension = Path.GetExtension(fileName);                
+
+                #region Validations
+
+                // check for invalid characters
+                if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                {
+                    return BadRequest();
+                }
+
+                // file name should not exceed 255 characters
+                if (fileName.Length > 255)
+                {
+                    return BadRequest();
+                }
+
+                // check for valid extensions
+                if (!Constants.AcceptedExtensions.Any(e => e == extension.ToUpper()))
+                {
+                    return BadRequest();
+                }
+
+                // check image header bytes
+                using (var sourceStream = model.Image.OpenReadStream())
+                {
+                    if (!ImageValidationHelper.ValidateImageHeaders(sourceStream))
+                    {
+                        return BadRequest();
+                    }
+                }
+                #endregion
+
+                newFileName = Guid.NewGuid().ToString() + extension;
+                filePath = Path.Combine(_dynamicConfig.CacheFolder, Constants.AvatarFolder, newFileName);
+
+                _fileUploadService.CreateDirectory(filePath);
+                await _fileUploadService.CopyFile(model.Image, filePath, FileMode.Create);                
+
+                var user = await _accountService.GetUser(User.Identity.Name);
+                user.AvatarImage = newFileName;
+                await _accountService.SaveUser(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to save avatar profile image: {fileName}");
+                throw;
+            }
+
+            return Ok(new { avatarImage = newFileName });
         }
 
         [Authorize]
