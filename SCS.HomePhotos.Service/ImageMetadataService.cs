@@ -12,7 +12,19 @@ namespace SCS.HomePhotos.Service
             var exifData1 = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
             var exifData2 = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
 
-            return new List<ExifDirectoryBase> { exifData1 , exifData2 };
+            var list = new List<ExifDirectoryBase>();
+
+            if (exifData1 != null)
+            {
+                list.Add(exifData1);
+            }
+
+            if (exifData2 != null)
+            {
+                list.Add(exifData2);
+            }
+
+            return list;            
         }
     }
 }
