@@ -311,7 +311,7 @@ namespace SCS.HomePhotos.Service.Test
             var cacheFilePath = Path.Combine(cacheSubfolder, fileNameCache);
             var imageFilePath = Path.Combine("home", "homePhotos", "parties", "birthdays", fileNameOriginal);
             var tags = new List<string> { "Tag1", "Tag2", "parties", "birthdays" };
-            var exifData = new ExifSubIfdDirectory();
+            var exifData = new List<ExifDirectoryBase> { { new ExifSubIfdDirectory() }, { new ExifIfd0Directory() } };
 
             var imageLayoutInfo = new ImageLayoutInfo
             {

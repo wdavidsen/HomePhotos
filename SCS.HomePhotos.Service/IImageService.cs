@@ -20,13 +20,13 @@ namespace SCS.HomePhotos.Service
 
         string CreateThumbnail(string imageFilePath, string cacheSubfolder);
 
-        void OrientImage(string imageFilePath, ExifSubIfdDirectory exifData);
+        void OrientImage(string imageFilePath, IEnumerable<ExifDirectoryBase> exifDataList);
 
         Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string checksum, string cacheSubfolder, 
-            ImageLayoutInfo imageLayoutInfo, ExifSubIfdDirectory exifData, params string[] tags);
+            ImageLayoutInfo imageLayoutInfo, IEnumerable<ExifDirectoryBase> exifDataList, params string[] tags);
 
         ImageLayoutInfo GetImageLayoutInfo(string sourcePath);
 
-        ImageInfo GetImageInfo(ExifSubIfdDirectory exifData);
+        ImageInfo GetImageInfo(IEnumerable<ExifDirectoryBase> exifDataList);
     }
 }

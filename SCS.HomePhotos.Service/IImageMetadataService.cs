@@ -1,9 +1,10 @@
 ﻿using MetadataExtractor.Formats.Exif;
+using System.Collections.Generic;
 
 namespace SCS.HomePhotos.Service
 {
     public interface IImageMetadataService
     {
-        ExifSubIfdDirectory GetExifData(string imageFilePath);
+        IEnumerable<ExifDirectoryBase> GetExifData(string imageFilePath);
     }
 }

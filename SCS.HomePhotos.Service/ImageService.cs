@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Workers;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -149,34 +150,38 @@ namespace SCS.HomePhotos.Service
             return savePath;
         }
 
-        public void OrientImage(string imageFilePath, ExifSubIfdDirectory exifData)
+        public void OrientImage(string imageFilePath, IEnumerable<ExifDirectoryBase> exifDataList)
         {
-            if (exifData != null)
+            foreach (var exifData in exifDataList)
             {
-                if (exifData.HasTagName(ExifDirectoryBase.TagOrientation))
+                if (exifData != null)
                 {
-                    var orientation = exifData.GetDescription(ExifDirectoryBase.TagOrientation);
-
-                    if (orientation != null)
+                    if (exifData.HasTagName(ExifDirectoryBase.TagOrientation))
                     {
-                        var regex = new Regex(@"\(Rotate \d+ \D+\)", RegexOptions.IgnoreCase);
+                        var orientation = exifData.GetDescription(ExifDirectoryBase.TagOrientation);
 
-                        if (regex.IsMatch(orientation))
+                        if (orientation != null)
                         {
-                            var parts = regex.Match(orientation).Value.Trim('(', ')').Split(' ');
+                            var regex = new Regex(@"\(Rotate \d+ \D+\)", RegexOptions.IgnoreCase);
 
-                            if (parts.Length == 3)
+                            if (regex.IsMatch(orientation))
                             {
-                                if (parts[2] == "CW" && int.TryParse(parts[1], out var degrees))
+                                var parts = regex.Match(orientation).Value.Trim('(', ')').Split(' ');
+
+                                if (parts.Length == 3)
                                 {
-                                    _logger.LogInformation($"Orienting image {orientation}.");
-                                    var stopwatch = Stopwatch.StartNew();
+                                    if (parts[2] == "CW" && int.TryParse(parts[1], out var degrees))
+                                    {
+                                        _logger.LogInformation($"Orienting image {orientation}.");
+                                        var stopwatch = Stopwatch.StartNew();
 
-                                    //var rotateDegrees = degrees == 270 ? 90 : (degrees == 90 ? 270 : 0);
-                                    _imageTransformer.Rotate(imageFilePath, degrees);
+                                        //var rotateDegrees = degrees == 270 ? 90 : (degrees == 90 ? 270 : 0);
+                                        _imageTransformer.Rotate(imageFilePath, degrees);
 
-                                    stopwatch.Stop();
-                                    _logger.LogInformation("Oriented image in {ElapsedMilliseconds}.", stopwatch.ElapsedMilliseconds);
+                                        stopwatch.Stop();
+                                        _logger.LogInformation("Oriented image in {ElapsedMilliseconds}.", stopwatch.ElapsedMilliseconds);
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -203,12 +208,12 @@ namespace SCS.HomePhotos.Service
         }
 
         public Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string cacheFilePath, string checksum,
-            ImageLayoutInfo imageLayoutInfo, ExifSubIfdDirectory exifData, params string[] tags)
+            ImageLayoutInfo imageLayoutInfo, IEnumerable<ExifDirectoryBase> exifDataList, params string[] tags)
         {
             _logger.LogInformation("Saving photo with checksum {Checksum}.", checksum);
 
             var dirTags = _fileSystemService.GetDirectoryTags(imageFilePath);
-            var imageInfo = GetImageInfo(exifData);
+            var imageInfo = GetImageInfo(exifDataList);
             var photo = existingPhoto ?? new Photo();
 
             photo.Name = Path.GetFileName(imageFilePath);
@@ -239,37 +244,64 @@ namespace SCS.HomePhotos.Service
             return photo;
         }
 
-        public ImageInfo GetImageInfo(ExifSubIfdDirectory exifData)
+        public ImageInfo GetImageInfo(IEnumerable<ExifDirectoryBase> exifDataList)
         {
             var imageInfo = new ImageInfo();
+            var dateTaken = GetExifTimeTaken(exifDataList);
 
-            if (exifData != null)
+            if (dateTaken != null)
             {
-                var dateTaken = exifData.GetDescription(ExifDirectoryBase.TagDateTime)
-                    ?? exifData.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
-
-                if (dateTaken != null)
+                try
                 {
-                    try
-                    {
-                        var dateParts = dateTaken.Split(':', '-', '.', ' ', 'T');
-                        imageInfo.DateTaken = new DateTime(int.Parse(dateParts[0]), int.Parse(dateParts[1]), int.Parse(dateParts[2]),
-                            int.Parse(dateParts[3]), int.Parse(dateParts[4]), int.Parse(dateParts[5]));
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Failed to parse EXIF date/time taken {dateTaken}.", dateTaken);
-                    }
+                    var dateParts = dateTaken.Split(':', '-', '.', ' ', 'T');
+                    imageInfo.DateTaken = new DateTime(int.Parse(dateParts[0]), int.Parse(dateParts[1]), int.Parse(dateParts[2]),
+                        int.Parse(dateParts[3]), int.Parse(dateParts[4]), int.Parse(dateParts[5]));
                 }
-
-                var exifTag = exifData.GetDescription(ExifDirectoryBase.TagModel);
-
-                if (exifTag != null)
+                catch (Exception ex)
                 {
-                    imageInfo.Tags.Add(exifTag);
+                    _logger.LogError(ex, "Failed to parse EXIF date/time taken {dateTaken}.", dateTaken);
                 }
             }
+
+            var exifTag = GetExifValue(exifDataList, ExifDirectoryBase.TagModel);
+
+            if (exifTag != null)
+            {
+                imageInfo.Tags.Add(exifTag);
+            }
             return imageInfo;
+        }
+
+        private string GetExifTimeTaken(IEnumerable<ExifDirectoryBase> exifDataList)
+        {
+            var value = "";
+
+            foreach (var exifData in exifDataList)
+            {
+                value = exifData.GetDescription(ExifDirectoryBase.TagDateTime) ?? exifData.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
+
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    continue;
+                }
+            }
+            return value;
+        }
+
+        private string GetExifValue(IEnumerable<ExifDirectoryBase> exifDataList, int id)
+        {
+            var value = "";
+
+            foreach (var exifData in exifDataList)
+            {
+                value = exifData.GetDescription(id);
+
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    continue;
+                }
+            }
+            return value;
         }
     }
 }
