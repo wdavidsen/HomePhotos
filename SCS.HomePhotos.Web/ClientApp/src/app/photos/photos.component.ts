@@ -237,8 +237,15 @@ export class PhotosComponent implements OnInit, OnDestroy {
   }
 
   private handleLoadError(error: any) {
-    console.error(error);
-    this.toastr.error('Failed to load photos');
+    const msg = 'Failed to load photos';
+
+    try {
+      this.toastr.error(msg);
+      console.error(error);
+    }
+    catch (e) {
+      console.error(msg);
+    }
   }
 
   private appendThumbnails(newThumbs: Thumbnail[]): void {

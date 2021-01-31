@@ -3,6 +3,10 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class ImageService {
 
+    isValidImage(file: File): boolean {
+        return /.+\.(png|jpg|jpeg)$/i.test(file.name);
+    }
+
     blobToFile(blob: Blob, name: string): File {
         const temp: any = blob;
         temp.name = name;

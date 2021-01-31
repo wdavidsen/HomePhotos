@@ -54,7 +54,7 @@ export class AccountAvatardModalComponent implements OnInit, OnDestroy {
       this.fileInput.nativeElement.onchange = () => {
         const tempFile = this.fileInput.nativeElement.files[0];
 
-        if (!/.+\.(png|jpg|jpeg)$/i.test(tempFile.name)) {
+        if (!this.imageService.isValidImage(tempFile)) {
           this.toastr.warning('Selection not a supported image');
           return;
         }
