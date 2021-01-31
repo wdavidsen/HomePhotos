@@ -1,4 +1,4 @@
-﻿using SixLabors.Primitives;
+﻿using SixLabors.ImageSharp;
 
 namespace SCS.HomePhotos.Service
 {

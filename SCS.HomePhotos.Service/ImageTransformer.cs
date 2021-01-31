@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.IO;
+
+using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.Primitives;
-using System;
-using System.IO;
 
 namespace SCS.HomePhotos.Service
 {
