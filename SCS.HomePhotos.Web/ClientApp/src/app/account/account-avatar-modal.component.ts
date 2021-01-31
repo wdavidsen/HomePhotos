@@ -51,7 +51,14 @@ export class AccountAvatardModalComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
       this.fileInput.nativeElement.onchange = () => {
-        this.selectedfile = this.fileInput.nativeElement.files[0];
+        const tempFile = this.fileInput.nativeElement.files[0];
+
+        if (!/.+\.(png|jpg|jpeg)$/i.test(tempFile.name)) {
+          this.toastr.warning('Selection not a supported image');
+          return;
+        }
+
+        this.selectedfile = tempFile;
         const reader = new FileReader();
         reader.addEventListener('load', () => this.imageUrl = reader.result, false);
         reader.readAsDataURL(this.selectedfile);
@@ -81,12 +88,12 @@ export class AccountAvatardModalComponent implements OnInit, OnDestroy {
             .subscribe(
               (data) => {
                 this.newAvatarImage = data.avatarImage;
-                this.toastr.success('Successfully saved profile picture.');
+                this.toastr.success('Successfully saved picture.');
                 this.bsModalRef.hide();
               },
               () => {
                 this.newAvatarImage = null;
-                this.toastr.error('Failed to save profile picture.');
+                this.toastr.error('Failed to save picture.');
               });
         });
       }
