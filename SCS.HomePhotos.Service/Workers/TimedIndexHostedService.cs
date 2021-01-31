@@ -176,6 +176,7 @@ namespace SCS.HomePhotos.Workers
             }
             catch (AggregateException ex)
             {
+                _indexEvents.IndexStarted?.Invoke();
                 _logger.LogError(_adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
 
                 foreach (var innerEx in ex.InnerExceptions)

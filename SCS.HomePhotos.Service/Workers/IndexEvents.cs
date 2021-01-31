@@ -6,5 +6,6 @@ namespace SCS.HomePhotos.Service.Workers
     {
         public Action IndexStarted { get; set; }
         public Action IndexCompleted { get; set; }
+        public Action IndexFailed { get; set; }
     }
 }

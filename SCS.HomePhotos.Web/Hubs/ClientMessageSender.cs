@@ -15,6 +15,7 @@ namespace SCS.HomePhotos.Web.Hubs
         {
             indexEvents.IndexStarted = OnIndexStarted;
             indexEvents.IndexCompleted = OnIndexCompleted;
+            indexEvents.IndexFailed = OnIndexFailed;
             queueEvents.ItemProcessed = OnItemProcessed;
 
             _notificationHub = notificationHub;
@@ -29,6 +30,11 @@ namespace SCS.HomePhotos.Web.Hubs
         public void OnIndexCompleted()
         {
             _notificationHub.Clients.All.SendAdminsMessage("info", "Photo indexing completed");
+        }
+
+        public void OnIndexFailed()
+        {
+            _notificationHub.Clients.All.SendAdminsMessage("error", "Photo indexing failed");
         }
 
         public void OnItemProcessed(TaskCompleteInfo info)
