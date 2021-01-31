@@ -15,7 +15,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { AlertComponent, OrganizeComponent } from './components';
 import { SettingsService } from './services/settings.service';
 import { AccountComponent } from './account/account.component';
-import { PhotosService, TagService, PageInfoService, UserSettingsService } from './services';
+import { PhotosService, TagService, PageInfoService, UserSettingsService, ImageService } from './services';
 import { PageInfoComponent } from './components/page-info.component';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { SearchComponent } from './components/search.component';
@@ -123,6 +123,7 @@ import { AngularCropperjsModule } from 'angular-cropperjs';
     SettingsService,
     UserSettingsService,
     PhotosService,
+    ImageService,
     BsModalRef,
     TagService,
     LogService,

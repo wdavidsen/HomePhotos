@@ -1,7 +1,7 @@
 import { OnInit, Component, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FormGroup } from '@angular/forms';
-import { AccountService } from '../services';
+import { AccountService, ImageService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { PasswordChange } from '../models';
 import { CropperComponent } from 'angular-cropperjs';
@@ -45,6 +45,7 @@ export class AccountAvatardModalComponent implements OnInit, OnDestroy {
     };
 
     constructor(
+        private imageService: ImageService,
         public bsModalRef: BsModalRef,
         private accountService: AccountService,
         private toastr: ToastrService) {}
@@ -58,10 +59,13 @@ export class AccountAvatardModalComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.selectedfile = tempFile;
-        const reader = new FileReader();
-        reader.addEventListener('load', () => this.imageUrl = reader.result, false);
-        reader.readAsDataURL(this.selectedfile);
+        this.imageService.resizeImage(tempFile, 500, 500)
+          .then((blob) => {
+            this.selectedfile = this.imageService.blobToFile(blob, tempFile.name);
+            const reader = new FileReader();
+            reader.addEventListener('load', () => this.imageUrl = reader.result, false);
+            reader.readAsDataURL(this.selectedfile);
+          });
       };
     }
 
@@ -78,13 +82,7 @@ export class AccountAvatardModalComponent implements OnInit, OnDestroy {
         const canvas = cropper.getCroppedCanvas();
 
         canvas.toBlob((blob) => {
-          let file: File;
-          const temp: any = blob;
-          temp.name = this.selectedfile.name;
-          temp.lastModifiedDate = new Date();
-          file = temp;
-
-          this.accountService.updateAvatar(file)
+          this.accountService.updateAvatar(this.imageService.blobToFile(blob, this.selectedfile.name))
             .subscribe(
               (data) => {
                 this.newAvatarImage = data.avatarImage;

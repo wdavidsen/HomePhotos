@@ -9,3 +9,4 @@ export * from './organize.service';
 export * from './account.service';
 export * from './user-settings.service';
 export * from './signalr.service';
+export * from './image.service';
