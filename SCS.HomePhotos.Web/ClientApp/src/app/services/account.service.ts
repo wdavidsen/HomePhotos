@@ -26,7 +26,8 @@ export class AccountService {
         const formData = new FormData();
         formData.append('image', file, file.name);
 
-        return this.http.put<AvatarUpdate>(`${environment.apiUrl}/account/updateAvatar`, formData);
+        return this.http.put<AvatarUpdate>(`${environment.apiUrl}/account/updateAvatar`, formData)
+            .pipe(tap(avatarInfo => this.authService.updateAvatarImage(avatarInfo.avatarImage)));
     }
 
     info(user: AccountInfo): Observable<AccountInfo> {

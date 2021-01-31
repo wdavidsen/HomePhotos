@@ -87,6 +87,12 @@ export class AuthService {
     }
   }
 
+  updateAvatarImage(avatarImage: string) {
+    const user = this.currentUserValue;
+    user.avatarImage = avatarImage;
+    this.storeUser(user);
+  }
+
   private doLoginUser(user: User) {
     const tokens: Tokens = { jwt: user.jwt, refreshToken: user.refreshToken };
     this.storeTokens(tokens);
