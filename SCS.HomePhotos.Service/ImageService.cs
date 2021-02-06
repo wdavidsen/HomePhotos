@@ -272,12 +272,20 @@ namespace SCS.HomePhotos.Service
             return imageInfo;
         }
 
-        private string GetExifTimeTaken(IEnumerable<ExifDirectoryBase> exifDataList)
+        private string GetExifTimeTaken(IEnumerable<ExifDirectoryBase> directories)
         {
             var value = "";
 
-            foreach (var exifData in exifDataList)
+            var exifData1 = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
+            var exifData2 = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+            
+            foreach (var exifData in new ExifDirectoryBase[] { exifData1 , exifData2 })
             {
+                if (exifData == null)
+                {
+                    continue;
+                }
+
                 value = exifData.GetDescription(ExifDirectoryBase.TagDateTime) ?? exifData.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
 
                 if (string.IsNullOrWhiteSpace(value))
