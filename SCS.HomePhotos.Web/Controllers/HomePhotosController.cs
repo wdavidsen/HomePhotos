@@ -9,11 +9,6 @@ namespace SCS.HomePhotos.Web.Controllers
         {            
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         protected string GetAgentIdentifier()
         {
             var ipAddress = HttpContext?.Connection?.RemoteIpAddress;

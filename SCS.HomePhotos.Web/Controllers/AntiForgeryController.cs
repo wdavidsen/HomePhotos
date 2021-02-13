@@ -19,6 +19,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         [IgnoreAntiforgeryToken]
+        [HttpGet]
         public IActionResult Get()
         {
             var tokens = _antiForgery.GetAndStoreTokens(HttpContext);

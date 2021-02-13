@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -22,6 +23,8 @@ using SCS.HomePhotos.Web.Hubs;
 using SCS.HomePhotos.Web.Middleware;
 using SCS.HomePhotos.Web.Security;
 using SCS.HomePhotos.Workers;
+using System;
+using System.IO;
 using System.Threading.Tasks;
 // using SCS.HomePhotos.Web.Filters;
 
@@ -85,6 +88,35 @@ namespace SCS.HomePhotos.Web
 
             services.AddSignalR();
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomePhotos API", Version = "v1" });
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "SCS.HomePhotos.Web.xml"));
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "SCS.HomePhotos.Model.xml"));
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "SCS.HomePhotos.Service.xml"));                
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field; for example: Bearer [token here]",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
+            });
+
             // config
             var staticConfig = StaticConfig.Build(Configuration);
             var configData = new ConfigData(staticConfig);
@@ -139,10 +171,16 @@ namespace SCS.HomePhotos.Web
             }
             else
             {
-                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "HomePhotos API");
+                c.RoutePrefix = "swagger";
+            });
 
             app.UseGloablExceptionMiddleware();
             app.UseCors("AllowAllOrigins");
