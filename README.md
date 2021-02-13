@@ -1,4 +1,4 @@
-# Home Photos
+# HomePhotos
 
 This is the 4th generation of my home photos solution, which I use to keep up with new technology. It is build with security in mind with .NET Core, Angular, Typescript, Bootstrap, NGX, Dapper, SQLite and ImageSharp.
 
