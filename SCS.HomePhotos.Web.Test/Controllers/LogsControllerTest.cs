@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Controllers;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         private readonly Fixture _fixture;
 
         private readonly LogsController _logsController;
-        private readonly Mock<IAdminLogService> _adminLogService;        
+        private readonly Mock<IAdminLogService> _adminLogService;
         private readonly Mock<ILogger<LogsController>> _logger;
 
         public LogsControllerTest()

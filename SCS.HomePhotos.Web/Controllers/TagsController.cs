@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -56,7 +56,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpPut("merge", Name = "MergeTags")]
-        public async Task<IActionResult> MergeTags([FromBody]TagMergeInfo mergeInfo)
+        public async Task<IActionResult> MergeTags([FromBody] TagMergeInfo mergeInfo)
         {
             if (!ModelState.IsValid)
             {
@@ -71,7 +71,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpPut("copy", Name = "CopyTags")]
-        public async Task<IActionResult> CopyTags([FromBody]TagCopyInfo copyInfo)
+        public async Task<IActionResult> CopyTags([FromBody] TagCopyInfo copyInfo)
         {
             if (!ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         [Authorize(Policy = "Contributers")]
         [HttpPost("batchTag", Name = "GetPhotosToTag")]
-        public async Task<IActionResult> GetPhotosToTag([FromBody]int[] photoIds)
+        public async Task<IActionResult> GetPhotosToTag([FromBody] int[] photoIds)
         {
             if (!ModelState.IsValid)
             {
@@ -100,7 +100,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpPut("batchTag", Name = "TagPhotos")]
-        public async Task<IActionResult> TagPhotos([FromBody]BatchUpdateTags updateTags)
+        public async Task<IActionResult> TagPhotos([FromBody] BatchUpdateTags updateTags)
         {
             if (!ModelState.IsValid)
             {
@@ -115,15 +115,15 @@ namespace SCS.HomePhotos.Web.Controllers
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpPost(Name = "AddTag")]
-        public async Task<IActionResult> AddTag([FromBody]Dto.Tag tag)
+        public async Task<IActionResult> AddTag([FromBody] Dto.Tag tag)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(new ProblemModel(ModelState));
             }
 
-            try 
-            { 
+            try
+            {
                 var tagEntity = await _photoSevice.SaveTag(tag.ToModel());
 
                 return Ok(new Dto.Tag(tagEntity));
@@ -137,15 +137,15 @@ namespace SCS.HomePhotos.Web.Controllers
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpPut(Name = "UpdateTag")]
-        public async Task<IActionResult> UpdateTag([FromBody]Dto.Tag tag)
+        public async Task<IActionResult> UpdateTag([FromBody] Dto.Tag tag)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(new ProblemModel(ModelState));
             }
 
-            try 
-            { 
+            try
+            {
                 var tagEntity = await _photoSevice.SaveTag(tag.ToModel());
 
                 return Ok(new Dto.Tag(tagEntity));
@@ -159,7 +159,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpDelete("{tagId}", Name = "DeleteTag")]
-        public async Task<IActionResult> DeleteTag([FromRoute]int tagId)
+        public async Task<IActionResult> DeleteTag([FromRoute] int tagId)
         {
             if (!ModelState.IsValid)
             {

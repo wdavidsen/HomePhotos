@@ -11,6 +11,7 @@ namespace SCS.HomePhotos
         }
 
         public DateTime DateTaken { get; set; }
+
         public List<string> Tags { get; set; }
     }
 }

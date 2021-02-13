@@ -8,7 +8,6 @@ namespace SCS.HomePhotos
     /// </summary>
     public static class DateExtensions
     {
-
         /// <summary>
         /// Converts date/time day to the same day's beginning date/time.
         /// </summary>

@@ -1,8 +1,10 @@
 ﻿using AutoFixture;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SCS.HomePhotos.Data;
+using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
+using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Service.Workers;
 using SCS.HomePhotos.Workers;
 using System;
@@ -230,7 +232,7 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoData.Setup(m => m.DeletePhotos());
             _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()));
-            
+
             await _photoService.DeletePhotoCache(completeInfo.ContextUserName);
 
             try
@@ -258,7 +260,8 @@ namespace SCS.HomePhotos.Service.Test
             await _photoService.DeletePhotoCache(completeInfo.ContextUserName);
 
             var queueEvents = new Mock<IQueueEvents>();
-            queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) => {
+            queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) =>
+            {
                 Assert.Equal(completeInfo.Type, info.Type);
                 Assert.Equal(completeInfo.Success, info.Success);
                 Assert.Equal(completeInfo.ContextUserName, info.ContextUserName);
@@ -279,16 +282,17 @@ namespace SCS.HomePhotos.Service.Test
             var completeInfo = new TaskCompleteInfo(TaskType.ClearCache, "wdavidsen", false);
 
             _photoData.Setup(m => m.DeletePhotos());
-            
+
             _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()))
                 .Throws(new Exception("Some error"));
-            
+
             /* _logger.Setup(m => m.Log<FormattedLogValues>(LogLevel.Error, 0, It.IsAny<string>(), It.IsAny<Exception>(), It.IsAny<Func<FormattedLogValues, Exception, string>>())); */
-            
+
             await _photoService.DeletePhotoCache(completeInfo.ContextUserName);
 
             var queueEvents = new Mock<IQueueEvents>();
-            queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) => {
+            queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) =>
+            {
                 Assert.Equal(completeInfo.Type, info.Type);
                 Assert.Equal(completeInfo.Success, info.Success);
                 Assert.Equal(completeInfo.ContextUserName, info.ContextUserName);
@@ -306,7 +310,7 @@ namespace SCS.HomePhotos.Service.Test
                 Times.Once);
             _fileSystemService.Verify(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()),
                 Times.Once);
-            
+
             /* _logger.Verify(m => m.Log(It.IsAny<LogLevel>(), 0, It.IsAny<PhotoService>(), It.IsAny<Exception>(), It.IsAny<Func<PhotoService, Exception, string>>()),
                 Times.Once); */
 

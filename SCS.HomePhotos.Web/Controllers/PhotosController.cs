@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Service.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

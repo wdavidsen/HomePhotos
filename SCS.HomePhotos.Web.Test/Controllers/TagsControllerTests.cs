@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Controllers;
 using SCS.HomePhotos.Web.Models;
 using System;
@@ -230,7 +230,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 PhotoIds = photoIds.ToList(),
                 TagStates = tagStates.ToList()
             };
-            
+
             _photosService.Setup(m => m.UpdatePhotoTags(It.IsAny<List<int>>(), It.IsAny<List<string>>(), It.IsAny<List<int>>()));
 
             var response = await _tagsController.TagPhotos(batchUpdate);

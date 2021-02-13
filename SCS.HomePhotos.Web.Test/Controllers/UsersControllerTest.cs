@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Controllers;
 using SCS.HomePhotos.Web.Models;
 using System.Collections.Generic;

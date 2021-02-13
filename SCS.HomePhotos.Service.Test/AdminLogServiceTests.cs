@@ -1,7 +1,10 @@
 ﻿using AutoFixture;
 using Moq;
 using SCS.HomePhotos.Data;
+using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
+using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Service.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;

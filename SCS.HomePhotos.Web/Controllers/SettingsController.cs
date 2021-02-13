@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Dto;
 using System;
 using System.Threading.Tasks;

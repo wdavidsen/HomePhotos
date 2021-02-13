@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SCS.HomePhotos
+﻿namespace SCS.HomePhotos
 {
     public class PasswordRequirements
     {

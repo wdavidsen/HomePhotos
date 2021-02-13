@@ -1,7 +1,9 @@
 using AutoFixture;
 using Moq;
-using SCS.HomePhotos.Data;
+using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
+using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Service.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,7 +30,8 @@ namespace SCS.HomePhotos.Service.Test
 
             _staticConfig.SetupGet(p => p.MaxFailedLogins).Returns(3);
             _staticConfig.SetupGet(p => p.PasswordRequirements)
-                .Returns(new PasswordRequirements { 
+                .Returns(new PasswordRequirements
+                {
                     Digits = 1,
                     MinLength = 8,
                     SpecialCharacters = 1,
@@ -248,8 +251,8 @@ namespace SCS.HomePhotos.Service.Test
                    Assert.Equal(emailAddress, u.EmailAddress);
                });
 
-            var userToCreate = new User 
-            { 
+            var userToCreate = new User
+            {
                 UserName = userName,
                 FirstName = firstName,
                 LastName = lastName,
@@ -387,7 +390,7 @@ namespace SCS.HomePhotos.Service.Test
             };
 
             _userData.Setup(m => m.GetUser(userName)).ReturnsAsync(user);
-           
+
             var result = await _accountService.ChangePassword(userName, password, newPassword);
 
             _userData.Verify(m => m.GetUser(userName),
@@ -546,7 +549,7 @@ namespace SCS.HomePhotos.Service.Test
             _userData.Setup(m => m.GetUser(userName)).ReturnsAsync(user);
 
             _userTokenData.Setup(m => m.DeleteAgentRefreshTokens(userId, agentId))
-                .Callback<int, string>((uId, aId) => 
+                .Callback<int, string>((uId, aId) =>
                 {
                     Assert.Equal(userId, uId);
                     Assert.Equal(agentId, aId);

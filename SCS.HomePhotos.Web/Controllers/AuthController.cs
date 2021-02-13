@@ -4,23 +4,21 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Models;
 using SCS.HomePhotos.Web.Security;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("SCS.HomePhotos.Web.Test")]
 
 namespace SCS.HomePhotos.Web.Controllers
-{    
+{
     [Route("api/[controller]")]
     public class AuthController : HomePhotosController
     {
@@ -30,9 +28,9 @@ namespace SCS.HomePhotos.Web.Controllers
         private readonly IStaticConfig _staticConfig;
         private readonly ISecurityService _securityService;
 
-        public AuthController(ILogger<AuthController> logger, 
-            IOptions<JwtAuthentication> jwtAuthentication, 
-            IAccountService accountService, 
+        public AuthController(ILogger<AuthController> logger,
+            IOptions<JwtAuthentication> jwtAuthentication,
+            IAccountService accountService,
             IStaticConfig staticConfig,
             ISecurityService securityService)
         {
@@ -45,7 +43,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody]LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -141,7 +139,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody]RefreshModel model)
+        public async Task<IActionResult> Refresh([FromBody] RefreshModel model)
         {
             if (!ModelState.IsValid)
             {

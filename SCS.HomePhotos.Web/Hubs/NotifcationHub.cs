@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Service.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

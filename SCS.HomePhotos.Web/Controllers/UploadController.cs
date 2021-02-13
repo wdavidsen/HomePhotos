@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Service;
+using SCS.HomePhotos.Service.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -88,7 +88,7 @@ namespace SCS.HomePhotos.Web.Controllers
                     if (!Constants.AcceptedExtensions.Any(e => e == extension.ToUpper()))
                     {
                         return BadRequest();
-                    }   
+                    }
 
                     // check image header bytes
                     using (var sourceStream = file.OpenReadStream())

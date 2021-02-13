@@ -1,8 +1,9 @@
 ﻿using AutoFixture;
-using Microsoft.Extensions.Logging;
 using Moq;
-using SCS.HomePhotos.Data;
+using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
+using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Service.Core;
 using System.Linq;
 using Xunit;
 
@@ -52,7 +53,7 @@ namespace SCS.HomePhotos.Service.Test
             var config = _fixture.Create<Config>();
 
             _configData.Setup(m => m.GetConfiguration())
-                .ReturnsAsync(config);            
+                .ReturnsAsync(config);
 
             _configData.Setup(m => m.SaveConfiguration(It.IsAny<Config>()));
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
@@ -11,17 +12,17 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using SCS.HomePhotos.Service;
-using SCS.HomePhotos.Data;
+using SCS.HomePhotos.Data.Contracts;
+using SCS.HomePhotos.Data.Core;
+using SCS.HomePhotos.Model;
+using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Service.Workers;
+using SCS.HomePhotos.Web.Hubs;
 using SCS.HomePhotos.Web.Middleware;
 using SCS.HomePhotos.Web.Security;
 using SCS.HomePhotos.Workers;
 using System.Threading.Tasks;
-using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Web.Hubs;
-using System;
-using Microsoft.AspNetCore.Http;
 // using SCS.HomePhotos.Web.Filters;
 
 namespace SCS.HomePhotos.Web
@@ -55,7 +56,7 @@ namespace SCS.HomePhotos.Web
                 options.HeaderName = "X-XSRF-Token";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             });
-            
+
             services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer();
@@ -95,7 +96,7 @@ namespace SCS.HomePhotos.Web
             var configService = new ConfigService(configData, dynamicConfig, staticConfig);
             SetDynamicConfig(configService).Wait();
             services.AddSingleton<IConfigService>(configService);
-            
+
             // background tasks            
             services.AddHostedService<QueuedHostedService>();
             services.AddHostedService<TimedIndexHostedService>();
@@ -112,13 +113,13 @@ namespace SCS.HomePhotos.Web
             services.AddScoped<IFileSystemService, FileSystemService>();
             services.AddScoped<IImageTransformer, ImageTransformer>();
             services.AddScoped<IImageService, ImageService>();
-            services.AddScoped<IPhotoService, PhotoService>();            
+            services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ISecurityService, SecurityService>();
             services.AddSingleton<IAdminLogService>(new AdminLogService(new LogData(staticConfig), staticConfig));
             services.AddSingleton<IIndexEvents, IndexEvents>();
-            services.AddSingleton<IQueueEvents, QueueEvents>();            
+            services.AddSingleton<IQueueEvents, QueueEvents>();
             services.AddSingleton<IClientMessageSender, ClientMessageSender>();
             services.AddSingleton<IUploadTracker, UploadTracker>();
             services.AddSingleton<IImageMetadataService, ImageMetadataService>();
@@ -145,12 +146,12 @@ namespace SCS.HomePhotos.Web
 
             app.UseGloablExceptionMiddleware();
             app.UseCors("AllowAllOrigins");
-            
+
             // remove to use http, not https
             //app.UseHttpsRedirection();         
 
             app.UsePhotoImageMiddleware();
-            app.UseStaticFiles();            
+            app.UseStaticFiles();
 
             if (!env.IsDevelopment())
             {

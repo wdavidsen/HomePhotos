@@ -20,6 +20,7 @@ namespace SCS.HomePhotos
         #endregion
 
         public bool TrackChanges { get; set; }
+
         public int? ConfigId
         {
             get
@@ -36,6 +37,7 @@ namespace SCS.HomePhotos
                 }
             }
         }
+
         public string IndexPath
         {
             get
@@ -52,6 +54,7 @@ namespace SCS.HomePhotos
                 }
             }
         }
+
         public string CacheFolder
         {
             get
@@ -68,6 +71,7 @@ namespace SCS.HomePhotos
                 }
             }
         }
+
         public string MobileUploadsFolder
         {
             get
@@ -84,6 +88,7 @@ namespace SCS.HomePhotos
                 }
             }
         }
+
         public int ThumbnailSize
         {
             get
@@ -100,6 +105,7 @@ namespace SCS.HomePhotos
                 }
             }
         }
+
         public int SmallImageSize
         {
             get
@@ -116,6 +122,7 @@ namespace SCS.HomePhotos
                 }
             }
         }
+
         public int LargeImageSize
         {
             get
@@ -132,6 +139,7 @@ namespace SCS.HomePhotos
                 }
             }
         }
+
         public DateTime? NextIndexTime
         {
             get
@@ -148,6 +156,7 @@ namespace SCS.HomePhotos
                 }
             }
         }
+
         public bool IndexOnStartup { get; set; }
 
         public int IndexFrequencyHours
