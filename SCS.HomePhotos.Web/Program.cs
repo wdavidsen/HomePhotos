@@ -21,6 +21,7 @@ namespace SCS.HomePhotos.Web
                     });
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseUrls("https://0.0.0.0:44375", "http://0.0.0.0:8080");
-                });
+                })
+                .UseWindowsService();
     }
 }
