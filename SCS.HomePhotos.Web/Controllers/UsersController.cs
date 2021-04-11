@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
+    /// <summary>User services.</summary>
     [Authorize(Policy = "Admins")]
     [Route("api/[controller]")]
     public class UsersController : HomePhotosController
@@ -20,6 +22,10 @@ namespace SCS.HomePhotos.Web.Controllers
         private readonly IAccountService _accountService;
         private readonly IStaticConfig _staticConfig;
 
+        /// <summary>Initializes a new instance of the <see cref="UsersController" /> class.</summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="accountService">The account service.</param>
+        /// <param name="staticConfig">The static configuration.</param>
         public UsersController(ILogger<UsersController> logger, IAccountService accountService, IStaticConfig staticConfig)
         {
             _logger = logger;
@@ -27,6 +33,11 @@ namespace SCS.HomePhotos.Web.Controllers
             _staticConfig = staticConfig;
         }
 
+        /// <summary>Gets all users.</summary>
+        /// <returns>A user list.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]        
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
         [HttpGet("", Name = "GetUsers")]
         public async Task<IActionResult> GetUsers()
         {
@@ -40,6 +51,12 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(userDtoList);
         }
 
+        /// <summary>Gets a user.</summary>
+        /// <param name="userId">The user id.</param>
+        /// <returns>A user.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
         [HttpGet("{userId}", Name = "GetUser")]
         public async Task<IActionResult> GetUser([FromRoute]int userId)
         {
@@ -48,6 +65,13 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(new Dto.User(user));
         }
 
+        /// <summary>Adds a user.</summary>
+        /// <param name="user">The user to add.</param>
+        /// <returns>The new user.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
         [HttpPost("", Name = "AddUser")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddUser([FromBody]Dto.PasswordUser user)
@@ -62,6 +86,13 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(new Dto.User(updatedUser));
         }
 
+        /// <summary>Updates a user.</summary>
+        /// <param name="user">The user to update.</param>
+        /// <returns>The updated user.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
         [HttpPut("{userId}", Name = "UpdateUser")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateUser([FromBody]Dto.User user)
@@ -76,6 +107,11 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(new Dto.User(updatedUser));
         }
 
+        /// <summary>Deletes a user.</summary>
+        /// <param name="userId">The user id.</param>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]        
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpDelete("{userId}", Name = "DeleteUser")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUser([FromRoute]int userId)
@@ -85,6 +121,15 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
+        /// <summary>Resets a user's password.</summary>
+        /// <param name="userId">The user id.</param>
+        /// <param name="resetPasswordModel">The reset password model.</param>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("{userId}/resetPassword", Name = "ResetPassword")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword([FromRoute] int userId, [FromBody] ResetPasswordModel resetPasswordModel)

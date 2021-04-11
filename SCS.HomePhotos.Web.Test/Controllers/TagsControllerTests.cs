@@ -139,7 +139,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _photosService.Setup(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId))
                 .ReturnsAsync(tag);
 
-            var response = await _tagsController.CopyTags(mergeInfo);
+            var response = await _tagsController.CopyTag(mergeInfo);
 
             _photosService.Verify(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId),
                 Times.Once);
@@ -171,7 +171,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _photosService.Verify(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId),
                 Times.Never);
 
-            var response = await _tagsController.CopyTags(mergeInfo);
+            var response = await _tagsController.CopyTag(mergeInfo);
 
             Assert.IsType<BadRequestObjectResult>(response);
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service.Contracts;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
+    /// <summary>Settings services.</summary>
     [Authorize]
     [Authorize(Policy = "Admins")]
     [Route("api/[controller]")]
@@ -17,6 +19,10 @@ namespace SCS.HomePhotos.Web.Controllers
         private readonly IDynamicConfig _dynamicConfig;
         private readonly IPhotoService _photoService;
 
+        /// <summary>Initializes a new instance of the <see cref="SettingsController" /> class.</summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="dynamicConfig">The dynamic configuration.</param>
+        /// <param name="photoService">The photo service.</param>
         public SettingsController(ILogger<SettingsController> logger, IDynamicConfig dynamicConfig, IPhotoService photoService)
         {
             _logger = logger;
@@ -24,6 +30,11 @@ namespace SCS.HomePhotos.Web.Controllers
             _photoService = photoService;
         }
 
+        /// <summary>Gets the settings.</summary>
+        /// <returns>The settings.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]        
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Settings))]
         [HttpGet]
         public IActionResult Get()
         {
@@ -32,7 +43,14 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(settings);
         }
 
+        /// <summary>Updates settings.</summary>
+        /// <param name="settings">The settings.</param>
+        /// <param name="reprocessPhotos">if set to <c>true</c> reprocess photos.</param>
         [HttpPut]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Put([FromBody] Dto.Settings settings, bool reprocessPhotos = false)
         {
@@ -57,7 +75,13 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
+        /// <summary>Initiates photo indexing immediately.</summary>
+        /// <param name="reprocessPhotos">if set to <c>true</c> reprocess photos.</param>
+        /// <returns>The settings.</returns>
         [HttpPut("indexNow", Name = "UpdateIndex")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]        
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Settings))]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateNow([FromQuery] bool reprocessPhotos = false)
         {
@@ -72,7 +96,11 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(settings);
         }
 
+        /// <summary>Clears the photo cache.</summary>
         [HttpPut("clearCache", Name = "ClearCache")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ClearCache()
         {

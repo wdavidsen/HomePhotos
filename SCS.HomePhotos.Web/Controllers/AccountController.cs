@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Model;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
+    /// <summary>Account services.</summary>
     [Authorize]
     [Route("api/[controller]")]
     public class AccountController : HomePhotosController
@@ -27,6 +29,13 @@ namespace SCS.HomePhotos.Web.Controllers
         private readonly IFileUploadService _fileUploadService;
         private readonly IDynamicConfig _dynamicConfig;
 
+        /// <summary>Initializes a new instance of the <see cref="AccountController" /> class.</summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="accountService">The account service.</param>
+        /// <param name="staticConfig">The static configuration.</param>
+        /// <param name="securityService">The security service.</param>
+        /// <param name="fileUploadService">The file upload service.</param>
+        /// <param name="dynamicConfig">The dynamic configuration.</param>
         public AccountController(ILogger<AccountController> logger,
             IAccountService accountService,
             IStaticConfig staticConfig,
@@ -42,8 +51,15 @@ namespace SCS.HomePhotos.Web.Controllers
             _dynamicConfig = dynamicConfig;
         }
 
+        /// <summary>Registers a user.</summary>
+        /// <param name="model">The register model.</param>
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterModel model)
         {
@@ -73,8 +89,15 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
+        /// <summary>Changes a user's password.</summary>
+        /// <param name="model">The change passeord model.</param>
+        /// <returns>A new JWT and refresh token.</returns>
         [Authorize]
         [ValidateAntiForgeryToken]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]        
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResultModel))]
         [HttpPost("changePassword")]
         public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordModel model)
         {
@@ -117,8 +140,15 @@ namespace SCS.HomePhotos.Web.Controllers
             });
         }
 
+        /// <summary>Updates the avatar image.</summary>
+        /// <param name="model">The avatar model.</param>
+        /// <returns>The avatar image name.</returns>
         [Authorize]
         [ValidateAntiForgeryToken]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPut("updateAvatar")]
         public async Task<IActionResult> UpdateAvatar([FromForm] AvatarModel model)
         {
@@ -181,7 +211,12 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(new { avatarImage = newFileName });
         }
 
+        /// <summary>Gets current user account info.</summary>
+        /// <returns>User's account info.</returns>
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]        
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.AccountInfo))]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -190,8 +225,14 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(new Dto.AccountInfo(user));
         }
 
+        /// <summary>Updates current user's account information.</summary>
+        /// <param name="accountInfo">The account information.</param>
+        /// <returns>User's account info.</returns>
         [Authorize]
         [ValidateAntiForgeryToken]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.AccountInfo))]
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]Dto.AccountInfo accountInfo)
         {

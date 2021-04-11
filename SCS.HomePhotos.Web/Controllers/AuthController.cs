@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,6 +20,7 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
+    /// <summary>Authentication services.</summary>
     [Route("api/[controller]")]
     public class AuthController : HomePhotosController
     {
@@ -28,6 +30,13 @@ namespace SCS.HomePhotos.Web.Controllers
         private readonly IStaticConfig _staticConfig;
         private readonly ISecurityService _securityService;
 
+        /// <summary>Initializes a new instance of the <see cref="AuthController" /> class.</summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="jwtAuthentication">The JWT authentication.</param>
+        /// <param name="accountService">The account service.</param>
+        /// <param name="staticConfig">The static configuration.</param>
+        /// <param name="securityService">The security service.</param>
+        /// <exception cref="ArgumentNullException">jwtAuthentication</exception>
         public AuthController(ILogger<AuthController> logger,
             IOptions<JwtAuthentication> jwtAuthentication,
             IAccountService accountService,
@@ -41,7 +50,13 @@ namespace SCS.HomePhotos.Web.Controllers
             _securityService = securityService;
         }
 
+        /// <summary>User log-in.</summary>
+        /// <param name="model">The login model.</param>
+        /// <returns>A JWT and refresh token.</returns>
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.TokenUser))]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
@@ -80,7 +95,12 @@ namespace SCS.HomePhotos.Web.Controllers
             });
         }
 
+        /// <summary>User log-in with password change.</summary>
+        /// <param name="model">The user/change password model.</param>
+        /// <returns>A JWT and refresh token.</returns>
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]        
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.TokenUser))]
         [HttpPost("loginWithPasswordChange")]
         public async Task<IActionResult> LoginWithPasswordChange([FromBody] ChangePasswordModel model)
         {
@@ -119,7 +139,11 @@ namespace SCS.HomePhotos.Web.Controllers
             });
         }
 
+        /// <summary>Logs-out current user.</summary>
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]        
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("logout")]
         [SuppressMessage("Security", "SCS0016:Controller method is vulnerable to CSRF", Justification = "Anti-forgery detection deemed unecessary for logging out.")]
         public async Task<IActionResult> Logout()
@@ -137,7 +161,13 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
+        /// <summary>Refreshes a user's auth token.</summary>
+        /// <param name="model">The refresh model.</param>
+        /// <returns>A JWT and refresh token.</returns>
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResultModel))]
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshModel model)
         {

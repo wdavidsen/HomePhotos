@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service.Contracts;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
+    /// <summary>Tag services.</summary>
     [Authorize]
     [Route("api/[controller]")]
     public class TagsController : HomePhotosController
@@ -16,12 +18,17 @@ namespace SCS.HomePhotos.Web.Controllers
         private readonly ILogger<TagsController> _logger;
         private readonly IPhotoService _photoSevice;
 
+        /// <summary>Initializes a new instance of the <see cref="TagsController" /> class.</summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="photoSevice">The photo sevice.</param>
         public TagsController(ILogger<TagsController> logger, IPhotoService photoSevice)
         {
             _logger = logger;
             _photoSevice = photoSevice;
         }
 
+        /// <summary>Gets all tags.</summary>
+        /// <returns>A list of tags.</returns>
         [HttpGet]
         [Authorize(Policy = "Readers")]
         public async Task<IActionResult> Get()
@@ -38,6 +45,11 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(dtos);
         }
 
+        /// <summary>Searches the tags.</summary>
+        /// <param name="keywords">The keywords.</param>
+        /// <param name="pageNum">The page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>A list of tags.</returns>
         [HttpGet("search", Name = "SearchTags")]
         public async Task<IActionResult> SearchTags([FromQuery] string keywords, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 200)
         {
@@ -53,6 +65,9 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(dtos);
         }
 
+        /// <summary>Merges tags.</summary>
+        /// <param name="mergeInfo">The merge information.</param>
+        /// <returns>Final merged tag.</returns>
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpPut("merge", Name = "MergeTags")]
@@ -68,10 +83,13 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(new Dto.Tag(finalTag));
         }
 
+        /// <summary>Copies a tag.</summary>
+        /// <param name="copyInfo">The copy information.</param>
+        /// <returns>The new tag.</returns>
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpPut("copy", Name = "CopyTags")]
-        public async Task<IActionResult> CopyTags([FromBody] TagCopyInfo copyInfo)
+        public async Task<IActionResult> CopyTag([FromBody] TagCopyInfo copyInfo)
         {
             if (!ModelState.IsValid)
             {
@@ -83,6 +101,9 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(new Dto.Tag(newTag));
         }
 
+        /// <summary>Gets specified photos to tag.</summary>
+        /// <param name="photoIds">The photo ids.</param>
+        /// <returns>Batch tag info.</returns>
         [Authorize(Policy = "Contributers")]
         [HttpPost("batchTag", Name = "GetPhotosToTag")]
         public async Task<IActionResult> GetPhotosToTag([FromBody] int[] photoIds)
@@ -97,6 +118,8 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(new BatchSelectTags(photoIds, photoTags));
         }
 
+        /// <summary>Tags the photos.</summary>
+        /// <param name="updateTags">The updated tags.</param>
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpPut("batchTag", Name = "TagPhotos")]
@@ -112,6 +135,8 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
+        /// <summary>Adds a tag.</summary>
+        /// <param name="tag">The tag to add.</param>
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpPost(Name = "AddTag")]
@@ -134,6 +159,9 @@ namespace SCS.HomePhotos.Web.Controllers
             }
         }
 
+        /// <summary>Updates a tag.</summary>
+        /// <param name="tag">The tag to update.</param>
+        /// <returns>The updated tag.</returns>
         [Authorize(Policy = "Contributers")]
         [ValidateAntiForgeryToken]
         [HttpPut(Name = "UpdateTag")]
@@ -156,7 +184,13 @@ namespace SCS.HomePhotos.Web.Controllers
             }
         }
 
+        /// <summary>Deletes a tag.</summary>
+        /// <param name="tagId">The tag id.</param>
         [Authorize(Policy = "Contributers")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ValidateAntiForgeryToken]
         [HttpDelete("{tagId}", Name = "DeleteTag")]
         public async Task<IActionResult> DeleteTag([FromRoute] int tagId)
@@ -172,7 +206,9 @@ namespace SCS.HomePhotos.Web.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(new { ex.Message });
+                var message = $"Failed to delete tag {tagId}.";
+                _logger.LogError(ex, message);
+                return BadRequest(new ProblemModel { Message = message });
             }
 
             return Ok();

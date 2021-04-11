@@ -7,7 +7,7 @@ namespace SCS.HomePhotos.Web
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args)                
+            CreateHostBuilder(args)
                 .Build()
                 .Run();
         }
@@ -16,8 +16,8 @@ namespace SCS.HomePhotos.Web
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureKestrel(options => { 
-                        
+                    webBuilder.ConfigureKestrel(options =>
+                    {
                     });
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseUrls("https://0.0.0.0:44375", "http://0.0.0.0:8080");

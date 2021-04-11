@@ -5,8 +5,16 @@ using System.Linq;
 
 namespace SCS.HomePhotos.Web.Models
 {
+    /// <summary>Batch select tags info.</summary>
     public class BatchSelectTags
     {
+        /// <summary>Initializes a new instance of the <see cref="BatchSelectTags" /> class.</summary>
+        /// <param name="photoIds">The photo ids.</param>
+        /// <param name="tags">The tags.</param>
+        /// <exception cref="ArgumentNullException">photoIds
+        /// or
+        /// tags</exception>
+        /// <exception cref="ArgumentException">At lease one photo must be selected. - photoIds</exception>
         public BatchSelectTags(IEnumerable<int> photoIds, IEnumerable<Tag> tags)
         {
             if (photoIds == null)
@@ -41,6 +49,8 @@ namespace SCS.HomePhotos.Web.Models
             }
         }
 
+        /// <summary>Gets or sets the tags.</summary>
+        /// <value>The tags.</value>
         public List<AmbiguousTagState> Tags { get; set; }
     }
 }

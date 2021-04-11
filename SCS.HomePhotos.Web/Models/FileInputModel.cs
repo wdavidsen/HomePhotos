@@ -3,7 +3,7 @@
 namespace SCS.HomePhotos.Web.Models
 {
     /// <summary>
-    /// Represents an uploaded file.
+    /// File upload model.
     /// </summary>
     public class FileInputModel
     {

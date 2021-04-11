@@ -13,9 +13,7 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
-    /// <summary>
-    /// Receives uploaded files.
-    /// </summary>
+    /// <summary>Upload services.</summary>
     [Authorize]
     [Authorize(Roles = "Admin,Contributer")]
     [Route("api/[controller]")]
@@ -43,11 +41,14 @@ namespace SCS.HomePhotos.Web.Controllers
 
         // [DisableRequestSizeLimit]
 
-        /// <summary>
-        /// Receives one or more image files and returns their thumbnail URLs.
-        /// </summary>
-        /// <param name="formdata">The uploaded files and form data.</param>
+
+        /// <summary>Receives an image upload.</summary>
+        /// <param name="formdata">The form data containing images and tag info.</param>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Route("imageUpload")]
         [RequestSizeLimit(20_000_000)] // 20 MB        
         [SuppressMessage("Security", "SCS0018:Path traversal: injection possible in {1} argument passed to '{0}'", Justification = "Invalid characters are being checked in file name prior to passing it to steam.")]

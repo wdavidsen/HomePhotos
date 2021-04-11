@@ -3,12 +3,16 @@ using System.Linq;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
+    /// <summary>Base controller.</summary>
     public class HomePhotosController : Controller
     {
+        /// <summary>Initializes a new instance of the <see cref="HomePhotosController" /> class.</summary>
         public HomePhotosController()
         {            
         }
 
+        /// <summary>Gets the user agent identifier.</summary>
+        /// <returns>User agent id.</returns>
         protected string GetAgentIdentifier()
         {
             var ipAddress = HttpContext?.Connection?.RemoteIpAddress;
@@ -23,6 +27,9 @@ namespace SCS.HomePhotos.Web.Controllers
             return $"{ipHeader}:{Request.Headers["User-Agent"].ToString()}";
         }
 
+        /// <summary>Gets a header value.</summary>
+        /// <param name="header">The header kwy.</param>
+        /// <returns>Header value.</returns>
         protected string GetHeader(string header)
         {
             // https://stackoverflow.com/a/36316189
