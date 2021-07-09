@@ -44,7 +44,7 @@ namespace SCS.HomePhotos.Data.Core
 
         public async Task DeleteLogEntries(DateTime olderThanDate)
         {
-            var oldEntries = await GetListAsync<LogEntry>("WHERE Timestamp > @Timestamp", new { Timestamp = olderThanDate });
+            var oldEntries = await GetListAsync<LogEntry>("WHERE Timestamp < @Timestamp", new { Timestamp = olderThanDate });
 
             foreach (var entry in oldEntries)
             {
