@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../services';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 // based on: https://angular-academy.com/angular-jwt/
 @Injectable()
@@ -11,7 +12,7 @@ export class TokenInterceptor implements HttpInterceptor {
     private isRefreshing = false;
     private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  constructor(public authService: AuthService, private router: Router) { }
+  constructor(public authService: AuthService, private router: Router, private spinner: NgxSpinnerService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
@@ -29,6 +30,7 @@ export class TokenInterceptor implements HttpInterceptor {
                     return throwError(error);
                 }
                 else if (request.url.endsWith('auth/login')) {
+                    this.spinner.hide();
                     return throwError(error);
                 }
                 else {
@@ -36,6 +38,7 @@ export class TokenInterceptor implements HttpInterceptor {
                 }
             }
             else {
+                this.spinner.hide();
                 return throwError(error);
             }
         }));
