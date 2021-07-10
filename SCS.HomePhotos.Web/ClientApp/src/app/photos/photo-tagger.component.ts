@@ -48,20 +48,23 @@ export class PhotoTaggerComponent implements OnInit {
     }
 
     addTag() {
+        if (!this.selectedTag.length) {
+            return;
+        }
         if (this.tagStates.find((t) => t.tagName.toUpperCase() === this.selectedTag.toUpperCase())) {
             this.toastr.warning(`Tag already applied`);
+            return;
         }
-        else {
-            this.tagStates.push({
-                tagId: 0,
-                tagName: this.selectedTag,
-                checked: true,
-                indeterminate: false,
-                allowIndeterminate: false
-            });
-            this.dirtyTags.push(this.selectedTag);
-            this.selectedTag = null;
-        }
+
+        this.tagStates.push({
+            tagId: 0,
+            tagName: this.selectedTag,
+            checked: true,
+            indeterminate: false,
+            allowIndeterminate: false
+        });
+        this.dirtyTags.push(this.selectedTag);
+        this.selectedTag = null;
     }
 
     tagStateChanged(event) {

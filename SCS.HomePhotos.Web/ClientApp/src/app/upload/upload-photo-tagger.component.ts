@@ -26,19 +26,21 @@ export class UploadPhotoTaggerComponent implements OnInit {
     }
 
     addTag() {
+        if (!this.selectedTag.length) {
+            return;
+        }
         if (this.tagStates.find((t) => t.tagName.toUpperCase() === this.selectedTag.toUpperCase())) {
             this.toastr.warning(`Tag already applied`);
         }
-        else {
-            this.tagStates.push({
-                tagId: 0,
-                tagName: this.selectedTag,
-                checked: true,
-                indeterminate: false,
-                allowIndeterminate: false
-            });
-            this.selectedTag = null;
-        }
+
+        this.tagStates.push({
+            tagId: 0,
+            tagName: this.selectedTag,
+            checked: true,
+            indeterminate: false,
+            allowIndeterminate: false
+        });
+        this.selectedTag = null;
     }
 
     removeTag(tagState: TagState) {
