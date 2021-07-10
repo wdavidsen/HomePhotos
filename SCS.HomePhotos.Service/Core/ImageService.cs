@@ -231,13 +231,13 @@ namespace SCS.HomePhotos.Service.Core
 
             if (existingPhoto == null)
             {
-                var photoTags = dirTags.ToArray();
+                var photoTags = dirTags.ToList();
 
                 if (tags != null && tags.Length > 0)
                 {
-                    Array.Copy(tags, photoTags, tags.Length);
+                    photoTags.AddRange(tags);
                 }
-                _photoService.AssociateTags(photo, photoTags);
+                _photoService.AssociateTags(photo, photoTags.ToArray());
             }
 
             _logger.LogInformation("Saved photo to database.");

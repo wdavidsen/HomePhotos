@@ -57,7 +57,12 @@ namespace SCS.HomePhotos.Web.Controllers
             var acceptedExtensions = new string[] { "JPG", "JPEG", "PNG", "GIF" };
 
             var files = HttpContext.Request.Form.Files;
-            var tags = (formdata.ContainsKey("tagList") && formdata["tagList"].Count > 0) ? formdata["tagList"].ToList() : new List<string>();
+            var tags = new List<string>();
+
+            if (formdata.ContainsKey("tagList") && formdata["tagList"].ToString().Length > 0)
+            {
+                tags = formdata["tagList"].ToString().Split(',').ToList();
+            }
 
             foreach (var file in files)
             {
