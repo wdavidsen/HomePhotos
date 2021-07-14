@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Models;
 using System;
@@ -61,7 +58,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody]RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -96,10 +93,10 @@ namespace SCS.HomePhotos.Web.Controllers
         [ValidateAntiForgeryToken]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]        
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResultModel))]
         [HttpPost("changePassword")]
-        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordModel model)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -160,7 +157,7 @@ namespace SCS.HomePhotos.Web.Controllers
             {
                 fileName = model.Image.GetFileName();
 
-                var extension = Path.GetExtension(fileName);                
+                var extension = Path.GetExtension(fileName);
 
                 #region Validations
 
@@ -196,7 +193,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 filePath = Path.Combine(_dynamicConfig.CacheFolder, Constants.AvatarFolder, newFileName);
 
                 _fileUploadService.CreateDirectory(filePath);
-                await _fileUploadService.CopyFile(model.Image, filePath, FileMode.Create);                
+                await _fileUploadService.CopyFile(model.Image, filePath, FileMode.Create);
 
                 var user = await _accountService.GetUser(User.Identity.Name);
                 user.AvatarImage = newFileName;
@@ -215,7 +212,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <returns>User's account info.</returns>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]        
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.AccountInfo))]
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -234,7 +231,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.AccountInfo))]
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody]Dto.AccountInfo accountInfo)
+        public async Task<IActionResult> Put([FromBody] Dto.AccountInfo accountInfo)
         {
             if (accountInfo.Username != User.Identity.Name)
             {

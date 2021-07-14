@@ -40,12 +40,35 @@ namespace SCS.HomePhotos
     public class PasswordHash
     {
         // The following constants may be changed without breaking existing hashes.
+
+        /// <summary>
+        /// The salt byte size.
+        /// </summary>
         public const int SALT_BYTE_SIZE = 24;
+
+        /// <summary>
+        /// The hash byte size.
+        /// </summary>
         public const int HASH_BYTE_SIZE = 24;
+
+        /// <summary>
+        /// The PBKD f2 iterations.
+        /// </summary>
         public const int PBKDF2_ITERATIONS = 1000;
 
+        /// <summary>
+        /// The iteration index.
+        /// </summary>
         public const int ITERATION_INDEX = 0;
+
+        /// <summary>
+        /// The salt index.
+        /// </summary>
         public const int SALT_INDEX = 1;
+
+        /// <summary>
+        /// The PBKD f2 index.
+        /// </summary>
         public const int PBKDF2_INDEX = 2;
 
         /// <summary>
@@ -65,6 +88,12 @@ namespace SCS.HomePhotos
                 Convert.ToBase64String(hash);
         }
 
+        /// <summary>
+        /// Creates the hash same salt.
+        /// </summary>
+        /// <param name="existingHash">The existing hash.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>The created salt.</returns>
         public static string CreateHashSameSalt(string existingHash, string password)
         {
             char[] delimiter = { ':' };
@@ -78,6 +107,11 @@ namespace SCS.HomePhotos
                 Convert.ToBase64String(hash);
         }
 
+        /// <summary>
+        /// Gets the salt.
+        /// </summary>
+        /// <param name="size">The salt size.</param>
+        /// <returns>The salt bytes.</returns>
         public static byte[] GetSalt(int size)
         {
             RNGCryptoServiceProvider csprng = new RNGCryptoServiceProvider();
@@ -87,6 +121,10 @@ namespace SCS.HomePhotos
             return salt;
         }
 
+        /// <summary>
+        /// Gets the salt.
+        /// </summary>
+        /// <returns>The salt bytes.</returns>
         public static byte[] GetSalt()
         {
             return GetSalt(SALT_BYTE_SIZE);

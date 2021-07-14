@@ -4,9 +4,17 @@ using System.Runtime.CompilerServices;
 
 namespace SCS.HomePhotos
 {
+    /// <summary>
+    /// The configuration that can be updated by the application during runtime.
+    /// </summary>
+    /// <seealso cref="SCS.HomePhotos.IDynamicConfig" />
+    /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
     public class DynamicConfig : IDynamicConfig, INotifyPropertyChanged
     {
-        #region Fields
+        #region Fields        
+        /// <summary>
+        /// Occurs when a property changed.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
         private int? _configId;
         private string _indexPath;
@@ -19,8 +27,20 @@ namespace SCS.HomePhotos
         private int _indexFrequencyHours;
         #endregion
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to track changes.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if tracking changes; otherwise, <c>false</c>.
+        /// </value>
         public bool TrackChanges { get; set; }
 
+        /// <summary>
+        /// Gets or sets the configuration identifier.
+        /// </summary>
+        /// <value>
+        /// The configuration identifier.
+        /// </value>
         public int? ConfigId
         {
             get
@@ -38,6 +58,12 @@ namespace SCS.HomePhotos
             }
         }
 
+        /// <summary>
+        /// Gets or sets the index path.
+        /// </summary>
+        /// <value>
+        /// The index path.
+        /// </value>
         public string IndexPath
         {
             get
@@ -55,6 +81,12 @@ namespace SCS.HomePhotos
             }
         }
 
+        /// <summary>
+        /// Gets or sets the cache folder.
+        /// </summary>
+        /// <value>
+        /// The cache folder.
+        /// </value>
         public string CacheFolder
         {
             get
@@ -72,6 +104,12 @@ namespace SCS.HomePhotos
             }
         }
 
+        /// <summary>
+        /// Gets or sets the mobile uploads folder.
+        /// </summary>
+        /// <value>
+        /// The mobile uploads folder.
+        /// </value>
         public string MobileUploadsFolder
         {
             get
@@ -89,6 +127,12 @@ namespace SCS.HomePhotos
             }
         }
 
+        /// <summary>
+        /// Gets or sets the size of the thumbnail.
+        /// </summary>
+        /// <value>
+        /// The size of the thumbnail.
+        /// </value>
         public int ThumbnailSize
         {
             get
@@ -106,6 +150,12 @@ namespace SCS.HomePhotos
             }
         }
 
+        /// <summary>
+        /// Gets or sets the size of the small image.
+        /// </summary>
+        /// <value>
+        /// The size of the small image.
+        /// </value>
         public int SmallImageSize
         {
             get
@@ -123,6 +173,12 @@ namespace SCS.HomePhotos
             }
         }
 
+        /// <summary>
+        /// Gets or sets the size of the large image.
+        /// </summary>
+        /// <value>
+        /// The size of the large image.
+        /// </value>
         public int LargeImageSize
         {
             get
@@ -140,6 +196,12 @@ namespace SCS.HomePhotos
             }
         }
 
+        /// <summary>
+        /// Gets or sets the next index time.
+        /// </summary>
+        /// <value>
+        /// The next index time.
+        /// </value>
         public DateTime? NextIndexTime
         {
             get
@@ -157,8 +219,20 @@ namespace SCS.HomePhotos
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to index photos on startup.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if indexing photos on startup; otherwise, <c>false</c>.
+        /// </value>
         public bool IndexOnStartup { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index frequency hours.
+        /// </summary>
+        /// <value>
+        /// The index frequency hours.
+        /// </value>
         public int IndexFrequencyHours
         {
             get
@@ -176,6 +250,10 @@ namespace SCS.HomePhotos
             }
         }
 
+        /// <summary>
+        /// Gets the default configuration.
+        /// </summary>
+        /// <returns>The default configuration.</returns>
         public IDynamicConfig GetDefault()
         {
             return new DynamicConfig
@@ -191,6 +269,10 @@ namespace SCS.HomePhotos
             };
         }
 
+        /// <summary>
+        /// Notifies the property changed.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             if (TrackChanges)

@@ -7,10 +7,28 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Data.Core
 {
+    /// <summary>
+    /// The log data repository.
+    /// </summary>
+    /// <seealso cref="SCS.HomePhotos.Data.Core.DataBase" />
+    /// <seealso cref="SCS.HomePhotos.Data.Contracts.ILogData" />
     public class LogData : DataBase, ILogData
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogData"/> class.
+        /// </summary>
+        /// <param name="staticConfig">The static configuration.</param>
         public LogData(IStaticConfig staticConfig) : base(staticConfig) { }
 
+        /// <summary>
+        /// Gets the log entries.
+        /// </summary>
+        /// <param name="pageInfo">The page information.</param>
+        /// <param name="category">The category.</param>
+        /// <param name="serverity">The serverity.</param>
+        /// <param name="timestampStart">The timestamp start.</param>
+        /// <param name="timestampEnd">The timestamp end.</param>
+        /// <returns>A paged list of log entries.</returns>
         public async Task<DataList<LogEntry>> GetLogEntries(PageInfo pageInfo,
             LogCategory? category,
             LogSeverity? serverity,
@@ -42,6 +60,10 @@ namespace SCS.HomePhotos.Data.Core
             return new DataList<LogEntry>(data, pageInfo);
         }
 
+        /// <summary>
+        /// Deletes log entries older than a specified date.
+        /// </summary>
+        /// <param name="olderThanDate">The cutoff date.</param>
         public async Task DeleteLogEntries(DateTime olderThanDate)
         {
             var oldEntries = await GetListAsync<LogEntry>("WHERE Timestamp < @Timestamp", new { Timestamp = olderThanDate });
@@ -52,6 +74,12 @@ namespace SCS.HomePhotos.Data.Core
             }
         }
 
+        /// <summary>
+        /// Gets an existing log entry by message withing a specified time frame.
+        /// </summary>
+        /// <param name="message">The message to search for.</param>
+        /// <param name="age">The max age of message.</param>
+        /// <returns>The log entry.</returns>
         public async Task<LogEntry> GetExistingEntry(string message, TimeSpan age)
         {
             var timespanCutoff = DateTime.Now - age;

@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Service.Core
 {
+    /// <summary>
+    /// Account services.
+    /// </summary>
+    /// <seealso cref="SCS.HomePhotos.Service.Contracts.IAccountService" />
     public class AccountService : IAccountService
     {
         private readonly IStaticConfig _staticConfig;
@@ -15,8 +19,13 @@ namespace SCS.HomePhotos.Service.Core
         private readonly IUserTokenData _userTokenData;
         private readonly IAdminLogService _adminLogService;
 
-        public string ValidIssuer => throw new NotImplementedException();
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountService"/> class.
+        /// </summary>
+        /// <param name="staticConfig">The static configuration.</param>
+        /// <param name="userData">The user data.</param>
+        /// <param name="userTokenData">The user token data.</param>
+        /// <param name="adminLogService">The admin log service.</param>
         public AccountService(IStaticConfig staticConfig, IUserData userData, IUserTokenData userTokenData, IAdminLogService adminLogService)
         {
             _staticConfig = staticConfig;
@@ -25,6 +34,12 @@ namespace SCS.HomePhotos.Service.Core
             _adminLogService = adminLogService;
         }
 
+        /// <summary>
+        /// Authenticates a specified user.
+        /// </summary>
+        /// <param name="userName">Username of the user.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>An authentication result.</returns>
         public async Task<AuthResult> Authenticate(string userName, string password)
         {
             var result = new AuthResult();
@@ -73,6 +88,12 @@ namespace SCS.HomePhotos.Service.Core
             }
         }
 
+        /// <summary>
+        /// Registers a specified user.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>A registration result.</returns>
         public async Task<RegisterResult> Register(User user, string password)
         {
             var result = new RegisterResult();
@@ -103,6 +124,13 @@ namespace SCS.HomePhotos.Service.Core
             return result;
         }
 
+        /// <summary>
+        /// Changes a user's password.
+        /// </summary>
+        /// <param name="userName">Username of the user.</param>
+        /// <param name="currentPassword">The current password.</param>
+        /// <param name="newPassword">The new password.</param>
+        /// <returns>The change password result.</returns>
         public async Task<ChangePasswordResult> ChangePassword(string userName, string currentPassword, string newPassword)
         {
             var result = new ChangePasswordResult(await Authenticate(userName, currentPassword));
@@ -146,6 +174,12 @@ namespace SCS.HomePhotos.Service.Core
             };
         }
 
+        /// <summary>
+        /// Changes a user's password. Allows an admin to resets a user's password without a current password.
+        /// </summary>
+        /// <param name="userName">Username of the user.</param>
+        /// <param name="newPassword">The new password.</param>
+        /// <returns>The change password result.</returns>
         public async Task<ChangePasswordResult> ResetPassword(string userName, string newPassword)
         {
             var strongPassword = IsStrongPassword(newPassword);
@@ -173,6 +207,14 @@ namespace SCS.HomePhotos.Service.Core
             return result;
         }
 
+        /// <summary>
+        /// Gets the refresh tokens for a use.
+        /// </summary>
+        /// <param name="userName">Usename of the user.</param>
+        /// <param name="issuer">The issuer.</param>
+        /// <param name="audience">The audience.</param>
+        /// <param name="agentIdentifier">The agent identifier.</param>
+        /// <returns>A list of tokens.</returns>
         public async Task<List<UserToken>> GetRefreshTokens(string userName, string issuer, string audience, string agentIdentifier)
         {
             var tokenList = new List<UserToken>();
@@ -192,6 +234,12 @@ namespace SCS.HomePhotos.Service.Core
             return tokenList;
         }
 
+        /// <summary>
+        /// Deletes a user's refresh token.
+        /// </summary>
+        /// <param name="userName">Username of the user.</param>
+        /// <param name="refreshToken">The refresh token.</param>
+        /// <returns>A void task.</returns>
         public async Task DeleteRefreshToken(string userName, string refreshToken)
         {
             var user = await GetUser(userName);
@@ -199,6 +247,12 @@ namespace SCS.HomePhotos.Service.Core
             await _userTokenData.DeleteRefreshToken(user.UserId.Value, refreshToken);
         }
 
+        /// <summary>
+        /// Deletes the agent refresh tokens.
+        /// </summary>
+        /// <param name="userName">Username of the user.</param>
+        /// <param name="agentIdentifier">The agent identifier.</param>
+        /// <returns>A void task.</returns>
         public async Task DeleteAgentRefreshTokens(string userName, string agentIdentifier)
         {
             var user = await GetUser(userName);
@@ -206,6 +260,16 @@ namespace SCS.HomePhotos.Service.Core
             await _userTokenData.DeleteAgentRefreshTokens(user.UserId.Value, agentIdentifier);
         }
 
+        /// <summary>
+        /// Saves a user refresh token.
+        /// </summary>
+        /// <param name="userName">Username of the user.</param>
+        /// <param name="newRefreshToken">The new refresh token.</param>
+        /// <param name="agentIdentifier">The agent identifier.</param>
+        /// <param name="issuer">The issuer.</param>
+        /// <param name="audience">The audience.</param>
+        /// <param name="expirationUtc">The expiration UTC.</param>
+        /// <returns>A void task.</returns>
         public async Task SaveRefreshToken(string userName, string newRefreshToken, string agentIdentifier, string issuer, string audience, DateTime expirationUtc)
         {
             var user = await GetUser(userName);
@@ -223,6 +287,10 @@ namespace SCS.HomePhotos.Service.Core
             await _userTokenData.InsertAsync(userToken);
         }
 
+        /// <summary>
+        /// Gets all users.
+        /// </summary>
+        /// <returns>A list of users.</returns>
         public async Task<IEnumerable<User>> GetUsers()
         {
             var users = await _userData.GetListAsync<User>();
@@ -230,6 +298,11 @@ namespace SCS.HomePhotos.Service.Core
             return users;
         }
 
+        /// <summary>
+        /// Gets a list of users by role.
+        /// </summary>
+        /// <param name="role">The role.</param>
+        /// <returns>A list of matching users.</returns>
         public async Task<IEnumerable<User>> GetUsers(RoleType role)
         {
             var users = await _userData.GetListAsync<User>("WHERE Role = @Role", new { Role = role.ToString() });
@@ -237,6 +310,11 @@ namespace SCS.HomePhotos.Service.Core
             return users;
         }
 
+        /// <summary>
+        /// Gets a user.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>The user entity.</returns>
         public async Task<User> GetUser(int userId)
         {
             var user = await _userData.GetAsync<User>(userId);
@@ -244,6 +322,11 @@ namespace SCS.HomePhotos.Service.Core
             return user;
         }
 
+        /// <summary>
+        /// Gets a user.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>The user entity.</returns>
         public async Task<User> GetUser(string userName)
         {
             var user = await _userData.GetUser(userName);
@@ -251,6 +334,11 @@ namespace SCS.HomePhotos.Service.Core
             return user;
         }
 
+        /// <summary>
+        /// Deletes a user.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>A void task.</returns>
         public async Task DeleteUser(int userId)
         {
             var exitingUser = await _userData.GetAsync<User>(userId);
@@ -263,6 +351,11 @@ namespace SCS.HomePhotos.Service.Core
             _adminLogService.LogNeutral($"User account deletion for {exitingUser.UserName} succeeded.", LogCategory.Security);
         }
 
+        /// <summary>
+        /// Updates a user's account information.
+        /// </summary>
+        /// <param name="user">The user entity.</param>
+        /// <returns>The user entity.</returns>
         public async Task<User> UpdateAccount(User user)
         {
             var exitingUser = await _userData.GetUser(user.UserName);
@@ -281,6 +374,12 @@ namespace SCS.HomePhotos.Service.Core
             return exitingUser;
         }
 
+        /// <summary>
+        /// Saves a user.
+        /// </summary>
+        /// <param name="user">The user entity.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>The user entity.</returns>
         public async Task<User> SaveUser(User user, string password = null)
         {
             if (password != null)
@@ -317,6 +416,13 @@ namespace SCS.HomePhotos.Service.Core
             return user;
         }
 
+        /// <summary>
+        /// Gets a user.
+        /// </summary>
+        /// <param name="userName">Username of the user.</param>
+        /// <param name="throwIfNotExists">if set to <c>true</c>[throw exceptin if not exists.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">User does not exist: {userName}.</exception>
         protected async Task<User> GetUser(string userName, bool throwIfNotExists = true)
         {
             var user = await _userData.GetUser(userName);
@@ -329,6 +435,13 @@ namespace SCS.HomePhotos.Service.Core
             return user;
         }
 
+        /// <summary>
+        /// Determines whether password is strong.
+        /// </summary>
+        /// <param name="password">The password.</param>
+        /// <returns>
+        ///   <c>true</c> if password is strong; otherwise, <c>false</c>.
+        /// </returns>
         private bool IsStrongPassword(string password)
         {
             if (password.Length < _staticConfig.PasswordRequirements.MinLength)
@@ -342,13 +455,20 @@ namespace SCS.HomePhotos.Service.Core
                 && uppercaseLetterCount >= _staticConfig.PasswordRequirements.UppercaseCharacters;
         }
 
-        private void GetCharCounts(string s, out int specialCharacterCount, out int digitCount, out int capitalLetterCount)
+        /// <summary>
+        /// Gets the password character counts.
+        /// </summary>
+        /// <param name="password">The password to test.</param>
+        /// <param name="specialCharacterCount">The special character count.</param>
+        /// <param name="digitCount">The digit count.</param>
+        /// <param name="capitalLetterCount">The capital letter count.</param>
+        private void GetCharCounts(string password, out int specialCharacterCount, out int digitCount, out int capitalLetterCount)
         {
             specialCharacterCount = 0;
             digitCount = 0;
             capitalLetterCount = 0;
 
-            foreach (var c in s.ToCharArray())
+            foreach (var c in password.ToCharArray())
             {
                 if (char.IsDigit(c))
                 {

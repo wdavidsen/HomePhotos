@@ -8,15 +8,33 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Data.Core
 {
+    /// <summary>
+    /// The tag repository.
+    /// </summary>
+    /// <seealso cref="SCS.HomePhotos.Data.Core.DataBase" />
+    /// <seealso cref="SCS.HomePhotos.Data.Contracts.ITagData" />
     public class TagData : DataBase, ITagData
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TagData"/> class.
+        /// </summary>
+        /// <param name="staticConfig">The static configuration.</param>
         public TagData(IStaticConfig staticConfig) : base(staticConfig) { }
 
+        /// <summary>
+        /// Gets all tags.
+        /// </summary>
+        /// <returns>A list of all tags.</returns>
         public async Task<IEnumerable<Tag>> GetTags()
         {
             return await GetListPagedAsync<Tag>("", new object(), "TagName ASC", 1, int.MaxValue);
         }
 
+        /// <summary>
+        /// Gets the tag by name.
+        /// </summary>
+        /// <param name="tagName">Name of the tag.</param>
+        /// <returns>The matching tag.</returns>
         public async Task<Tag> GetTag(string tagName)
         {
             var list = await GetListAsync<Tag>("WHERE TagName = @TagName", new { TagName = tagName });
@@ -28,6 +46,10 @@ namespace SCS.HomePhotos.Data.Core
             return null;
         }
 
+        /// <summary>
+        /// Gets the tag and photo count.
+        /// </summary>
+        /// <returns>A list of tags.</returns>
         public async Task<IEnumerable<TagStat>> GetTagAndPhotoCount()
         {
             var sql = @"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount 
@@ -41,6 +63,11 @@ namespace SCS.HomePhotos.Data.Core
             }
         }
 
+        /// <summary>
+        /// Gets the tag and photo count.
+        /// </summary>
+        /// <param name="tagName">Name of the tag.</param>
+        /// <returns>The tag and photo count.</returns>
         public async Task<TagStat> GetTagAndPhotoCount(string tagName)
         {
             var sql = @"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount 
@@ -55,7 +82,13 @@ namespace SCS.HomePhotos.Data.Core
             }
         }
 
-
+        /// <summary>
+        /// Gets the tags by keyword.
+        /// </summary>
+        /// <param name="keywords">The search keywords.</param>
+        /// <param name="pageNum">The page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>A list of matching tags.</returns>
         public async Task<IEnumerable<TagStat>> GetTags(string keywords, int pageNum = 0, int pageSize = 200)
         {
             var offset = (pageNum - 1) * pageSize;
@@ -125,6 +158,11 @@ namespace SCS.HomePhotos.Data.Core
             }
         }
 
+        /// <summary>
+        /// Saves a tag.
+        /// </summary>
+        /// <param name="tag">The tag to save.</param>
+        /// <returns>The saved tag.</returns>
         public async Task<Tag> SaveTag(Tag tag)
         {
             if (tag.TagId == null || tag.TagId == 0)
@@ -146,16 +184,33 @@ namespace SCS.HomePhotos.Data.Core
             return tag;
         }
 
+        /// <summary>
+        /// Gets the photos-tag associations for a tag id.
+        /// </summary>
+        /// <param name="tagId">The tag identifier.</param>
+        /// <returns>A list of photo-tags.</returns>
         public async Task<IEnumerable<PhotoTag>> GetPhotoTagAssociations(int tagId)
         {
             return await GetListAsync<PhotoTag>("WHERE TagId = @TagId", new { TagId = tagId });
         }
 
+        /// <summary>
+        /// Gets the photos-tag associations for a photo id and tag id.
+        /// </summary>
+        /// <param name="photoId">The photo identifier.</param>
+        /// <param name="tagId">The tag identifier.</param>
+        /// <returns>A list of photo-tags.</returns>
         public async Task<IEnumerable<PhotoTag>> GetPhotoTagAssociations(int photoId, int tagId)
         {
             return await GetListAsync<PhotoTag>("WHERE PhotoId = @PhotoId AND TagId = @TagId", new { PhotoId = photoId, TagId = tagId });
         }
 
+        /// <summary>
+        /// Associates a photo with a tag.
+        /// </summary>
+        /// <param name="photoId">The photo identifier.</param>
+        /// <param name="tagId">The tag identifier.</param>
+        /// <returns>A new photo-tag entity.</returns>
         public async Task<PhotoTag> AssociatePhotoTag(int photoId, int tagId)
         {
             var existingTags = await GetPhotoTagAssociations(photoId, tagId);
@@ -174,6 +229,13 @@ namespace SCS.HomePhotos.Data.Core
             return photoTag;
         }
 
+        /// <summary>
+        /// Changes a photo tag association.
+        /// </summary>
+        /// <param name="photoId">The photo identifier.</param>
+        /// <param name="existingTagId">The existing tag identifier.</param>
+        /// <param name="newTagId">The new tag identifier.</param>
+        /// <returns>A new photo-tag entity.</returns>
         public async Task<PhotoTag> AssociatePhotoTag(int photoId, int existingTagId, int newTagId)
         {
             var existingTag = await GetListAsync<PhotoTag>("WHERE PhotoId = @PhotoId AND TagId = @TagId", new { PhotoId = photoId, TagId = existingTagId });
@@ -189,7 +251,12 @@ namespace SCS.HomePhotos.Data.Core
 
             return photoTag;
         }
-
+        /// <summary>
+        /// Dissociates a photo from a tag.
+        /// </summary>
+        /// <param name="photoId">The photo identifier.</param>
+        /// <param name="tagId">The tag identifier.</param>
+        /// <returns>A void task.</returns>
         public async Task DissociatePhotoTag(int photoId, int tagId)
         {
             var existingTags = await GetPhotoTagAssociations(photoId, tagId);
@@ -200,6 +267,11 @@ namespace SCS.HomePhotos.Data.Core
             }
         }
 
+        /// <summary>
+        /// Builds the search parameter values.
+        /// </summary>
+        /// <param name="keywordArray">The keyword array.</param>
+        /// <returns>The Dapper dynamic parameters.</returns>
         private static DynamicParameters BuildSearchParameterValues(string[] keywordArray)
         {
             var values = new Dictionary<string, object>();

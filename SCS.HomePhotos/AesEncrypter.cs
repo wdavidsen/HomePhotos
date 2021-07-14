@@ -10,8 +10,7 @@ namespace SCS.HomePhotos
     {
         #region Fields
 
-        private static string _passPhrase = "jifo.rpokqwksw935hd7sjq#$$WE";   // can be any string
-        private static string _saltValue = "kdjehj457e@$@$fdd";               // can be any string
+        private static string _saltValue = "kdjehj457e@$@$fdd";    // can be any string
         private static string _hashAlgorithm = "SHA1";             // can be "MD5"
         private static int _passwordIterations = 2;                // can be any number
         private static string _initVector = "@1B2cg7H83D4e5F6";    // must be 16 bytes
@@ -19,6 +18,12 @@ namespace SCS.HomePhotos
 
         #endregion
 
+        /// <summary>
+        /// Encrypts the specified plain text.
+        /// </summary>
+        /// <param name="plainText">The plain text.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>The enctyped text.</returns>
         public static string Encrypt(string plainText, string password)
         {
             return Encrypt(plainText, password, _saltValue,
@@ -136,6 +141,12 @@ namespace SCS.HomePhotos
             return cipherText;
         }
 
+        /// <summary>
+        /// Decrypts the specified cipher text.
+        /// </summary>
+        /// <param name="cipherText">The cipher text.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>The decrypted text.</returns>
         public static string Decrypt(string cipherText, string password)
         {
             return Decrypt(cipherText, password, _saltValue,

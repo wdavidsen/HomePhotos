@@ -24,6 +24,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Gets an anti-forger cookie.</summary>
         /// <returns>Anti-forger cookie.</returns>
         [IgnoreAntiforgeryToken]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpGet]
         public IActionResult Get()

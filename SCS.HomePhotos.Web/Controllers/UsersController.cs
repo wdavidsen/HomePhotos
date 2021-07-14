@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Models;
 using System.Collections.Generic;
@@ -36,7 +35,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Gets all users.</summary>
         /// <returns>A user list.</returns>
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]        
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
         [HttpGet("", Name = "GetUsers")]
         public async Task<IActionResult> GetUsers()
@@ -58,7 +57,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
         [HttpGet("{userId}", Name = "GetUser")]
-        public async Task<IActionResult> GetUser([FromRoute]int userId)
+        public async Task<IActionResult> GetUser([FromRoute] int userId)
         {
             var user = await _accountService.GetUser(userId);
 
@@ -74,7 +73,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
         [HttpPost("", Name = "AddUser")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddUser([FromBody]Dto.PasswordUser user)
+        public async Task<IActionResult> AddUser([FromBody] Dto.PasswordUser user)
         {
             if (!ModelState.IsValid)
             {
@@ -95,7 +94,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
         [HttpPut("{userId}", Name = "UpdateUser")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateUser([FromBody]Dto.User user)
+        public async Task<IActionResult> UpdateUser([FromBody] Dto.User user)
         {
             if (!ModelState.IsValid)
             {
@@ -110,11 +109,11 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Deletes a user.</summary>
         /// <param name="userId">The user id.</param>
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]        
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpDelete("{userId}", Name = "DeleteUser")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteUser([FromRoute]int userId)
+        public async Task<IActionResult> DeleteUser([FromRoute] int userId)
         {
             await _accountService.DeleteUser(userId);
 
@@ -136,7 +135,7 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             var user = await _accountService.GetUser(userId);
 
-            if (user ==  null)
+            if (user == null)
             {
                 return NotFound();
             }

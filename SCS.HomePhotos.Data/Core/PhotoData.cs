@@ -8,10 +8,26 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Data.Core
 {
+    /// <summary>
+    /// The photo repository.
+    /// </summary>
+    /// <seealso cref="SCS.HomePhotos.Data.Core.DataBase" />
+    /// <seealso cref="SCS.HomePhotos.Data.Contracts.IPhotoData" />
     public class PhotoData : DataBase, IPhotoData
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PhotoData"/> class.
+        /// </summary>
+        /// <param name="staticConfig">The static configuration.</param>
         public PhotoData(IStaticConfig staticConfig) : base(staticConfig) { }
 
+        /// <summary>
+        /// Gets a list of photos by tag.
+        /// </summary>
+        /// <param name="tags">The tags to search by.</param>
+        /// <param name="pageNum">The list page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>A photo page list.</returns>
         public async Task<IEnumerable<Photo>> GetPhotos(string[] tags, int pageNum = 1, int pageSize = 200)
         {
             var offset = (pageNum - 1) * pageSize;
@@ -29,6 +45,15 @@ namespace SCS.HomePhotos.Data.Core
             }
         }
 
+        /// <summary>
+        /// Gets a list of photos matching search criteria.
+        /// </summary>
+        /// <param name="dateTakenStart">The date taken start timestamp.</param>
+        /// <param name="dateTakenEnd">The date taken end timestamp.</param>
+        /// <param name="descending">if set to <c>true</c> sort descending; otherwise, sort ascending.</param>
+        /// <param name="pageNum">The list page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>A photo page list.</returns>
         public async Task<IEnumerable<Photo>> GetPhotos(DateTime dateTakenStart, DateTime dateTakenEnd, bool descending = true, int pageNum = 1, int pageSize = 200)
         {
             var where = "WHERE DateTaken >= @DateTakenStart AND DateTaken <= @DateTakenEnd";
@@ -38,6 +63,13 @@ namespace SCS.HomePhotos.Data.Core
             return await GetListPagedAsync<Photo>(where, parameters, orderBy, pageNum, pageSize);
         }
 
+        /// <summary>
+        /// Gets a list of photos by keywords.
+        /// </summary>
+        /// <param name="keywords">The keywords.</param>
+        /// <param name="pageNum">The list page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>A photo page list.</returns>
         public async Task<IEnumerable<Photo>> GetPhotos(string keywords, int pageNum = 0, int pageSize = 200)
         {
             var offset = (pageNum - 1) * pageSize;
@@ -102,6 +134,11 @@ namespace SCS.HomePhotos.Data.Core
             }
         }
 
+        /// <summary>
+        /// Gets a list of photos by photo ids.
+        /// </summary>
+        /// <param name="photoIds">The photo ids.</param>
+        /// <returns>A photo page list.</returns>
         public async Task<IEnumerable<Tag>> GetTagsAndPhotos(int[] photoIds)
         {
             var sql = @"SELECT t.TagId, t.TagName, p.PhotoId, p.Checksum, p.Name, p.Name, p.FileName, p.DateTaken, p.DateFileCreated, p.CacheFolder, p.ImageHeight, p.ImageWidth 
@@ -135,6 +172,11 @@ namespace SCS.HomePhotos.Data.Core
             }
         }
 
+        /// <summary>
+        /// Gets a list of photos and tags by photo ids.
+        /// </summary>
+        /// <param name="photoIds">The photo ids.</param>
+        /// <returns>A photo page list.</returns>
         public async Task<IEnumerable<Photo>> GetPhotosAndTags(int[] photoIds)
         {
             var sql = @"SELECT p.PhotoId, p.Checksum, p.Name, p.Name, p.FileName, p.DateTaken, p.DateFileCreated, p.CacheFolder, p.ImageHeight, p.ImageWidth, t.TagId, t.TagName   
@@ -168,6 +210,11 @@ namespace SCS.HomePhotos.Data.Core
             }
         }
 
+        /// <summary>
+        /// Saves a photo entity.
+        /// </summary>
+        /// <param name="photo">The photo entity.</param>
+        /// <returns>The saved photo entity.</returns>
         public async Task<Photo> SavePhoto(Photo photo)
         {
             if (photo.PhotoId == null)
@@ -181,7 +228,42 @@ namespace SCS.HomePhotos.Data.Core
 
             return photo;
         }
-        
+
+        /// <summary>
+        /// Flags all photos for reprocessing.
+        /// </summary>
+        /// <returns>A void task.</returns>
+        public async Task FlagPhotosForReprocessing()
+        {
+            var sql = "UPDATE Photo SET ReprocessCache = 1";
+
+            using (var conn = GetDbConnection())
+            {
+                await conn.ExecuteScalarAsync(sql);
+            }
+        }
+
+        /// <summary>
+        /// Deletes all photos.
+        /// </summary>
+        /// <returns>A void task.</returns>
+        public async Task DeletePhotos()
+        {
+            var sql1 = "DELETE FROM PhotoTag";
+            var sql2 = "DELETE FROM Photo";
+
+            using (var conn = GetDbConnection())
+            {
+                await conn.ExecuteScalarAsync(sql1);
+                await conn.ExecuteScalarAsync(sql2);
+            }
+        }
+
+        /// <summary>
+        /// Builds the search parameter values.
+        /// </summary>
+        /// <param name="keywordArray">The keyword array.</param>
+        /// <returns>The Dapper dynamic parameters.</returns>
         private static DynamicParameters BuildSearchParameterValues(string[] keywordArray)
         {
             var values = new Dictionary<string, object>();
@@ -200,28 +282,6 @@ namespace SCS.HomePhotos.Data.Core
             }
 
             return new DynamicParameters(values);
-        }
-
-        public async Task FlagPhotosForReprocessing()
-        {
-            var sql = "UPDATE Photo SET ReprocessCache = 1";
-
-            using (var conn = GetDbConnection())
-            {
-                await conn.ExecuteScalarAsync(sql);
-            }
-        }
-
-        public async Task DeletePhotos()
-        {
-            var sql1 = "DELETE FROM PhotoTag";
-            var sql2 = "DELETE FROM Photo";
-
-            using (var conn = GetDbConnection())
-            {
-                await conn.ExecuteScalarAsync(sql1);
-                await conn.ExecuteScalarAsync(sql2);
-            }
         }
     }
 }

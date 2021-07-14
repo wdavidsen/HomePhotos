@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SCS.HomePhotos.Web.Test.Mocks
 {
-    public class MockFormFileCollection : IFormFileCollection
+    public sealed class MockFormFileCollection : IFormFileCollection
     {
         IFormFile _file;
 
@@ -49,7 +49,7 @@ namespace SCS.HomePhotos.Web.Test.Mocks
         }
     }
 
-    public class FileEnumerator : IEnumerator<IFormFile>
+    public sealed class FileEnumerator : IEnumerator<IFormFile>
     {
         public IFormFile[] _files;
         private int _position = -1;
