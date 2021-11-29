@@ -19,7 +19,9 @@ namespace SCS.HomePhotos
                 { "Type1", new string[] { "FF", "D8", "FF", "DB" } },
                 { "Type2", new string[] { "FF", "D8", "FF", "E0" } },
                 { "Type3", new string[] { "FF", "D8", "FF", "EE" } },
-                { "Type4", new string[] { "FF", "D8", "FF", "E1" } }
+                { "Type4", new string[] { "FF", "D8", "FF", "E1" } },
+                { "Type5", new string[] { "FF", "D8", "FF", "E2" } },
+                { "Type6", new string[] { "FF", "D8", "FF", "E3" } },
             };
 
             _pngBytes = new Dictionary<string, string[]>
