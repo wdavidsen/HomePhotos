@@ -44,17 +44,17 @@ namespace SCS.HomePhotos
         /// <summary>
         /// The salt byte size.
         /// </summary>
-        public const int SALT_BYTE_SIZE = 24;
+        public const int SALT_BYTE_SIZE = 32;
 
         /// <summary>
         /// The hash byte size.
         /// </summary>
-        public const int HASH_BYTE_SIZE = 24;
+        public const int HASH_BYTE_SIZE = 32;
 
         /// <summary>
         /// The PBKD f2 iterations.
         /// </summary>
-        public const int PBKDF2_ITERATIONS = 1000;
+        public const int PBKDF2_ITERATIONS = 10000;
 
         /// <summary>
         /// The iteration index.
@@ -114,9 +114,7 @@ namespace SCS.HomePhotos
         /// <returns>The salt bytes.</returns>
         public static byte[] GetSalt(int size)
         {
-            RNGCryptoServiceProvider csprng = new RNGCryptoServiceProvider();
-            byte[] salt = new byte[size];
-            csprng.GetBytes(salt);
+            var salt = RandomNumberGenerator.GetBytes(size);
 
             return salt;
         }
