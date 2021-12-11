@@ -12,11 +12,21 @@ using System.Security.Cryptography;
 
 namespace SCS.HomePhotos.Web
 {
+    /// <summary>
+    /// Provides security services.
+    /// </summary>
+    /// <seealso cref="SCS.HomePhotos.Web.ISecurityService" />
     public class SecurityService : ISecurityService
     {
         private readonly JwtAuthentication _jwtAuthentication;
         private readonly IStaticConfig _staticConfig;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SecurityService"/> class.
+        /// </summary>
+        /// <param name="jwtAuthentication">The JWT authentication.</param>
+        /// <param name="staticConfig">The static configuration.</param>
+        /// <exception cref="System.ArgumentNullException">jwtAuthentication</exception>
         public SecurityService(IOptions<JwtAuthentication> jwtAuthentication, IStaticConfig staticConfig)
         {
             _jwtAuthentication = jwtAuthentication?.Value ?? throw new ArgumentNullException(nameof(jwtAuthentication));
@@ -26,6 +36,16 @@ namespace SCS.HomePhotos.Web
             ValidAudience = _jwtAuthentication.ValidAudience;
         }
 
+        /// <summary>
+        /// Gets the principal from expired token.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <returns></returns>
+        /// <exception cref="Microsoft.IdentityModel.Tokens.SecurityTokenException">
+        /// Invalid token
+        /// or
+        /// Invalid token
+        /// </exception>
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var tokenValidationParameters = new TokenValidationParameters
@@ -61,6 +81,11 @@ namespace SCS.HomePhotos.Web
             return principal;
         }
 
+        /// <summary>
+        /// Generates a JWT security token.
+        /// </summary>
+        /// <param name="claims">The claims.</param>
+        /// <returns>A JWT security token</returns>
         public string GenerateToken(IEnumerable<Claim> claims)
         {
             var jwt = new JwtSecurityToken(
@@ -74,6 +99,10 @@ namespace SCS.HomePhotos.Web
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
+        /// <summary>
+        /// Generates a refresh token.
+        /// </summary>
+        /// <returns>The refresh token.</returns>
         public string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
@@ -84,6 +113,12 @@ namespace SCS.HomePhotos.Web
             }
         }
 
+        /// <summary>
+        /// Gets a user's claims.
+        /// </summary>
+        /// <param name="userName">Username of the user.</param>
+        /// <param name="role">The user role.</param>
+        /// <returns>A list of claims.</returns>
         public List<Claim> GetUserClaims(string userName, RoleType role)
         {
             var claims = new List<Claim>
@@ -99,8 +134,20 @@ namespace SCS.HomePhotos.Web
             return claims;
         }
 
+        /// <summary>
+        /// Gets the valid issuer.
+        /// </summary>
+        /// <value>
+        /// The valid issuer.
+        /// </value>
         public string ValidIssuer { get; private set;}
-        public string ValidAudience { get; private set; }
 
+        /// <summary>
+        /// Gets the valid audience.
+        /// </summary>
+        /// <value>
+        /// The valid audience.
+        /// </value>
+        public string ValidAudience { get; private set; }
     }
 }

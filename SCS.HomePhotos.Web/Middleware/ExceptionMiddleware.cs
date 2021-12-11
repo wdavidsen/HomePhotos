@@ -16,6 +16,12 @@ namespace SCS.HomePhotos.Web.Middleware
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        /// Gets the default error message format.
+        /// </summary>
+        /// <value>
+        /// The default error message format.
+        /// </value>
         public static string DefaultErrorMessageFormat
         {
             get => "An unexpected error has occurred. Please contact our support and provide them this identifier: {0}.";

@@ -3,8 +3,15 @@ using Microsoft.Extensions.Hosting;
 
 namespace SCS.HomePhotos.Web
 {
+    /// <summary>
+    /// App program class.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
             CreateHostBuilder(args)
@@ -12,6 +19,11 @@ namespace SCS.HomePhotos.Web
                 .Run();
         }
 
+        /// <summary>
+        /// Creates the host builder.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns>The host builder.</returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>

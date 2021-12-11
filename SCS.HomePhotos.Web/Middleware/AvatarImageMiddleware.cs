@@ -8,20 +8,30 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Middleware
 {
+    /// <summary>
+    /// Avaitar image middleware.
+    /// </summary>
     public class AvatarImageMiddleware
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AvatarImageMiddleware"/> class.
+        /// </summary>
+        /// <param name="next">The next.</param>
         public AvatarImageMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
         /// <summary>
-        /// Middleware entry point.
+        /// Invokes the asynchronous.
         /// </summary>
-        /// <param name="httpContext">The request.</param>
-        /// <param name="dynamicConfig">The dynamic configuration.</param>        
+        /// <param name="httpContext">The HTTP context.</param>
+        /// <param name="dynamicConfig">The dynamic configuration.</param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="env">The environment.</param>
+        /// <exception cref="System.IO.FileNotFoundException">Avatar image not found at {tempImagePath}.</exception>
         /// <returns>A void task.</returns>
         public async Task InvokeAsync(HttpContext httpContext, IDynamicConfig dynamicConfig, ILogger<AvatarImageMiddleware> logger, IWebHostEnvironment env)
         {

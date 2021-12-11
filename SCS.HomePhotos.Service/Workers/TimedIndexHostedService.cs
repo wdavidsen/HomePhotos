@@ -41,7 +41,12 @@ namespace SCS.HomePhotos.Workers
         /// <summary>
         /// Initializes a new instance of the <see cref="TimedIndexHostedService"/> class.
         /// </summary>
+        /// <param name="services">The services.</param>
         /// <param name="logger">The logger.</param>
+        /// <param name="configService">The configuration service.</param>
+        /// <param name="dblogger">The dblogger.</param>
+        /// <param name="indexEvents">The index events.</param>
+        /// <param name="metadataService">The metadata service.</param>
         public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IConfigService configService, 
             IAdminLogService dblogger, IIndexEvents indexEvents, IImageMetadataService metadataService)
         {
@@ -55,27 +60,6 @@ namespace SCS.HomePhotos.Workers
             _metadataService = metadataService;
 
             configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
-        }
-
-        private void _config_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(DynamicConfig.IndexFrequencyHours) || e.PropertyName == nameof(DynamicConfig.NextIndexTime))
-            {
-                _logger.LogInformation(_adminlogger.LogNeutral("Index configuration has changed.", LogCategory.Index));
-
-                if (_indexingNow && _internalCanellationTokenSource != null)
-                {
-                    _logger.LogInformation(_adminlogger.LogNeutral("Indexing canceled.", LogCategory.Index));
-
-                    _internalCanellationTokenSource.Cancel();
-                    Thread.Sleep(5000);
-                }
-
-                if (SetupTimer())
-                {
-                    StartTimer();
-                }
-            }
         }
 
         /// <summary>
@@ -94,109 +78,6 @@ namespace SCS.HomePhotos.Workers
             return Task.CompletedTask;
         }
 
-        protected void StartTimer()
-        {
-            if (_configService.DynamicConfig.NextIndexTime != null)
-            {
-                var start = (DateTime.UtcNow + StartTime).ToString("g");
-                var msg = $"Next photo index time set for {start} (UTC); reoccurance every {_configService.DynamicConfig.IndexFrequencyHours} hours.";
-
-                _timer = new Timer(DoWork, null, StartTime, RunFrequency);
-                _logger.LogInformation(_adminlogger.LogNeutral(msg, LogCategory.Index));
-            }
-        }
-
-        protected bool SetupTimer()
-        {
-            if (_configService.DynamicConfig.NextIndexTime != null)
-            {
-                _internalCanellationTokenSource = new CancellationTokenSource();
-                _internalCanellationToken = _internalCanellationTokenSource.Token;
-
-                StartTime = GetNextStartTime();
-                RunFrequency = TimeSpan.FromHours(_configService.DynamicConfig.IndexFrequencyHours);
-
-                return true;
-            }
-            return false;
-        }
-
-        private TimeSpan GetNextStartTime()
-        {
-            TimeSpan timespan = _configService.DynamicConfig.NextIndexTime.Value - DateTime.UtcNow;
-
-            while (timespan.TotalMilliseconds < 0)
-            {
-                timespan = timespan.Add(TimeSpan.FromHours(_configService.DynamicConfig.IndexFrequencyHours));
-            }
-
-            return timespan;
-        }
-
-        /// <summary>
-        /// Does the work.
-        /// </summary>
-        /// <param name="state">The state.</param>
-        protected void DoWork(object state)
-        {
-            if (_indexingNow)
-            {
-                return;
-            }
-
-            executionCount++;
-
-            _logger.LogInformation(_adminlogger.LogNeutral("Photo index started.", LogCategory.Index));
-
-            try
-            {
-                // to resume index after crash of power outage
-                _configService.DynamicConfig.IndexOnStartup = true;
-
-                var indexPaths = new string[] { 
-                    _configService.DynamicConfig.IndexPath, 
-                    _configService.DynamicConfig.MobileUploadsFolder 
-                };
-
-                _indexEvents.IndexStarted?.Invoke();
-
-                ProcessDirectories(_indexCanellationToken, _internalCanellationToken, indexPaths);
-                _logger.LogInformation("Completed photo image index");
-
-                _indexEvents.IndexCompleted?.Invoke(); 
-
-                var nextStart = _configService.DynamicConfig.NextIndexTime + GetNextStartTime();
-                
-                var msg = $"Photo index completed. Next photo index time: {nextStart.ToString("g")} (UTC).";
-                _adminlogger.LogNeutral(msg, LogCategory.Index);
-
-                _configService.DynamicConfig.PropertyChanged -= _config_PropertyChanged;
-                _configService.DynamicConfig.NextIndexTime = nextStart;
-                _configService.DynamicConfig.IndexOnStartup = false;
-                _configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
-            }
-            catch (AggregateException ex)
-            {
-                _indexEvents.IndexStarted?.Invoke();
-                _logger.LogError(_adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
-
-                foreach (var innerEx in ex.InnerExceptions)
-                {
-                    _logger.LogError(innerEx, "Photo index task failed.");
-                }
-                
-                StopTimer();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, _adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
-                StopTimer();
-            }
-            finally
-            {
-                _indexingNow = false;
-            }
-        }
 
         /// <summary>
         /// Stops the background processing.
@@ -208,11 +89,6 @@ namespace SCS.HomePhotos.Workers
             _logger.LogInformation(_adminlogger.LogNeutral($"Photo indexing stopped.", LogCategory.Index));
 
             return Task.CompletedTask;
-        }
-
-        protected void StopTimer()
-        {
-            _timer?.Change(Timeout.Infinite, 0);
         }
 
         /// <summary>
@@ -247,6 +123,161 @@ namespace SCS.HomePhotos.Workers
             _timer?.Dispose();
         }
 
+        /// <summary>
+        /// Stops the timer.
+        /// </summary>
+        protected void StopTimer()
+        {
+            _timer?.Change(Timeout.Infinite, 0);
+        }
+
+        /// <summary>
+        /// Starts the timer.
+        /// </summary>
+        protected void StartTimer()
+        {
+            if (_configService.DynamicConfig.NextIndexTime != null)
+            {
+                var start = (DateTime.UtcNow + StartTime).ToString("g");
+                var msg = $"Next photo index time set for {start} (UTC); reoccurance every {_configService.DynamicConfig.IndexFrequencyHours} hours.";
+
+                _timer = new Timer(DoWork, null, StartTime, RunFrequency);
+                _logger.LogInformation(_adminlogger.LogNeutral(msg, LogCategory.Index));
+            }
+        }
+
+        /// <summary>
+        /// Setups the timer.
+        /// </summary>
+        /// <returns></returns>
+        protected bool SetupTimer()
+        {
+            if (_configService.DynamicConfig.NextIndexTime != null)
+            {
+                _internalCanellationTokenSource = new CancellationTokenSource();
+                _internalCanellationToken = _internalCanellationTokenSource.Token;
+
+                StartTime = GetNextStartTime();
+                RunFrequency = TimeSpan.FromHours(_configService.DynamicConfig.IndexFrequencyHours);
+
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Does the work.
+        /// </summary>
+        /// <param name="state">The state.</param>
+        protected void DoWork(object state)
+        {
+            if (_indexingNow)
+            {
+                return;
+            }
+
+            executionCount++;
+
+            _logger.LogInformation(_adminlogger.LogNeutral("Photo index started.", LogCategory.Index));
+
+            try
+            {
+                // to resume index after crash of power outage
+                _configService.DynamicConfig.IndexOnStartup = true;
+
+                var indexPaths = new string[] {
+                    _configService.DynamicConfig.IndexPath,
+                    _configService.DynamicConfig.MobileUploadsFolder
+                };
+
+                _indexEvents.IndexStarted?.Invoke();
+
+                ProcessDirectories(_indexCanellationToken, _internalCanellationToken, indexPaths);
+                _logger.LogInformation("Completed photo image index");
+
+                _indexEvents.IndexCompleted?.Invoke();
+
+                var nextStart = _configService.DynamicConfig.NextIndexTime + GetNextStartTime();
+
+                var msg = $"Photo index completed. Next photo index time: {nextStart.ToString("g")} (UTC).";
+                _adminlogger.LogNeutral(msg, LogCategory.Index);
+
+                _configService.DynamicConfig.PropertyChanged -= _config_PropertyChanged;
+                _configService.DynamicConfig.NextIndexTime = nextStart;
+                _configService.DynamicConfig.IndexOnStartup = false;
+                _configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
+            }
+            catch (AggregateException ex)
+            {
+                _indexEvents.IndexStarted?.Invoke();
+                _logger.LogError(_adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
+
+                foreach (var innerEx in ex.InnerExceptions)
+                {
+                    _logger.LogError(innerEx, "Photo index task failed.");
+                }
+
+                StopTimer();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, _adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
+                StopTimer();
+            }
+            finally
+            {
+                _indexingNow = false;
+            }
+        }
+
+        /// <summary>
+        /// Handles the PropertyChanged event of the _config control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
+        private void _config_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(DynamicConfig.IndexFrequencyHours) || e.PropertyName == nameof(DynamicConfig.NextIndexTime))
+            {
+                _logger.LogInformation(_adminlogger.LogNeutral("Index configuration has changed.", LogCategory.Index));
+
+                if (_indexingNow && _internalCanellationTokenSource != null)
+                {
+                    _logger.LogInformation(_adminlogger.LogNeutral("Indexing canceled.", LogCategory.Index));
+
+                    _internalCanellationTokenSource.Cancel();
+                    Thread.Sleep(5000);
+                }
+
+                if (SetupTimer())
+                {
+                    StartTimer();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the next start time.
+        /// </summary>
+        /// <returns></returns>
+        private TimeSpan GetNextStartTime()
+        {
+            TimeSpan timespan = _configService.DynamicConfig.NextIndexTime.Value - DateTime.UtcNow;
+
+            while (timespan.TotalMilliseconds < 0)
+            {
+                timespan = timespan.Add(TimeSpan.FromHours(_configService.DynamicConfig.IndexFrequencyHours));
+            }
+
+            return timespan;
+        }
+
+        /// <summary>
+        /// Processes the directories.
+        /// </summary>
+        /// <param name="externalCancellationToken">The external cancellation token.</param>
+        /// <param name="internalCancellationToken">The internal cancellation token.</param>
+        /// <param name="directoryPaths">The directory paths.</param>
         private void ProcessDirectories(CancellationToken externalCancellationToken, CancellationToken internalCancellationToken, string[] directoryPaths)
         {
             foreach (var dir in directoryPaths)
@@ -254,7 +285,13 @@ namespace SCS.HomePhotos.Workers
                 ProcessDirectory(externalCancellationToken, internalCancellationToken, dir);
             }
         }
-            
+
+        /// <summary>
+        /// Processes the directory.
+        /// </summary>
+        /// <param name="externalCancellationToken">The external cancellation token.</param>
+        /// <param name="internalCancellationToken">The internal cancellation token.</param>
+        /// <param name="directoryPath">The directory path.</param>
         private void ProcessDirectory(CancellationToken externalCancellationToken, CancellationToken internalCancellationToken, string directoryPath)
         {
             _logger.LogInformation("Processing directory {DirectoryPath}.", directoryPath);
@@ -346,6 +383,11 @@ namespace SCS.HomePhotos.Workers
             }
         }
 
+        /// <summary>
+        /// Determinds whether the cache file exists.
+        /// </summary>
+        /// <param name="existingPhoto">The existing photo.</param>
+        /// <returns>A flag whether the cache file exists.</returns>
         private bool CacheFileExists(Photo existingPhoto)
         {
             return File.Exists(Path.Combine(_configService.DynamicConfig.CacheFolder, existingPhoto.CacheFolder, "Thumb", existingPhoto.FileName));

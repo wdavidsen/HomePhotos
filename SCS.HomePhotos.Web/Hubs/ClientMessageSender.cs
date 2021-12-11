@@ -5,11 +5,22 @@ using System.Threading;
 
 namespace SCS.HomePhotos.Web.Hubs
 {
+    /// <summary>
+    /// Client push notification sender.
+    /// </summary>
+    /// <seealso cref="SCS.HomePhotos.Web.Hubs.IClientMessageSender" />
     public class ClientMessageSender : IClientMessageSender
     {
         private readonly IHubContext<NotifcationHub, INotifcationHub> _notificationHub;
         private readonly IUploadTracker _uploadTracker;
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientMessageSender"/> class.
+        /// </summary>
+        /// <param name="indexEvents">The index events.</param>
+        /// <param name="queueEvents">The queue events.</param>
+        /// <param name="notificationHub">The notification hub.</param>
+        /// <param name="uploadTracker">The upload tracker.</param>
         public ClientMessageSender(IIndexEvents indexEvents, IQueueEvents queueEvents, IHubContext<NotifcationHub, INotifcationHub> notificationHub,
             IUploadTracker uploadTracker)
         {
@@ -22,21 +33,34 @@ namespace SCS.HomePhotos.Web.Hubs
             _uploadTracker = uploadTracker;
         }
 
+        /// <summary>
+        /// Called when photo indexing is started.
+        /// </summary>
         public void OnIndexStarted()
         {
             _notificationHub.Clients.All.SendAdminsMessage("info", "Photo indexing started");
         }
 
+        /// <summary>
+        /// Called when photo indeing has completed.
+        /// </summary>
         public void OnIndexCompleted()
         {
             _notificationHub.Clients.All.SendAdminsMessage("info", "Photo indexing completed");
         }
 
+        /// <summary>
+        /// Called when photo indexing fails.
+        /// </summary>
         public void OnIndexFailed()
         {
             _notificationHub.Clients.All.SendAdminsMessage("error", "Photo indexing failed");
         }
 
+        /// <summary>
+        /// Called when a notification type is processed.
+        /// </summary>
+        /// <param name="info">The notification information.</param>
         public void OnItemProcessed(TaskCompleteInfo info)
         {
             switch (info.Type)

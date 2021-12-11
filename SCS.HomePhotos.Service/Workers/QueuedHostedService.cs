@@ -22,6 +22,7 @@ namespace SCS.HomePhotos.Workers
         /// </summary>
         /// <param name="taskQueue">The task queue.</param>
         /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="queueEvents">Queue events.</param>
         public QueuedHostedService(IBackgroundTaskQueue taskQueue, ILoggerFactory loggerFactory, IQueueEvents queueEvents)
         {
             TaskQueue = taskQueue;

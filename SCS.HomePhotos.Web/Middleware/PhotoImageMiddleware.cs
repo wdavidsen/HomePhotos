@@ -5,10 +5,17 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Middleware
 {
+    /// <summary>
+    /// Middleware for serving photo image files.
+    /// </summary>
     public class PhotoImageMiddleware
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PhotoImageMiddleware"/> class.
+        /// </summary>
+        /// <param name="next">The next.</param>
         public PhotoImageMiddleware(RequestDelegate next)
         {
             _next = next;

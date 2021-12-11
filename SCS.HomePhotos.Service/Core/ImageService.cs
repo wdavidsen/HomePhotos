@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Service.Core
 {
+    /// <summary>
+    /// Image service.
+    /// </summary>
     public class ImageService : IImageService
     {
         private Random _randomNum = new Random();
@@ -26,6 +29,16 @@ namespace SCS.HomePhotos.Service.Core
         private readonly ILogger<ImageService> _logger;
         private readonly IImageMetadataService _metadataService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageService"/> class.
+        /// </summary>
+        /// <param name="imageResizer">The image resizer.</param>
+        /// <param name="imageinfoProvider">The imageinfo provider.</param>
+        /// <param name="photoService">The photo service.</param>
+        /// <param name="dynamicConfig">The dynamic configuration.</param>
+        /// <param name="queue">The queue.</param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="metadataService">The metadata service.</param>
         public ImageService(IImageTransformer imageResizer, IFileSystemService imageinfoProvider, IPhotoService photoService, IDynamicConfig dynamicConfig,
             IBackgroundTaskQueue queue, ILogger<ImageService> logger, IImageMetadataService metadataService)
         {
@@ -38,6 +51,13 @@ namespace SCS.HomePhotos.Service.Core
             _metadataService = metadataService;
         }
 
+        /// <summary>
+        /// Queues the image to be resized for mobile display.
+        /// </summary>
+        /// <param name="contextUserName">Name of the context user.</param>
+        /// <param name="imageFilePath">The image file path.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>The cached file path.</returns>
         public async Task<string> QueueMobileResize(string contextUserName, string imageFilePath, params string[] tags)
         {
             var checksum = _fileSystemService.GetChecksum(imageFilePath);
@@ -84,6 +104,11 @@ namespace SCS.HomePhotos.Service.Core
             return cacheFilePath;
         }
 
+        /// <summary>
+        /// Gets the mobile upload path.
+        /// </summary>
+        /// <param name="sourcePath">The source path.</param>
+        /// <returns></returns>
         private string GetMobileUploadPath(string sourcePath)
         {
             var subfolder = DateTime.Today.ToString("yyyy-MM");
@@ -96,11 +121,26 @@ namespace SCS.HomePhotos.Service.Core
             return fullPath;
         }
 
+        /// <summary>
+        /// Gets the image layout information.
+        /// </summary>
+        /// <param name="sourcePath">The source path.</param>
+        /// <returns>
+        /// The image layout information.
+        /// </returns>
         public ImageLayoutInfo GetImageLayoutInfo(string sourcePath)
         {
             return _imageTransformer.GetImageLayoutInfo(sourcePath);
         }
 
+        /// <summary>
+        /// Creates the cache path.
+        /// </summary>
+        /// <param name="checksum">The checksum.</param>
+        /// <param name="extension">The extension.</param>
+        /// <returns>
+        /// The image cache path.
+        /// </returns>
         [SuppressMessage("Security", "SCS0005:Weak random generator", Justification = "Random number is not being used for security purposes.")]
         public string CreateCachePath(string checksum, string extension)
         {
@@ -109,6 +149,14 @@ namespace SCS.HomePhotos.Service.Core
             return cachePath;
         }
 
+        /// <summary>
+        /// Gets the full-sized image cache path.
+        /// </summary>
+        /// <param name="cachePath">The cache path.</param>
+        /// <param name="imageType">Type of the image.</param>
+        /// <returns>
+        /// The full-sized image cache path.
+        /// </returns>
         public string GetFullCachePath(string cachePath, ImageSizeType imageType)
         {
             var dir = Path.Combine(_dynamicConfig.CacheFolder, Path.GetDirectoryName(cachePath), imageType.ToString());
@@ -117,6 +165,12 @@ namespace SCS.HomePhotos.Service.Core
             return Path.Combine(dir, Path.GetFileNameWithoutExtension(cachePath) + Path.GetExtension(cachePath));
         }
 
+        /// <summary>
+        /// Creates the small image.
+        /// </summary>
+        /// <param name="imageFilePath">The image file path.</param>
+        /// <param name="cachePath">The cache path.</param>
+        /// <returns></returns>
         public string CreateSmallImage(string imageFilePath, string cachePath)
         {
             _logger.LogInformation("Creating small image.");
@@ -134,6 +188,12 @@ namespace SCS.HomePhotos.Service.Core
             return savePath;
         }
 
+        /// <summary>
+        /// Creates the full image.
+        /// </summary>
+        /// <param name="imageFilePath">The image file path.</param>
+        /// <param name="cachePath">The cache path.</param>
+        /// <returns></returns>
         public string CreateFullImage(string imageFilePath, string cachePath)
         {
             _logger.LogInformation("Creating full image.");
@@ -151,6 +211,11 @@ namespace SCS.HomePhotos.Service.Core
             return savePath;
         }
 
+        /// <summary>
+        /// Orients the image for proper viewing.
+        /// </summary>
+        /// <param name="imageFilePath">The image file path.</param>
+        /// <param name="exifDataList">The exif data list.</param>
         public void OrientImage(string imageFilePath, IEnumerable<ExifDirectoryBase> exifDataList)
         {
             foreach (var exifData in exifDataList)
@@ -191,6 +256,12 @@ namespace SCS.HomePhotos.Service.Core
             }
         }
 
+        /// <summary>
+        /// Creates the thumbnail.
+        /// </summary>
+        /// <param name="imageFilePath">The image file path.</param>
+        /// <param name="cachPath">The cach path.</param>
+        /// <returns></returns>
         public string CreateThumbnail(string imageFilePath, string cachPath)
         {
             _logger.LogInformation("Creating thumbnail image.");
@@ -208,6 +279,17 @@ namespace SCS.HomePhotos.Service.Core
             return savePath;
         }
 
+        /// <summary>
+        /// Saves the photo and tags.
+        /// </summary>
+        /// <param name="existingPhoto">The existing photo.</param>
+        /// <param name="imageFilePath">The image file path.</param>
+        /// <param name="cacheFilePath">The cache file path.</param>
+        /// <param name="checksum">The checksum.</param>
+        /// <param name="imageLayoutInfo">The image layout information.</param>
+        /// <param name="exifDataList">The exif data list.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns></returns>
         public Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string cacheFilePath, string checksum,
             ImageLayoutInfo imageLayoutInfo, IEnumerable<ExifDirectoryBase> exifDataList, params string[] tags)
         {
@@ -245,6 +327,13 @@ namespace SCS.HomePhotos.Service.Core
             return photo;
         }
 
+        /// <summary>
+        /// Gets basic image information.
+        /// </summary>
+        /// <param name="exifDataList">The exif data list.</param>
+        /// <returns>
+        /// Basic image information.
+        /// </returns>
         public ImageInfo GetImageInfo(IEnumerable<ExifDirectoryBase> exifDataList)
         {
             var imageInfo = new ImageInfo();

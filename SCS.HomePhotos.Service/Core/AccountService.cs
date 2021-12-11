@@ -325,7 +325,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <summary>
         /// Gets a user.
         /// </summary>
-        /// <param name="userId">The user identifier.</param>
+        /// <param name="userName">The user identifier.</param>
         /// <returns>The user entity.</returns>
         public async Task<User> GetUser(string userName)
         {

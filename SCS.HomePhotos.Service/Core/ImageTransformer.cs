@@ -19,6 +19,11 @@ namespace SCS.HomePhotos.Service.Core
         private readonly ILogger<ImageTransformer> _logger;
         private readonly IStaticConfig _staticConfig;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageTransformer"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="staticConfig">The static configuration.</param>
         public ImageTransformer(ILogger<ImageTransformer> logger, IStaticConfig staticConfig)
         {
             _logger = logger;
@@ -26,10 +31,10 @@ namespace SCS.HomePhotos.Service.Core
         }
 
         /// <summary>
-        /// Resizes an image from disk proportionately by its width.
+        /// Resizes the image by width and aspect ratio.
         /// </summary>
-        /// <param name="sourcePath">The source image file path.</param>
-        /// <param name="savePath">The save file path.</param>
+        /// <param name="sourcePath">The source path.</param>
+        /// <param name="savePath">The save path.</param>
         /// <param name="width">The width.</param>
         public void ResizeImageByWidth(string sourcePath, string savePath, int width)
         {
@@ -37,10 +42,10 @@ namespace SCS.HomePhotos.Service.Core
         }
 
         /// <summary>
-        /// Resizes an image from disk proportionately by its height.
+        /// Resizes the image by height and aspect ratio
         /// </summary>
-        /// <param name="sourcePath">The source image file path.</param>
-        /// <param name="savePath">The save file path.</param>
+        /// <param name="sourcePath">The source path.</param>
+        /// <param name="savePath">The save path.</param>
         /// <param name="height">The height.</param>
         public void ResizeImageByHeight(string sourcePath, string savePath, int height)
         {
@@ -48,10 +53,10 @@ namespace SCS.HomePhotos.Service.Core
         }
 
         /// <summary>
-        /// Resizes an image from disk proportionately by its height or width whether is a portrait or landscaped image respectively.
+        /// Resizes the image by greatest dimension.
         /// </summary>
-        /// <param name="sourcePath">The source image file path.</param>
-        /// <param name="savePath">The save file path.</param>
+        /// <param name="sourcePath">The source path.</param>
+        /// <param name="savePath">The save path.</param>
         /// <param name="maxHeightOrWidth">Max height for a portrait image; or, max width for a landscape image.</param>
         public void ResizeImageByGreatestDimension(string sourcePath, string savePath, int maxHeightOrWidth)
         {
@@ -68,12 +73,13 @@ namespace SCS.HomePhotos.Service.Core
         }
 
         /// <summary>
-        /// Resizes an image from disk.
+        /// Resizes an image.
         /// </summary>
-        /// <param name="sourcePath">The source image file path.</param>
-        /// <param name="savePath">The save file path.</param>
+        /// <param name="sourcePath">The source path.</param>
+        /// <param name="savePath">The save path.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
+        /// <param name="useTempFolder">if set to <c>true</c> use temporary folder.</param>
         public void ResizeImage(string sourcePath, string savePath, int width, int height, bool useTempFolder = false)
         {
             var tempPath = "";
@@ -146,11 +152,13 @@ namespace SCS.HomePhotos.Service.Core
         }
 
         /// <summary>
-        /// Rotates an image x degrees.
+        /// Rotates the specified source path.
         /// </summary>
-        /// <param name="sourcePath">The image to rotate.</param>
-        /// <param name="angle">The rotation angle.</param>        
-        /// <returns>The original and rotated sizes.</returns>
+        /// <param name="sourcePath">The source path.</param>
+        /// <param name="angle">The angle.</param>
+        /// <returns>
+        /// Rotation info.
+        /// </returns>
         public (Size original, Size rotated) Rotate(string sourcePath, int angle)
         {
             using (var image = Image.Load<Rgba32>(sourcePath))
@@ -166,10 +174,12 @@ namespace SCS.HomePhotos.Service.Core
         }
 
         /// <summary>
-        /// Gets basic image information.
+        /// Gets the image layout information.
         /// </summary>
-        /// <param name="sourcePath">The source image file path.</param>
-        /// <returns>Image information.</returns>
+        /// <param name="sourcePath">The source path.</param>
+        /// <returns>
+        /// Image layout info.
+        /// </returns>
         public ImageLayoutInfo GetImageLayoutInfo(string sourcePath)
         {
             var info = ImageLayoutInfo.Default;
@@ -194,9 +204,8 @@ namespace SCS.HomePhotos.Service.Core
             return info;
         }
 
-
         /// <summary>
-        /// Deletes the file at provided path.
+        /// Deletes a file if it exits.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         protected void DeleteFile(string filePath)

@@ -1,11 +1,20 @@
 ﻿using MetadataExtractor.Formats.Exif;
+using SCS.HomePhotos.Service.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SCS.HomePhotos.Service.Contracts
+namespace SCS.HomePhotos.Service.Core
 {
+    /// <summary>
+    /// Image metadata service.
+    /// </summary>
     public class ImageMetadataService : IImageMetadataService
     {
+        /// <summary>
+        /// Gets the EXIF data.
+        /// </summary>
+        /// <param name="imageFilePath">The image file path.</param>
+        /// <returns>A list of EXIF data.</returns>
         public IEnumerable<ExifDirectoryBase> GetExifData(string imageFilePath)
         {
             var directories = MetadataExtractor.ImageMetadataReader.ReadMetadata(imageFilePath);

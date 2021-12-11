@@ -8,15 +8,28 @@ using System.Security.Cryptography;
 
 namespace SCS.HomePhotos.Service.Core
 {
+    /// <summary>
+    /// File system service.
+    /// </summary>
+    /// <seealso cref="SCS.HomePhotos.Service.Contracts.IFileSystemService" />
     public class FileSystemService : IFileSystemService
     {
         private readonly ILogger<FileSystemService> _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileSystemService"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
         public FileSystemService(ILogger<FileSystemService> logger)
         {
             _logger = logger;
         }
 
+        /// <summary>
+        /// Gets the checksum.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns></returns>
         [SuppressMessage("Security", "SCS0006:Weak hashing function", Justification = "Hash is not being used for security purposes.")]
         public string GetChecksum(string filePath)
         {
@@ -38,6 +51,11 @@ namespace SCS.HomePhotos.Service.Core
             }            
         }
 
+        /// <summary>
+        /// Gets the size of the file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns>The file size.</returns>
         public long GetFileSize(string filePath)
         {
             try
@@ -52,6 +70,11 @@ namespace SCS.HomePhotos.Service.Core
             }    
         }
 
+        /// <summary>
+        /// Gets the directory tags.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns>A list of tags.</returns>
         public IEnumerable<string> GetDirectoryTags(string filePath)
         {
             var list = new List<string>();
@@ -82,6 +105,10 @@ namespace SCS.HomePhotos.Service.Core
             return list;
         }
 
+        /// <summary>
+        /// Creates the directory.
+        /// </summary>
+        /// <param name="path">The directory path.</param>
         public void CreateDirectory(string path)
         {
             try
@@ -95,6 +122,11 @@ namespace SCS.HomePhotos.Service.Core
             }            
         }
 
+        /// <summary>
+        /// Deletes the directory files.
+        /// </summary>
+        /// <param name="directoryPath">The directory path.</param>
+        /// <param name="recursive">if set to <c>true</c> delete recursivly.</param>
         public void DeleteDirectoryFiles(string directoryPath, bool recursive = true)
         {
             try
@@ -114,6 +146,12 @@ namespace SCS.HomePhotos.Service.Core
             }
         }
 
+        /// <summary>
+        /// Moves a file.
+        /// </summary>
+        /// <param name="sourcePath">The source path.</param>
+        /// <param name="destinationPath">The destination path.</param>
+        /// <param name="overwrite">if set to <c>true</c> overwrite destination file.</param>
         public void MoveFile(string sourcePath, string destinationPath, bool overwrite = false)
         {
             try
