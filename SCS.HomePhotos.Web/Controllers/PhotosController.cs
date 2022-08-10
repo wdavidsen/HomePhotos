@@ -6,6 +6,7 @@ using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Service.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
@@ -117,7 +118,8 @@ namespace SCS.HomePhotos.Web.Controllers
         private string GetEncryptedFileName(string fileName)
         {
             var expiration = DateTime.UtcNow.ToStartOfDay().AddDays(_staticConfig.PhotoExpirationDays);
-            return $"{fileName}|{expiration}".Encrypt(_staticConfig.ImagePasscode);
+            
+            return $"{fileName}|{expiration}".Encrypt(_staticConfig.ImageEncryptKey, _staticConfig.ImageEncryptPasscode);
         }
     }
 }
