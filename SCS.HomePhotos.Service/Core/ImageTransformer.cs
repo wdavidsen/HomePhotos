@@ -113,8 +113,7 @@ namespace SCS.HomePhotos.Service.Core
 
                     var encoder = new JpegEncoder()
                     {
-                        Quality = _staticConfig.ImageResizeQuality,
-                        Subsample = JpegSubsample.Ratio444
+                        Quality = _staticConfig.ImageResizeQuality                       
                     };
 
                     image.Mutate(x => x.Resize(width, height));
