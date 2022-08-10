@@ -1,8 +1,9 @@
 <form class="form-inline" (submit)="sendKeywords()" class="search-form">
     <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search" [(ngModel)]="keywords" name="keywords">
+        <input type="text" class="form-control outline-secondary" placeholder="Search" [(ngModel)]="keywords" name="keywords">
         <div class="input-group-append">
             <button type="button" class="btn btn-secondary" (click)="sendKeywords()"><i class="fa fa-search"></i></button>
+            <!--button type="button" class="btn btn-outline-secondary" (click)="sendKeywords()"><i class="fa fa-angle-down"></i></button-->
         </div>
     </div>
 </form>

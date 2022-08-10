@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Middleware
@@ -59,7 +60,7 @@ namespace SCS.HomePhotos.Web.Middleware
                 httpContext.Response.Headers.Add("Expires", DateTime.UtcNow.AddDays(staticConfig.PhotoExpirationDays).ToString("u"));
 
                 var folder = folderAndFileInfo[0];
-                var fileInfo = folderAndFileInfo[1].Decrypt(staticConfig.ImagePasscode);
+                var fileInfo = folderAndFileInfo[1].Decrypt(staticConfig.ImageEncryptKey, staticConfig.ImageEncryptPasscode);
                 var fileInfoParts = fileInfo.Split('|');
                 var file = fileInfoParts[0];
                 var expiration = DateTime.Parse(fileInfoParts[1]);

@@ -86,12 +86,20 @@
         PasswordRequirements PasswordRequirements { get; set; }
 
         /// <summary>
-        /// Gets or sets the image passcode.
+        /// Gets or sets the image URL encryption key.
         /// </summary>
         /// <value>
-        /// The image passcode.
+        /// The URL encryption key.
         /// </value>
-        string ImagePasscode { get; set; }
+        public string ImageEncryptKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the image URL encryption passcode.
+        /// </summary>
+        /// <value>
+        /// The URL encryption passcode.
+        /// </value>
+        public string ImageEncryptPasscode { get; set; }
 
         /// <summary>
         /// Gets or sets the photo expiration days.

@@ -31,7 +31,8 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _photosService = new Mock<IPhotoService>();
             _staticConfig = new Mock<IStaticConfig>();
 
-            _staticConfig.SetupGet(p => p.ImagePasscode).Returns("somepasscode");
+            _staticConfig.SetupGet(p => p.ImageEncryptKey).Returns("somekey");
+            _staticConfig.SetupGet(p => p.ImageEncryptPasscode).Returns("somepasscode");
 
             _photosController = new PhotosController(_logger.Object, _photosService.Object, _staticConfig.Object);
         }

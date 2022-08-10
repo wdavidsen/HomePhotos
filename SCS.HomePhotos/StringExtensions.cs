@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CryptoNet;
+
+using System;
 using System.Text;
 
 namespace SCS.HomePhotos
@@ -34,22 +36,35 @@ namespace SCS.HomePhotos
         /// Encrypts the specified text.
         /// </summary>
         /// <param name="text">The text to encrypt.</param>
+        /// <param name="key">The key to use.</param>
         /// <param name="passcode">The passcode to use.</param>
         /// <returns>An encripted string.</returns>
-        public static string Encrypt(this string text, string passcode)
+        public static string Encrypt(this string text, string key, string passcode)
         {
-            return AesEncrypter.Encrypt(text, passcode).Base64Encode();
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var iv = Encoding.UTF8.GetBytes(passcode);
+
+            ICryptoNet encryptClient = new CryptoNetAes(keyBytes, iv);
+            var encrypt = encryptClient.EncryptFromString(text);
+
+            return Convert.ToBase64String(encrypt).Replace("+", "-").Replace("/", "_");
         }
 
         /// <summary>
         /// Decrypts the specified text.
         /// </summary>
         /// <param name="text">The text to decode.</param>
+        /// <param name="key">The key to use.</param>
         /// <param name="passcode">The passcode to use.</param>
         /// <returns>The decrypted string.</returns>
-        public static string Decrypt(this string text, string passcode)
+        public static string Decrypt(this string text, string key, string passcode)
         {
-            return AesEncrypter.Decrypt(text.Base64Decode(), passcode);
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var iv = Encoding.UTF8.GetBytes(passcode);
+
+            ICryptoNet decryptClient = new CryptoNetAes(keyBytes, iv);
+
+            return decryptClient.DecryptToString(Convert.FromBase64String(text.Replace("-", "+").Replace("_", "/")));
         }
-    }
+    } 
 }
