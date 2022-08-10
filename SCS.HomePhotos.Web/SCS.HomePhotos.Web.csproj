@@ -24,6 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CryptoNet" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
@@ -46,6 +47,10 @@
 
   <ItemGroup>
     <Compile Remove="Middleware\AntitforgeryTokenMiddleware.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\wdavi\.nuget\packages\cryptonet\2.1.0\contentFiles\any\netstandard2.0\CryptoNetLogo-icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
