@@ -338,3 +338,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/SCS.HomePhotos.Web2/ClientApp/.angular/cache/13.3.4/babel-webpack
+/SCS.HomePhotos.Web2/ClientApp/.angular/cache/13.3.4/angular-webpack/f0ac6b04abb54252ed7afbb3cea1d7c02701d92e

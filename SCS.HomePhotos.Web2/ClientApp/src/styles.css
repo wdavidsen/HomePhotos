@@ -1,0 +1,98 @@
+
+html {
+  font-size: 16px;
+}
+
+a {
+  color: #0366d6;
+}
+
+code {
+  color: #e01a76;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.splash-page {
+  position: fixed;
+  height: 2000px;
+  width: 100%;
+  background-color: black;
+  opacity: .8;
+  text-align: center;
+}
+.splash-page img {
+  margin-top: 200px;
+  max-width: 200px;
+  min-width: 150px;
+}
+
+.splash-page caption {
+  margin: 50px 0;
+  font-size: large;
+  color: white;
+}
+
+/** Phone **/
+@media only screen and (max-width: 767px), only screen and (max-device-width: 767px) {
+
+  html {
+    font-size: 16px;
+  }
+
+  .bar {
+    display: none;
+  }
+
+  .phone-show {
+    display: inline-block !important;
+  }
+
+  .phone-hide {
+    display: none !important;
+  }
+
+  .blueimp-gallery-controls > .indicator {
+    display: none !important;
+  }
+}
+
+/** Tablet **/
+@media only screen and (min-width : 768px) and (max-width : 1024px) {
+
+  html {
+    font-size: 16px;
+  }
+
+  .bar {
+    display: none;
+  }
+  
+  .tablet-show {
+    display: none !important;
+  }
+
+  .blueimp-gallery-controls > .indicator {
+    display: none !important;
+  }
+}
+
+/** Tablet (landscape) **/
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
+
+  html {
+    font-size: 16px;
+  }
+  
+  .bar {
+    display: none;
+  }
+  
+  .blueimp-gallery-controls > .indicator {
+    display: none !important;
+  }
+}

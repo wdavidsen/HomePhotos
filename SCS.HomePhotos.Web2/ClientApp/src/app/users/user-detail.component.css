@@ -1,0 +1,26 @@
+button {
+    margin-right: 10px;
+}
+.summary-info {
+    text-align: right;
+}
+
+.return-link {
+    margin: 17px 0;
+}
+
+img.avatar {    
+    height: 90px;
+    width: 90px;
+    border: solid 1px #eee;
+    border-radius: 50px;
+    margin: 20px 0;
+}
+
+.toolbar {
+    text-align: right;
+}
+
+.toolbar button {
+    margin-left:5px;
+}

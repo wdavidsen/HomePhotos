@@ -1,0 +1,35 @@
+.tag-cloud {
+    float: left;
+    padding: 20px;
+    width: 100%;
+}
+
+    .tag-cloud .tag {
+        float: left;
+        padding: 5px;
+        margin: 0 8px 8px 0;
+        border: solid 1px #d4bd05;
+        background-color: #f1f764;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .tag-cloud .tag-selected {
+        background-color: #75ee52;
+    }
+     .tag-cloud .tag-divider {
+        color: #666;
+        font-size: medium;
+        font-weight: bold;
+        border: solid 1px #666;
+        background-color: white;
+        cursor: default;
+    }
+    .tag-cloud .tag-divider:hover {
+        color: #fff;
+        font-size: medium;
+        font-weight: bold;
+        border: solid 1px #666;
+        background-color: #666;
+        cursor: default;
+    }

@@ -1,0 +1,12 @@
+.filter-bar {
+    text-align: right;
+}
+
+table.table-log {
+    margin-bottom: 0 !important;
+}
+
+.pager-log {
+    display: inline-block;
+    margin-top: 17px !important;
+}
