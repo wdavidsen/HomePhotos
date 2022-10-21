@@ -17,6 +17,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ModalModule, BsModalRef } from 'ngx-bootstrap/modal';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularCropperjsModule } from 'angular-cropperjs';
 //import { LoginComponent } from './login/login.component';
 
 @NgModule({
@@ -91,7 +92,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       positionClass: 'toast-bottom-right',
       preventDuplicates: true
     }),
-    FileUploadModule
+    FileUploadModule,
+    AngularCropperjsModule
   ],
   providers: [
     NgxSpinnerService,
