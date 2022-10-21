@@ -17,7 +17,7 @@ describe('UserDetailComponent', () => {
   let mockToastr, mockAuthenticationService, mockUserService, mockModalService, mockActivatedRoute, mockRouter;
 
   const user: User = { userId: 1, username: 'wdavidsen', password: 'password1', passwordCompare: 'password1', firstName: 'Bill', lastName: 'Davidsen', emailAddress: 'wdavidsen@gmail.com',
-    role: 'Admin', lastLogin: new Date(), failedLoginCount: 0, mustChangePassword: false, enabled: true, jwt: null, refreshToken: null};
+    role: 'Admin', lastLogin: new Date(), failedLoginCount: 0, mustChangePassword: false, enabled: true, jwt: null, refreshToken: null, avatarImage: null};
 
   const setupEditForm = (data) => {
     const formBuilder = TestBed.get(FormBuilder);

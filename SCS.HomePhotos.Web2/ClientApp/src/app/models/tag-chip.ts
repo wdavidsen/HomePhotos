@@ -4,9 +4,9 @@ export class TagChip {
     //     this.count = count;
     //     this.isDivider = isDivider;
     // }
-    id: number;
-    name: string;
-    isDivider: boolean;
-    selected: boolean;
-    count: number;
+    id?: number;
+    name?: string;
+    isDivider?: boolean;
+    selected?: boolean;
+    count?: number;
 }

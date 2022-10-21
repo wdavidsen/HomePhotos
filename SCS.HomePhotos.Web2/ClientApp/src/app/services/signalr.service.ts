@@ -7,7 +7,7 @@ import { Subject, Observable } from 'rxjs';
 })
 export class SignalRService {
     private subject = new Subject<any>();
-    private hubConnection: signalR.HubConnection;
+    private hubConnection?: signalR.HubConnection;
 
     public startConnection = () => {
         this.hubConnection = new signalR.HubConnectionBuilder()
@@ -21,14 +21,14 @@ export class SignalRService {
     }
 
     public listenForAdminMessages = () => {
-        this.hubConnection.on('SendAdminsMessage', (type, message) => {
+        this.hubConnection?.on('SendAdminsMessage', (type, message) => {
             console.log(message);
             this.subject.next({ type: type, message: message });
         });
     }
 
     public listenForEveryoneMessages = () => {
-        this.hubConnection.on('SendEveryoneMessage', (type, message) => {
+        this.hubConnection?.on('SendEveryoneMessage', (type, message) => {
             console.log(message);
             this.subject.next({ type: type, message: message });
         });

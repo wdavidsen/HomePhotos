@@ -29,8 +29,8 @@ namespace SCS.HomePhotos.Service.Core
         /// Gets the checksum.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        /// <returns></returns>
-        [SuppressMessage("Security", "SCS0006:Weak hashing function", Justification = "Hash is not being used for security purposes.")]
+        /// <returns>The file's checksum.</returns>
+        //[SuppressMessage("Security", "SCS0006:Weak hashing function", Justification = "Hash is not being used for security purposes.")]
         public string GetChecksum(string filePath)
         {
             try

@@ -23,21 +23,21 @@ declare const blueimp: any;
 export class PhotosComponent implements OnInit, OnDestroy {
   thumbHeight = 100;
   thumbnails: Thumbnail[] = [];
-  tagName: string;
+  tagName: string = '';
   organizeMode = false;
-  taggerModalRef: BsModalRef;
-  keywords: string;
+  taggerModalRef?: BsModalRef;
+  keywords: string = '';
 
   private pageNum = 1;
   private mode = 1;
   private previousScroll = 0;
-  private organizeSubscription: Subscription;
-  private searchSubscription: Subscription;
-  private bottomScrollSubscription: Subscription;
-  private userSettingsSubscription: Subscription;
+  private organizeSubscription!: Subscription;
+  private searchSubscription!: Subscription;
+  private bottomScrollSubscription!: Subscription;
+  private userSettingsSubscription!: Subscription;
   private scrollSubject = new Subject<number>();
-  private currentUser: User;
-  private userSettings: UserSettings;
+  private currentUser!: User;
+  private userSettings!: UserSettings;
 
   constructor(private photosService: PhotosService,
     private route: ActivatedRoute,

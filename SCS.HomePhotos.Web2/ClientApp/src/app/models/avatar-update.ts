@@ -1,3 +1,3 @@
 export class AvatarUpdate {
-    avatarImage: string;
+    avatarImage?: string;
 }

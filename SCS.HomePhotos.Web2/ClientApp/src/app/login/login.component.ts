@@ -14,12 +14,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     loginForm: FormGroup;
     loading = false;
     submitted = false;
-    returnUrl: string;
-    changePasswordModalRef: BsModalRef;
+    returnUrl?: string;
+    changePasswordModalRef?: BsModalRef;
 
-    private dialogSubscription: Subscription;
-    private loginSubscription: Subscription;
-    private loginWithPasswordChangeSubscription: Subscription;
+    private dialogSubscription?: Subscription;
+    private loginSubscription?: Subscription;
+    private loginWithPasswordChangeSubscription?: Subscription;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -33,6 +33,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         if (this.authenticationService.currentUserValue) {
             authenticationService.logout();
         }
+
+        this.loginForm = this.formBuilder.group({
+            username: ['', Validators.required],
+            password: ['', Validators.required]
+        });
     }
     ngOnDestroy(): void {
         if (this.dialogSubscription) {
@@ -46,12 +51,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
-    ngOnInit() {
-        this.loginForm = this.formBuilder.group({
-            username: ['', Validators.required],
-            password: ['', Validators.required]
-        });
-
+    ngOnInit() {        
         // get return url from route parameters or default to '/'
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     }
@@ -119,10 +119,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
         this.dialogSubscription = this.modalService.onHidden
           .subscribe(() => {
-              const changeForm = <FormGroup>this.changePasswordModalRef.content.changePasswordForm;
+              const changeForm = <FormGroup>this.changePasswordModalRef?.content.changePasswordForm;
               changeInfo.currentPassword = password;
-              changeInfo.newPassword = changeForm.get('newPassword').value;
-              changeInfo.newPasswordCompare = changeForm.get('newPasswordCompare').value;
+              changeInfo.newPassword = changeForm.get('newPassword')?.value;
+              changeInfo.newPasswordCompare = changeForm.get('newPasswordCompare')?.value;
 
               this.loginWithPasswordChangeSubscription = this.authenticationService.loginWithPasswordChange(changeInfo)
                 .subscribe(
