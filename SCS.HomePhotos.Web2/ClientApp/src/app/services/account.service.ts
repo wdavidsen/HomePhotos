@@ -22,13 +22,13 @@ export class AccountService {
             .pipe(tap(tokens => this.authService.storeTokens(tokens)));
     }
 
-    updateAvatar(file: File): Observable<AvatarUpdate> {
-        const formData = new FormData();
-        formData.append('image', file, file.name);
+    // updateAvatar(file: File): Observable<AvatarUpdate> {
+    //     const formData = new FormData();
+    //     formData.append('image', file, file.name);
 
-        return this.http.put<AvatarUpdate>(`${environment.apiUrl}/account/updateAvatar`, formData)
-            .pipe(tap(avatarInfo => this.authService.updateAvatarImage(avatarInfo.avatarImage)));
-    }
+    //     return this.http.put<AvatarUpdate>(`${environment.apiUrl}/account/updateAvatar`, formData)
+    //         .pipe(tap(avatarInfo => this.authService.updateAvatarImage(avatarInfo.avatarImage)));
+    // }
 
     info(user: AccountInfo): Observable<AccountInfo> {
         return this.http.get<AccountInfo>(`${environment.apiUrl}/account`);
