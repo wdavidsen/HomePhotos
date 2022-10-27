@@ -15,19 +15,15 @@ using SCS.HomePhotos.Workers;
 using SCS.HomePhotos.Service.Workers;
 using SCS.HomePhotos.Web;
 using SCS.HomePhotos.Web.Hubs;
-using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-//builder.Services.AddControllersWithViews();
-var services = builder.Services;
+var Container = builder.Services;
 var Configuration = builder.Configuration;
 
-services.Configure<JwtAuthentication>(Configuration.GetSection("JwtAuthentication"));
-services.AddControllers()
+Container.Configure<JwtAuthentication>(Configuration.GetSection("JwtAuthentication"));
+Container.AddControllers()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.Formatting = Formatting.Indented;
@@ -37,24 +33,24 @@ services.AddControllers()
         options.SerializerSettings.TypeNameHandling = TypeNameHandling.None;
     });
 
-services.AddAntiforgery(options =>
+Container.AddAntiforgery(options =>
 {
     options.HeaderName = "X-XSRF-Token";
     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 });
 
-services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
-services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+Container.AddSingleton<IPostConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
+Container.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer();
 
-services.AddAuthorization(options =>
+Container.AddAuthorization(options =>
 {
     options.AddPolicy("Admins", policy => policy.RequireRole(RoleType.Admin.ToString()));
     options.AddPolicy("Contributers", policy => policy.RequireRole(RoleType.Contributer.ToString(), RoleType.Admin.ToString()));
     options.AddPolicy("Readers", policy => policy.RequireRole(RoleType.Reader.ToString(), RoleType.Contributer.ToString(), RoleType.Admin.ToString()));
 });
 
-services.AddCors(options =>
+Container.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
     builder =>
@@ -63,9 +59,9 @@ services.AddCors(options =>
     });
 });
 
-services.AddSignalR();
+Container.AddSignalR();
 
-services.AddSwaggerGen(c =>
+Container.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomePhotos API", Version = "v1" });
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "SCS.HomePhotos.Web.xml"));
@@ -99,91 +95,91 @@ var staticConfig = StaticConfig.Build(Configuration);
 var configData = new ConfigData(staticConfig);
 var dynamicConfig = new DynamicConfig();
 
-services.AddSingleton<IStaticConfig>(staticConfig);
-services.AddSingleton<IConfigData>(configData);
-services.AddSingleton<IDynamicConfig>(dynamicConfig);
+Container.AddSingleton<IStaticConfig>(staticConfig);
+Container.AddSingleton<IConfigData>(configData);
+Container.AddSingleton<IDynamicConfig>(dynamicConfig);
 var configService = new ConfigService(configData, dynamicConfig, staticConfig);
 await configService.SetDynamicConfig();
-services.AddSingleton<IConfigService>(configService);
+Container.AddSingleton<IConfigService>(configService);
 
 // background tasks            
-services.AddHostedService<QueuedHostedService>();
-services.AddHostedService<TimedIndexHostedService>();
-services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+Container.AddHostedService<QueuedHostedService>();
+Container.AddHostedService<TimedIndexHostedService>();
+Container.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
 
 // data objects
-services.AddScoped<IPhotoData, PhotoData>();
-services.AddScoped<ITagData, TagData>();
-services.AddScoped<IUserData, UserData>();
-services.AddScoped<IUserTokenData, UserTokenData>();
-services.AddScoped<ILogData, LogData>();
+Container.AddScoped<IPhotoData, PhotoData>();
+Container.AddScoped<ITagData, TagData>();
+Container.AddScoped<IUserData, UserData>();
+Container.AddScoped<IUserTokenData, UserTokenData>();
+Container.AddScoped<ILogData, LogData>();
 
 // services
-services.AddScoped<IFileSystemService, FileSystemService>();
-services.AddScoped<IImageTransformer, ImageTransformer>();
-services.AddScoped<IImageService, ImageService>();
-services.AddScoped<IPhotoService, PhotoService>();
-services.AddScoped<IFileUploadService, FileUploadService>();
-services.AddScoped<IAccountService, AccountService>();
-services.AddScoped<ISecurityService, SecurityService>();
-services.AddSingleton<IAdminLogService>(new AdminLogService(new LogData(staticConfig), staticConfig));
-services.AddSingleton<IIndexEvents, IndexEvents>();
-services.AddSingleton<IQueueEvents, QueueEvents>();
-services.AddSingleton<IClientMessageSender, ClientMessageSender>();
-services.AddSingleton<IUploadTracker, UploadTracker>();
-services.AddSingleton<IImageMetadataService, ImageMetadataService>();
+Container.AddScoped<IFileSystemService, FileSystemService>();
+Container.AddScoped<IImageTransformer, ImageTransformer>();
+Container.AddScoped<IImageService, ImageService>();
+Container.AddScoped<IPhotoService, PhotoService>();
+Container.AddScoped<IFileUploadService, FileUploadService>();
+Container.AddScoped<IAccountService, AccountService>();
+Container.AddScoped<ISecurityService, SecurityService>();
+Container.AddSingleton<IAdminLogService>(new AdminLogService(new LogData(staticConfig), staticConfig));
+Container.AddSingleton<IIndexEvents, IndexEvents>();
+Container.AddSingleton<IQueueEvents, QueueEvents>();
+Container.AddSingleton<IClientMessageSender, ClientMessageSender>();
+Container.AddSingleton<IUploadTracker, UploadTracker>();
+Container.AddSingleton<IImageMetadataService, ImageMetadataService>();
 
-var app = builder.Build();
+var App = builder.Build();
 
 // https://github.com/serilog/serilog-extensions-logging-file
-var services2 = app.Services;
-var loggerFactory = services2.GetService<ILoggerFactory>();
-var env = app.Environment;
+var Services = App.Services;
+var loggerFactory = Services.GetService<ILoggerFactory>();
+var env = App.Environment;
 
 loggerFactory.AddFile(Configuration.GetSection("Logging"));
 
 if (env.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    App.UseDeveloperExceptionPage();
 }
 else
 {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    App.UseHsts();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
+App.UseSwagger();
+App.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "HomePhotos API");
     c.RoutePrefix = "swagger";
 });
 
-app.UseGloablExceptionMiddleware();
-app.UseCors("AllowAllOrigins");
+App.UseGloablExceptionMiddleware();
+App.UseCors("AllowAllOrigins");
 
 // remove to use http, not https
 //app.UseHttpsRedirection();         
 
-app.UsePhotoImageMiddleware();
-app.UseStaticFiles();
+App.UsePhotoImageMiddleware();
+App.UseStaticFiles();
 
 if (!env.IsDevelopment())
 {
-    app.UseSpaStaticFiles();
+    App.UseSpaStaticFiles();
 }
 
-app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
+App.UseRouting();
+App.UseAuthentication();
+App.UseAuthorization();
 
-app.UseAvatarImageMiddleware();
+App.UseAvatarImageMiddleware();
 
-app.UseEndpoints(endpoints =>
+App.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<NotifcationHub>("/message-hub");
 });
-app.UseEndpoints(endpoints =>
+App.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
     endpoints.MapControllerRoute(
@@ -193,4 +189,4 @@ app.UseEndpoints(endpoints =>
 
 //app.MapFallbackToFile("index.html");
 
-app.Run();
+App.Run();
