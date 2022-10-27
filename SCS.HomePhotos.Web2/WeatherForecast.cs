@@ -1,4 +1,4 @@
-namespace SCS.HomePhotos.Web2
+namespace SCS.HomePhotos.Web
 {
     public class WeatherForecast
     {

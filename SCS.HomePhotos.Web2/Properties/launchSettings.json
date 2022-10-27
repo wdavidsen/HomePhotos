@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "SCS.HomePhotos.Web2": {
+    "SCS.HomePhotos.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7139;http://localhost:5139",

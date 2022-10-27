@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace SCS.HomePhotos.Web2.Controllers
+namespace SCS.HomePhotos.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]

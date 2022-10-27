@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using System.Diagnostics;
 
-namespace SCS.HomePhotos.Web2.Pages
+namespace SCS.HomePhotos.Web.Pages
 {
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class ErrorModel : PageModel

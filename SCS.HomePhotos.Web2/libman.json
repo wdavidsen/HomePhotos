@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "moment.js@2.24.0",
+      "destination": "wwwroot/moment.js/",
+      "files": [
+        "moment.min.js"
+      ]
+    },
+    {
+      "library": "blueimp-file-upload@10.17.0",
+      "destination": "wwwroot/lib/blueimp-file-upload/",
+      "files": [
+        "js/jquery.fileupload.min.js",
+        "js/jquery.fileupload.js",
+        "js/jquery.fileupload.min.js.map",
+        "js/jquery.fileupload-validate.min.js.map",
+        "js/jquery.fileupload-validate.min.js",
+        "js/jquery.fileupload-validate.js",
+        "js/jquery.fileupload-process.js",
+        "js/jquery.fileupload-process.min.js",
+        "js/jquery.fileupload-process.min.js.map",
+        "js/jquery.fileupload-image.min.js.map",
+        "js/jquery.fileupload-image.min.js",
+        "js/jquery.fileupload-image.js",
+        "img/progressbar.gif",
+        "img/loading.gif",
+        "css/jquery.fileupload.css",
+        "css/jquery.fileupload.min.css",
+        "css/jquery.fileupload.min.css.map"
+      ]
+    }
+  ]
+}
