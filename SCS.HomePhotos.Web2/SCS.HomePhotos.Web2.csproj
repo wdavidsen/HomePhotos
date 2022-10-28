@@ -11,6 +11,7 @@
     <RootNamespace>SCS.HomePhotos.Web</RootNamespace>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>SCS.HomePhotos.Web.xml</DocumentationFile>
+	<AnalysisLevel>6.0-minimum</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

@@ -362,7 +362,7 @@ namespace SCS.HomePhotos.Service.Core
             return imageInfo;
         }
 
-        private string GetExifTimeTaken(IEnumerable<ExifDirectoryBase> directories)
+        private static string GetExifTimeTaken(IEnumerable<ExifDirectoryBase> directories)
         {
             var value = "";
 
@@ -386,7 +386,7 @@ namespace SCS.HomePhotos.Service.Core
             return value;
         }
 
-        private string GetExifValue(IEnumerable<ExifDirectoryBase> exifDataList, int id)
+        private static string GetExifValue(IEnumerable<ExifDirectoryBase> exifDataList, int id)
         {
             var value = "";
 

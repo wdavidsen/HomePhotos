@@ -119,7 +119,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Failed to receive uploaded file: {fileName}");
+                    _logger.LogError(ex, "Failed to receive uploaded file: {fileName}.", fileName);
                     throw;
                 }
             }

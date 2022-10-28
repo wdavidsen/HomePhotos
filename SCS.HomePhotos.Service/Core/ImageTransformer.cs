@@ -207,7 +207,7 @@ namespace SCS.HomePhotos.Service.Core
         /// Deletes a file if it exits.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        protected void DeleteFile(string filePath)
+        protected static void DeleteFile(string filePath)
         {
             if (File.Exists(filePath))
             {

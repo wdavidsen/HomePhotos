@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>SCS.HomePhotos.Service</AssemblyName>
     <RootNamespace>SCS.HomePhotos.Service</RootNamespace>
+	<AnalysisLevel>6.0-minimum</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

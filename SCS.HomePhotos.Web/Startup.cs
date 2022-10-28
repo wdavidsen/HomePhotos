@@ -247,7 +247,7 @@ namespace SCS.HomePhotos.Web
                 }
             });
         }
-        private async Task SetDynamicConfig(IConfigService configService)
+        private static async Task SetDynamicConfig(IConfigService configService)
         {
             await configService.SetDynamicConfig();
         }

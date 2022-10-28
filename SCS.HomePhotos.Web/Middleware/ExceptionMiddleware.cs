@@ -59,7 +59,7 @@ namespace SCS.HomePhotos.Web.Middleware
 
                 var logger = logFactory.CreateLogger<ExceptionMiddleware>();
                 var errorCode = DateTime.Now.Ticks.ToString("x", CultureInfo.CurrentCulture);
-                logger.LogError(ex, BuildErrorMessage(errorCode, eventProperties));
+                logger.LogError(ex, "Request error. Code={errorCode}{eventProperties}", errorCode, eventProperties);
                 var responseMessage = string.Format(CultureInfo.CurrentCulture, DefaultErrorMessageFormat, errorCode);
 
                 if (environment.EnvironmentName.ToUpper().StartsWith("DEV"))
@@ -68,11 +68,6 @@ namespace SCS.HomePhotos.Web.Middleware
                 }
                 await WriteMessageResponse(httpContext, responseMessage);
             }
-        }
-
-        private static string BuildErrorMessage(string errorCode, StringBuilder eventProperties)
-        {
-            return $"Request error. Code={errorCode}{eventProperties.ToString()}";
         }
 
         private static Task WriteMessageResponse(HttpContext context, string message)

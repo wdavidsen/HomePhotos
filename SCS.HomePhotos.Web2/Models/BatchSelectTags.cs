@@ -25,7 +25,7 @@ namespace SCS.HomePhotos.Web.Models
             {
                 throw new ArgumentNullException(nameof(tags));
             }
-            if (photoIds.Count() < 1)
+            if (!photoIds.Any())
             {
                 throw new ArgumentException("At lease one photo must be selected.", nameof(photoIds));
             }

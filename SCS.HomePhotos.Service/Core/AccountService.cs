@@ -221,7 +221,7 @@ namespace SCS.HomePhotos.Service.Core
             var user = await GetUser(userName);
             var tokens = await _userTokenData.GetUserTokens(user.UserId.Value, true);
 
-            if (tokens != null && tokens.Count() > 0)
+            if (tokens != null && tokens.Any())
             {
                 foreach (var token in tokens)
                 {
@@ -462,7 +462,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="specialCharacterCount">The special character count.</param>
         /// <param name="digitCount">The digit count.</param>
         /// <param name="capitalLetterCount">The capital letter count.</param>
-        private void GetCharCounts(string password, out int specialCharacterCount, out int digitCount, out int capitalLetterCount)
+        private static void GetCharCounts(string password, out int specialCharacterCount, out int digitCount, out int capitalLetterCount)
         {
             specialCharacterCount = 0;
             digitCount = 0;

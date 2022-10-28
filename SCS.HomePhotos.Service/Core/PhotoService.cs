@@ -390,7 +390,7 @@ namespace SCS.HomePhotos.Service.Core
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"Failed to delete cache folder: {_dynamicConfig.CacheFolder}");
+                        _logger.LogError(ex, "Failed to delete cache folder: {_dynamicConfig.CacheFolder}", _dynamicConfig.CacheFolder);
                         notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ClearCache, contextUserName, false));
                     }
                 });

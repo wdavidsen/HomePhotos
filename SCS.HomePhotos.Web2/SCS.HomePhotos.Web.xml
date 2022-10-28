@@ -1480,6 +1480,39 @@
             <summary>Gets or sets the files.</summary>
             <value>The files.</value>
         </member>
+        <member name="T:SCS.HomePhotos.Web.Pages.ErrorModel">
+            <summary>
+            The error page model.
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.RazorPages.PageModel" />
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Pages.ErrorModel.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Pages.ErrorModel})">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Pages.ErrorModel"/> class.
+            </summary>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Pages.ErrorModel.RequestId">
+            <summary>
+            Gets or sets the request identifier.
+            </summary>
+            <value>
+            The request identifier.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Pages.ErrorModel.ShowRequestId">
+            <summary>
+            Gets a value indicating whether to show request identifier.
+            </summary>
+            <value>
+              <c>true</c> if request identifier should be shown; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Pages.ErrorModel.OnGet">
+            <summary>
+            Get action.
+            </summary>
+        </member>
         <member name="T:SCS.HomePhotos.Web.SecurityService">
             <summary>
             Provides security services.

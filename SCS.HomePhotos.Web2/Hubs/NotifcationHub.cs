@@ -34,7 +34,7 @@ namespace SCS.HomePhotos.Web.Hubs
         {
             var users = await GetAdmins();
 
-            if (users.Count() > 0)
+            if (users.Any())
             {
                 await Clients
                     .Users(users.Select(e => e.UserName).ToArray())

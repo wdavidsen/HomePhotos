@@ -1,18 +1,19 @@
-﻿using MetadataExtractor.Formats.Exif;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Workers;
+
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using static System.Net.WebRequestMethods;
 
 namespace SCS.HomePhotos.Workers
 {
@@ -31,7 +32,7 @@ namespace SCS.HomePhotos.Workers
         private CancellationToken _internalCanellationToken;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<TimedIndexHostedService> _logger;
-        private readonly IConfigService _configService;        
+        private readonly IConfigService _configService;
         private readonly IAdminLogService _adminlogger;
         private readonly IIndexEvents _indexEvents;
         private readonly IImageMetadataService _metadataService;
@@ -47,14 +48,14 @@ namespace SCS.HomePhotos.Workers
         /// <param name="dblogger">The dblogger.</param>
         /// <param name="indexEvents">The index events.</param>
         /// <param name="metadataService">The metadata service.</param>
-        public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IConfigService configService, 
+        public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IConfigService configService,
             IAdminLogService dblogger, IIndexEvents indexEvents, IImageMetadataService metadataService)
         {
             Name = "Image Indexer";
 
             _serviceProvider = services;
             _logger = logger;
-            _configService = configService;            
+            _configService = configService;
             _adminlogger = dblogger;
             _indexEvents = indexEvents;
             _metadataService = metadataService;
@@ -86,7 +87,9 @@ namespace SCS.HomePhotos.Workers
         public Task StopAsync(CancellationToken cancellationToken)
         {
             StopTimer();
-            _logger.LogInformation(_adminlogger.LogNeutral($"Photo indexing stopped.", LogCategory.Index));
+
+            _adminlogger.LogNeutral($"Photo indexing stopped.", LogCategory.Index);
+            _logger.LogInformation("Photo indexing stopped.");
 
             return Task.CompletedTask;
         }
@@ -120,6 +123,7 @@ namespace SCS.HomePhotos.Workers
         /// </summary>
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             _timer?.Dispose();
         }
 
@@ -139,10 +143,14 @@ namespace SCS.HomePhotos.Workers
             if (_configService.DynamicConfig.NextIndexTime != null)
             {
                 var start = (DateTime.UtcNow + StartTime).ToString("g");
-                var msg = $"Next photo index time set for {start} (UTC); reoccurance every {_configService.DynamicConfig.IndexFrequencyHours} hours.";
 
                 _timer = new Timer(DoWork, null, StartTime, RunFrequency);
-                _logger.LogInformation(_adminlogger.LogNeutral(msg, LogCategory.Index));
+
+                var msg = $"Next photo index time set for {start} (UTC); reoccurance every {_configService.DynamicConfig.IndexFrequencyHours} hours.";
+                _adminlogger.LogNeutral(msg, LogCategory.Index);
+
+                _logger.LogInformation("Next photo index time set for {start} (UTC); reoccurance every {_configService.DynamicConfig.IndexFrequencyHours} hours.",
+                    start, _configService.DynamicConfig.IndexFrequencyHours);
             }
         }
 
@@ -178,7 +186,8 @@ namespace SCS.HomePhotos.Workers
 
             executionCount++;
 
-            _logger.LogInformation(_adminlogger.LogNeutral("Photo index started.", LogCategory.Index));
+            _adminlogger.LogNeutral("Photo index started.", LogCategory.Index);
+            _logger.LogInformation("Photo index started.");
 
             try
             {
@@ -192,7 +201,7 @@ namespace SCS.HomePhotos.Workers
 
                 _indexEvents.IndexStarted?.Invoke();
 
-                ProcessDirectories(_indexCanellationToken, _internalCanellationToken, indexPaths);
+                ProcessDirectories(indexPaths, _internalCanellationToken, _indexCanellationToken);
                 _logger.LogInformation("Completed photo image index");
 
                 _indexEvents.IndexCompleted?.Invoke();
@@ -210,7 +219,9 @@ namespace SCS.HomePhotos.Workers
             catch (AggregateException ex)
             {
                 _indexEvents.IndexStarted?.Invoke();
-                _logger.LogError(_adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
+
+                _adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index);
+                _logger.LogError("Failed to index photos at path: {_configService.DynamicConfig.IndexPath}.", _configService.DynamicConfig.IndexPath);
 
                 foreach (var innerEx in ex.InnerExceptions)
                 {
@@ -221,7 +232,8 @@ namespace SCS.HomePhotos.Workers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, _adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index));
+                _adminlogger.LogHigh($"Failed to index photos at path: {_configService.DynamicConfig.IndexPath}", LogCategory.Index);
+                _logger.LogError(ex, "Failed to index photos at path: {_configService.DynamicConfig.IndexPath}.", _configService.DynamicConfig.IndexPath);
                 StopTimer();
             }
             finally
@@ -239,11 +251,13 @@ namespace SCS.HomePhotos.Workers
         {
             if (e.PropertyName == nameof(DynamicConfig.IndexFrequencyHours) || e.PropertyName == nameof(DynamicConfig.NextIndexTime))
             {
-                _logger.LogInformation(_adminlogger.LogNeutral("Index configuration has changed.", LogCategory.Index));
+                _adminlogger.LogNeutral("Index configuration has changed.", LogCategory.Index);
+                _logger.LogInformation("Index configuration has changed.");
 
                 if (_indexingNow && _internalCanellationTokenSource != null)
                 {
-                    _logger.LogInformation(_adminlogger.LogNeutral("Indexing canceled.", LogCategory.Index));
+                    _adminlogger.LogNeutral("Indexing canceled.", LogCategory.Index);
+                    _logger.LogInformation("Indexing canceled.");
 
                     _internalCanellationTokenSource.Cancel();
                     Thread.Sleep(5000);
@@ -275,24 +289,24 @@ namespace SCS.HomePhotos.Workers
         /// <summary>
         /// Processes the directories.
         /// </summary>
-        /// <param name="externalCancellationToken">The external cancellation token.</param>
-        /// <param name="internalCancellationToken">The internal cancellation token.</param>
         /// <param name="directoryPaths">The directory paths.</param>
-        private void ProcessDirectories(CancellationToken externalCancellationToken, CancellationToken internalCancellationToken, string[] directoryPaths)
+        /// <param name="internalCancellationToken">The internal cancellation token.</param>
+        /// <param name="externalCancellationToken">The external cancellation token.</param>
+        private void ProcessDirectories(string[] directoryPaths, CancellationToken internalCancellationToken, CancellationToken externalCancellationToken)
         {
             foreach (var dir in directoryPaths)
             {
-                ProcessDirectory(externalCancellationToken, internalCancellationToken, dir);
+                ProcessDirectory(dir, internalCancellationToken, externalCancellationToken);
             }
         }
 
         /// <summary>
         /// Processes the directory.
         /// </summary>
-        /// <param name="externalCancellationToken">The external cancellation token.</param>
-        /// <param name="internalCancellationToken">The internal cancellation token.</param>
         /// <param name="directoryPath">The directory path.</param>
-        private void ProcessDirectory(CancellationToken externalCancellationToken, CancellationToken internalCancellationToken, string directoryPath)
+        /// <param name="internalCancellationToken">The internal cancellation token.</param>
+        /// <param name="externalCancellationToken">The external cancellation token.</param>
+        private void ProcessDirectory(string directoryPath, CancellationToken internalCancellationToken, CancellationToken externalCancellationToken)
         {
             _logger.LogInformation("Processing directory {DirectoryPath}.", directoryPath);
 
@@ -328,9 +342,9 @@ namespace SCS.HomePhotos.Workers
                                 {
                                     var exifData = _metadataService.GetExifData(imageFilePath);
 
-                                    var cacheFilePath = imageService.CreateCachePath(checksum, Path.GetExtension(imageFilePath));                                    
+                                    var cacheFilePath = imageService.CreateCachePath(checksum, Path.GetExtension(imageFilePath));
                                     var fullImagePath = imageService.CreateFullImage(imageFilePath, cacheFilePath);
-                                    
+
                                     imageService.OrientImage(fullImagePath, exifData);
                                     var imageLayoutInfo = imageService.GetImageLayoutInfo(fullImagePath);
 
@@ -347,7 +361,7 @@ namespace SCS.HomePhotos.Workers
                             {
                                 _logger.LogInformation("Skipping image file since it is greater than {MaxImageFileSizeBytes} bytes.", _configService.StaticConfig.MaxImageFileSizeBytes);
                             }
-                        }  
+                        }
                         catch (OutOfMemoryException)
                         {
                             throw;
@@ -378,7 +392,7 @@ namespace SCS.HomePhotos.Workers
 
                 foreach (var dirPath in Directory.GetDirectories(directoryPath))
                 {
-                    ProcessDirectory(externalCancellationToken, internalCancellationToken, dirPath);
+                    ProcessDirectory(dirPath, internalCancellationToken, externalCancellationToken);
                 }
             }
         }
@@ -390,7 +404,7 @@ namespace SCS.HomePhotos.Workers
         /// <returns>A flag whether the cache file exists.</returns>
         private bool CacheFileExists(Photo existingPhoto)
         {
-            return File.Exists(Path.Combine(_configService.DynamicConfig.CacheFolder, existingPhoto.CacheFolder, "Thumb", existingPhoto.FileName));
+            return System.IO.File.Exists(Path.Combine(_configService.DynamicConfig.CacheFolder, existingPhoto.CacheFolder, "Thumb", existingPhoto.FileName));
         }
     }
 }

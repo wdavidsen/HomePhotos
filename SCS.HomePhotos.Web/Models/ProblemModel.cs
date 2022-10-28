@@ -18,7 +18,7 @@ namespace SCS.HomePhotos.Web.Models
         {
             var errors = modelState.Values.SelectMany(o => o.Errors);
 
-            if (errors.Count() > 0)
+            if (errors.Any())
             {
                 Id = "InvalidRequestPayload";
                 Message = errors.Select(e => e.ErrorMessage).Aggregate((s1, s2) => s1 + " " + s2);

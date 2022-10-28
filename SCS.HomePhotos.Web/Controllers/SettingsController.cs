@@ -109,7 +109,7 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok();
         }
 
-        private bool ImageSizeChanged(IDynamicConfig dynamicConfig, Settings settings)
+        private static bool ImageSizeChanged(IDynamicConfig dynamicConfig, Settings settings)
         {
             if (dynamicConfig.ThumbnailSize != settings.ThumbnailSize)
             {

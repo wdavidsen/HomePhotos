@@ -206,9 +206,8 @@ namespace SCS.HomePhotos.Web.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                var message = $"Failed to delete tag {tagId}.";
-                _logger.LogError(ex, message);
-                return BadRequest(new ProblemModel { Message = message });
+                _logger.LogError(ex, "Failed to delete tag {tagId}.", tagId);
+                return BadRequest(new ProblemModel { Message = $"Failed to delete tag {tagId}." });
             }
 
             return Ok();

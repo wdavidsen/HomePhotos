@@ -129,6 +129,8 @@ Container.AddSingleton<IClientMessageSender, ClientMessageSender>();
 Container.AddSingleton<IUploadTracker, UploadTracker>();
 Container.AddSingleton<IImageMetadataService, ImageMetadataService>();
 
+builder.Host.UseWindowsService();
+
 var App = builder.Build();
 
 // https://github.com/serilog/serilog-extensions-logging-file

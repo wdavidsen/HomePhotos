@@ -201,7 +201,7 @@ namespace SCS.HomePhotos.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Failed to save avatar profile image: {fileName}");
+                _logger.LogError(ex, "Failed to save avatar profile image: {fileName}.", fileName);
                 throw;
             }
 

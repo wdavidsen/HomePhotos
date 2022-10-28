@@ -39,7 +39,7 @@ namespace SCS.HomePhotos.Data.Core
         {
             var list = await GetListAsync<Tag>("WHERE TagName = @TagName", new { TagName = tagName });
 
-            if (list.Count() > 0)
+            if (list.Any())
             {
                 return list.First();
             }
