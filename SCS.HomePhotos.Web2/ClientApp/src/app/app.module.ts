@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -18,7 +18,23 @@ import { ModalModule, BsModalRef } from 'ngx-bootstrap/modal';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularCropperjsModule } from 'angular-cropperjs';
-//import { LoginComponent } from './login/login.component';
+import { PhotosComponent } from './photos/photos.component';
+
+import { routes } from './app.routes';
+import { SettingsComponent } from './settings/settings.component';
+import { RegisterComponent } from './register/register.component';
+import { LoginComponent } from './login/login.component';
+import { TagsComponent } from './tags/tags.component';
+import { NotFoundComponent } from './errors/not-found.component';
+import { UnauthorizedComponent } from './errors/unauthorized.component';
+import { RegisterSuccessComponent } from './register/register-success.component';
+import { UserDetailComponent } from './users/user-detail.component';
+import { UsersComponent } from './users/users.component';
+import { CsrfHeaderInterceptor, ProgressInterceptor, TokenInterceptor } from './framework';
+import { ImageService, PhotosService, TagService, UserSettingsService } from './services';
+import { LogService } from './services/log.service';
+import { LocalStorageService } from './services/local-storage.service';
+import { SettingsService } from './services/settings.service';
 
 @NgModule({
   declarations: [
@@ -29,14 +45,18 @@ import { AngularCropperjsModule } from 'angular-cropperjs';
     CounterComponent,
     FetchDataComponent,
 
-    // PhotosComponent,
-    // TagsComponent,
-    // LoginComponent,
-    // RegisterComponent,
-    // RegisterSuccessComponent,
-    // SettingsComponent,
-    // UsersComponent,
-    // UserDetailComponent,
+    // pages/routes
+    UnauthorizedComponent,
+    NotFoundComponent,
+    PhotosComponent,
+    TagsComponent,
+    SettingsComponent,
+    LoginComponent,
+    RegisterComponent,
+    RegisterSuccessComponent,    
+    UsersComponent,
+    UserDetailComponent,
+
     // AlertComponent,
     // PageInfoComponent,
     // OrganizeComponent,
@@ -54,8 +74,6 @@ import { AngularCropperjsModule } from 'angular-cropperjs';
     // TriCheckComponent,
     // LogsComponent,
     // UploadComponent,
-    // UnauthorizedComponent,
-    // NotFoundComponent,
     // SecurePipe
   ],
   entryComponents: [
@@ -75,11 +93,7 @@ import { AngularCropperjsModule } from 'angular-cropperjs';
     FormsModule,
     ReactiveFormsModule,
     //AngularFontAwesomeModule,
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-    ]),
+    RouterModule.forRoot(routes),
     BrowserAnimationsModule,
     NgxSpinnerModule,
     TypeaheadModule.forRoot(),
@@ -97,17 +111,17 @@ import { AngularCropperjsModule } from 'angular-cropperjs';
   ],
   providers: [
     NgxSpinnerService,
-    // SettingsService,
-    // UserSettingsService,
-    // PhotosService,
-    // ImageService,
+    SettingsService,
+    UserSettingsService,
+    PhotosService,
+    ImageService,
     BsModalRef,
-    // TagService,
-    // LogService,
-    // LocalStorageService,
-    // { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true },
-    // { provide: HTTP_INTERCEPTORS, useClass: CsrfHeaderInterceptor, multi: true },
-    // { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
+    TagService,
+    LogService,
+    LocalStorageService,
+    { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CsrfHeaderInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

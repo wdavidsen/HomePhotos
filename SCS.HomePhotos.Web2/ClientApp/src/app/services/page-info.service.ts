@@ -23,6 +23,6 @@ export class PageInfoService {
     }
 
     clear() {
-        this.subject.next();
+        this.subject.next({});
     }
 }

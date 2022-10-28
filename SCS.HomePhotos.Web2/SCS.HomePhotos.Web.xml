@@ -1,0 +1,1671 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SCS.HomePhotos.Web2</name>
+    </assembly>
+    <members>
+        <member name="T:SCS.HomePhotos.Web.Controllers.AccountController">
+            <summary>Account services.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.AccountController},SCS.HomePhotos.Service.Contracts.IAccountService,SCS.HomePhotos.IStaticConfig,SCS.HomePhotos.Web.ISecurityService,SCS.HomePhotos.Web.IFileUploadService,SCS.HomePhotos.IDynamicConfig)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.AccountController" /> class.</summary>
+            <param name="logger">The logger.</param>
+            <param name="accountService">The account service.</param>
+            <param name="staticConfig">The static configuration.</param>
+            <param name="securityService">The security service.</param>
+            <param name="fileUploadService">The file upload service.</param>
+            <param name="dynamicConfig">The dynamic configuration.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.Register(SCS.HomePhotos.Web.Models.RegisterModel)">
+            <summary>Registers a user.</summary>
+            <param name="model">The register model.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.ChangePassword(SCS.HomePhotos.Web.Models.ChangePasswordModel)">
+            <summary>Changes a user's password.</summary>
+            <param name="model">The change passeord model.</param>
+            <returns>A new JWT and refresh token.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.UpdateAvatar(SCS.HomePhotos.Web.Models.AvatarModel)">
+            <summary>Updates the avatar image.</summary>
+            <param name="model">The avatar model.</param>
+            <returns>The avatar image name.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.Get">
+            <summary>Gets current user account info.</summary>
+            <returns>User's account info.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.Put(SCS.HomePhotos.Web.Dto.AccountInfo)">
+            <summary>Updates current user's account information.</summary>
+            <param name="accountInfo">The account information.</param>
+            <returns>User's account info.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Controllers.AntiForgeryController">
+            <summary>Anti-forgery services</summary>    
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AntiForgeryController.#ctor(Microsoft.AspNetCore.Antiforgery.IAntiforgery)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.AntiForgeryController" /> class.</summary>
+            <param name="antiForgery">The anti-forgery.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AntiForgeryController.Get">
+            <summary>Gets an anti-forger cookie.</summary>
+            <returns>Anti-forger cookie.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Controllers.AuthController">
+            <summary>Authentication services.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AuthController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.AuthController},Microsoft.Extensions.Options.IOptions{SCS.HomePhotos.Web.Security.JwtAuthentication},SCS.HomePhotos.Service.Contracts.IAccountService,SCS.HomePhotos.IStaticConfig,SCS.HomePhotos.Web.ISecurityService)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.AuthController" /> class.</summary>
+            <param name="logger">The logger.</param>
+            <param name="jwtAuthentication">The JWT authentication.</param>
+            <param name="accountService">The account service.</param>
+            <param name="staticConfig">The static configuration.</param>
+            <param name="securityService">The security service.</param>
+            <exception cref="T:System.ArgumentNullException">jwtAuthentication</exception>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AuthController.Login(SCS.HomePhotos.Web.Models.LoginModel)">
+            <summary>User log-in.</summary>
+            <param name="model">The login model.</param>
+            <returns>A JWT and refresh token.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AuthController.LoginWithPasswordChange(SCS.HomePhotos.Web.Models.ChangePasswordModel)">
+            <summary>User log-in with password change.</summary>
+            <param name="model">The user/change password model.</param>
+            <returns>A JWT and refresh token.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AuthController.Logout">
+            <summary>Logs-out current user.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AuthController.Refresh(SCS.HomePhotos.Web.Models.RefreshModel)">
+            <summary>Refreshes a user's auth token.</summary>
+            <param name="model">The refresh model.</param>
+            <returns>A JWT and refresh token.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Controllers.HomePhotosController">
+            <summary>Base controller.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.HomePhotosController.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.HomePhotosController" /> class.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.HomePhotosController.GetAgentIdentifier">
+            <summary>Gets the user agent identifier.</summary>
+            <returns>User agent id.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.HomePhotosController.GetHeader(System.String)">
+            <summary>Gets a header value.</summary>
+            <param name="header">The header kwy.</param>
+            <returns>Header value.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Controllers.LogsController">
+            <summary>Log services.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.LogsController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.LogsController},SCS.HomePhotos.Service.Contracts.IAdminLogService)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.LogsController" /> class.</summary>
+            <param name="logger">The logger.</param>
+            <param name="adminLogService">The admin log service.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.LogsController.GetLatestLogs(System.Int32,System.Int32,System.Nullable{SCS.HomePhotos.Model.LogCategory},System.Nullable{SCS.HomePhotos.Model.LogSeverity},System.String,System.Boolean)">
+            <summary>Gets the latest log entries.</summary>
+            <param name="pageSize">Size of the page.</param>
+            <param name="pageNum">The page number.</param>
+            <param name="category">The category.</param>
+            <param name="severity">The severity.</param>
+            <param name="sortBy">The sort by.</param>
+            <param name="sortDescending">if set to <c>true</c> sort descending.</param>
+            <returns>Log entries.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Controllers.PhotosController">
+            <summary>Photo services.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.PhotosController},SCS.HomePhotos.Service.Contracts.IPhotoService,SCS.HomePhotos.IStaticConfig)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.PhotosController" /> class.</summary>
+            <param name="logger">The logger.</param>
+            <param name="photoSevice">The photo sevice.</param>
+            <param name="staticConfig">The static configuration.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.GetLatestPhotos(System.Int32,System.Int32)">
+            <summary>Gets the latest photos.</summary>
+            <param name="pageNum">The page number.</param>
+            <param name="pageSize">Size of the page.</param>
+            <returns>A list of photos.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.GetPhotosByTag(System.String,System.Int32,System.Int32)">
+            <summary>Gets photos by tag.</summary>
+            <param name="tag">The tag.</param>
+            <param name="pageNum">The page number.</param>
+            <param name="pageSize">Size of the page.</param>
+            <returns>A list of photos.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.SearchPhotos(System.String,System.Int32,System.Int32)">
+            <summary>Searches photos.</summary>
+            <param name="keywords">The keywords.</param>
+            <param name="pageNum">The page number.</param>
+            <param name="pageSize">Size of the page.</param>
+            <returns>A list of photos.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Controllers.SettingsController">
+            <summary>Settings services.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.SettingsController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.SettingsController},SCS.HomePhotos.IDynamicConfig,SCS.HomePhotos.Service.Contracts.IPhotoService)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.SettingsController" /> class.</summary>
+            <param name="logger">The logger.</param>
+            <param name="dynamicConfig">The dynamic configuration.</param>
+            <param name="photoService">The photo service.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.SettingsController.Get">
+            <summary>Gets the settings.</summary>
+            <returns>The settings.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.SettingsController.Put(SCS.HomePhotos.Web.Dto.Settings,System.Boolean)">
+            <summary>Updates settings.</summary>
+            <param name="settings">The settings.</param>
+            <param name="reprocessPhotos">if set to <c>true</c> reprocess photos.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.SettingsController.UpdateNow(System.Boolean)">
+            <summary>Initiates photo indexing immediately.</summary>
+            <param name="reprocessPhotos">if set to <c>true</c> reprocess photos.</param>
+            <returns>The settings.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.SettingsController.ClearCache">
+            <summary>Clears the photo cache.</summary>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Controllers.TagsController">
+            <summary>Tag services.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.TagsController},SCS.HomePhotos.Service.Contracts.IPhotoService)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.TagsController" /> class.</summary>
+            <param name="logger">The logger.</param>
+            <param name="photoSevice">The photo sevice.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.Get">
+            <summary>Gets all tags.</summary>
+            <returns>A list of tags.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.SearchTags(System.String,System.Int32,System.Int32)">
+            <summary>Searches the tags.</summary>
+            <param name="keywords">The keywords.</param>
+            <param name="pageNum">The page number.</param>
+            <param name="pageSize">Size of the page.</param>
+            <returns>A list of tags.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.MergeTags(SCS.HomePhotos.Web.Models.TagMergeInfo)">
+            <summary>Merges tags.</summary>
+            <param name="mergeInfo">The merge information.</param>
+            <returns>Final merged tag.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.CopyTag(SCS.HomePhotos.Web.Models.TagCopyInfo)">
+            <summary>Copies a tag.</summary>
+            <param name="copyInfo">The copy information.</param>
+            <returns>The new tag.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.GetPhotosToTag(System.Int32[])">
+            <summary>Gets specified photos to tag.</summary>
+            <param name="photoIds">The photo ids.</param>
+            <returns>Batch tag info.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.TagPhotos(SCS.HomePhotos.Web.Models.BatchUpdateTags)">
+            <summary>Tags the photos.</summary>
+            <param name="updateTags">The updated tags.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.AddTag(SCS.HomePhotos.Web.Dto.Tag)">
+            <summary>Adds a tag.</summary>
+            <param name="tag">The tag to add.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.UpdateTag(SCS.HomePhotos.Web.Dto.Tag)">
+            <summary>Updates a tag.</summary>
+            <param name="tag">The tag to update.</param>
+            <returns>The updated tag.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.DeleteTag(System.Int32)">
+            <summary>Deletes a tag.</summary>
+            <param name="tagId">The tag id.</param>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Controllers.UploadController">
+            <summary>Upload services.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.UploadController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.UploadController},SCS.HomePhotos.Service.Contracts.IImageService,SCS.HomePhotos.Web.IFileUploadService,SCS.HomePhotos.Service.Contracts.IAdminLogService,SCS.HomePhotos.Web.IUploadTracker)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.UploadController"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.UploadController.ImageUpload(Microsoft.AspNetCore.Http.IFormCollection)">
+            <summary>Receives an image upload.</summary>
+            <param name="formdata">The form data containing images and tag info.</param>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Controllers.UsersController">
+            <summary>User services.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.UsersController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.UsersController},SCS.HomePhotos.Service.Contracts.IAccountService,SCS.HomePhotos.IStaticConfig)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.UsersController" /> class.</summary>
+            <param name="logger">The logger.</param>
+            <param name="accountService">The account service.</param>
+            <param name="staticConfig">The static configuration.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.UsersController.GetUsers">
+            <summary>Gets all users.</summary>
+            <returns>A user list.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.UsersController.GetUser(System.Int32)">
+            <summary>Gets a user.</summary>
+            <param name="userId">The user id.</param>
+            <returns>A user.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.UsersController.AddUser(SCS.HomePhotos.Web.Dto.PasswordUser)">
+            <summary>Adds a user.</summary>
+            <param name="user">The user to add.</param>
+            <returns>The new user.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.UsersController.UpdateUser(SCS.HomePhotos.Web.Dto.User)">
+            <summary>Updates a user.</summary>
+            <param name="user">The user to update.</param>
+            <returns>The updated user.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.UsersController.DeleteUser(System.Int32)">
+            <summary>Deletes a user.</summary>
+            <param name="userId">The user id.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.UsersController.ResetPassword(System.Int32,SCS.HomePhotos.Web.Models.ResetPasswordModel)">
+            <summary>Resets a user's password.</summary>
+            <param name="userId">The user id.</param>
+            <param name="resetPasswordModel">The reset password model.</param>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Dto.AccountInfo">
+            <summary>
+            Account info DTO.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.AccountInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.AccountInfo"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.AccountInfo.#ctor(SCS.HomePhotos.Model.User)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.AccountInfo"/> class using the domain model class.
+            </summary>
+            <param name="user">The user.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.AccountInfo.UserId">
+            <summary>
+            Gets or sets the user identifier.
+            </summary>
+            <value>
+            The user identifier.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.AccountInfo.Username">
+            <summary>
+            Gets or sets the username.
+            </summary>
+            <value>
+            The username.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.AccountInfo.FirstName">
+            <summary>
+            Gets or sets the first name.
+            </summary>
+            <value>
+            The first name.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.AccountInfo.LastName">
+            <summary>
+            Gets or sets the last name.
+            </summary>
+            <value>
+            The last name.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.AccountInfo.EmailAddress">
+            <summary>
+            Gets or sets the email address.
+            </summary>
+            <value>
+            The email address.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.AccountInfo.AvatarImage">
+            <summary>
+            Gets or sets the avatar image.
+            </summary>
+            <value>
+            The avatar image.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.AccountInfo.Admin">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:SCS.HomePhotos.Web.Dto.AccountInfo"/> is admin.
+            </summary>
+            <value>
+              <c>true</c> if admin; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.AccountInfo.LastLogin">
+            <summary>
+            Gets or sets the last login.
+            </summary>
+            <value>
+            The last login.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.AccountInfo.ToModel">
+            <summary>
+            Converts instance to the domain model.
+            </summary>
+            <returns>The domain equivalent instance.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Dto.LogEntry">
+            <summary>
+            The log entry DTO.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.LogEntry.#ctor(SCS.HomePhotos.Model.LogEntry)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.LogEntry"/> class using the domain model class.
+            </summary>
+            <param name="entry">The entry.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.LogEntry.Message">
+            <summary>
+            Gets or sets the log entry message.
+            </summary>
+            <value>
+            The log entry message.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.LogEntry.Severity">
+            <summary>
+            Gets or sets the log entry severity.
+            </summary>
+            <value>
+            The log entry severity.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.LogEntry.Category">
+            <summary>
+            Gets or sets the log entry ategory.
+            </summary>
+            <value>
+            The log entry category.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.LogEntry.Timestamp">
+            <summary>
+            Gets or sets the log entry timestamp.
+            </summary>
+            <value>
+            The log entry timestamp.
+            </value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Dto.PasswordUser">
+            <summary>
+            A user DTO with password information.
+            </summary>
+            <seealso cref="T:SCS.HomePhotos.Web.Dto.User" />
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.PasswordUser.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.PasswordUser"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.PasswordUser.#ctor(SCS.HomePhotos.Model.User)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.PasswordUser"/> class using the domain model class.
+            </summary>
+            <param name="user">The user.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.PasswordUser.Password">
+            <summary>
+            Gets or sets the password.
+            </summary>
+            <value>
+            The password.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.PasswordUser.PasswordCompare">
+            <summary>
+            Gets or sets the verification password.
+            </summary>
+            <value>
+            The verification password.
+            </value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Dto.Photo">
+            <summary>
+            Photo DTO.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.Photo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.Photo"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.Photo.#ctor(SCS.HomePhotos.Model.Photo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.Photo"/> class using the domain model class.
+            </summary>
+            <param name="photo">The photo.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Photo.PhotoId">
+            <summary>
+            Gets or sets the photo identifier.
+            </summary>
+            <value>
+            The photo identifier.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Photo.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Photo.FileName">
+            <summary>
+            Gets or sets the name of the file.
+            </summary>
+            <value>
+            The name of the file.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Photo.ImageHeight">
+            <summary>
+            Gets or sets the height of the image.
+            </summary>
+            <value>
+            The height of the image.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Photo.ImageWidth">
+            <summary>
+            Gets or sets the width of the image.
+            </summary>
+            <value>
+            The width of the image.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Photo.DateTaken">
+            <summary>
+            Gets or sets the date taken.
+            </summary>
+            <value>
+            The date taken.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Photo.DateFileCreated">
+            <summary>
+            Gets or sets the date file created.
+            </summary>
+            <value>
+            The date file created.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Photo.CacheFolder">
+            <summary>
+            Gets or sets the cache folder.
+            </summary>
+            <value>
+            The cache folder.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.Photo.ToModel">
+            <summary>
+            Converts instance to the domain model.
+            </summary>
+            <returns>The domain equivalent instance.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Dto.Settings">
+            <summary>
+            Settings DTO.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.Settings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.Settings"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.Settings.#ctor(SCS.HomePhotos.IDynamicConfig)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.Settings"/> class using a <see cref="T:SCS.HomePhotos.IDynamicConfig"/> class.
+            </summary>
+            <param name="config">The configuration.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.ConfigId">
+            <summary>
+            Gets or sets the configuration identifier.
+            </summary>
+            <value>
+            The configuration identifier.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.CacheFolder">
+            <summary>
+            Gets or sets the cache folder.
+            </summary>
+            <value>
+            The cache folder.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.MobileUploadsFolder">
+            <summary>
+            Gets or sets the mobile uploads folder.
+            </summary>
+            <value>
+            The mobile uploads folder.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.IndexPath">
+            <summary>
+            Gets or sets the index path.
+            </summary>
+            <value>
+            The index path.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.LargeImageSize">
+            <summary>
+            Gets or sets the size of the large image.
+            </summary>
+            <value>
+            The size of the large image.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.SmallImageSize">
+            <summary>
+            Gets or sets the size of the small image.
+            </summary>
+            <value>
+            The size of the small image.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.NextIndexTime">
+            <summary>
+            Gets or sets the next index time.
+            </summary>
+            <value>
+            The next index time.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.IndexFrequencyHours">
+            <summary>
+            Gets or sets the index frequency hours.
+            </summary>
+            <value>
+            The index frequency hours.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.ThumbnailSize">
+            <summary>
+            Gets or sets the size of the thumbnail.
+            </summary>
+            <value>
+            The size of the thumbnail.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.Settings.ToModel">
+            <summary>
+            Converts instance to the domain model.
+            </summary>
+            <returns>The domain equivalent instance.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.Settings.ToDynamicConfig">
+            <summary>
+            Converts to dynamic config.
+            </summary>
+            <returns>A <see cref="T:SCS.HomePhotos.IDynamicConfig"/> object.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Dto.Tag">
+            <summary>
+            Tab DTO.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.Tag.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.Tag"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.Tag.#ctor(SCS.HomePhotos.Model.Tag)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.Tag"/> class using the domain model class.
+            </summary>
+            <param name="tag">The tag.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Tag.TagId">
+            <summary>
+            Gets or sets the tag identifier.
+            </summary>
+            <value>
+            The tag identifier.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Tag.TagName">
+            <summary>
+            Gets or sets the name of the tag.
+            </summary>
+            <value>
+            The name of the tag.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Tag.PhotoCount">
+            <summary>
+            Gets or sets the photo count.
+            </summary>
+            <value>
+            The photo count.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.Tag.ToModel">
+            <summary>
+            Converts instance to the domain model.
+            </summary>
+            <returns>The domain equivalent instance.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Dto.TokenUser">
+            <summary>
+            A user with their auth token information.
+            </summary>
+            <seealso cref="T:SCS.HomePhotos.Web.Dto.User" />
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.TokenUser.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.TokenUser"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.TokenUser.#ctor(SCS.HomePhotos.Model.User,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.TokenUser"/> class using the domain model class and token info.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="token">The user auth token.</param>
+            <param name="refreshToken">The refresh token.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.TokenUser.Jwt">
+            <summary>
+            Gets or sets the user JWT.
+            </summary>
+            <value>
+            The user JWT.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.TokenUser.RefreshToken">
+            <summary>
+            Gets or sets the user refresh token.
+            </summary>
+            <value>
+            The user refresh token.
+            </value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Dto.User">
+            <summary>
+            Represents a user in the app.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.User.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.User"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.User.#ctor(SCS.HomePhotos.Model.User)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.User"/> class using the domain model class.
+            </summary>
+            <param name="user">The user.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.UserId">
+            <summary>
+            Gets or sets the user identifier.
+            </summary>
+            <value>
+            The user identifier.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.Username">
+            <summary>
+            Gets or sets the username.
+            </summary>
+            <value>
+            The username.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.FirstName">
+            <summary>
+            Gets or sets the first name.
+            </summary>
+            <value>
+            The first name.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.LastName">
+            <summary>
+            Gets or sets the last name.
+            </summary>
+            <value>
+            The last name.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.EmailAddress">
+            <summary>
+            Gets or sets the email address.
+            </summary>
+            <value>
+            The email address.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.AvatarImage">
+            <summary>
+            Gets or sets the avatar image.
+            </summary>
+            <value>
+            The avatar image.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.Enabled">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:SCS.HomePhotos.Web.Dto.User"/> is enabled.
+            </summary>
+            <value>
+              <c>true</c> if enabled; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.Role">
+            <summary>
+            Gets or sets the role.
+            </summary>
+            <value>
+            The role.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.LastLogin">
+            <summary>
+            Gets or sets the last login.
+            </summary>
+            <value>
+            The last login.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.FailedLoginCount">
+            <summary>
+            Gets or sets the failed login count.
+            </summary>
+            <value>
+            The failed login count.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.MustChangePassword">
+            <summary>
+            Gets or sets a value indicating whether user must change password.
+            </summary>
+            <value>
+              <c>true</c> if user must change password; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.User.ToModel">
+            <summary>
+            Converts instance to the domain model.
+            </summary>
+            <returns>The domain equivalent instance.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.FileUploadService">
+            <summary>
+            Provides file uploading services.
+            </summary>
+            <seealso cref="T:SCS.HomePhotos.Web.IFileUploadService" />
+        </member>
+        <member name="M:SCS.HomePhotos.Web.FileUploadService.CopyFile(Microsoft.AspNetCore.Http.IFormFile,System.String,System.IO.FileMode)">
+            <summary>
+            Copies a file.
+            </summary>
+            <param name="formFile">The form file.</param>
+            <param name="filePath">The file path.</param>
+            <param name="fileMode">The file mode.</param>
+            <returns>A void task.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.FileUploadService.CreateDirectory(System.String)">
+            <summary>
+            Creates a directory.
+            </summary>
+            <param name="directoryPath">The directory path.</param>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Hubs.ClientMessageSender">
+            <summary>
+            Client push notification sender.
+            </summary>
+            <seealso cref="T:SCS.HomePhotos.Web.Hubs.IClientMessageSender" />
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.ClientMessageSender.#ctor(SCS.HomePhotos.Service.Workers.IIndexEvents,SCS.HomePhotos.Service.Workers.IQueueEvents,Microsoft.AspNetCore.SignalR.IHubContext{SCS.HomePhotos.Web.Hubs.NotifcationHub,SCS.HomePhotos.Web.Hubs.INotifcationHub},SCS.HomePhotos.Web.IUploadTracker)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Hubs.ClientMessageSender"/> class.
+            </summary>
+            <param name="indexEvents">The index events.</param>
+            <param name="queueEvents">The queue events.</param>
+            <param name="notificationHub">The notification hub.</param>
+            <param name="uploadTracker">The upload tracker.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.ClientMessageSender.OnIndexStarted">
+            <summary>
+            Called when photo indexing is started.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.ClientMessageSender.OnIndexCompleted">
+            <summary>
+            Called when photo indeing has completed.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.ClientMessageSender.OnIndexFailed">
+            <summary>
+            Called when photo indexing fails.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.ClientMessageSender.OnItemProcessed(SCS.HomePhotos.Service.Workers.TaskCompleteInfo)">
+            <summary>
+            Called when a notification type is processed.
+            </summary>
+            <param name="info">The notification information.</param>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Hubs.IClientMessageSender">
+            <summary>
+            Client push notification sender.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.IClientMessageSender.OnIndexCompleted">
+            <summary>
+            Called when photo indeing has completed.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.IClientMessageSender.OnIndexStarted">
+            <summary>
+            Called when photo indexing is started.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.IClientMessageSender.OnItemProcessed(SCS.HomePhotos.Service.Workers.TaskCompleteInfo)">
+            <summary>
+            Called when a notification type is processed.
+            </summary>
+            <param name="info">The notification information.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.IClientMessageSender.OnIndexFailed">
+            <summary>
+            Called when photo indexing fails.
+            </summary>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Hubs.INotifcationHub">
+            <summary>
+            Push notification hub.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.INotifcationHub.SendAdminsMessage(System.String,System.String)">
+            <summary>
+            Sends the admins a push notification.
+            </summary>
+            <param name="type">The type.</param>
+            <param name="message">The message.</param>
+            <returns>A void task.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.INotifcationHub.SendEveryoneMessage(System.String,System.String)">
+            <summary>
+            Sends everyone a push notification message.
+            </summary>
+            <param name="type">The type.</param>
+            <param name="message">The message.</param>
+            <returns>A void task.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Hubs.NotifcationHub">
+            <summary>
+            Notification hub for client push notifications.
+            </summary>
+            <seealso cref="T:SCS.HomePhotos.Web.Hubs.INotifcationHub" />
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.NotifcationHub.#ctor(SCS.HomePhotos.Service.Contracts.IAccountService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Hubs.NotifcationHub"/> class.
+            </summary>
+            <param name="accountService">The account service.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.NotifcationHub.SendAdminsMessage(System.String,System.String)">
+            <summary>
+            Sends the admins a push notification.
+            </summary>
+            <param name="type">The type.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.NotifcationHub.SendEveryoneMessage(System.String,System.String)">
+            <summary>
+            Sends everyone a push notification message.
+            </summary>
+            <param name="type">The type.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Hubs.NotifcationHub.GetAdmins">
+            <summary>
+            Gets the admin users.
+            </summary>
+            <returns>A list of users.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.IFileUploadService">
+            <summary>
+            Provides file upload services.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IFileUploadService.CopyFile(Microsoft.AspNetCore.Http.IFormFile,System.String,System.IO.FileMode)">
+            <summary>
+            Copies a file.
+            </summary>
+            <param name="formFile">The form file.</param>
+            <param name="filePath">The file path.</param>
+            <param name="fileMode">The file mode.</param>
+            <returns>A void task.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IFileUploadService.CreateDirectory(System.String)">
+            <summary>
+            Creates a directory.
+            </summary>
+            <param name="directoryPath">The directory path.</param>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.IFormFileExtensions">
+            <summary>
+            Extensions methods to assist with file uploading.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IFormFileExtensions.GetFileName(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Gets the name of the uploaded file.
+            </summary>
+            <param name="file">The file name.</param>
+            <returns>The file name.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IFormFileExtensions.GetFileExtension(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Gets the uploaded file extension.
+            </summary>
+            <param name="file">The file.</param>
+            <returns>The file extension.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IFormFileExtensions.GetFileStream(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Gets the uploaded file stream.
+            </summary>
+            <param name="file">The file.</param>
+            <returns>A file steam.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IFormFileExtensions.GetFileArray(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Gets the file bytes.
+            </summary>
+            <param name="file">The file.</param>
+            <returns>A byte array.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.ISecurityService">
+            <summary>
+            Provides security services.
+            </summary>
+            <seealso cref="T:SCS.HomePhotos.Web.ISecurityService" />
+        </member>
+        <member name="P:SCS.HomePhotos.Web.ISecurityService.ValidIssuer">
+            <summary>
+            Gets the valid issuer.
+            </summary>
+            <value>
+            The valid issuer.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.ISecurityService.ValidAudience">
+            <summary>
+            Gets the valid audience.
+            </summary>
+            <value>
+            The valid audience.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.ISecurityService.GenerateRefreshToken">
+            <summary>
+            Generates a refresh token.
+            </summary>
+            <returns>The refresh token.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.ISecurityService.GenerateToken(System.Collections.Generic.IEnumerable{System.Security.Claims.Claim})">
+            <summary>
+            Generates a JWT security token.
+            </summary>
+            <param name="claims">The claims.</param>
+            <returns>A JWT security token</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.ISecurityService.GetPrincipalFromExpiredToken(System.String)">
+            <summary>
+            Gets the principal from expired token.
+            </summary>
+            <param name="token">The token.</param>
+            <returns></returns>
+            <exception cref="T:Microsoft.IdentityModel.Tokens.SecurityTokenException">
+            Invalid token
+            or
+            Invalid token
+            </exception>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.ISecurityService.GetUserClaims(System.String,SCS.HomePhotos.Model.RoleType)">
+            <summary>
+            Gets a user's claims.
+            </summary>
+            <param name="userName">Username of the user.</param>
+            <param name="role">The user role.</param>
+            <returns>A list of claims.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.IUploadTracker">
+            <summary>
+            Image file upload tracker.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IUploadTracker.AddUpload(System.String,System.String)">
+            <summary>
+            Increments the add upload counter.
+            </summary>
+            <param name="userName">Name of the user.</param>
+            <param name="file">The file.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IUploadTracker.Clear">
+            <summary>
+            Clears the upload count.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IUploadTracker.GetUploadCount(System.String)">
+            <summary>
+            Gets the upload count.
+            </summary>
+            <param name="userName">Name of the user.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IUploadTracker.RemoveUpload(System.String)">
+            <summary>
+            Removes an upload from the counter.
+            </summary>
+            <param name="file">The uploaded file.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.IUploadTracker.IsProcessingDone(System.String)">
+            <summary>
+            Determines whether upload processing done for user.
+            </summary>
+            <param name="userName">Name of the user.</param>
+            <returns>
+              <c>true</c> if upload processing done for user; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Middleware.AvatarImageMiddleware">
+            <summary>
+            Avaitar image middleware.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.AvatarImageMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Middleware.AvatarImageMiddleware"/> class.
+            </summary>
+            <param name="next">The next.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.AvatarImageMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,SCS.HomePhotos.IDynamicConfig,Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Middleware.AvatarImageMiddleware},Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            Invokes the asynchronous.
+            </summary>
+            <param name="httpContext">The HTTP context.</param>
+            <param name="dynamicConfig">The dynamic configuration.</param>
+            <param name="logger">The logger.</param>
+            <param name="env">The environment.</param>
+            <exception cref="T:System.IO.FileNotFoundException">Avatar image not found at {tempImagePath}.</exception>
+            <returns>A void task.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Middleware.ExceptionMiddleware">
+            <summary>
+            Exception middleware for default exception handling.
+            </summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Middleware.ExceptionMiddleware.DefaultErrorMessageFormat">
+            <summary>
+            Gets the default error message format.
+            </summary>
+            <value>
+            The default error message format.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.ExceptionMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Middleware.ExceptionMiddleware"/> class.
+            </summary>
+            <param name="next">The next middleware module to execute.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.ExceptionMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            Middleware entry point.
+            </summary>
+            <param name="httpContext">The request.</param>
+            <param name="environment">The hosting environment.</param>
+            <param name="logFactory">The configured logger to use.</param>
+            <returns>A void task.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Middleware.GlobalErrorDetails">
+            <summary>
+            The global middleware error handler.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.GlobalErrorDetails.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Middleware.GlobalErrorDetails"/> class.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Middleware.GlobalErrorDetails.StatusCode">
+            <summary>Gets or sets the status code.</summary>
+            <value>The status code.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Middleware.GlobalErrorDetails.Message">
+            <summary>
+            Gets or sets the message.
+            </summary>
+            <value>
+            The message.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.GlobalErrorDetails.ToString">
+            <summary>
+            Converts to a JSON error string for output response.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Middleware.MiddlewareExtensions">
+            <summary>
+            Middleware extension methods.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.MiddlewareExtensions.UseGloablExceptionMiddleware(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adds the exception middleware to the request pipeline.
+            </summary>
+            <param name="app">The application builder.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.MiddlewareExtensions.UsePhotoImageMiddleware(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adds the photo image middleware to the request pipeline.
+            </summary>
+            <param name="app">The application builder.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.MiddlewareExtensions.UseAvatarImageMiddleware(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adds the avatar image middleware to the request pipeline.
+            </summary>
+            <param name="app">The application builder.</param>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Middleware.PhotoImageMiddleware">
+            <summary>
+            Middleware for serving photo image files.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.PhotoImageMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Middleware.PhotoImageMiddleware"/> class.
+            </summary>
+            <param name="next">The next.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Middleware.PhotoImageMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,SCS.HomePhotos.IDynamicConfig,SCS.HomePhotos.IStaticConfig)">
+            <summary>
+            Middleware entry point.
+            </summary>
+            <param name="httpContext">The request.</param>
+            <param name="dynamicConfig">The dynamic configuration.</param>
+            <param name="staticConfig">The static configuration.</param>
+            <returns>A void task.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.AmbiguousTagState">
+            <summary>An ambiguous tag state.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.AmbiguousTagState.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Models.AmbiguousTagState" /> class.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.AmbiguousTagState.Indeterminate">
+            <summary>Gets or sets a value indicating whether this <see cref="T:SCS.HomePhotos.Web.Models.AmbiguousTagState" /> is indeterminate.</summary>
+            <value>
+              <c>true</c> if indeterminate; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.AmbiguousTagState.AllowIndeterminate">
+            <summary>Gets or sets a value indicating whether to allow indeterminate.</summary>
+            <value>
+              <c>true</c> if allowing indeterminate; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.AvatarModel">
+            <summary>The avatar model.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.AvatarModel.Image">
+            <summary>Gets or sets the image.</summary>
+            <value>The image.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.BatchSelectTags">
+            <summary>Batch select tags info.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.BatchSelectTags.#ctor(System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{SCS.HomePhotos.Model.Tag})">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Models.BatchSelectTags" /> class.</summary>
+            <param name="photoIds">The photo ids.</param>
+            <param name="tags">The tags.</param>
+            <exception cref="T:System.ArgumentNullException">photoIds
+            or
+            tags</exception>
+            <exception cref="T:System.ArgumentException">At lease one photo must be selected. - photoIds</exception>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.BatchSelectTags.Tags">
+            <summary>Gets or sets the tags.</summary>
+            <value>The tags.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.BatchUpdateTags">
+            <summary>Batch update tag info.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.BatchUpdateTags.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Models.BatchUpdateTags" /> class.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.BatchUpdateTags.TagStates">
+            <summary>Gets or sets the tag states.</summary>
+            <value>The tag states.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.BatchUpdateTags.PhotoIds">
+            <summary>Gets or sets the photo ids.</summary>
+            <value>The photo ids.</value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.BatchUpdateTags.GetAddedTagNames">
+            <summary>Gets the added tag names.</summary>
+            <returns>A list of tag names.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.BatchUpdateTags.GetRemovedTagIds">
+            <summary>Gets the removed tag ids.</summary>
+            <returns>Tag ids to remove.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.ChangePasswordModel">
+            <summary>Change password model.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.ChangePasswordModel.UserName">
+            <summary>Gets or sets the name of the user.</summary>
+            <value>The name of the user.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.ChangePasswordModel.CurrentPassword">
+            <summary>Gets or sets the current password.</summary>
+            <value>The current password.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.ChangePasswordModel.NewPassword">
+            <summary>Creates new password.</summary>
+            <value>The new password.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.ChangePasswordModel.NewPasswordCompare">
+            <summary>Creates new passwordcompare.</summary>
+            <value>The new password compare.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.FileGroup`1">
+            <summary>
+            Wrapper for uploading multiple files.
+            </summary>
+            <typeparam name="T">The file group type.</typeparam>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.FileGroup`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Models.FileGroup`1"/> class.
+            </summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.FileGroup`1.Files">
+            <summary>
+            Gets or sets the files.
+            </summary>
+            <value>
+            The files.
+            </value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.FileInputModel">
+            <summary>
+            File upload model.
+            </summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.FileInputModel.FileToUpload">
+            <summary>
+            Gets or sets the file to upload.
+            </summary>
+            <value>
+            The file to upload.
+            </value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.LoginModel">
+            <summary>The login model.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.LoginModel.UserName">
+            <summary>Gets or sets the name of the user.</summary>
+            <value>The name of the user.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.LoginModel.Password">
+            <summary>Gets or sets the password.</summary>
+            <value>The password.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.ProblemModel">
+            <summary>Problem model.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.ProblemModel.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Models.ProblemModel" /> class.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.ProblemModel.#ctor(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Models.ProblemModel" /> class.</summary>
+            <param name="modelState">State of the model.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.ProblemModel.Id">
+            <summary>Gets or sets the problem id.</summary>
+            <value>The problem id.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.ProblemModel.Message">
+            <summary>Gets or sets the problem message.</summary>
+            <value>The problem message.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.RefreshModel">
+            <summary>Token refresh model.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.RefreshModel.Jwt">
+            <summary>Gets or sets the JWT.</summary>
+            <value>The JWT.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.RefreshModel.RefreshToken">
+            <summary>Gets or sets the refresh token.</summary>
+            <value>The refresh token.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.RegisterModel">
+            <summary>User registration model.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.RegisterModel.UserName">
+            <summary>Gets or sets the name of the user.</summary>
+            <value>The name of the user.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.RegisterModel.Password">
+            <summary>Gets or sets the password.</summary>
+            <value>The password.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.RegisterModel.PasswordCompare">
+            <summary>Gets or sets the password compare.</summary>
+            <value>The password compare.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.RegisterModel.FirstName">
+            <summary>Gets or sets the first name.</summary>
+            <value>The first name.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.RegisterModel.LastName">
+            <summary>Gets or sets the last name.</summary>
+            <value>The last name.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.RegisterModel.EmailAddress">
+            <summary>Gets or sets the email address.</summary>
+            <value>The email address.</value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.RegisterModel.ToUser">
+            <summary>Converts to user model.</summary>
+            <returns>A user model.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.ResetPasswordModel">
+            <summary>Reset password model.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.ResetPasswordModel.UserName">
+            <summary>Gets or sets the name of the user.</summary>
+            <value>The name of the user.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.ResetPasswordModel.NewPassword">
+            <summary>Creates new password.</summary>
+            <value>The new password.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.ResetPasswordModel.NewPasswordCompare">
+            <summary>Creates new passwordcompare.</summary>
+            <value>The new password compare.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.TagCopyInfo">
+            <summary>Tag copy info model.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TagCopyInfo.SourceTagId">
+            <summary>Gets or sets the source tag identifier.</summary>
+            <value>The source tag identifier.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TagCopyInfo.NewTagName">
+            <summary>Creates new tagname.</summary>
+            <value>The new name of the tag.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.TagMergeInfo">
+            <summary>Tag merge info model.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TagMergeInfo.NewTagName">
+            <summary>Creates new tagname.</summary>
+            <value>The new name of the tag.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TagMergeInfo.SourceTagIds">
+            <summary>Gets or sets the source tag ids.</summary>
+            <value>The source tag ids.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.TagState">
+            <summary>Tag state model.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.TagState.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Models.TagState" /> class.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.TagState.#ctor(System.Int32,System.String,System.Boolean)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Models.TagState" /> class.</summary>
+            <param name="tagId">The tag identifier.</param>
+            <param name="name">The name.</param>
+            <param name="isChecked">if set to <c>true</c> is checked.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TagState.Id">
+            <summary>Gets or sets the identifier.</summary>
+            <value>The identifier.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TagState.TagName">
+            <summary>Gets or sets the name of the tag.</summary>
+            <value>The name of the tag.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TagState.Checked">
+            <summary>Gets or sets a value indicating whether this <see cref="T:SCS.HomePhotos.Web.Models.TagState" /> is checked.</summary>
+            <value>
+              <c>true</c> if checked; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.TokenResultModel">
+            <summary>Token result model.</summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TokenResultModel.Jwt">
+            <summary>Gets or sets the JWT.</summary>
+            <value>The JWT.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TokenResultModel.RefreshToken">
+            <summary>Gets or sets the refresh token.</summary>
+            <value>The refresh token.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.UploadedFile">
+            <summary>
+            Upload file model.
+            </summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.UploadedFile.TagList">
+            <summary>Gets or sets the tag list.</summary>
+            <value>The tag list.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.UploadedFile.Files">
+            <summary>Gets or sets the files.</summary>
+            <value>The files.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.SecurityService">
+            <summary>
+            Provides security services.
+            </summary>
+            <seealso cref="T:SCS.HomePhotos.Web.ISecurityService" />
+        </member>
+        <member name="M:SCS.HomePhotos.Web.SecurityService.#ctor(Microsoft.Extensions.Options.IOptions{SCS.HomePhotos.Web.Security.JwtAuthentication},SCS.HomePhotos.IStaticConfig)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.SecurityService"/> class.
+            </summary>
+            <param name="jwtAuthentication">The JWT authentication.</param>
+            <param name="staticConfig">The static configuration.</param>
+            <exception cref="T:System.ArgumentNullException">jwtAuthentication</exception>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.SecurityService.GetPrincipalFromExpiredToken(System.String)">
+            <summary>
+            Gets the principal from expired token.
+            </summary>
+            <param name="token">The token.</param>
+            <returns></returns>
+            <exception cref="T:Microsoft.IdentityModel.Tokens.SecurityTokenException">
+            Invalid token
+            or
+            Invalid token
+            </exception>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.SecurityService.GenerateToken(System.Collections.Generic.IEnumerable{System.Security.Claims.Claim})">
+            <summary>
+            Generates a JWT security token.
+            </summary>
+            <param name="claims">The claims.</param>
+            <returns>A JWT security token</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.SecurityService.GenerateRefreshToken">
+            <summary>
+            Generates a refresh token.
+            </summary>
+            <returns>The refresh token.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.SecurityService.GetUserClaims(System.String,SCS.HomePhotos.Model.RoleType)">
+            <summary>
+            Gets a user's claims.
+            </summary>
+            <param name="userName">Username of the user.</param>
+            <param name="role">The user role.</param>
+            <returns>A list of claims.</returns>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.SecurityService.ValidIssuer">
+            <summary>
+            Gets the valid issuer.
+            </summary>
+            <value>
+            The valid issuer.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.SecurityService.ValidAudience">
+            <summary>
+            Gets the valid audience.
+            </summary>
+            <value>
+            The valid audience.
+            </value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Security.JwtAuthentication">
+            <summary>
+            A wrapper for JWT security info.
+            </summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Security.JwtAuthentication.SecurityKey">
+            <summary>
+            Gets or sets the security key.
+            </summary>
+            <value>
+            The security key.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Security.JwtAuthentication.ValidIssuer">
+            <summary>
+            Gets or sets the valid issuer.
+            </summary>
+            <value>
+            The valid issuer.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Security.JwtAuthentication.ValidAudience">
+            <summary>
+            Gets or sets the valid audience.
+            </summary>
+            <value>
+            The valid audience.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Security.JwtAuthentication.SymmetricSecurityKey">
+            <summary>
+            Gets the symmetric security key.
+            </summary>
+            <value>
+            The symmetric security key.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Security.JwtAuthentication.SigningCredentials">
+            <summary>
+            Gets the signing credentials.
+            </summary>
+            <value>
+            The signing credentials.
+            </value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.UploadInfo">
+            <summary>
+            File upload info.
+            </summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.UploadInfo.UserName">
+            <summary>
+            Gets or sets the username.
+            </summary>
+            <value>
+            The username of the user.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.UploadInfo.Timestamp">
+            <summary>
+            Gets or sets the timestamp.
+            </summary>
+            <value>
+            The timestamp.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.UploadInfo.File">
+            <summary>
+            Gets or sets the file.
+            </summary>
+            <value>
+            The file.
+            </value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.UploadTracker">
+            <summary>
+            Image file upload tracker.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.UploadTracker.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.UploadTracker"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.UploadTracker.AddUpload(System.String,System.String)">
+            <summary>
+            Increments the add upload counter.
+            </summary>
+            <param name="userName">Name of the user.</param>
+            <param name="file">The file.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.UploadTracker.RemoveUpload(System.String)">
+            <summary>
+            Removes an upload from the counter.
+            </summary>
+            <param name="file">The uploaded file.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.UploadTracker.GetUploadCount(System.String)">
+            <summary>
+            Gets the upload count.
+            </summary>
+            <param name="userName">Name of the user.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.UploadTracker.IsProcessingDone(System.String)">
+            <summary>
+            Determines whether upload processing done for user.
+            </summary>
+            <param name="userName">Name of the user.</param>
+            <returns>
+              <c>true</c> if upload processing done for user; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.UploadTracker.Clear">
+            <summary>
+            Clears the upload count.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.UploadTracker.ClearOldItems(System.Object)">
+            <summary>
+            Clears the old items.
+            </summary>
+            <param name="state">The state.</param>
+        </member>
+    </members>
+</doc>
