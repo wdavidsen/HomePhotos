@@ -5,21 +5,19 @@ export class LocalStorageService {
   constructor() {}
 
   set(key: string, data: any): void {
-    try {
-      localStorage.setItem(key, JSON.stringify(data));
+    if (!localStorage) {
+      console.error('Local storage is unavailable.');
     }
-    catch (e) {
-      console.error('Error saving to local storage', e);
-    }
+
+    var json = JSON.stringify(data);
+    localStorage.setItem(key, json);
   }
 
   get(key: string) {
-    try {
-      return JSON.parse(localStorage?.getItem(key) ?? '');
+    if (!localStorage) {
+      console.error('Local storage is unavailable.');
     }
-    catch (e) {
-      console.error('Error getting data from local storage', e);
-      return null;
-    }
+    var json = localStorage.getItem(key);
+    return json ? JSON.parse(json) : '';
   }
 }

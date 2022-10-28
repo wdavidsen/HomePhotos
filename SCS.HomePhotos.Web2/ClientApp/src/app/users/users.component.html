@@ -1,1 +1,44 @@
-<h1>Users</h1>
+<h2>Users</h2>
+
+<section>    
+    <table class="table table-sm table-striped table-bordered listing">
+        <thead>
+            <tr>
+                <th>User Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th class="phone-hide">Last Login</th>
+                <th class="phone-hide">Failed Logins</th>
+                <th>Enabled</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let u of users" (click)="select(u)" [ngClass]="{'row-selected': u.selected}" (dblclick)="editUser(u)">
+                <td>{{u.username}}</td>
+                <td>{{u.firstName}}</td>
+                <td>{{u.lastName}}</td>
+                <td class="phone-hide">{{u.lastLogin | date:'medium'}}</td>
+                <td class="phone-hide">{{u.failedLoginCount}}</td>
+                <td>{{u.enabled ? 'Yes' : 'No'}}</td>
+                <td>{{u.role}}</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-bottom">   
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#footerNavbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="footerNavbarCollapse">
+        <div class="navbar-nav">
+            <button type="button" class="btn btn-default navbar-btn"(click)="addNewUser()"><i class="fa fa-user"></i> New</button>
+            <button type="button" class="btn btn-default navbar-btn"(click)="editUser(getSelectedUsers()[0])" [disabled]="getSelectedUsers().length !== 1"><i class="fa fa-edit"></i> Edit</button>
+            <button type="button" class="btn btn-default navbar-btn"(click)="deleteUser()" [disabled]="getSelectedUsers().length < 1"><i class="fa fa-remove"></i> Delete</button>
+            <button type="button" class="btn btn-default navbar-btn"(click)="enableDisableUser(true)" [disabled]="getSelectedUsers().length < 1"><i class="fa fa-toggle-on"></i> Enable</button>
+            <button type="button" class="btn btn-default navbar-btn"(click)="enableDisableUser(false)" [disabled]="getSelectedUsers().length < 1"><i class="fa fa-toggle-off"></i> Disable</button>
+        </div>
+    </div>
+</nav>

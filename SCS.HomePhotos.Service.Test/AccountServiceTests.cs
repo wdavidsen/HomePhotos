@@ -425,7 +425,7 @@ namespace SCS.HomePhotos.Service.Test
             _userData.Verify(m => m.GetUser(userName),
                 Times.Exactly(2));
             _userData.Verify(m => m.UpdateAsync(It.IsAny<User>()),
-                Times.Once);
+                Times.Exactly(2));
 
             Assert.False(result.Success);
             Assert.True(result.PasswordUsedPreviously);

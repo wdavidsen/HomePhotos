@@ -1,0 +1,97 @@
+.drop-zone { 
+    border: dotted 3px lightgray; 
+    margin: 10px;
+    height: 60px;
+    text-align: center;
+}
+.drop-zone span {
+    display: inline-block;
+    margin-top: 17px;
+    color: #222;
+}
+
+.drop-zone-file-over { 
+    border: dotted 3px green; 
+}
+
+button {
+    margin-right: 10px;
+}
+
+input[type=file] {
+    margin: 30px;
+    width: 108px !important;
+}
+
+.col-dropzone > div > span {
+    display: inline-block;
+    margin-top: 13px;
+}
+
+.col-or > span {
+    display: inline-block;
+    margin-top: 30px;
+    margin-left: 30px;
+}
+
+.files {
+    margin-top: 20px;
+}
+
+.files .image-tile {
+    display: inline-block;
+    min-width: 155px;
+    margin: 5px;
+    min-height: 135px;
+    border: solid 1px #ccc;
+    padding: 5px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: center;
+}
+
+.files .image-tile canvas,
+.files .image-tile img {
+    border: 5px solid #eee;
+}
+
+.files .image-tile .size {
+    white-space: nowrap;
+    font-size: .8em;
+    text-align: center;
+}
+
+.files .image-tile .progress {
+    margin: 3px 0;
+}
+      
+.toolbar {
+    display: block;
+}
+	
+.toolbar-phone {
+    display: none;
+}
+			
+/** Phone **/
+@media only screen and (max-width: 767px), only screen and (max-device-width: 767px) {
+
+    .toolbar {
+        display: none;
+    }
+    .toolbar-phone {
+        display: block;
+    }
+
+}
+  
+/** Tablet **/
+@media only screen and (min-width : 768px) and (max-width : 1024px) {
+  
+}
+  
+/** Tablet (landscape) **/
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
+  
+
+}

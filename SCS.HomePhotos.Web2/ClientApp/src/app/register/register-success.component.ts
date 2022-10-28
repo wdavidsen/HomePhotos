@@ -1,19 +1,9 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component } from '@angular/core';
 
-@Component({
-  selector: 'app-register-success',
-  templateUrl: './register-success.component.html',
-  styleUrls: ['./register-success.component.css']
-})
-export class RegisterSuccessComponent implements OnInit, OnDestroy {
-  
-  constructor() { }
+@Component({ templateUrl: 'register-success.component.html' })
+export class RegisterSuccessComponent {
 
-  ngOnInit() {
-   
-  }
+    constructor () {
 
-  ngOnDestroy() {
-    
-  }
+    }
 }

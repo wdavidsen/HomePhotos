@@ -1,0 +1,42 @@
+.design-area {
+    padding: 10px;
+    border: solid 1px #eee;
+    min-height: 110px;
+}
+
+.avatar-preview {
+    margin: 0 40px;
+    padding: 10px;
+    text-align: center;
+    border: solid 1px #eee;;
+}
+
+    .avatar-preview #avatarPreviewImage {
+        display: inline-block;    
+        height: 90px !important;
+        width: 90px !important;
+        border: solid 1px gray;
+        border-radius: 50px;
+        margin-top: 20px;
+        overflow: hidden;
+    }
+
+    .avatar-preview label {
+        margin-top: 5px;
+        font-size: small;
+    }
+
+.toolbar {
+    margin-top: 8px;
+    text-align: center;
+}
+    .toolbar button,
+    .toolbar input {
+        margin-right: 5px;
+    }
+
+.file-select {
+    margin: 10px;
+    margin-top: 0;
+    font-size: small;
+}

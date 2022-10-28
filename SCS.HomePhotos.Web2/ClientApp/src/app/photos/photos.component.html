@@ -1,12 +1,22 @@
 <section class="mainbar">
 
     <div class="row photo-list" id="photoList">
-        Photo List
+        <div *ngFor="let t of thumbnails" [ngClass]="{selected: t.selected}" (click)="select(t, $event)"
+            [ngStyle]="{ background : 'url(' + t.thumbUrl + ')', height: t.thumbHeight + 'px', width : t.thumbWidth + 'px'}">
+        </div>
     </div>
 </section>
 
-<nav class="navbar navbar-expand-md navbar-light bg-light fixed-bottom">   
-    <div class="navbar-nav">
-        Navbar
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-bottom" [hidden]="!organizeMode">   
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#footerNavbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="footerNavbarCollapse">
+        <div class="navbar-nav">
+            <button type="button" class="btn btn-default navbar-btn" (click)="showTagTool()" [disabled]="getSelectedThumbnails().length === 0"><i class="fa fa-tag"></i> Tag Photos</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="selectAll()"><i class="fa fa-arrows-alt"></i> Select All</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="clearSelections()" [disabled]="getSelectedThumbnails().length === 0"><i class="fa fa-eraser"></i> Clear Selections</button>            
+        </div>
     </div>
 </nav>

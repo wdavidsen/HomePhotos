@@ -1,0 +1,113 @@
+<h2>Upload Photos</h2>
+<hr/>
+
+<section>
+    <div class="toolbar">
+        <button type="button" class="btn btn-primary" (click)="selectImages()">
+            Select Images
+        </button>
+        <button type="button" class="btn btn-primary" (click)="uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+            Upload
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="cancelAll" [disabled]="!uploader.isUploading">
+            Cancel
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="removeAll()" [disabled]="!uploader.queue.length">
+            Clear
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="tagPhotos()" [disabled]="!uploader.queue.length">
+            Tag Photos
+        </button>
+    </div>
+    <div class="toolbar-phone">
+        <button type="button" class="btn btn-primary btn-sm" (click)="selectImages()">
+            Select
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+            Upload
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="cancelAll" [disabled]="!uploader.isUploading">
+            Cancel
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="removeAll()" [disabled]="!uploader.queue.length">
+            Clear
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="tagPhotos()" [disabled]="!uploader.queue.length">
+            Tag
+        </button>
+    </div>
+
+    <div class="files">
+
+        <hr/>
+
+        <div *ngFor="let item of uploader.queue; index as i" class="template-upload image-tile">
+
+            <span class="preview">
+                <img *ngIf="thumbnails[i]" [src]="thumbnails[i]" class="thumbnail-preview"/>
+            </span>
+
+            <div class="size">{{ item?.file?.size/1024/1024 | number:'.2' }} MB</div>
+            
+            <button class="btn btn-sm btn-light" (click)="removeItem(item, i)">
+                Remove
+            </button>        
+
+            <br>
+            <span *ngIf="item.isSuccess" class="text-success"><i class="fa fa-check-square-o"></i> Uploaded</span>
+            <span *ngIf="item.isCancel" class="text-warning"><i class="fa fa-minus-square-o"></i> Canceled</span>
+            <span *ngIf="item.isError" class="text-danger"><i class="fa fa-times-circle-o"></i> Error</span>
+
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+            </div>
+        </div>
+    </div>
+
+    <div [hidden]="uploader.queue.length < 25" class="toolbar">
+
+        <hr/>
+
+        <button type="button" class="btn btn-primary" (click)="selectImages()">
+            Select Images
+        </button>
+        <button type="button" class="btn btn-primary" (click)="uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+            Upload
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="cancelAll" [disabled]="!uploader.isUploading">
+            Cancel
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="removeAll()" [disabled]="!uploader.queue.length">
+            Clear
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="tagPhotos()" [disabled]="!uploader.queue.length">
+            Tag Photos
+        </button>
+    </div>
+</section>
+
+<div bsModal #selectModal="bs-modal" class="modal fade file-select-dialog" tabindex="-1" role="dialog" aria-labelledby="dialog-select-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-select-name" class="modal-title pull-left">Select Image Files</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="selectModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+            <input type="file" ng2FileSelect [uploader]="uploader" multiple  />
+        </div>
+        <div class="text-center">-or-</div>
+        <div ng2FileDrop
+            [ngClass]="{'drop-zone-file-over': hasBaseDropZoneOver}"
+            (fileOver)="fileOverBase($event)"
+            [uploader]="uploader"
+            class="well drop-zone">
+            <span>**Drag image files here**</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

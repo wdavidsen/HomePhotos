@@ -1,9 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
+// angular
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// 3rd party
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { ModalModule, BsModalRef } from 'ngx-bootstrap/modal';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { ToastrModule } from 'ngx-toastr';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { AngularCropperjsModule } from 'angular-cropperjs';
+import { FileUploadModule } from 'ng2-file-upload';
+
+// local
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './main-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
@@ -17,16 +31,9 @@ import { SettingsService } from './services/settings.service';
 import { AccountComponent } from './account/account.component';
 import { PhotosService, TagService, PageInfoService, UserSettingsService, ImageService } from './services';
 import { PageInfoComponent } from './components/page-info.component';
-import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { SearchComponent } from './components/search.component';
 import { UsersComponent } from './users/users.component';
 import { UserDetailComponent } from './users/user-detail.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { ModalModule, BsModalRef } from 'ngx-bootstrap/modal';
-import { AlertModule } from 'ngx-bootstrap/alert';
-import { ToastrModule } from 'ngx-toastr';
 import { ChangePasswordModalComponent } from './account/change-password-modal.component';
 import { ResetPasswordModalComponent } from './users/reset-password-modal.component';
 import { PhotoTaggerComponent } from './photos/photo-tagger.component';
@@ -35,21 +42,19 @@ import { TriCheckComponent } from './components/tri-check.component';
 import { LogService } from './services/log.service';
 import { LogsComponent } from './logs/logs.component';
 import { UploadComponent } from './upload/upload.component';
-import { FileUploadModule } from 'ng2-file-upload';
 import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.component';
 import { InputDialogComponent, ConfirmDialogComponent, AlertDialogComponent } from './common-dialog';
 import { LocalStorageService } from './services/local-storage.service';
-import { routes } from './app.routes';
 import { TokenInterceptor } from './framework';
 import { CsrfHeaderInterceptor } from './framework/csrf-header.interceptor';
 import { UnauthorizedComponent } from './errors/unauthorized.component';
 import { NotFoundComponent } from './errors/not-found.component';
-import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { ProgressInterceptor } from './framework/progress.interceptor';
 import { RegisterSuccessComponent } from './register/register-success.component';
 import { SecurePipe } from './framework/secure.pipe';
 import { AccountAvatardModalComponent } from './account/account-avatar-modal.component';
-import { AngularCropperjsModule } from 'angular-cropperjs';
+
+import { routes } from './app.routes';
 
 @NgModule({
   declarations: [
