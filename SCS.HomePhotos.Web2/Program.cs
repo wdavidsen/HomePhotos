@@ -55,7 +55,10 @@ Container.AddCors(options =>
     options.AddPolicy("AllowAllOrigins",
     builder =>
     {
-        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        builder.WithOrigins("https://localhost:44446/")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowAnyOrigin();
     });
 });
 
@@ -177,10 +180,8 @@ App.UseAuthorization();
 
 App.UseAvatarImageMiddleware();
 
-App.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<NotifcationHub>("/message-hub");
-});
+App.MapHub<NotifcationHub>("/message-hub");
+
 App.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();

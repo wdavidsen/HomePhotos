@@ -39,7 +39,7 @@ import { LogService } from './services/log.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { SettingsService } from './services/settings.service';
 import { PhotoTaggerComponent } from './photos/photo-tagger.component';
-import { OrganizeComponent, PageInfoComponent, SearchComponent } from './components';
+import { AlertComponent, OrganizeComponent, PageInfoComponent, SearchComponent } from './components';
 import { ResetPasswordModalComponent } from './users/reset-password-modal.component';
 import { AccountAvatardModalComponent } from './account/account-avatar-modal.component';
 import { AlertDialogComponent, ConfirmDialogComponent, InputDialogComponent } from './common-dialog';
@@ -83,6 +83,7 @@ import { routes } from './app.routes';
     OrganizeComponent,
     PageInfoComponent,
     TriCheckComponent,
+    AlertComponent,
 
     // dialogs
     PhotoTaggerComponent,
