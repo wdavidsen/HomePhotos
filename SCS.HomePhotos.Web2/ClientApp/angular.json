@@ -28,9 +28,21 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css"
+              "src/styles.css",
+              "./node_modules/font-awesome/css/font-awesome.css",
+              "./node_modules/blueimp-gallery/css/blueimp-gallery.min.css",
+              "./node_modules/blueimp-gallery/css/blueimp-gallery-indicator.css",
+              "./node_modules/ngx-toastr/toastr.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/jquery/dist/jquery.slim.min.js",
+              "./node_modules/popper.js/dist/umd/popper.min.js",
+              "./node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "./node_modules/blueimp-gallery/js/blueimp-helper.js",
+              "./node_modules/blueimp-gallery/js/blueimp-gallery.js",
+              "./node_modules/blueimp-gallery/js/blueimp-gallery-indicator.js",
+              "./node_modules/blueimp-load-image/js/load-image.all.min.js"
+            ]
           },
           "configurations": {
             "production": {

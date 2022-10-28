@@ -32,7 +32,7 @@ export class SearchService {
     }
 
     clear() {
-        this.keywordSub.next(true);
+        this.keywordSub.next('');
         this.hiddenSub.next(true);
     }
 }
