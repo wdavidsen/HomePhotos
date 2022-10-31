@@ -16,6 +16,7 @@ import { ModalModule, BsModalRef } from 'ngx-bootstrap/modal';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { AngularCropperjsModule } from 'angular-cropperjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SwiperModule } from 'swiper/angular';
 
 // local
 import { AppComponent } from './app.component';
@@ -128,7 +129,8 @@ import { Photos2Component } from './photos/photos2.component';
       preventDuplicates: true
     }),
     FileUploadModule,
-    AngularCropperjsModule
+    AngularCropperjsModule,
+    SwiperModule
   ],
   providers: [
     NgxSpinnerService,

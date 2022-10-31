@@ -37,6 +37,7 @@
     "jquery": "^3.6.0",
     "moment": "^2.29.1",
     "momentjs": "^2.0.0",
+    "ng-gallery": "^7.1.2",
     "ng2-file-upload": "^1.4.0",
     "ngx-bootstrap": "^8.0.0",
     "ngx-spinner": "^13.1.1",
@@ -45,6 +46,7 @@
     "popper.js": "^1.16.0",
     "run-script-os": "^1.1.6",
     "rxjs": "~7.5.5",
+    "swiper": "^8.4.4",
     "tslib": "^2.4.0",
     "zone.js": "~0.11.5"
   },

@@ -24,6 +24,7 @@ Bin/
 obj/
 Obj/
 
+
 # Visual Studio 2015 cache/options directory
 .vs/
 
@@ -233,3 +234,5 @@ _Pvt_Extensions
 # Logs
 logs/
 Logs/
+
+*/.angular/cache/
