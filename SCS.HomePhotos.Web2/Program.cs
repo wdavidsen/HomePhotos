@@ -55,8 +55,7 @@ Container.AddCors(options =>
     options.AddPolicy("AllowAllOrigins",
     builder =>
     {
-        builder.WithOrigins("https://localhost:44446/")
-            .AllowAnyMethod()
+        builder.AllowAnyMethod()
             .AllowAnyHeader()
             .AllowAnyOrigin();
     });
@@ -141,6 +140,8 @@ var Services = App.Services;
 var loggerFactory = Services.GetService<ILoggerFactory>();
 var env = App.Environment;
 
+Services.GetService<IClientMessageSender>(); // need to force it to load
+
 loggerFactory.AddFile(Configuration.GetSection("Logging"));
 
 if (env.IsDevelopment())
@@ -161,7 +162,6 @@ App.UseSwaggerUI(c =>
 });
 
 App.UseGloablExceptionMiddleware();
-App.UseCors("AllowAllOrigins");
 
 // remove to use http, not https
 //app.UseHttpsRedirection();         
@@ -175,6 +175,7 @@ if (!env.IsDevelopment())
 }
 
 App.UseRouting();
+App.UseCors("AllowAllOrigins");
 App.UseAuthentication();
 App.UseAuthorization();
 

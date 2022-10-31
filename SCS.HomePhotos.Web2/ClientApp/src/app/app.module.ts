@@ -21,8 +21,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { PhotosComponent } from './photos/photos.component';
 import { SettingsComponent } from './settings/settings.component';
 import { RegisterComponent } from './register/register.component';
@@ -53,20 +51,18 @@ import { AccountComponent } from './account/account.component';
 import { ChangePasswordModalComponent } from './account/change-password-modal.component';
 
 import { routes } from './app.routes';
+import { Photos2Component } from './photos/photos2.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     
-    NavMenuComponent,
-    HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
-
     // pages/routes
+    HomeComponent,
     UnauthorizedComponent,
     NotFoundComponent,
     PhotosComponent,
+    Photos2Component,
     TagsComponent,
     SettingsComponent,
     LoginComponent,
@@ -79,6 +75,7 @@ import { routes } from './app.routes';
     UploadComponent,
 
     // controls
+    NavMenuComponent,
     SearchComponent,
     OrganizeComponent,
     PageInfoComponent,

@@ -95,7 +95,7 @@ namespace SCS.HomePhotos.Service.Core
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"Failed to process image: {imageFilePath}");
+                        _logger.LogError(ex, "Failed to process image: {imageFilePath}.", imageFilePath);
                         notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ProcessMobilePhoto, contextUserName, false, imageFilePath));
                     }
                 });
