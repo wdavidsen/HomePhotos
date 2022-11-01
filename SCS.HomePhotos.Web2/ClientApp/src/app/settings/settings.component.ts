@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { SettingsService } from '../services/settings.service';
 import { Settings } from '../models/settings';
 import { map } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export class SettingsComponent implements OnInit {
   indexModal: ModalDirective;
 
   settings: Settings;
-  settingsForm: FormGroup;
+  settingsForm: UntypedFormGroup;
   loading = false;
   submitted = false;
 
@@ -31,7 +31,7 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private authenticationService: AuthService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private settingsService: SettingsService,
     private toastr: ToastrService,
     private modalService: BsModalService) {

@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import * as moment from 'moment';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
@@ -28,7 +28,7 @@ describe('SettingsComponent', () => {
   };
 
   const setupEditForm = (data) => {
-    const formBuilder = TestBed.get(FormBuilder);
+    const formBuilder = TestBed.get(UntypedFormBuilder);
     component.settingsForm = formBuilder.group({
       indexPath: [data.indexPath, Validators.required],
       cacheFolder: [data.cacheFolder, Validators.required],

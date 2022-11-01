@@ -1,6 +1,6 @@
 import { OnInit, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AccountService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { PasswordChange } from '../models';
@@ -15,14 +15,14 @@ export class ChangePasswordModalComponent implements OnInit {
     title: string;
     loginMode: boolean;
     userName: string;
-    changePasswordForm: FormGroup;
+    changePasswordForm: UntypedFormGroup;
     changeInfo: PasswordChange;
     message: string;
     okText = 'Change Password';
 
     constructor(
         public bsModalRef: BsModalRef,
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private accountService: AccountService,
         private toastr: ToastrService) {}
 

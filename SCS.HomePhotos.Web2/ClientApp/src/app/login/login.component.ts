@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
@@ -11,7 +11,7 @@ import { PasswordChange } from '../models';
 
 @Component({ templateUrl: 'login.component.html' })
 export class LoginComponent implements OnInit, OnDestroy {
-    loginForm: FormGroup;
+    loginForm: UntypedFormGroup;
     loading = false;
     submitted = false;
     returnUrl: string;
@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private loginWithPasswordChangeSubscription: Subscription;
 
     constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private route: ActivatedRoute,
         private router: Router,
         private authenticationService: AuthService,
@@ -119,7 +119,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
         this.dialogSubscription = this.modalService.onHidden
           .subscribe(() => {
-              const changeForm = <FormGroup>this.changePasswordModalRef.content.changePasswordForm;
+              const changeForm = <UntypedFormGroup>this.changePasswordModalRef.content.changePasswordForm;
               changeInfo.currentPassword = password;
               changeInfo.newPassword = changeForm.get('newPassword').value;
               changeInfo.newPasswordCompare = changeForm.get('newPasswordCompare').value;

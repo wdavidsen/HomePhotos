@@ -55,97 +55,82 @@ import { routes } from './app.routes';
 import { Photos2Component } from './photos/photos2.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    
-    // pages/routes
-    HomeComponent,
-    UnauthorizedComponent,
-    NotFoundComponent,
-    PhotosComponent,
-    Photos2Component,
-    TagsComponent,
-    SettingsComponent,
-    LoginComponent,
-    RegisterComponent,
-    RegisterSuccessComponent,    
-    UsersComponent,
-    UserDetailComponent,
-    AccountComponent,
-    LogsComponent,
-    UploadComponent,
-
-    // controls
-    NavMenuComponent,
-    SearchComponent,
-    OrganizeComponent,
-    PageInfoComponent,
-    TriCheckComponent,
-    AlertComponent,
-
-    // dialogs
-    PhotoTaggerComponent,
-    ChangePasswordModalComponent,
-    AccountAvatardModalComponent,
-    ResetPasswordModalComponent,
-    ConfirmDialogComponent,
-    AlertDialogComponent,
-    InputDialogComponent,
-    UserDetailComponent,
-    UserSettingsComponent,
-    UploadPhotoTaggerComponent,
-    
-    // other        
-    SecurePipe
-  ],
-  entryComponents: [
-    PhotoTaggerComponent,
-    ChangePasswordModalComponent,
-    AccountAvatardModalComponent,
-    ResetPasswordModalComponent,
-    ConfirmDialogComponent,
-    AlertDialogComponent,
-    InputDialogComponent,
-    UserSettingsComponent,
-    UploadPhotoTaggerComponent
-  ],
-  imports: [    
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    FontAwesomeModule,
-    RouterModule.forRoot(routes),
-    BrowserAnimationsModule,
-    NgxSpinnerModule,
-    TypeaheadModule.forRoot(),
-    PaginationModule.forRoot(),
-    ModalModule.forRoot(),
-    AlertModule.forRoot(),
-    TypeaheadModule.forRoot(),
-    ToastrModule.forRoot({
-      timeOut: 4000,
-      positionClass: 'toast-bottom-right',
-      preventDuplicates: true
-    }),
-    FileUploadModule,
-    AngularCropperjsModule,
-    SwiperModule
-  ],
-  providers: [
-    NgxSpinnerService,
-    SettingsService,
-    UserSettingsService,
-    PhotosService,
-    ImageService,
-    BsModalRef,
-    TagService,
-    LogService,
-    LocalStorageService,
-    { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: CsrfHeaderInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        // pages/routes
+        HomeComponent,
+        UnauthorizedComponent,
+        NotFoundComponent,
+        PhotosComponent,
+        Photos2Component,
+        TagsComponent,
+        SettingsComponent,
+        LoginComponent,
+        RegisterComponent,
+        RegisterSuccessComponent,
+        UsersComponent,
+        UserDetailComponent,
+        AccountComponent,
+        LogsComponent,
+        UploadComponent,
+        // controls
+        NavMenuComponent,
+        SearchComponent,
+        OrganizeComponent,
+        PageInfoComponent,
+        TriCheckComponent,
+        AlertComponent,
+        // dialogs
+        PhotoTaggerComponent,
+        ChangePasswordModalComponent,
+        AccountAvatardModalComponent,
+        ResetPasswordModalComponent,
+        ConfirmDialogComponent,
+        AlertDialogComponent,
+        InputDialogComponent,
+        UserDetailComponent,
+        UserSettingsComponent,
+        UploadPhotoTaggerComponent,
+        // other        
+        SecurePipe
+    ],
+    imports: [
+        BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+        HttpClientModule,
+        FormsModule,
+        ReactiveFormsModule,
+        FontAwesomeModule,
+        RouterModule.forRoot(routes),
+        BrowserAnimationsModule,
+        NgxSpinnerModule,
+        TypeaheadModule.forRoot(),
+        PaginationModule.forRoot(),
+        ModalModule.forRoot(),
+        AlertModule.forRoot(),
+        TypeaheadModule.forRoot(),
+        ToastrModule.forRoot({
+            timeOut: 4000,
+            positionClass: 'toast-bottom-right',
+            preventDuplicates: true
+        }),
+        FileUploadModule,
+        AngularCropperjsModule,
+        SwiperModule
+    ],
+    providers: [
+        NgxSpinnerService,
+        SettingsService,
+        UserSettingsService,
+        PhotosService,
+        ImageService,
+        BsModalRef,
+        TagService,
+        LogService,
+        LocalStorageService,
+        { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: CsrfHeaderInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UntypedFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrService } from 'ngx-toastr';
 import { of, Subject } from 'rxjs';
@@ -16,7 +16,7 @@ describe('RegisterComponent', () => {
   const userInfo = {userId: 1, username: 'wdavidsen', firstName: 'Bill', lastName: 'Davidsen', password: 'password1', passwordCompare: 'password1', role: 'Contributer' };
 
   const setupEditForm = (data) => {
-    const formBuilder = TestBed.get(FormBuilder);
+    const formBuilder = TestBed.get(UntypedFormBuilder);
     component.registerForm = formBuilder.group({
         firstName: [data.firstName, Validators.required],
         lastName: [data.lastName, Validators.required],

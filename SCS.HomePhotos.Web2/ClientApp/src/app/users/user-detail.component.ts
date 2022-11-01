@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService, AuthService } from '../services';
 import { User } from '../models';
@@ -15,7 +15,7 @@ import { ResetPasswordModalComponent } from './reset-password-modal.component';
 export class UserDetailComponent implements OnInit {
   private currentUser: User;
   user: User;
-  userForm: FormGroup;
+  userForm: UntypedFormGroup;
   roles = ['Reader', 'Contributer', 'Admin'];
   loading = false;
   submitted = false;
@@ -25,7 +25,7 @@ export class UserDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private authenticationService: AuthService,
     private router: Router,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private userService: UserService,
     private toastr: ToastrService,
     private modalService: BsModalService) {

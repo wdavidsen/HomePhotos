@@ -1,6 +1,6 @@
 import { OnInit, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { PasswordChange } from '../models';
@@ -15,14 +15,14 @@ export class ResetPasswordModalComponent implements OnInit {
     title: string;
     userId: number;
     userName: string;
-    resetPasswordForm: FormGroup;
+    resetPasswordForm: UntypedFormGroup;
     resetInfo: PasswordChange;
     message: string;
     okText = 'Reset Password';
 
     constructor(
         public bsModalRef: BsModalRef,
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private userService: UserService,
         private toastr: ToastrService) {}
 

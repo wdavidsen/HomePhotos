@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UntypedFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
@@ -16,7 +16,7 @@ describe('LoginComponent', () => {
   let mockToastr, mockAuthenticationService, mockModalService, mockModalRef;
 
   const setupForm = (data) => {
-    const formBuilder = TestBed.get(FormBuilder);
+    const formBuilder = TestBed.get(UntypedFormBuilder);
     component.loginForm = formBuilder.group({
       username: [data.username, Validators.required],
       password: [data.password, Validators.required]

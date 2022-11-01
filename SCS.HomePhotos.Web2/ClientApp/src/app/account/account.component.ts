@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AccountInfo } from '../models';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { AccountService, AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 })
 export class AccountComponent implements OnInit, OnDestroy {
   accountInfo: AccountInfo;
-  accountForm: FormGroup;
+  accountForm: UntypedFormGroup;
   loading = false;
   submitted = false;
   imageUrl = '/assets/images/avatar-placeholder.png';
@@ -28,7 +28,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   constructor(private router: Router,
     private authenticationService: AuthService,
     private accountService: AccountService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private toastr: ToastrService,
     private modalService: BsModalService) { }
 

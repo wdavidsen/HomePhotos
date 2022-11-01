@@ -3,7 +3,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { UserSettingsService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { UserSettings } from '../models/user-settings';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -15,14 +15,14 @@ import { map } from 'rxjs/operators';
 export class UserSettingsComponent implements OnInit {
   title: string;
   userSettings: UserSettings;
-  userSettingsForm: FormGroup;
+  userSettingsForm: UntypedFormGroup;
   loading = false;
   submitted = false;
   thumbSizes = ['Largest', 'Large', 'Medium', 'Small', 'Smallest'];
   slideSpeeds = ['Fastest', 'Fast', 'Normal', 'Slow', 'Slowest'];
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public bsModalRef: BsModalRef,
     private userSettingsService: UserSettingsService,
     private toastr: ToastrService) {}

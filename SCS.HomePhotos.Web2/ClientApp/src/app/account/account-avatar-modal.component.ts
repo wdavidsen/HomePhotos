@@ -1,6 +1,6 @@
 import { OnInit, Component, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { AccountService, ImageService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { PasswordChange } from '../models';
@@ -22,7 +22,7 @@ export class AccountAvatardModalComponent implements OnInit, OnDestroy {
     title: string;
     loginMode: boolean;
     userName: string;
-    changePasswordForm: FormGroup;
+    changePasswordForm: UntypedFormGroup;
     changeInfo: PasswordChange;
     message: string;
     okText = 'Update';

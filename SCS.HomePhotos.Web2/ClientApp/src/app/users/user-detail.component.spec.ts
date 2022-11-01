@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UntypedFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -20,7 +20,7 @@ describe('UserDetailComponent', () => {
     role: 'Admin', lastLogin: new Date(), failedLoginCount: 0, mustChangePassword: false, enabled: true, jwt: null, refreshToken: null, avatarImage: null};
 
   const setupEditForm = (data) => {
-    const formBuilder = TestBed.get(FormBuilder);
+    const formBuilder = TestBed.get(UntypedFormBuilder);
       component.userForm = formBuilder.group({
         username: [data.username, Validators.required],
         password: [data.password, Validators.required],
