@@ -1,7 +1,12 @@
+<div id="fullPhotoOverlay" #fullPhotoOverlay  [ngClass]="photoOverlayDisplayClass">
+    <div class="close-button" (click)="closePhotoOverlay()"><i class="fa fa-times-circle"></i></div>
+    <app-slideshow></app-slideshow>
+</div>
+
 <section class="mainbar">
 
     <div class="row photo-list" id="photoList">
-        <div *ngFor="let t of thumbnails; let i = index" [ngClass]="{selected: t.selected}" (click)="select(t, $event)">
+        <div *ngFor="let t of thumbnails" [ngClass]="{selected: t.selected}" (click)="select(t, $event)">
             <img [src]="t.thumbUrl" [ngStyle]="{ height: t.thumbHeight + 'px', width : t.thumbWidth + 'px'}">
         </div>
     </div>

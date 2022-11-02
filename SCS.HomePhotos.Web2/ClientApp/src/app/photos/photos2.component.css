@@ -12,3 +12,27 @@
         .photo-list div.selected {
             border: solid 4px yellow;
         }
+
+#fullPhotoOverlay {    
+    height: 100%;
+    width: 100%;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: rgb(120, 101, 165);
+}
+
+#fullPhotoOverlay .close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px 10px;
+    z-index: 999999;
+}
+
+#fullPhotoOverlay .close-button i {
+    color: #fff;
+    font-size: 35px;
+}

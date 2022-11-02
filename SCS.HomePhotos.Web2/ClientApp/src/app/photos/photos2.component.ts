@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { PhotosService } from '../services/photos.service';
 import { Thumbnail, Photo, User } from '../models';
 import { map, debounce } from 'rxjs/operators';
@@ -13,8 +13,6 @@ import { ScrollService } from '../services/scroll.service';
 import { UserSettings } from '../models/user-settings';
 import { environment } from 'src/environments/environment';
 
-declare const blueimp: any;
-
 @Component({
   selector: 'app-photos',
   templateUrl: './photos2.component.html',
@@ -27,6 +25,9 @@ export class Photos2Component implements OnInit, OnDestroy {
   organizeMode = false;
   taggerModalRef: BsModalRef;
   keywords: string;
+  @ViewChild('fullPhotoOverlay', {static: true})
+  fullPhotoOverlay: ElementRef;
+  photoOverlayDisplayClass: string = 'hide';
 
   private pageNum = 1;
   private mode = 1;
@@ -152,31 +153,12 @@ export class Photos2Component implements OnInit, OnDestroy {
       thumbnail.selected = !thumbnail.selected;
     }
     else {
-      this.showLightbox(thumbnail);
+      this.photoOverlayDisplayClass = 'show';
     }
   }
 
-  showLightbox(thumbnail: Thumbnail) {
-    // https://github.com/blueimp/Gallery#lightbox-setup
-    const options = {
-      event: window.event,
-      slideshowInterval: this.getSlideshowSpeed(this.userSettings.slideshowSpeed),
-      startSlideshow: this.userSettings.autoStartSlideshow,
-      fullScreen: false,
-      thumbnailIndicators: window.innerWidth > 1024
-    };
-
-    const images: any[] = [];
-    this.thumbnails.forEach(thumb => {
-      images.push({
-        href: `${thumb.thumbUrl}?type=full`,
-        type: 'image/jpeg',
-        thumbnail: thumb.thumbUrl
-      });
-    });
-
-    const gallery = blueimp.Gallery(images, options);
-    gallery.slide(this.thumbnails.findIndex(t => t.photoId ===  thumbnail.photoId), 0);
+  closePhotoOverlay() {
+    this.photoOverlayDisplayClass = 'hide';
   }
 
   getSelectedThumbnails(): Thumbnail[] {

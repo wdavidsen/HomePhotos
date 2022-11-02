@@ -53,6 +53,8 @@ import { ChangePasswordModalComponent } from './account/change-password-modal.co
 
 import { routes } from './app.routes';
 import { Photos2Component } from './photos/photos2.component';
+import { SlideshowComponent } from './components/slideshow.component';
+import { SlideshowService } from './services/slideshow.service';
 
 @NgModule({
     declarations: [
@@ -80,6 +82,7 @@ import { Photos2Component } from './photos/photos2.component';
         PageInfoComponent,
         TriCheckComponent,
         AlertComponent,
+        SlideshowComponent,
         // dialogs
         PhotoTaggerComponent,
         ChangePasswordModalComponent,
@@ -126,6 +129,7 @@ import { Photos2Component } from './photos/photos2.component';
         BsModalRef,
         TagService,
         LogService,
+        SlideshowService,
         LocalStorageService,
         { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: CsrfHeaderInterceptor, multi: true },
