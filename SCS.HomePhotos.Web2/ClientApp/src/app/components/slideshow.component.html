@@ -1,46 +1,11 @@
-<swiper
-    style="--swiper-navigation-color: #fff;--swiper-pagination-color: #fff"
-    [zoom]="true"
-    [navigation]="true"
-    [pagination]="{
-      clickable: true
-    }"
+<swiper #swiper *ngIf="started"
+    style="--swiper-navigation-color: #fff;--swiper-pagination-color: #fff" 
+    (swiper)="onSwiper($event)"    
+    [config]="config"
     class="mySwiper">
-    <ng-template swiperSlide>
+    <ng-template swiperSlide *ngFor="let s of slides">
       <div class="swiper-zoom-container">
-        <img src="https://swiperjs.com/demos/images/nature-1.jpg" />
-      </div> </ng-template
-    ><ng-template swiperSlide>
-      <div class="swiper-zoom-container">
-        <img src="https://swiperjs.com/demos/images/nature-2.jpg" />
-      </div> </ng-template
-    ><ng-template swiperSlide>
-      <div class="swiper-zoom-container">
-        <img src="https://swiperjs.com/demos/images/nature-3.jpg" />
-      </div> </ng-template
-    ><ng-template swiperSlide>
-      <div class="swiper-zoom-container">
-        <img src="https://swiperjs.com/demos/images/nature-4.jpg" />
-      </div> </ng-template
-    ><ng-template swiperSlide>
-      <div class="swiper-zoom-container">
-        <img src="https://swiperjs.com/demos/images/nature-5.jpg" />
-      </div> </ng-template
-    ><ng-template swiperSlide>
-      <div class="swiper-zoom-container">
-        <img src="https://swiperjs.com/demos/images/nature-6.jpg" />
-      </div> </ng-template
-    ><ng-template swiperSlide>
-      <div class="swiper-zoom-container">
-        <img src="https://swiperjs.com/demos/images/nature-7.jpg" />
-      </div> </ng-template
-    ><ng-template swiperSlide>
-      <div class="swiper-zoom-container">
-        <img src="https://swiperjs.com/demos/images/nature-8.jpg" />
-      </div> </ng-template
-    ><ng-template swiperSlide>
-      <div class="swiper-zoom-container">
-        <img src="https://swiperjs.com/demos/images/nature-9.jpg" />
-      </div>
+        <img [src]="s.imageSrc" class="swiper-lazy" />
+      </div>      
     </ng-template>
   </swiper>

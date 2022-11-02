@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { PhotosService } from '../services/photos.service';
-import { Thumbnail, Photo, User } from '../models';
+import { Thumbnail, Photo, User, PhotoSlide } from '../models';
 import { map, debounce } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { SearchService, OrganizeService, AuthService, UserSettingsService } from '../services';
@@ -12,6 +12,7 @@ import { PhotoTaggerComponent } from './photo-tagger.component';
 import { ScrollService } from '../services/scroll.service';
 import { UserSettings } from '../models/user-settings';
 import { environment } from 'src/environments/environment';
+import { SlideshowService } from '../services/slideshow.service';
 
 @Component({
   selector: 'app-photos',
@@ -49,6 +50,7 @@ export class Photos2Component implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private modalService: BsModalService,
     private scrollService: ScrollService,
+    private slideshowService: SlideshowService,
     private authenticationService: AuthService) {
       this.authenticationService.loadCsrfToken().subscribe();
       this.authenticationService.getCurrentUser().subscribe(user => {
@@ -149,16 +151,39 @@ export class Photos2Component implements OnInit, OnDestroy {
   }
 
   select(thumbnail: Thumbnail) {
-    if (this.organizeMode) {
-      thumbnail.selected = !thumbnail.selected;
-    }
-    else {
+    thumbnail.selected = !thumbnail.selected;
+
+    if (!this.organizeMode) {      
       this.photoOverlayDisplayClass = 'show';
+      let slides: PhotoSlide[] = [];
+
+      this.thumbnails.forEach(thumb => {
+        slides.push({
+          imageSrc: `${thumb.thumbUrl}?type=full`,
+          photoId: thumb.photoId,
+          imageHeight: thumb.thumbHeight,
+          imageWidth: thumb.thumbWidth,
+          selected: thumb.selected
+        });
+      });
+      
+      this.slideshowService.config({
+        zoom: true,
+        navigation: true,
+        autoplay: {
+            delay: 2000,
+            disableOnInteraction: true
+          },
+        loop: true
+      });
+      this.slideshowService.start(slides);
+      this.clearSelections();
     }
   }
 
   closePhotoOverlay() {
     this.photoOverlayDisplayClass = 'hide';
+    this.slideshowService.stop();
   }
 
   getSelectedThumbnails(): Thumbnail[] {

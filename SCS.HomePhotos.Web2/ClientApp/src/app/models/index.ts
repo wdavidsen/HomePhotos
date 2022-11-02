@@ -13,6 +13,7 @@ export * from './data-list';
 export * from './tokens';
 export * from './password-change';
 export  * from './avatar-update';
+export  * from './photoSlide';
 
 
 

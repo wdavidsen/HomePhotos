@@ -45,7 +45,7 @@ export class AuthService {
         mapTo(true));
   }
 
-  loginWithPasswordChange(changeInfo: PasswordChange){
+  loginWithPasswordChange(changeInfo: PasswordChange) {
     return this.http.post<User>(`${environment.apiUrl}/auth/loginWithPasswordChange`, changeInfo)
       .pipe(
         tap(user => this.doLoginUser(user)),

@@ -1,18 +1,38 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { SwiperOptions } from 'swiper';
+import { PhotoSlide } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class SlideshowService {
-    private subject = new Subject<any>();
-    
+    private configSubject = new Subject<SwiperOptions>();
+    private startSubject = new Subject<Array<PhotoSlide>>();
+    private stopSubject = new Subject();
+
     constructor() {    
     }
 
-    getCommand(): Observable<any> {
-        return this.subject.asObservable();
+    configWatcher(): Observable<SwiperOptions> {
+        return this.configSubject.asObservable();
     }
 
-    start(data: string) {        
-        this.subject.next(data);
+    startWatcher(): Observable<Array<PhotoSlide>> {
+        return this.startSubject.asObservable();
+    }
+
+    stopWatcher() {
+        return this.stopSubject.asObservable();
+    }
+
+    start(photos: Array<PhotoSlide>) {        
+        this.startSubject.next(photos);
+    }
+
+    stop() {        
+        this.stopSubject.next({});
+    }
+
+    config(options: SwiperOptions) {        
+        this.configSubject.next(options);
     }
 }
