@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+	<RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <SignAssembly>true</SignAssembly>
 	<AnalysisLevel>6.0-minimum</AnalysisLevel>
   </PropertyGroup>

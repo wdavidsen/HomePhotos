@@ -13,11 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Service.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Web.Test", "SCS.HomePhotos.Web.Test\SCS.HomePhotos.Web.Test.csproj", "{07F3475B-A09C-4FF4-BA3B-B49684E8301C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Web", "SCS.HomePhotos.Web\SCS.HomePhotos.Web.csproj", "{DA04CD15-C6EF-4B2B-972C-3EC5E624C377}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Service", "SCS.HomePhotos.Service\SCS.HomePhotos.Service.csproj", "{89C16307-570C-41AE-9507-32E11D5D38F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCS.HomePhotos.Web2", "SCS.HomePhotos.Web2\SCS.HomePhotos.Web2.csproj", "{D4731814-76AC-4F00-9452-AA764CC4EF2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Web2", "SCS.HomePhotos.Web2\SCS.HomePhotos.Web2.csproj", "{D4731814-76AC-4F00-9452-AA764CC4EF2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,10 +43,6 @@ Global
 		{07F3475B-A09C-4FF4-BA3B-B49684E8301C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07F3475B-A09C-4FF4-BA3B-B49684E8301C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07F3475B-A09C-4FF4-BA3B-B49684E8301C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA04CD15-C6EF-4B2B-972C-3EC5E624C377}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA04CD15-C6EF-4B2B-972C-3EC5E624C377}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA04CD15-C6EF-4B2B-972C-3EC5E624C377}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA04CD15-C6EF-4B2B-972C-3EC5E624C377}.Release|Any CPU.Build.0 = Release|Any CPU
 		{89C16307-570C-41AE-9507-32E11D5D38F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89C16307-570C-41AE-9507-32E11D5D38F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89C16307-570C-41AE-9507-32E11D5D38F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
