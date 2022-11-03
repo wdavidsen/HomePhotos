@@ -32,16 +32,10 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  loadCsrfToken(): Observable<boolean> {
-    return this.http.get(`${environment.apiUrl}/antiforgery`)
-      .pipe(mapTo(true));
-  }
-
   login(username, password): Observable<boolean> {
     return this.http.post<User>(`${environment.apiUrl}/auth/login`, { username, password })
       .pipe(
         tap(user => this.doLoginUser(user)),
-        switchMap(() => this.loadCsrfToken()),
         mapTo(true));
   }
 
@@ -49,7 +43,6 @@ export class AuthService {
     return this.http.post<User>(`${environment.apiUrl}/auth/loginWithPasswordChange`, changeInfo)
       .pipe(
         tap(user => this.doLoginUser(user)),
-        switchMap(() => this.loadCsrfToken()),
         mapTo(true));
   }
 
@@ -72,7 +65,6 @@ export class AuthService {
     })
     .pipe(tap((tokens: Tokens) => {
         this.storeTokens(tokens);
-        this.http.get(`${environment.apiUrl}/antiforgery`);
     }));
   }
 

@@ -15,11 +15,10 @@ describe('UploadComponent', () => {
 
   beforeEach(async(() => {
     mockToastr = jasmine.createSpyObj(['success', 'error']);
-    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'getCurrentUser', 'getJwtToken', 'loadCsrfToken']);
+    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'getCurrentUser', 'getJwtToken']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
 
     mockAuthenticationService.getCurrentUser.and.returnValue(of({username: 'wdavidsen'}));
-    mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
 
     TestBed.configureTestingModule({
       declarations: [ UploadComponent ],

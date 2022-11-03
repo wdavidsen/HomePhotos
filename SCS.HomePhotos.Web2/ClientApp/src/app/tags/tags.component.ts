@@ -33,7 +33,6 @@ export class TagsComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private modalService: BsModalService,
     private authenticationService: AuthService) {
-      this.authenticationService.loadCsrfToken().subscribe();
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
       });

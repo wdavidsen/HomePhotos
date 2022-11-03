@@ -24,7 +24,6 @@ export class LogsComponent implements OnInit {
     private logService: LogService,
     private toastr: ToastrService,
     private authenticationService: AuthService) {
-      this.authenticationService.loadCsrfToken().subscribe();
     }
 
   filtersChanged(event: any): void {

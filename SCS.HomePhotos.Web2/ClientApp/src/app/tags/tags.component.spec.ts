@@ -30,12 +30,11 @@ describe('TagsComponent', () => {
   ];
 
   beforeEach(async(() => {
-    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'loadCsrfToken']);
+    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser']);
     mockToastr = jasmine.createSpyObj(['success', 'error']);
     mockTagService = jasmine.createSpyObj(['getTags', 'searchTags', 'addTag', 'updateTag', 'deleteTag', 'copyTag', 'mergeTags', ]);
 
     mockAuthenticationService.getCurrentUser.and.returnValue(of(currentUser));
-    mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
     mockTagService.getTags.and.returnValue(of(tags));
 
     TestBed.configureTestingModule({

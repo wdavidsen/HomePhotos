@@ -25,7 +25,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async(() => {
     mockToastr = jasmine.createSpyObj(['success', 'error']);
-    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'logout', 'loadCsrfToken']);
+    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'logout']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
     mockModalRef = jasmine.createSpyObj(['hide']);
 

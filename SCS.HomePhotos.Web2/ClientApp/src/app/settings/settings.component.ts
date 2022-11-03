@@ -38,7 +38,6 @@ export class SettingsComponent implements OnInit {
     }
 
   ngOnInit() {
-    this.authenticationService.loadCsrfToken().subscribe();
     this.setupForm(new Settings());
 
     this.settingsService.getSettings()

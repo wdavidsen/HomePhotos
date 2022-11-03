@@ -29,12 +29,11 @@ describe('AccountComponent', () => {
 
   beforeEach(async(() => {
     mockToastr = jasmine.createSpyObj(['success', 'error']);
-    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'loadCsrfToken']);
+    mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser']);
     mockAccountService = jasmine.createSpyObj(['save']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
 
     mockAuthenticationService.getCurrentUser.and.returnValue(of(currentUser));
-    mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
 
     TestBed.configureTestingModule({
       declarations: [ AccountComponent ],

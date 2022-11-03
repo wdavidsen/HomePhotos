@@ -20,7 +20,7 @@ describe('LogsComponent', () => {
     beforeEach(async(() => {
         mockToastr = jasmine.createSpyObj(['error']);
         mockLogService = jasmine.createSpyObj(['getLatest']);
-        mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'loadCsrfToken']);
+        mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser']);
 
         const logEntries: LogEntry[] = [
             { timestamp: new Date(), message: 'message 1', category: 'General', serverity: 'Neutral' },
@@ -31,7 +31,6 @@ describe('LogsComponent', () => {
         const dataList = new DataList(logEntries, pageInfo);
 
         mockLogService.getLatest.and.returnValue(of(dataList));
-        mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
 
         TestBed.configureTestingModule({
             declarations: [LogsComponent],

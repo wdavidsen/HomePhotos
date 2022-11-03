@@ -27,7 +27,6 @@ export class RegisterComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.authenticationService.loadCsrfToken().subscribe();
         this.registerForm = this.formBuilder.group({
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],

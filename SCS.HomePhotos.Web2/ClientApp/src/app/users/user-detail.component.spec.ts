@@ -47,12 +47,11 @@ describe('UserDetailComponent', () => {
     mockActivatedRoute = new ActivatedRouteStub({ userId: null });
 
     mockToastr = jasmine.createSpyObj(['success', 'error']);
-    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'getCurrentUser', 'loadCsrfToken']);
+    mockAuthenticationService = jasmine.createSpyObj(['currentUserValue', 'login', 'getCurrentUser']);
     mockUserService = jasmine.createSpyObj(['get', 'delete', 'save']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
     mockRouter = new RouterStub();
 
-    mockAuthenticationService.loadCsrfToken.and.returnValue(of(true));
     mockAuthenticationService.getCurrentUser.and.returnValue(of({username: 'jdoe', role: 'Admin'}));
     mockUserService.get.and.returnValue(of(user));
 
