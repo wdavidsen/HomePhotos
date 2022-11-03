@@ -68,8 +68,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Merges tags.</summary>
         /// <param name="mergeInfo">The merge information.</param>
         /// <returns>Final merged tag.</returns>
-        [Authorize(Policy = "Contributers")]
-        //[ValidateAntiForgeryToken]
+        [Authorize(Policy = "Contributers")]        
         [HttpPut("merge", Name = "MergeTags")]
         public async Task<IActionResult> MergeTags([FromBody] TagMergeInfo mergeInfo)
         {
@@ -87,7 +86,6 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <param name="copyInfo">The copy information.</param>
         /// <returns>The new tag.</returns>
         [Authorize(Policy = "Contributers")]
-        //[ValidateAntiForgeryToken]
         [HttpPut("copy", Name = "CopyTags")]
         public async Task<IActionResult> CopyTag([FromBody] TagCopyInfo copyInfo)
         {
@@ -120,8 +118,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Tags the photos.</summary>
         /// <param name="updateTags">The updated tags.</param>
-        [Authorize(Policy = "Contributers")]
-        //[ValidateAntiForgeryToken]
+        [Authorize(Policy = "Contributers")]        
         [HttpPut("batchTag", Name = "TagPhotos")]
         public async Task<IActionResult> TagPhotos([FromBody] BatchUpdateTags updateTags)
         {
@@ -137,8 +134,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Adds a tag.</summary>
         /// <param name="tag">The tag to add.</param>
-        [Authorize(Policy = "Contributers")]
-        //[ValidateAntiForgeryToken]
+        [Authorize(Policy = "Contributers")]        
         [HttpPost(Name = "AddTag")]
         public async Task<IActionResult> AddTag([FromBody] Dto.Tag tag)
         {
@@ -162,8 +158,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Updates a tag.</summary>
         /// <param name="tag">The tag to update.</param>
         /// <returns>The updated tag.</returns>
-        [Authorize(Policy = "Contributers")]
-        //[ValidateAntiForgeryToken]
+        [Authorize(Policy = "Contributers")]        
         [HttpPut(Name = "UpdateTag")]
         public async Task<IActionResult> UpdateTag([FromBody] Dto.Tag tag)
         {
@@ -191,7 +186,6 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        //[ValidateAntiForgeryToken]
         [HttpDelete("{tagId}", Name = "DeleteTag")]
         public async Task<IActionResult> DeleteTag([FromRoute] int tagId)
         {

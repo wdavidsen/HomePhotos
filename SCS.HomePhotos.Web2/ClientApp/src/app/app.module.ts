@@ -32,7 +32,7 @@ import { UnauthorizedComponent } from './errors/unauthorized.component';
 import { RegisterSuccessComponent } from './register/register-success.component';
 import { UserDetailComponent } from './users/user-detail.component';
 import { UsersComponent } from './users/users.component';
-import { CsrfHeaderInterceptor, ProgressInterceptor, TokenInterceptor } from './framework';
+import { ProgressInterceptor, TokenInterceptor } from './framework';
 import { ImageService, PhotosService, TagService, UserSettingsService } from './services';
 import { LogService } from './services/log.service';
 import { LocalStorageService } from './services/local-storage.service';
@@ -131,8 +131,7 @@ import { SlideshowService } from './services/slideshow.service';
         LogService,
         SlideshowService,
         LocalStorageService,
-        { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: CsrfHeaderInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true },        
         { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
     ],
     bootstrap: [AppComponent]

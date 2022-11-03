@@ -39,17 +39,6 @@
             <param name="accountInfo">The account information.</param>
             <returns>User's account info.</returns>
         </member>
-        <member name="T:SCS.HomePhotos.Web.Controllers.AntiForgeryController">
-            <summary>Anti-forgery services</summary>    
-        </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.AntiForgeryController.#ctor(Microsoft.AspNetCore.Antiforgery.IAntiforgery)">
-            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.AntiForgeryController" /> class.</summary>
-            <param name="antiForgery">The anti-forgery.</param>
-        </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.AntiForgeryController.Get">
-            <summary>Gets an anti-forger cookie.</summary>
-            <returns>Anti-forger cookie.</returns>
-        </member>
         <member name="T:SCS.HomePhotos.Web.Controllers.AuthController">
             <summary>Authentication services.</summary>
         </member>

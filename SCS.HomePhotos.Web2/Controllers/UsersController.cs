@@ -71,8 +71,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
-        [HttpPost("", Name = "AddUser")]
-        //[ValidateAntiForgeryToken]
+        [HttpPost("", Name = "AddUser")]        
         public async Task<IActionResult> AddUser([FromBody] Dto.PasswordUser user)
         {
             if (!ModelState.IsValid)
@@ -92,8 +91,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
-        [HttpPut("{userId}", Name = "UpdateUser")]
-        //[ValidateAntiForgeryToken]
+        [HttpPut("{userId}", Name = "UpdateUser")]        
         public async Task<IActionResult> UpdateUser([FromBody] Dto.User user)
         {
             if (!ModelState.IsValid)
@@ -112,7 +110,6 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpDelete("{userId}", Name = "DeleteUser")]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUser([FromRoute] int userId)
         {
             await _accountService.DeleteUser(userId);
@@ -129,8 +126,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpPost("{userId}/resetPassword", Name = "ResetPassword")]
-        //[ValidateAntiForgeryToken]
+        [HttpPost("{userId}/resetPassword", Name = "ResetPassword")]        
         public async Task<IActionResult> ResetPassword([FromRoute] int userId, [FromBody] ResetPasswordModel resetPasswordModel)
         {
             var user = await _accountService.GetUser(userId);
