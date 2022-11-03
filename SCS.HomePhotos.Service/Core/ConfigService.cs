@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
+using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -62,21 +64,30 @@ namespace SCS.HomePhotos.Service.Core
         /// </summary>
         public async Task SetDynamicConfig()
         {
-            var dbConfig = await _configData.GetConfiguration();
+            try 
+            { 
+                var dbConfig = await _configData.GetConfiguration();
 
-            if (dbConfig != null)
-            {
-                dbConfig.ToDynamicConfig(DynamicConfig);
-            }
-            else
-            {
-                dbConfig = new Model.Config();
-                dbConfig.FromDynamicConfig(DynamicConfig.GetDefault());
-                dbConfig.ToDynamicConfig(DynamicConfig);
-                await _configData.SaveConfiguration(dbConfig);
-            }
+            
+                if (dbConfig != null)
+                {
+                    dbConfig.ToDynamicConfig(DynamicConfig);
+                }
+                else
+                {
+                    dbConfig = new Model.Config();
+                    dbConfig.FromDynamicConfig(DynamicConfig.GetDefault());
+                    dbConfig.ToDynamicConfig(DynamicConfig);
+                    await _configData.SaveConfiguration(dbConfig);
+                }
 
-            DynamicConfig.TrackChanges = true;
+                DynamicConfig.TrackChanges = true;
+            }
+            catch (SqliteException ex)
+            {
+                var message = $"Failed to update configuration in HomePhotos database at: '{StaticConfig.DatabasePath}'. Ensure database is present at quoted path with appropriate access permissions.";
+                throw new ConfigurationException(message, ex);
+            }
         }
 
         /// <summary>
