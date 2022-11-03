@@ -84,7 +84,7 @@ describe('SettingsComponent', () => {
 
     expect(mockSettingsService.clearCache).toHaveBeenCalledTimes(1);
 
-    sub.next();
+    sub.next(null);
     fixture.detectChanges();
 
     expect(mockToastr.success).toHaveBeenCalledTimes(1);
