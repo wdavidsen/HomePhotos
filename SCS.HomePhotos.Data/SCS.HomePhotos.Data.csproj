@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-	<RuntimeIdentifier>win10-x64</RuntimeIdentifier>
 	<AnalysisLevel>6.0-minimum</AnalysisLevel>
   </PropertyGroup>
 

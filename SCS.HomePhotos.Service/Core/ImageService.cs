@@ -144,7 +144,7 @@ namespace SCS.HomePhotos.Service.Core
         [SuppressMessage("Security", "SCS0005:Weak random generator", Justification = "Random number is not being used for security purposes.")]
         public string CreateCachePath(string checksum, string extension)
         {
-            var cachePath = Path.Combine(checksum.Substring(0, 1) + _randomNum.Next(1, 10).ToString(), Guid.NewGuid() + extension);
+            var cachePath = Path.Combine(string.Concat(checksum.AsSpan(0, 1), _randomNum.Next(1, 10).ToString()), Guid.NewGuid() + extension);
 
             return cachePath;
         }
@@ -238,7 +238,7 @@ namespace SCS.HomePhotos.Service.Core
                                 {
                                     if (parts[2] == "CW" && int.TryParse(parts[1], out var degrees))
                                     {
-                                        _logger.LogInformation($"Orienting image {orientation}.");
+                                        _logger.LogInformation("Orienting image {orientation}.", orientation);
                                         var stopwatch = Stopwatch.StartNew();
 
                                         //var rotateDegrees = degrees == 270 ? 90 : (degrees == 90 ? 270 : 0);

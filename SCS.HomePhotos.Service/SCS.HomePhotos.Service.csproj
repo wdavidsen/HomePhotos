@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-	<RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <AssemblyName>SCS.HomePhotos.Service</AssemblyName>
     <RootNamespace>SCS.HomePhotos.Service</RootNamespace>
 	<AnalysisLevel>6.0-minimum</AnalysisLevel>
