@@ -12,3 +12,7 @@
         .photo-list div.selected {
             border: solid 4px yellow;
         }
+
+#blueimp-gallery > ol.indicator {
+    display: none !important;
+}
