@@ -52,9 +52,6 @@ import { AccountComponent } from './account/account.component';
 import { ChangePasswordModalComponent } from './account/change-password-modal.component';
 
 import { routes } from './app.routes';
-import { Photos2Component } from './photos/photos2.component';
-import { SlideshowComponent } from './components/slideshow.component';
-import { SlideshowService } from './services/slideshow.service';
 
 @NgModule({
     declarations: [
@@ -64,7 +61,6 @@ import { SlideshowService } from './services/slideshow.service';
         UnauthorizedComponent,
         NotFoundComponent,
         PhotosComponent,
-        Photos2Component,
         TagsComponent,
         SettingsComponent,
         LoginComponent,
@@ -82,7 +78,6 @@ import { SlideshowService } from './services/slideshow.service';
         PageInfoComponent,
         TriCheckComponent,
         AlertComponent,
-        SlideshowComponent,
         // dialogs
         PhotoTaggerComponent,
         ChangePasswordModalComponent,
@@ -129,7 +124,6 @@ import { SlideshowService } from './services/slideshow.service';
         BsModalRef,
         TagService,
         LogService,
-        SlideshowService,
         LocalStorageService,
         { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true },        
         { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
