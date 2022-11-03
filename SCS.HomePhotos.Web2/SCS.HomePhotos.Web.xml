@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>SCS.HomePhotos.Web2</name>
+        <name>SCS.HomePhotos.Web</name>
     </assembly>
     <members>
         <member name="T:SCS.HomePhotos.Web.Controllers.AccountController">

@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Web.Test", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Service", "SCS.HomePhotos.Service\SCS.HomePhotos.Service.csproj", "{89C16307-570C-41AE-9507-32E11D5D38F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Web2", "SCS.HomePhotos.Web2\SCS.HomePhotos.Web2.csproj", "{D4731814-76AC-4F00-9452-AA764CC4EF2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Web", "SCS.HomePhotos.Web2\SCS.HomePhotos.Web.csproj", "{D4731814-76AC-4F00-9452-AA764CC4EF2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

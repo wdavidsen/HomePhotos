@@ -16,8 +16,14 @@ using SCS.HomePhotos.Service.Workers;
 using SCS.HomePhotos.Web;
 using SCS.HomePhotos.Web.Hubs;
 using SCS.HomePhotos.Web.Middleware;
+using Microsoft.Extensions.Hosting.WindowsServices;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(
+    new WebApplicationOptions
+    {
+        Args = args,
+        ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+    });
 
 var Container = builder.Services;
 var Configuration = builder.Configuration;
@@ -191,6 +197,6 @@ App.UseEndpoints(endpoints =>
         pattern: "{controller}/{action=Index}/{id?}");
 });
 
-//app.MapFallbackToFile("index.html");
+App.MapFallbackToFile("index.html");
 
 App.Run();
