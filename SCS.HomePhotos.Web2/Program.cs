@@ -121,6 +121,7 @@ Container.AddScoped<ITagData, TagData>();
 Container.AddScoped<IUserData, UserData>();
 Container.AddScoped<IUserTokenData, UserTokenData>();
 Container.AddScoped<ILogData, LogData>();
+Container.AddScoped<ISkipImageData, SkipImageData>();
 
 // services
 Container.AddScoped<IFileSystemService, FileSystemService>();

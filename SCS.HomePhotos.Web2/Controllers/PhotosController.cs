@@ -115,6 +115,23 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(dtos);
         }
 
+        /// <summary>
+        /// Deletes a photo and its files.
+        /// </summary>
+        /// <param name="photoId">The photo identifier.</param>
+        /// <returns>An action task.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpDelete("{photoId}", Name = "DeletePhoto")]
+        public async Task<IActionResult> DeletePhoto([FromRoute] int photoId)
+        {
+            await _photoSevice.DeletePhoto(photoId);
+
+            return Ok();
+        }
+
         private string GetEncryptedFileName(string fileName)
         {
             var expiration = DateTime.UtcNow.ToStartOfDay().AddDays(_staticConfig.PhotoExpirationDays);

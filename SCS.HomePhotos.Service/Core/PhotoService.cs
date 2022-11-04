@@ -1,13 +1,17 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Data.Contracts;
+using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Workers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
+using static System.Net.WebRequestMethods;
 
 namespace SCS.HomePhotos.Service.Core
 {
@@ -20,6 +24,7 @@ namespace SCS.HomePhotos.Service.Core
 
         private readonly IPhotoData _photoData;
         private readonly ITagData _tagData;
+        private readonly ISkipImageData _skipImageData;
         private readonly IFileSystemService _fileSystemService;
         private readonly IDynamicConfig _dynamicConfig;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
@@ -29,15 +34,17 @@ namespace SCS.HomePhotos.Service.Core
         /// <summary>Initializes a new instance of the <see cref="PhotoService" /> class.</summary>
         /// <param name="photoData">The photo data.</param>
         /// <param name="tagData">The tag data.</param>
+        /// <param name="skipImageData">The skip image data.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="fileSystemService">The file system service.</param>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
         /// <param name="backgroundTaskQueue">The background task queue.</param>
-        public PhotoService(IPhotoData photoData, ITagData tagData, ILogger<PhotoService> logger, IFileSystemService fileSystemService,
+        public PhotoService(IPhotoData photoData, ITagData tagData, ISkipImageData skipImageData, ILogger<PhotoService> logger, IFileSystemService fileSystemService,
             IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
         {
             _photoData = photoData;
             _tagData = tagData;
+            _skipImageData = skipImageData;
             _logger = logger;
             _fileSystemService = fileSystemService;
             _dynamicConfig = dynamicConfig;
@@ -169,6 +176,52 @@ namespace SCS.HomePhotos.Service.Core
                 throw new InvalidOperationException($"Tag id {tagId} was not found.");
             }
             await _tagData.DeleteAsync(tag);
+        }
+
+        /// <summary>
+        /// Deletes a photo and its image files.
+        /// </summary>
+        /// <param name="photoId">The photo identifier.</param>
+        /// <exception cref="System.InvalidOperationException">Photo id {photoId} was not found.</exception>
+        public async Task DeletePhoto(int photoId)
+        {
+            var photo = await _photoData.GetAsync<Photo>(photoId);
+
+            if (photo == null)
+            {
+                throw new InvalidOperationException($"Photo id {photoId} was not found.");
+            }
+            await _photoData.DeleteAsync(photo);
+
+            DeleteCacheImages(photo.CacheFolder, photo.FileName);
+
+            var insertSkip = true;
+
+            if (photo.MobileUpload)
+            {
+                if (_dynamicConfig.MobilePhotoDeleteAction == DeleteAction.DeleteRecordAndFile)
+                {
+                    insertSkip = !DeleteOriginalImage(true, photo.OriginalFolder, photo.Name);
+                }
+            }
+            else
+            {
+                if (_dynamicConfig.PhotoDeleteAction == DeleteAction.DeleteRecordAndFile)
+                {
+                    insertSkip = !DeleteOriginalImage(false, photo.OriginalFolder, photo.Name);
+                }
+            }
+
+            if (insertSkip && !string.IsNullOrWhiteSpace(photo.OriginalFolder))
+            {
+                await _skipImageData.InsertAsync(
+                    new SkipImage
+                    {
+                        MobileUpload = photo.MobileUpload,                        
+                        OriginalFolder = photo.OriginalFolder,
+                        FileName = photo.FileName
+                    });
+            }
         }
 
         /// <summary>
@@ -413,6 +466,48 @@ namespace SCS.HomePhotos.Service.Core
                     await _tagData.DeleteAsync(tag);
                 }
             }
+        }
+
+        /// <summary>
+        /// Deletes the cache images of a photo.
+        /// </summary>
+        /// <param name="cacheSubFolder">The image cache folder.</param>
+        /// <param name="fileName">The image file name.</param>
+        private bool DeleteCacheImages(string cacheSubFolder, string fileName)
+        {
+            try
+            {
+                _fileSystemService.DeleteImageFile(_dynamicConfig.CacheFolder, $"{cacheSubFolder}\\{ImageSizeType.Thumb}", fileName);
+                _fileSystemService.DeleteImageFile(_dynamicConfig.CacheFolder, $"{cacheSubFolder}\\{ImageSizeType.Small}", fileName);
+                _fileSystemService.DeleteImageFile(_dynamicConfig.CacheFolder, $"{cacheSubFolder}\\{ImageSizeType.Full}", fileName);
+                return true;
+            }
+            catch (IOException ex)
+            {
+                _logger.LogError(ex, "Failed to delete cache images from file system.");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Deletes the original photo image.
+        /// </summary>
+        /// <param name="isMobile">if set to <c>true</c> photo is a mobile upload.</param>
+        /// <param name="subfolderName">Name of the subfolder.</param>
+        /// <param name="fileName">Name of the file.</param>
+        private bool DeleteOriginalImage(bool isMobile, string subfolderName, string fileName)
+        {
+            try
+            {
+                var baseFolder = isMobile ? _dynamicConfig.MobileUploadsFolder : _dynamicConfig.IndexPath;
+                _fileSystemService.DeleteImageFile(baseFolder, subfolderName, fileName);
+                return true;
+            }
+            catch (IOException ex)
+            {
+                _logger.LogError(ex, "Failed to delete original image from file system.");
+                return false;
+            }    
         }
     }
 }

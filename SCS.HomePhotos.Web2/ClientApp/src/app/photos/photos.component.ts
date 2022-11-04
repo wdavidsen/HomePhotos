@@ -9,9 +9,9 @@ import { Subscription, Subject, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { PhotoTaggerComponent } from './photo-tagger.component';
-import { ScrollService } from '../services/scroll.service';
 import { UserSettings } from '../models/user-settings';
 import { environment } from 'src/environments/environment';
+import { AlertDialogComponent, ConfirmDialogComponent } from '../common-dialog';
 
 declare const blueimp: any;
 
@@ -25,7 +25,9 @@ export class PhotosComponent implements OnInit, OnDestroy {
   thumbnails: Thumbnail[] = [];
   tagName: string;
   organizeMode = false;
-  taggerModalRef: BsModalRef;
+  taggerModalRef: BsModalRef;  
+  confirmDeleteModalRef: BsModalRef;
+  deleteCheckModalRef: BsModalRef;
   keywords: string;
 
   private pageNum = 1;
@@ -47,7 +49,6 @@ export class PhotosComponent implements OnInit, OnDestroy {
     private userSettingsService: UserSettingsService,
     private toastr: ToastrService,
     private modalService: BsModalService,
-    private scrollService: ScrollService,
     private authenticationService: AuthService) {      
       this.authenticationService.getCurrentUser().subscribe(user => {
         this.currentUser = user;
@@ -348,6 +349,43 @@ export class PhotosComponent implements OnInit, OnDestroy {
 
       this.taggerModalRef = this.modalService.show(PhotoTaggerComponent, options);
     }
+  }
+
+  deletePhotos() {
+    const selections = this.getSelectedThumbnails();
+
+    if (selections.length > 10) {
+      const checkOptions = AlertDialogComponent.GetOptions('Delete Limit Exceeded', 'You may only delete 10 photos at a time as a safety precaution. To remove photos in bulk, please remove photos from index folder.');
+      this.deleteCheckModalRef = this.modalService.show(AlertDialogComponent, checkOptions);
+      return;
+    }
+
+    const message = 'Are you sure you want to delete these photos?';
+    const confirmOptions = ConfirmDialogComponent.GetOptions('confirm-resize-dialog', 'Delete Photos', message, false);
+    this.confirmDeleteModalRef = this.modalService.show(ConfirmDialogComponent, confirmOptions);
+
+    var sub = this.modalService.onHidden
+      .subscribe(() => {
+        if (this.confirmDeleteModalRef.content.yesClicked) {
+          selections.forEach(t => {
+            const photoId = t.photoId;
+
+            this.photosService.deletePhoto(photoId)
+                .subscribe({
+                  next: () => {
+                    const index = this.thumbnails.map(t => t.photoId).indexOf(photoId);
+                    this.thumbnails.splice(index, 1);
+                    this.toastr.success('Photo delete succeeded');
+                  },
+                  error: (e) => {
+                    console.error(`Failed to delete photo ${photoId}. ${e.message}`);
+                    this.toastr.error(`Failed to delete photo`)
+                  }
+                });
+          });           
+        }
+        sub.unsubscribe();
+      });
   }
 
   selectAll() {

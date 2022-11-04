@@ -206,7 +206,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.toastr.success(`Deleted ${chip.name} successfully`);
             this.tagChips.splice(this.tagChips.indexOf(chip), 1);
           },
-          err => this.toastr.error(`Failed to deleted ${chip.name}`)
+          err => this.toastr.error(`Failed to delete ${chip.name}`)
         );
     }
   }

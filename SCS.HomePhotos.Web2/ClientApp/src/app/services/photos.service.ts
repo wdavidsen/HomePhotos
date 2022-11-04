@@ -22,4 +22,8 @@ export class PhotosService {
     searchPhotos(pageNum: number, keywords: string) {
         return this.http.get<Photo[]>(`${environment.apiUrl}/photos/search?pageNum=${pageNum}&keywords=${escape(keywords)}`);
     }
+
+    deletePhoto(photoId: number): Observable<void> {
+        return this.http.delete<void>(`${environment.apiUrl}/photos/${photoId}`);
+    }
 }

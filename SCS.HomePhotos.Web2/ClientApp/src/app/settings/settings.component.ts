@@ -5,7 +5,7 @@ import { Settings } from '../models/settings';
 import { map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap/modal';
-import { ConfirmDialogComponent, InputDialogComponent } from '../common-dialog';
+import { ConfirmDialogComponent } from '../common-dialog';
 import * as moment from 'moment';
 import { AuthService } from '../services';
 
@@ -30,7 +30,6 @@ export class SettingsComponent implements OnInit {
   confirmModalRef: BsModalRef;
 
   constructor(
-    private authenticationService: AuthService,
     private formBuilder: UntypedFormBuilder,
     private settingsService: SettingsService,
     private toastr: ToastrService,

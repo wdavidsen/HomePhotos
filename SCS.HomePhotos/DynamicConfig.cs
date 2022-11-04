@@ -251,6 +251,22 @@ namespace SCS.HomePhotos
         }
 
         /// <summary>
+        /// Gets or sets the photo delete action.
+        /// </summary>
+        /// <value>
+        /// The photo delete action.
+        /// </value>
+        public DeleteAction PhotoDeleteAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the mobile photo delete action.
+        /// </summary>
+        /// <value>
+        /// The mobile photo delete action.
+        /// </value>
+        public DeleteAction MobilePhotoDeleteAction { get; set; }
+
+        /// <summary>
         /// Gets the default configuration.
         /// </summary>
         /// <returns>The default configuration.</returns>
@@ -265,7 +281,9 @@ namespace SCS.HomePhotos
                 SmallImageSize = 800,
                 LargeImageSize = 1920,
                 NextIndexTime = null,
-                IndexFrequencyHours = 24
+                IndexFrequencyHours = 24,
+                PhotoDeleteAction = DeleteAction.DeleteRecord,
+                MobilePhotoDeleteAction = DeleteAction.DeleteRecordAndFile
             };
         }
 

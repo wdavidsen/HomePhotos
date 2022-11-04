@@ -92,6 +92,22 @@ namespace SCS.HomePhotos.Model
         public bool IndexOnStartup { get; set; }
 
         /// <summary>
+        /// Gets or sets the photo delete action.
+        /// </summary>
+        /// <value>
+        /// The photo delete action.
+        /// </value>
+        public DeleteAction PhotoDeleteAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the mobile photo delete action.
+        /// </summary>
+        /// <value>
+        /// The mobile photo delete action.
+        /// </value>
+        public DeleteAction MobilePhotoDeleteAction { get; set; }
+
+        /// <summary>
         /// Converts configuration to dynamic configuration entity.
         /// </summary>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
@@ -107,6 +123,8 @@ namespace SCS.HomePhotos.Model
             dynamicConfig.NextIndexTime = NextIndexTime;
             dynamicConfig.IndexFrequencyHours = IndexFrequencyHours;
             dynamicConfig.IndexOnStartup = IndexOnStartup;
+            dynamicConfig.PhotoDeleteAction = PhotoDeleteAction;
+            dynamicConfig.MobilePhotoDeleteAction = MobilePhotoDeleteAction;
         }
 
         /// <summary>

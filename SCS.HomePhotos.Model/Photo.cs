@@ -92,6 +92,22 @@ namespace SCS.HomePhotos.Model
         public bool ReprocessCache { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the photo is a mobile upload.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if photo is a mobile upload; otherwise, <c>false</c>.
+        /// </value>
+        public bool MobileUpload { get; set; }
+
+        /// <summary>
+        /// Gets or sets the photo's original folder under photo index, or mobile upload path.
+        /// </summary>
+        /// <value>
+        /// The photo's original folder.
+        /// </value>
+        public string OriginalFolder { get; set; }
+
+        /// <summary>
         /// Gets or sets the tags.
         /// </summary>
         /// <value>

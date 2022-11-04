@@ -86,5 +86,21 @@ namespace SCS.HomePhotos
         ///   <c>true</c> if indexing on startup; otherwise, <c>false</c>.
         /// </value>
         bool IndexOnStartup { get; set; }
+
+        /// <summary>
+        /// Gets or sets the photo delete action.
+        /// </summary>
+        /// <value>
+        /// The photo delete action.
+        /// </value>
+        DeleteAction PhotoDeleteAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the mobile photo delete action.
+        /// </summary>
+        /// <value>
+        /// The mobile photo delete action.
+        /// </value>
+        DeleteAction MobilePhotoDeleteAction { get; set; }
     }
 }

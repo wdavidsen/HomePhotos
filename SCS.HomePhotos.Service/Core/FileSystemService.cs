@@ -147,6 +147,19 @@ namespace SCS.HomePhotos.Service.Core
         }
 
         /// <summary>
+        /// Deletes the image.
+        /// </summary>
+        /// <param name="baseFolder">The base folder.</param>
+        /// <param name="subfolderName">Name of the subfolder.</param>
+        /// <param name="fileName">Name of the file.</param>
+        public void DeleteImageFile(string baseFolder, string subfolderName, string fileName)
+        {
+            var fullPath = Path.Combine(baseFolder, subfolderName, fileName);
+            _logger.LogInformation("Deleting file: {fullPath}.", fullPath);
+            File.Delete(fullPath);
+        }
+
+        /// <summary>
         /// Moves a file.
         /// </summary>
         /// <param name="sourcePath">The source path.</param>

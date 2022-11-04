@@ -42,6 +42,14 @@ namespace SCS.HomePhotos.Service.Contracts
         void DeleteDirectoryFiles(string cacheFolder, bool recursive = true);
 
         /// <summary>
+        /// Deletes the image.
+        /// </summary>
+        /// <param name="baseFolder">The base folder.</param>
+        /// <param name="subfolderName">Name of the subfolder.</param>
+        /// <param name="fileName">Name of the file.</param>
+        void DeleteImageFile(string baseFolder, string subfolderName, string fileName);
+
+        /// <summary>
         /// Moves the file.
         /// </summary>
         /// <param name="sourcePath">The source path.</param>

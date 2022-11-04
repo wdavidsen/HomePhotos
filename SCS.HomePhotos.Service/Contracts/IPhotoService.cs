@@ -90,6 +90,13 @@ namespace SCS.HomePhotos.Service.Contracts
         Task SavePhoto(Photo photo);
 
         /// <summary>
+        /// Deletes a photo and its image files.
+        /// </summary>
+        /// <param name="photoId">The photo identifier.</param>
+        /// <exception cref="System.InvalidOperationException">Photo id {photoId} was not found.</exception>
+        Task DeletePhoto(int photoId);
+
+        /// <summary>
         /// Associates tags with a photo.
         /// </summary>
         /// <param name="photo">The photo.</param>

@@ -131,6 +131,13 @@
             <param name="pageSize">Size of the page.</param>
             <returns>A list of photos.</returns>
         </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.DeletePhoto(System.Int32)">
+            <summary>
+            Deletes a photo and its files.
+            </summary>
+            <param name="photoId">The photo identifier.</param>
+            <returns>An action task.</returns>
+        </member>
         <member name="T:SCS.HomePhotos.Web.Controllers.SettingsController">
             <summary>Settings services.</summary>
         </member>
