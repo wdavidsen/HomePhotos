@@ -154,7 +154,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="fileName">Name of the file.</param>
         public void DeleteImageFile(string baseFolder, string subfolderName, string fileName)
         {
-            var fullPath = Path.Combine(baseFolder, subfolderName, fileName);
+            var fullPath = Path.Combine(baseFolder, subfolderName.Trim('\\'), fileName);
             _logger.LogInformation("Deleting file: {fullPath}.", fullPath);
             File.Delete(fullPath);
         }

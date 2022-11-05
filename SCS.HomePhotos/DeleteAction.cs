@@ -8,11 +8,11 @@
         /// <summary>
         /// Delete the database record only.
         /// </summary>
-        DeleteRecord = 1,
+        DeleteRecord = 0,
 
         /// <summary>
         /// Delete the database record and the image file.
         /// </summary>
-        DeleteRecordAndFile = 2
+        DeleteRecordAndFile = 1
     }
 }

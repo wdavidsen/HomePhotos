@@ -143,6 +143,8 @@ namespace SCS.HomePhotos.Model
             NextIndexTime = dynamicConfig.NextIndexTime;
             IndexFrequencyHours = dynamicConfig.IndexFrequencyHours;
             IndexOnStartup = dynamicConfig.IndexOnStartup;
+            PhotoDeleteAction = dynamicConfig.PhotoDeleteAction;
+            MobilePhotoDeleteAction = dynamicConfig.MobilePhotoDeleteAction;
         }
     }
 }

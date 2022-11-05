@@ -309,9 +309,12 @@ namespace SCS.HomePhotos.Service.Core
             photo.ImageWidth = imageLayoutInfo.Width;
             photo.ReprocessCache = false;
             photo.MobileUpload = imageFilePath.Contains(_dynamicConfig.MobileUploadsFolder, StringComparison.InvariantCultureIgnoreCase);
-            photo.OriginalFolder = photo.MobileUpload
+            
+            var subPath = photo.MobileUpload
                 ? imageFilePath.Replace(_dynamicConfig.MobileUploadsFolder, string.Empty, StringComparison.InvariantCultureIgnoreCase)
                 : imageFilePath.Replace(_dynamicConfig.IndexPath, string.Empty, StringComparison.InvariantCultureIgnoreCase);
+
+            photo.OriginalFolder = Path.GetDirectoryName(subPath.Trim('\\'));
 
             _photoService.SavePhoto(photo);
 
