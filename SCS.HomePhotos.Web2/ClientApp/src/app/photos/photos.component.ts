@@ -375,7 +375,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
                   next: () => {
                     const index = this.thumbnails.map(t => t.photoId).indexOf(photoId);
                     this.thumbnails.splice(index, 1);
-                    this.toastr.success('Photo delete succeeded');
+                    this.toastr.success('Photo deleted successfully');
                   },
                   error: (e) => {
                     console.error(`Failed to delete photo ${photoId}. ${e.message}`);
@@ -385,7 +385,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
           });           
         }
         sub.unsubscribe();
-      });
+      });2
   }
 
   selectAll() {

@@ -28,6 +28,8 @@ namespace SCS.HomePhotos.Web.Dto
             NextIndexTime = config.NextIndexTime;
             IndexFrequencyHours = config.IndexFrequencyHours;
             ThumbnailSize = config.ThumbnailSize;
+            PhotoDeleteAction = (int)config.PhotoDeleteAction;
+            MobilePhotoDeleteAction = (int)config.MobilePhotoDeleteAction;
         }
 
         /// <summary>
@@ -111,6 +113,24 @@ namespace SCS.HomePhotos.Web.Dto
         public int ThumbnailSize { get; set; }
 
         /// <summary>
+        /// Gets or sets the photo delete action.
+        /// </summary>
+        /// <value>
+        /// The photo delete action.
+        /// </value>
+        [Required]
+        public int PhotoDeleteAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the mobile photo delete action.
+        /// </summary>
+        /// <value>
+        /// The mobile photo delete action.
+        /// </value>
+        [Required]
+        public int MobilePhotoDeleteAction { get; set; }
+
+        /// <summary>
         /// Converts instance to the domain model.
         /// </summary>
         /// <returns>The domain equivalent instance.</returns>
@@ -145,7 +165,9 @@ namespace SCS.HomePhotos.Web.Dto
                 SmallImageSize = SmallImageSize,
                 NextIndexTime = NextIndexTime,
                 IndexFrequencyHours = IndexFrequencyHours,
-                ThumbnailSize = ThumbnailSize
+                ThumbnailSize = ThumbnailSize,
+                PhotoDeleteAction = (DeleteAction)PhotoDeleteAction,
+                MobilePhotoDeleteAction = (DeleteAction)MobilePhotoDeleteAction
             };
         }
     }

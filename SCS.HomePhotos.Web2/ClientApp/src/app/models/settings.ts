@@ -7,4 +7,6 @@ export class Settings {
     smallImageSize?: number;
     largeImageSize?: number;
     thumbnailSize?: number;
+    photoDeleteAction?: number;
+    mobilePhotoDeleteAction?: number;
 }

@@ -70,6 +70,8 @@ namespace SCS.HomePhotos.Web.Controllers
             _dynamicConfig.IndexFrequencyHours = settings.IndexFrequencyHours;
             _dynamicConfig.LargeImageSize = settings.LargeImageSize;
             _dynamicConfig.ThumbnailSize = settings.ThumbnailSize;
+            _dynamicConfig.PhotoDeleteAction = (DeleteAction)settings.PhotoDeleteAction;
+            _dynamicConfig.MobilePhotoDeleteAction = (DeleteAction)settings.MobilePhotoDeleteAction;
 
             return Ok();
         }

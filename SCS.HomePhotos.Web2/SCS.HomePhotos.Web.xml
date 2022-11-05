@@ -600,6 +600,22 @@
             The size of the thumbnail.
             </value>
         </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.PhotoDeleteAction">
+            <summary>
+            Gets or sets the photo delete action.
+            </summary>
+            <value>
+            The photo delete action.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.MobilePhotoDeleteAction">
+            <summary>
+            Gets or sets the mobile photo delete action.
+            </summary>
+            <value>
+            The mobile photo delete action.
+            </value>
+        </member>
         <member name="M:SCS.HomePhotos.Web.Dto.Settings.ToModel">
             <summary>
             Converts instance to the domain model.

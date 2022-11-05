@@ -163,7 +163,9 @@ export class SettingsComponent implements OnInit {
       indexFrequencyHours: [data ? data.indexFrequencyHours : '', Validators.required],
       largeImageSize: [data ? data.largeImageSize : '', Validators.required],
       smallImageSize: [data ? data.smallImageSize : '', Validators.required],
-      thumbnailSize: [data ? data.thumbnailSize : '', Validators.required]});
+      thumbnailSize: [data ? data.thumbnailSize : '', Validators.required],
+      photoDeleteAction: [data ? data.photoDeleteAction : 0],
+      mobilePhotoDeleteAction: [data ? data.mobilePhotoDeleteAction : 1]});
   }
 
   private formToSettings(): Settings {
@@ -177,6 +179,8 @@ export class SettingsComponent implements OnInit {
     settings.smallImageSize = this.f.smallImageSize.value;
     settings.largeImageSize = this.f.largeImageSize.value;
     settings.thumbnailSize = this.f.thumbnailSize.value;
+    settings.photoDeleteAction = this.f.photoDeleteAction.value;
+    settings.mobilePhotoDeleteAction = this.f.mobilePhotoDeleteAction.value;
 
     return settings;
   }

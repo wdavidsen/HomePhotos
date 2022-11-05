@@ -79,6 +79,22 @@
             <div *ngIf="f.largeImageSize.errors.required">Photo large size is required</div>
         </div>
     </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="photoDeleteAction">Photo photo delete action</label>
+            <select class="form-control form-select" aria-label="Default select example" formControlName="photoDeleteAction">
+                <option selected value="0">Delete record only</option>
+                <option value="1">Delete record and all files</option>
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="mobilePhotoDeleteAction">Mobile photo delete action</label>
+            <select class="form-control form-select" aria-label="Default select example" formControlName="mobilePhotoDeleteAction">
+                <option value="0">Delete record only</option>
+                <option selected value="1">Delete record and all files</option>
+            </select>
+        </div>
+    </div>
     <div class="form-group">
         <button [disabled]="loading" class="btn btn-primary">
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>

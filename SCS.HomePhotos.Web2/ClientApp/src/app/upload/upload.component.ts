@@ -74,6 +74,7 @@ export class UploadComponent implements OnInit {
     this.uploader.onCompleteAll = () => {
       this.toastr.info('Upload complete');
     };
+    
   }
 
   fileOverBase(e: any): void {
