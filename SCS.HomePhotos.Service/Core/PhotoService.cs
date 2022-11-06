@@ -219,8 +219,13 @@ namespace SCS.HomePhotos.Service.Core
                     {
                         MobileUpload = photo.MobileUpload,                        
                         OriginalFolder = photo.OriginalFolder,
-                        FileName = photo.FileName
+                        FileName = photo.Name
                     });
+            }
+
+            foreach (var tag in await GetUnusedTags())
+            {
+                await _tagData.DeleteAsync(tag);
             }
         }
 

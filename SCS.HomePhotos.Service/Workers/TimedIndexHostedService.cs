@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Service.Workers;
 
 using System;
@@ -194,11 +196,11 @@ namespace SCS.HomePhotos.Workers
                 // to resume index after crash of power outage
                 _configService.DynamicConfig.IndexOnStartup = true;
 
-                var indexPaths = new string[] {
-                    _configService.DynamicConfig.IndexPath,
-                    _configService.DynamicConfig.MobileUploadsFolder
+                var indexPaths = new IndexPaths {
+                    new IndexPath(_configService.DynamicConfig.IndexPath, false),
+                    new IndexPath(_configService.DynamicConfig.MobileUploadsFolder, true)
                 };
-
+                
                 _indexEvents.IndexStarted?.Invoke();
 
                 ProcessDirectories(indexPaths, _internalCanellationToken, _indexCanellationToken);
@@ -292,7 +294,7 @@ namespace SCS.HomePhotos.Workers
         /// <param name="directoryPaths">The directory paths.</param>
         /// <param name="internalCancellationToken">The internal cancellation token.</param>
         /// <param name="externalCancellationToken">The external cancellation token.</param>
-        private void ProcessDirectories(string[] directoryPaths, CancellationToken internalCancellationToken, CancellationToken externalCancellationToken)
+        private void ProcessDirectories(IndexPaths directoryPaths, CancellationToken internalCancellationToken, CancellationToken externalCancellationToken)
         {
             foreach (var dir in directoryPaths)
             {
@@ -303,96 +305,108 @@ namespace SCS.HomePhotos.Workers
         /// <summary>
         /// Processes the directory.
         /// </summary>
-        /// <param name="directoryPath">The directory path.</param>
+        /// <param name="indexPath">The directory path.</param>
         /// <param name="internalCancellationToken">The internal cancellation token.</param>
         /// <param name="externalCancellationToken">The external cancellation token.</param>
-        private void ProcessDirectory(string directoryPath, CancellationToken internalCancellationToken, CancellationToken externalCancellationToken)
+        private void ProcessDirectory(IndexPath indexPath, CancellationToken internalCancellationToken, CancellationToken externalCancellationToken)
         {
-            _logger.LogInformation("Processing directory {DirectoryPath}.", directoryPath);
+            _logger.LogInformation("Processing directory {indexPath}.", indexPath);
 
             using (var scope = _serviceProvider.CreateScope())
             {
                 var photoService = scope.ServiceProvider.GetRequiredService<IPhotoService>();
                 var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
                 var fileSystemService = scope.ServiceProvider.GetRequiredService<IFileSystemService>();
+                var skipImageData = scope.ServiceProvider.GetRequiredService<ISkipImageData>();
 
                 var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = _configService.StaticConfig.ImageIndexParallelism };
                 var failCount = 0;
 
-                Parallel.ForEach(Directory.GetFiles(directoryPath), parallelOptions, (imageFilePath) =>
+                Parallel.ForEach(Directory.GetFiles(indexPath.FullPath), parallelOptions, (imageFilePath) =>
                 {
-                    if (_allowedExtensions.Contains(Path.GetExtension(imageFilePath).TrimStart('.').ToUpper()))
+                    var subfolder = ImageService.GetOriginalFolder(_configService.DynamicConfig, indexPath.IsMobileUpload, imageFilePath);                    
+                    var skipRecExists = skipImageData.Exists(indexPath.IsMobileUpload, subfolder, Path.GetFileName(imageFilePath)).Result;
+
+                    if (!skipRecExists)
                     {
-                        try
+                        if (_allowedExtensions.Contains(Path.GetExtension(imageFilePath).TrimStart('.').ToUpper()))
                         {
-                            if (fileSystemService.GetFileSize(imageFilePath) <= _configService.StaticConfig.MaxImageFileSizeBytes)
+                            try
                             {
-                                _logger.LogInformation("Processing image file {ImageFilePath}.", imageFilePath);
-
-                                externalCancellationToken.ThrowIfCancellationRequested();
-                                internalCancellationToken.ThrowIfCancellationRequested();
-
-                                var checksum = fileSystemService.GetChecksum(imageFilePath);
-
-                                _logger.LogInformation("Determined file checksum: {Checksum}.", checksum);
-
-                                var existingPhoto = photoService.GetPhotoByChecksum(checksum).Result;
-
-                                if (existingPhoto == null || existingPhoto.ReprocessCache || !CacheFileExists(existingPhoto))
+                                if (fileSystemService.GetFileSize(imageFilePath) <= _configService.StaticConfig.MaxImageFileSizeBytes)
                                 {
-                                    var exifData = _metadataService.GetExifData(imageFilePath);
+                                    _logger.LogInformation("Processing image file {ImageFilePath}.", imageFilePath);
 
-                                    var cacheFilePath = imageService.CreateCachePath(checksum, Path.GetExtension(imageFilePath));
-                                    var fullImagePath = imageService.CreateFullImage(imageFilePath, cacheFilePath);
+                                    externalCancellationToken.ThrowIfCancellationRequested();
+                                    internalCancellationToken.ThrowIfCancellationRequested();
 
-                                    imageService.OrientImage(fullImagePath, exifData);
-                                    var imageLayoutInfo = imageService.GetImageLayoutInfo(fullImagePath);
+                                    var checksum = fileSystemService.GetChecksum(imageFilePath);
 
-                                    var smallImagePath = imageService.CreateSmallImage(fullImagePath, cacheFilePath);
-                                    imageService.CreateThumbnail(smallImagePath, cacheFilePath);
-                                    imageService.SavePhotoAndTags(existingPhoto, imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);
+                                    _logger.LogInformation("Determined file checksum: {Checksum}.", checksum);
+
+                                    var existingPhoto = photoService.GetPhotoByChecksum(checksum).Result;
+
+                                    if (existingPhoto == null || existingPhoto.ReprocessCache || !CacheFileExists(existingPhoto))
+                                    {
+                                        var exifData = _metadataService.GetExifData(imageFilePath);
+
+                                        var cacheFilePath = imageService.CreateCachePath(checksum, Path.GetExtension(imageFilePath));
+                                        var fullImagePath = imageService.CreateFullImage(imageFilePath, cacheFilePath);
+
+                                        imageService.OrientImage(fullImagePath, exifData);
+                                        var imageLayoutInfo = imageService.GetImageLayoutInfo(fullImagePath);
+
+                                        var smallImagePath = imageService.CreateSmallImage(fullImagePath, cacheFilePath);
+                                        imageService.CreateThumbnail(smallImagePath, cacheFilePath);
+                                        imageService.SavePhotoAndTags(existingPhoto, imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);
+                                    }
+                                    else
+                                    {
+                                        _logger.LogInformation("Skipping image file since its checksum already exists in the database.");
+                                    }
                                 }
                                 else
                                 {
-                                    _logger.LogInformation("Skipping image file since its checksum already exists in the database.");
+                                    _logger.LogInformation("Skipping image file since it is greater than {_configService.StaticConfig.MaxImageFileSizeBytes} bytes.",
+                                        _configService.StaticConfig.MaxImageFileSizeBytes);
                                 }
                             }
-                            else
+                            catch (OutOfMemoryException)
                             {
-                                _logger.LogInformation("Skipping image file since it is greater than {MaxImageFileSizeBytes} bytes.", _configService.StaticConfig.MaxImageFileSizeBytes);
+                                throw;
                             }
-                        }
-                        catch (OutOfMemoryException)
-                        {
-                            throw;
-                        }
-                        catch (TaskCanceledException)
-                        {
-                            throw;
-                        }
-                        catch (Exception ex)
-                        {
-                            failCount++;
-                            _logger.LogError(ex, "Photo image index failed for: {imageFilePath}", imageFilePath);
-
-                            if (ex is IOException)
+                            catch (TaskCanceledException)
                             {
-                                if (ex.Message.Contains("MEMORY", StringComparison.InvariantCultureIgnoreCase) || ex.Message.Contains("NO SPACE", StringComparison.InvariantCultureIgnoreCase))
+                                throw;
+                            }
+                            catch (Exception ex)
+                            {
+                                failCount++;
+                                _logger.LogError(ex, "Photo image index failed for: {imageFilePath}", imageFilePath);
+
+                                if (ex is IOException)
+                                {
+                                    if (ex.Message.Contains("MEMORY", StringComparison.InvariantCultureIgnoreCase) || ex.Message.Contains("NO SPACE", StringComparison.InvariantCultureIgnoreCase))
+                                    {
+                                        throw;
+                                    }
+                                }
+                                if (failCount > _configService.StaticConfig.MaxAllowedIndexDirectoryFailures)
                                 {
                                     throw;
                                 }
                             }
-                            if (failCount > _configService.StaticConfig.MaxAllowedIndexDirectoryFailures)
-                            {
-                                throw;
-                            }
                         }
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Skipping image file {imageFilePath}. A skip record exits.", imageFilePath);
                     }
                 });
 
-                foreach (var dirPath in Directory.GetDirectories(directoryPath))
+                foreach (var dirPath in Directory.GetDirectories(indexPath.FullPath))
                 {
-                    ProcessDirectory(dirPath, internalCancellationToken, externalCancellationToken);
+                    ProcessDirectory(new IndexPath(dirPath, indexPath.IsMobileUpload), internalCancellationToken, externalCancellationToken);
                 }
             }
         }

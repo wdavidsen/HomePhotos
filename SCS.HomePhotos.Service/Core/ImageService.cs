@@ -52,6 +52,22 @@ namespace SCS.HomePhotos.Service.Core
         }
 
         /// <summary>
+        /// Gets the original subfolder of an image file, relative to the root folder of the mobile or regular index folder.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="isMobile">if set to <c>true</c> file is a mobile upload.</param>
+        /// <param name="imageFilePath">The image file path.</param>
+        /// <returns>The original subfolder name.</returns>
+        public static string GetOriginalFolder(IDynamicConfig config, bool isMobile, string imageFilePath)
+        {
+            var subPath = isMobile
+                ? imageFilePath.Replace(config.MobileUploadsFolder, string.Empty, StringComparison.InvariantCultureIgnoreCase)
+                : imageFilePath.Replace(config.IndexPath, string.Empty, StringComparison.InvariantCultureIgnoreCase);
+
+            return Path.GetDirectoryName(subPath.Trim('\\'));
+        }
+
+        /// <summary>
         /// Queues the image to be resized for mobile display.
         /// </summary>
         /// <param name="contextUserName">Name of the context user.</param>
@@ -308,13 +324,8 @@ namespace SCS.HomePhotos.Service.Core
             photo.ImageHeight = imageLayoutInfo.Height;
             photo.ImageWidth = imageLayoutInfo.Width;
             photo.ReprocessCache = false;
-            photo.MobileUpload = imageFilePath.Contains(_dynamicConfig.MobileUploadsFolder, StringComparison.InvariantCultureIgnoreCase);
-            
-            var subPath = photo.MobileUpload
-                ? imageFilePath.Replace(_dynamicConfig.MobileUploadsFolder, string.Empty, StringComparison.InvariantCultureIgnoreCase)
-                : imageFilePath.Replace(_dynamicConfig.IndexPath, string.Empty, StringComparison.InvariantCultureIgnoreCase);
-
-            photo.OriginalFolder = Path.GetDirectoryName(subPath.Trim('\\'));
+            photo.MobileUpload = imageFilePath.Contains(_dynamicConfig.MobileUploadsFolder, StringComparison.InvariantCultureIgnoreCase);            
+            photo.OriginalFolder = GetOriginalFolder(_dynamicConfig, photo.MobileUpload, imageFilePath);
 
             _photoService.SavePhoto(photo);
 

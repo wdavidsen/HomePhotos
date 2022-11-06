@@ -22,7 +22,7 @@ namespace SCS.HomePhotos.Model
         /// </summary>
         /// <value>
         ///   <c>true</c> if is a mobile upload; otherwise, <c>false</c>.
-        /// </value>
+        /// </value>       
         public bool MobileUpload{ get; set; }
 
         /// <summary>
