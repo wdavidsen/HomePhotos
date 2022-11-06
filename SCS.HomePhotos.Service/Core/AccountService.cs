@@ -219,15 +219,19 @@ namespace SCS.HomePhotos.Service.Core
         {
             var tokenList = new List<UserToken>();
             var user = await GetUser(userName);
-            var tokens = await _userTokenData.GetUserTokens(user.UserId.Value, true);
 
-            if (tokens != null && tokens.Any())
+            if (user != null)
             {
-                foreach (var token in tokens)
+                var tokens = await _userTokenData.GetUserTokens(user.UserId.Value, true);
+
+                if (tokens != null && tokens.Any())
                 {
-                    if (token.Refresh && token.AgentIdentifier == agentIdentifier && token.Audience == audience && token.Issuer == issuer)
+                    foreach (var token in tokens)
                     {
-                        tokenList.Add(token);
+                        if (token.Refresh && token.AgentIdentifier == agentIdentifier && token.Audience == audience && token.Issuer == issuer)
+                        {
+                            tokenList.Add(token);
+                        }
                     }
                 }
             }
