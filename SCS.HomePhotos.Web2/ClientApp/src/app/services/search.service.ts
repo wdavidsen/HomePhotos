@@ -20,8 +20,9 @@ export class SearchService {
         return this.keywordSub.asObservable();
     }
 
-    setSearchInfo(keywords: SearchInfo) {
-        this.keywordSub.next(keywords);
+    setSearchInfo(searchInfo: SearchInfo) {
+        searchInfo.changingContext = false;
+        this.keywordSub.next(searchInfo);
     }
 
     getHidden(): Observable<any> {
@@ -33,7 +34,7 @@ export class SearchService {
     }
 
     clear() {
-        this.keywordSub.next(null);
+        this.keywordSub.next({changingContext: true});
         this.hiddenSub.next(true);
     }
 }

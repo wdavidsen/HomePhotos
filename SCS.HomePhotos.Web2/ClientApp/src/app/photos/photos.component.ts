@@ -95,7 +95,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
 
     this.searchSubscription = this.searchService.getSearchInfo()
       .subscribe(searchInfo => {
-        if (!this.searchInfo && !searchInfo) {
+        if (searchInfo.changingContext) {
           return;
         }
 

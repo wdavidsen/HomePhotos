@@ -21,7 +21,7 @@ export class PhotosService {
 
     searchPhotos(pageNum: number, searchInfo: SearchInfo) {
         const keywords = searchInfo.keywords ? encodeURIComponent(searchInfo.keywords) : '';
-        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/search?pageNum=${pageNum}&keywords=${keywords}&fromDate=${searchInfo.fromDate}&toDate=${searchInfo.toDate}`);
+        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/search?pageNum=${pageNum}&keywords=${keywords}&fromDate=${searchInfo.fromDate ?? ''}&toDate=${searchInfo.toDate ?? ''}`);
     }
 
     deletePhoto(photoId: number): Observable<void> {

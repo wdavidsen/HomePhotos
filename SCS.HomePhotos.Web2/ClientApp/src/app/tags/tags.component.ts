@@ -106,6 +106,9 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   private loadTags(searchInfo: SearchInfo) {
+    if (searchInfo.changingContext) {
+      return;
+    }
     if (searchInfo.keywords || searchInfo.fromDate || searchInfo.toDate) {
       console.log(`Received search. keywords: ${searchInfo.keywords}; from date: ${searchInfo.fromDate}; to date: ${searchInfo.toDate}`);
       this.tagService.searchTags(searchInfo)

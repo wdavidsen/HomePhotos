@@ -18,7 +18,7 @@ export class TagService {
 
     searchTags(searchInfo: SearchInfo): Observable<Tag[]> {
         const keywords = searchInfo.keywords ? encodeURIComponent(searchInfo.keywords) : '';
-        return this.http.get<Tag[]>(`${environment.apiUrl}/tags/search?keywords=${keywords}&fromDate=${searchInfo.fromDate}&toDate=${searchInfo.toDate}`);
+        return this.http.get<Tag[]>(`${environment.apiUrl}/tags/search?keywords=${keywords}&fromDate=${searchInfo.fromDate ?? ''}&toDate=${searchInfo.toDate ?? ''}`);
     }
 
     addTag(tag: Tag): Observable<Tag> {
