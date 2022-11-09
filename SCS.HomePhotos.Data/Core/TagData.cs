@@ -113,7 +113,7 @@ namespace SCS.HomePhotos.Data.Core
             var groupBy = $"{Environment.NewLine}GROUP BY t.TagName, t.TagId ";
 
             // "exact" match sql for individual words (when more than 1 is provided)
-            var sql = string.Format(mainSql, 2) + ((wordCount > 1) ? where1 : where2);
+            var sql = string.Format(mainSql, 2) + ((wordCount > 1) ? where1 : where2) + where3;
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -159,6 +159,19 @@ namespace SCS.HomePhotos.Data.Core
                 sql += $"{Environment.NewLine}ORDER BY Weight ASC, TagName ASC LIMIT {pageSize} OFFSET {offset}";
             }
 
+            // date taken range if specified
+            if (where3.Length > 0)
+            {
+                var range = dateRange.Value;
+
+                if (range.FromDate > range.ToDate)
+                {
+                    (range.ToDate, range.FromDate) = (range.FromDate, range.ToDate);
+                }
+                dynamicParams.Add("@FromDate", range.FromDate.ToStartOfDay().ToString(Constants.DatabaseDateTimeFormat));
+                dynamicParams.Add("@ToDate", range.ToDate.ToEndOfDay().ToString(Constants.DatabaseDateTimeFormat));
+            }
+
             using (var conn = GetDbConnection())
             {
                 return await conn.QueryAsync<TagStat>(sql, dynamicParams);
@@ -174,18 +187,27 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>A list of matching tags.</returns>
         public async Task<IEnumerable<TagStat>> GetTags(DateRange dateRange, int pageNum = 0, int pageSize = 200)
         {
+            if (dateRange.FromDate > dateRange.ToDate)
+            {
+                (dateRange.ToDate, dateRange.FromDate) = (dateRange.FromDate, dateRange.ToDate);
+            }
+
             var offset = (pageNum - 1) * pageSize;
 
             var sql = $@"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount   
                          FROM Photo p
-                         LEFT JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
-                         LEFT JOIN Tag t ON pt.TagId = t.TagId 
+                         JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
+                         JOIN Tag t ON pt.TagId = t.TagId                          
                          WHERE p.DateTaken BETWEEN @FromDate AND @ToDate 
+                         GROUP BY t.TagId, t.TagName 
                          ORDER BY p.DateTaken DESC LIMIT {pageSize} OFFSET {offset} ";
+
+            var fromDate = dateRange.FromDate.ToStartOfDay().ToString(Constants.DatabaseDateTimeFormat);
+            var toDate = dateRange.ToDate.ToEndOfDay().ToString(Constants.DatabaseDateTimeFormat);
 
             using (var conn = GetDbConnection())
             {
-                return await conn.QueryAsync<TagStat>(sql, new { FromDate = dateRange.FromDate.ToStartOfDay(), ToDate = dateRange.ToDate.ToEndOfDay() });
+                return await conn.QueryAsync<TagStat>(sql, new { FromDate = fromDate, ToDate = toDate });
             }
         }
 

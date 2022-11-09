@@ -96,7 +96,7 @@ namespace SCS.HomePhotos.Data.Core
 
             var where1 = $"{Environment.NewLine}WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
             var where2 = $"{Environment.NewLine}WHERE t.TagName <> '' ";
-            var where3 = dateRange != null ? $"AND (p.DateTaken BETWEEN @FromDate AND @ToDate) " : string.Empty;
+            var where3 = dateRange != null ? $"AND p.DateTaken BETWEEN @FromDate AND @ToDate " : string.Empty;
 
             // "exact" match sql for individual words (when more than 1 is provided)
             var sql = string.Format(mainsql, 2) + ((wordCount > 1) ? where1 : where2) + where3;
