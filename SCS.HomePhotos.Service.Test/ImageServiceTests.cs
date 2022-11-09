@@ -44,6 +44,9 @@ namespace SCS.HomePhotos.Service.Test
             _logger = new Mock<ILogger<ImageService>>();
             _metadataService = new Mock<IImageMetadataService>();
 
+            _dynamicConfig.SetupGet(p => p.MobileUploadsFolder).Returns(@"c:\homephotos\mobileuploads");
+            _dynamicConfig.SetupGet(p => p.IndexPath).Returns(@"c:\homephotos\root");
+
             _backgroundQueue = new BackgroundTaskQueue();
             _imageService = new ImageService(_imageTransformer.Object, _fileSystemService.Object, _photoService.Object, _dynamicConfig.Object, _backgroundQueue,
                 _logger.Object, _metadataService.Object);
@@ -208,7 +211,7 @@ namespace SCS.HomePhotos.Service.Test
             _dynamicConfig.SetupGet(o => o.LargeImageSize).Returns(800);
             _dynamicConfig.SetupGet(o => o.ThumbnailSize).Returns(200);
 
-            _imageTransformer.Setup(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 200))
+            _imageTransformer.Setup(m => m.ResizeImageByGreatestDimension(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                 .Throws<OutOfMemoryException>();
 
             var cachePath = await _imageService.QueueMobileResize("wdavidsen", filePath);
@@ -227,11 +230,8 @@ namespace SCS.HomePhotos.Service.Test
             _photoService.Verify(m => m.GetPhotoByChecksum(checksum),
                 Times.Once);
 
-            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800),
+            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()),
                Times.Once);
-
-            _imageTransformer.Verify(m => m.ResizeImageByGreatestDimension(It.IsAny<string>(), It.IsAny<string>(), 200),
-                Times.Once);
 
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Photo>()),
                 Times.Never);

@@ -20,10 +20,20 @@ namespace SCS.HomePhotos.Data.Contracts
         /// Gets the tags by keyword.
         /// </summary>
         /// <param name="keywords">The search keywords.</param>
+        /// <param name="dateRange">The optional date range.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A list of matching tags.</returns>
-        Task<IEnumerable<TagStat>> GetTags(string keywords, int pageNum = 0, int pageSize = 200);
+        Task<IEnumerable<TagStat>> GetTags(string keywords, DateRange? dateRange = null, int pageNum = 0, int pageSize = 200);
+
+        /// <summary>
+        /// Gets the tags by keyword.
+        /// </summary>
+        /// <param name="dateRange">The date range.</param>
+        /// <param name="pageNum">The page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>A list of matching tags.</returns>
+        Task<IEnumerable<TagStat>> GetTags(DateRange dateRange, int pageNum = 0, int pageSize = 200);
 
         /// <summary>
         /// Gets the tag and photo count.

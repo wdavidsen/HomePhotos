@@ -54,7 +54,7 @@ export class NavMenuComponent implements OnInit {
         this.hideSearch = (hidden !== false);
       });
 
-    this.searchService.getKeywords()
+    this.searchService.getSearchInfo()
       .subscribe(() => {
         this.collapseNav();
       });

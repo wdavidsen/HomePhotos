@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { Photo } from '../models';
+import { Photo, SearchInfo } from '../models';
 
 @Injectable()
 export class PhotosService {
@@ -19,8 +19,9 @@ export class PhotosService {
         return this.http.get<Photo[]>(`${environment.apiUrl}/photos/byTag?pageNum=${pageNum}&tag=${escape(tagName)}`);
     }
 
-    searchPhotos(pageNum: number, keywords: string) {
-        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/search?pageNum=${pageNum}&keywords=${escape(keywords)}`);
+    searchPhotos(pageNum: number, searchInfo: SearchInfo) {
+        const keywords = searchInfo.keywords ? encodeURIComponent(searchInfo.keywords) : '';
+        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/search?pageNum=${pageNum}&keywords=${keywords}&fromDate=${searchInfo.fromDate}&toDate=${searchInfo.toDate}`);
     }
 
     deletePhoto(photoId: number): Observable<void> {

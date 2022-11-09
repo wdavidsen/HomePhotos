@@ -86,27 +86,34 @@ namespace SCS.HomePhotos.Data.Core
         /// Gets the tags by keyword.
         /// </summary>
         /// <param name="keywords">The search keywords.</param>
+        /// <param name="dateRange">The optional date range.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A list of matching tags.</returns>
-        public async Task<IEnumerable<TagStat>> GetTags(string keywords, int pageNum = 0, int pageSize = 200)
+        public async Task<IEnumerable<TagStat>> GetTags(string keywords, DateRange? dateRange = null, int pageNum = 0, int pageSize = 200)
         {
+            if (string.IsNullOrWhiteSpace(keywords))
+            {
+                throw new ArgumentException("Keyword cannot be null or empty.", nameof(keywords));
+            }
+
             var offset = (pageNum - 1) * pageSize;
             var keywordArray = keywords.Split(' ').Select(kw => kw.Replace("'", "")).ToArray();
             var wordCount = keywordArray.Length;
 
-            var _sql = $@"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount, {{0}} as Weight  
+            var mainSql = $@"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount, {{0}} as Weight  
                          FROM Photo p
                          LEFT JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
                          LEFT JOIN Tag t ON pt.TagId = t.TagId ";
 
-            var _where1 = $"{Environment.NewLine}WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
-            var _where2 = $"{Environment.NewLine}WHERE t.TagName <> '' ";
+            var where1 = $"{Environment.NewLine}WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
+            var where2 = $"{Environment.NewLine}WHERE t.TagName <> '' ";
+            var where3 = dateRange != null ? $"AND p.DateTaken BETWEEN @FromDate AND @ToDate " : string.Empty;
 
             var groupBy = $"{Environment.NewLine}GROUP BY t.TagName, t.TagId ";
 
             // "exact" match sql for individual words (when more than 1 is provided)
-            var sql = string.Format(_sql, 2) + ((wordCount > 1) ? _where1 : _where2);
+            var sql = string.Format(mainSql, 2) + ((wordCount > 1) ? where1 : where2);
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -117,7 +124,7 @@ namespace SCS.HomePhotos.Data.Core
             sql += groupBy;
 
             // "starts with" match sql for individual words (when more than 1 is provided)
-            sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(_sql, 3) + ((wordCount > 1) ? _where1 : _where2);
+            sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(mainSql, 3) + ((wordCount > 1) ? where1 : where2) + where3;
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -128,7 +135,7 @@ namespace SCS.HomePhotos.Data.Core
             sql += groupBy;
 
             // "contains" match sql for individual words (when more than 1 is provided)
-            sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(_sql, 4) + ((wordCount > 1) ? _where1 : _where2);
+            sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(mainSql, 4) + ((wordCount > 1) ? where1 : where2) + where3;
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -144,7 +151,7 @@ namespace SCS.HomePhotos.Data.Core
             // "exact" match of full keyword phrase
             if (wordCount > 1)
             {
-                sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(_sql, 1) + _where2;
+                sql += $"{Environment.NewLine}UNION ALL{Environment.NewLine}" + string.Format(mainSql, 1) + where2 + where3;
                 sql += $"AND t.TagName = @Tag{dynamicCount + 1}";
                 dynamicParams.Add($"@Tag{dynamicCount + 1}", keywords);
                 sql += groupBy;
@@ -155,6 +162,30 @@ namespace SCS.HomePhotos.Data.Core
             using (var conn = GetDbConnection())
             {
                 return await conn.QueryAsync<TagStat>(sql, dynamicParams);
+            }
+        }
+
+        /// <summary>
+        /// Gets the tags by keyword.
+        /// </summary>
+        /// <param name="dateRange">The date range.</param>
+        /// <param name="pageNum">The page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>A list of matching tags.</returns>
+        public async Task<IEnumerable<TagStat>> GetTags(DateRange dateRange, int pageNum = 0, int pageSize = 200)
+        {
+            var offset = (pageNum - 1) * pageSize;
+
+            var sql = $@"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount   
+                         FROM Photo p
+                         LEFT JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
+                         LEFT JOIN Tag t ON pt.TagId = t.TagId 
+                         WHERE p.DateTaken BETWEEN @FromDate AND @ToDate 
+                         ORDER BY p.DateTaken DESC LIMIT {pageSize} OFFSET {offset} ";
+
+            using (var conn = GetDbConnection())
+            {
+                return await conn.QueryAsync<TagStat>(sql, new { FromDate = dateRange.FromDate.ToStartOfDay(), ToDate = dateRange.ToDate.ToEndOfDay() });
             }
         }
 

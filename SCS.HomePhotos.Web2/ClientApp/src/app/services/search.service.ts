@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
+import { SearchInfo } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
-    private keywordSub = new Subject<any>();
+    private keywordSub = new Subject<SearchInfo>();
     private hiddenSub = new Subject<any>();
 
     constructor(private router: Router) {
@@ -15,11 +16,11 @@ export class SearchService {
         });
     }
 
-    getKeywords(): Observable<any> {
+    getSearchInfo(): Observable<SearchInfo> {
         return this.keywordSub.asObservable();
     }
 
-    setKeywords(keywords: string) {
+    setSearchInfo(keywords: SearchInfo) {
         this.keywordSub.next(keywords);
     }
 
@@ -32,7 +33,7 @@ export class SearchService {
     }
 
     clear() {
-        this.keywordSub.next('');
+        this.keywordSub.next(null);
         this.hiddenSub.next(true);
     }
 }

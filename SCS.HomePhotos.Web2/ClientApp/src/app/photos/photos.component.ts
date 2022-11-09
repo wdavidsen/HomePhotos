@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { PhotosService } from '../services/photos.service';
-import { Thumbnail, Photo, User } from '../models';
+import { Thumbnail, Photo, User, SearchInfo } from '../models';
 import { map, debounce } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { SearchService, OrganizeService, AuthService, UserSettingsService } from '../services';
@@ -28,7 +28,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
   taggerModalRef: BsModalRef;  
   confirmDeleteModalRef: BsModalRef;
   deleteCheckModalRef: BsModalRef;
-  keywords: string;
+  searchInfo: SearchInfo | null;
 
   private pageNum = 1;
   private mode = 1;
@@ -93,19 +93,19 @@ export class PhotosComponent implements OnInit, OnDestroy {
       this.loadPhotos();
     });
 
-    this.searchSubscription = this.searchService.getKeywords()
-      .subscribe(keywords => {
-        if (!this.keywords && !keywords) {
+    this.searchSubscription = this.searchService.getSearchInfo()
+      .subscribe(searchInfo => {
+        if (!this.searchInfo && !searchInfo) {
           return;
         }
 
-        if (keywords) {
-          console.log(`Received search keywords: ${keywords}`);
-          this.keywords = keywords;
+        if (searchInfo.keywords || searchInfo.fromDate || searchInfo.toDate) {
+          console.log(`Received search. keywords: ${searchInfo.keywords}; from date: ${searchInfo.fromDate}; to date: ${searchInfo.toDate}`);
+          this.searchInfo = searchInfo;
           this.mode = 3;
         }
         else {
-          this.keywords = null;
+          this.searchInfo = null;
           this.mode = 1;
         }
 
@@ -413,7 +413,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
             .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
           break;
         case 3:
-          this.photosService.searchPhotos(this.pageNum, this.keywords)
+          this.photosService.searchPhotos(this.pageNum, this.searchInfo)
             .pipe(map(photos => this.photosToThumbnails(photos)))
             .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
         break;

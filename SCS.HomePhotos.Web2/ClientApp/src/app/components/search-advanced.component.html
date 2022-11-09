@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">Advanced Search</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="keywordsInput">Keywords</label>
+        <input type="text" class="form-control" formControlName="keywords" id="keywordsInput">
+      </div>
+      <div class="form-group">
+        <label for="fromDateInput">Start date</label>
+        <input type="date" class="form-control" formControlName="fromDate" id="fromDateInput">
+      </div>
+      <div class="form-group">
+        <label for="toDateInput">End date</label>
+        <input type="date" class="form-control" formControlName="toDate" id="toDateInput">
+      </div>      
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">Search</button>
+      <button type="button" class="btn btn-light" (click)="bsModalRef.hide()">Cancel</button>
+    </div>
+  </form>
+  

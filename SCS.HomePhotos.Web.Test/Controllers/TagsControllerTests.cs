@@ -63,12 +63,12 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var tags = _fixture.CreateMany<Tag>(10);
             var keywords = "birthday party";
 
-            _photosService.Setup(m => m.GetTagsByKeywords(keywords, 1, 200))
+            _photosService.Setup(m => m.GetTagsByKeywords(keywords, null, 1, 200))
                 .ReturnsAsync(tags);
 
-            var response = await _tagsController.SearchTags(keywords, 1, 200);
+            var response = await _tagsController.SearchTags(keywords, null, null, 1, 200);
 
-            _photosService.Verify(m => m.GetTagsByKeywords(keywords, 1, 200),
+            _photosService.Verify(m => m.GetTagsByKeywords(keywords, null, 1, 200),
                 Times.Once);
 
             Assert.IsType<OkObjectResult>(response);

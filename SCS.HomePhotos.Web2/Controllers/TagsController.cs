@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
+using SCS.HomePhotos.Data;
+using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Models;
 using System;
@@ -20,7 +23,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Initializes a new instance of the <see cref="TagsController" /> class.</summary>
         /// <param name="logger">The logger.</param>
-        /// <param name="photoSevice">The photo sevice.</param>
+        /// <param name="photoSevice">The photo service.</param>
         public TagsController(ILogger<TagsController> logger, IPhotoService photoSevice)
         {
             _logger = logger;
@@ -47,13 +50,39 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Searches the tags.</summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="fromDate">The optional date to start search.</param>
+        /// <param name="toDate">The optional date to end search.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A list of tags.</returns>
         [HttpGet("search", Name = "SearchTags")]
-        public async Task<IActionResult> SearchTags([FromQuery] string keywords, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 200)
+        public async Task<IActionResult> SearchTags([FromQuery] string keywords,
+            [FromQuery] DateTime? fromDate,
+            [FromQuery] DateTime? toDate,
+            [FromQuery] int pageNum = 1,
+            [FromQuery] int pageSize = 200)
         {
-            var tags = await _photoSevice.GetTagsByKeywords(keywords, pageNum, pageSize);
+            var dateRange = null as DateRange?;
+
+            if (fromDate != null || toDate != null)
+            {
+                dateRange = new DateRange(fromDate, toDate);
+            }
+
+            IEnumerable<Tag> tags;
+
+            if (!string.IsNullOrWhiteSpace(keywords))
+            {
+                tags = await _photoSevice.GetTagsByKeywords(keywords, dateRange, pageNum, pageSize);
+            }
+            else if (dateRange != null)
+            {
+                tags = await _photoSevice.GetTagsByDate(dateRange.Value, pageNum, pageSize);
+            }
+            else
+            {
+                return BadRequest();
+            }
 
             var dtos = new List<Dto.Tag>();
 

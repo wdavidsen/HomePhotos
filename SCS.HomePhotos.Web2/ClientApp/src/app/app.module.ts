@@ -16,6 +16,7 @@ import { ModalModule, BsModalRef } from 'ngx-bootstrap/modal';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { AngularCropperjsModule } from 'angular-cropperjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 // local
 import { AppComponent } from './app.component';
@@ -51,6 +52,7 @@ import { AccountComponent } from './account/account.component';
 import { ChangePasswordModalComponent } from './account/change-password-modal.component';
 
 import { routes } from './app.routes';
+import { SearchAdvancedComponent } from './components/search-advanced.component';
 
 @NgModule({
     declarations: [
@@ -88,6 +90,7 @@ import { routes } from './app.routes';
         UserDetailComponent,
         UserSettingsComponent,
         UploadPhotoTaggerComponent,
+        SearchAdvancedComponent,
         // other        
         SecurePipe
     ],
@@ -105,6 +108,7 @@ import { routes } from './app.routes';
         ModalModule.forRoot(),
         AlertModule.forRoot(),
         TypeaheadModule.forRoot(),
+        BsDatepickerModule.forRoot(),
         ToastrModule.forRoot({
             timeOut: 4000,
             positionClass: 'toast-bottom-right',

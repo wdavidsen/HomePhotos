@@ -1,16 +1,22 @@
 ﻿using AutoFixture;
+
 using Microsoft.Extensions.Logging;
+
 using Moq;
+
+using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Service.Workers;
 using SCS.HomePhotos.Workers;
+
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Xunit;
 
 namespace SCS.HomePhotos.Service.Test
@@ -22,6 +28,7 @@ namespace SCS.HomePhotos.Service.Test
         private readonly PhotoService _photoService;
         private readonly Mock<IPhotoData> _photoData;
         private readonly Mock<ITagData> _tagData;
+        private readonly Mock<ISkipImageData> _skipImageData;
         private readonly Mock<ILogger<PhotoService>> _logger;
         private readonly Mock<IFileSystemService> _fileSystemService;
         private readonly Mock<IDynamicConfig> _dynamicCache;
@@ -36,11 +43,12 @@ namespace SCS.HomePhotos.Service.Test
             _photoData = new Mock<IPhotoData>();
             _tagData = new Mock<ITagData>();
             _logger = new Mock<ILogger<PhotoService>>();
+            _skipImageData = new Mock<ISkipImageData>();
             _fileSystemService = new Mock<IFileSystemService>();
             _dynamicCache = new Mock<IDynamicConfig>();
             _backgroundQueue = new BackgroundTaskQueue();
 
-            _photoService = new PhotoService(_photoData.Object, _tagData.Object, _logger.Object, _fileSystemService.Object,
+            _photoService = new PhotoService(_photoData.Object, _tagData.Object, _skipImageData.Object, _logger.Object, _fileSystemService.Object,
                 _dynamicCache.Object, _backgroundQueue);
         }
 
@@ -71,12 +79,12 @@ namespace SCS.HomePhotos.Service.Test
         {
             var photos = _fixture.CreateMany<Photo>(50);
 
-            _photoData.Setup(m => m.GetPhotos(DateTime.MinValue, It.IsAny<DateTime>(), true, 1, 50))
+            _photoData.Setup(m => m.GetPhotos(It.IsAny<DateRange>(), 1, 50))
                 .ReturnsAsync(photos);
 
             var results = await _photoService.GetLatestPhotos(1, 50);
 
-            _photoData.Verify(m => m.GetPhotos(DateTime.MinValue, It.IsAny<DateTime>(), true, 1, 50),
+            _photoData.Verify(m => m.GetPhotos(It.IsAny<DateRange>(), 1, 50),
                 Times.Once);
 
             Assert.Equal(50, results.Count());
@@ -112,12 +120,12 @@ namespace SCS.HomePhotos.Service.Test
             var endDate = DateTime.Now;
             var photos = _fixture.CreateMany<Photo>(50);
 
-            _photoData.Setup(m => m.GetPhotos(startDate, endDate, false, 1, 50))
+            _photoData.Setup(m => m.GetPhotos(It.IsAny<DateRange>(), 1, 50))
                 .ReturnsAsync(photos);
 
-            var results = await _photoService.GetPhotosByDateTaken(startDate, endDate, 1, 50);
+            var results = await _photoService.GetPhotosByDate(new DateRange(startDate, endDate), 1, 50);
 
-            _photoData.Verify(m => m.GetPhotos(startDate, endDate, false, 1, 50),
+            _photoData.Verify(m => m.GetPhotos(It.IsAny<DateRange>(), 1, 50),
                 Times.Once);
 
             Assert.Equal(50, results.Count());

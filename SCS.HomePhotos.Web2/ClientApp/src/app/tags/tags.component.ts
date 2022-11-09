@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TagService, SearchService, OrganizeService, AuthService } from '../services';
-import { TagChip, Tag, User } from '../models';
+import { TagChip, Tag, User, SearchInfo } from '../models';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -46,7 +46,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       .pipe(map(tags => this.tagsToChips(tags)))
       .subscribe((chips => this.tagChips = this.insertIndexDividers(chips)));
 
-    this.searchSubscription = this.searchService.getKeywords()
+    this.searchSubscription = this.searchService.getSearchInfo()
       .subscribe(keywords => {
         if (this.currentUser) {
           this.loadTags(keywords);
@@ -105,10 +105,10 @@ export class TagsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private loadTags(keywords: string) {
-    if (keywords) {
-      console.log(`Received search keywords: ${keywords}`);
-      this.tagService.searchTags(keywords)
+  private loadTags(searchInfo: SearchInfo) {
+    if (searchInfo.keywords || searchInfo.fromDate || searchInfo.toDate) {
+      console.log(`Received search. keywords: ${searchInfo.keywords}; from date: ${searchInfo.fromDate}; to date: ${searchInfo.toDate}`);
+      this.tagService.searchTags(searchInfo)
         .pipe(map(tags => this.tagsToChips(tags)))
         .subscribe((chips => this.tagChips = this.insertIndexDividers(chips)));
     }

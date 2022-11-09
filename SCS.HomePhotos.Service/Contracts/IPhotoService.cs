@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Model;
 
 namespace SCS.HomePhotos.Service.Contracts
@@ -20,13 +22,14 @@ namespace SCS.HomePhotos.Service.Contracts
 
         /// <summary>
         /// Gets the photos by date taken.
-        /// </summary>
-        /// <param name="dateTakenStart">The date taken start.</param>
-        /// <param name="dateTakenEnd">The date taken end.</param>
+        /// </summary>        
+        /// <param name="dateRange">The specified date range.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
-        /// <returns>A paged list of photos.</returns>
-        Task<IEnumerable<Photo>> GetPhotosByDateTaken(DateTime dateTakenStart, DateTime dateTakenEnd, int pageNum = 0, int pageSize = 200);
+        /// <returns>
+        /// A paged list of photos.
+        /// </returns>
+        Task<IEnumerable<Photo>> GetPhotosByDate(DateRange dateRange, int pageNum = 1, int pageSize = 200);
 
         /// <summary>
         /// Gets the photos by tag.
@@ -41,10 +44,11 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Gets the photos by keywords.
         /// </summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="dateRange">Optional date range.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A paged list of photos.</returns>
-        Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, int pageNum = 1, int pageSize = 200);
+        Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, DateRange? dateRange = null, int pageNum = 1, int pageSize = 200);
 
         /// <summary>
         /// Gets the tags.
@@ -131,10 +135,24 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Gets tags by keywords.
         /// </summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="dateRange">The optional date range.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
-        /// <returns>A list of tags.</returns>
-        Task<IEnumerable<Tag>> GetTagsByKeywords(string keywords, int pageNum, int pageSize);
+        /// <returns>
+        /// A list of tags.
+        /// </returns>
+        Task<IEnumerable<Tag>> GetTagsByKeywords(string keywords, DateRange? dateRange, int pageNum, int pageSize);
+
+        /// <summary>
+        /// Gets the tags by via date range.
+        /// </summary>
+        /// <param name="dateRange">The date range.</param>
+        /// <param name="pageNum">The page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>
+        /// A list of tags.
+        /// </returns>
+        Task<IEnumerable<Tag>> GetTagsByDate(DateRange dateRange, int pageNum, int pageSize);
 
         /// <summary>
         /// Gets the tags and photos of provided photo ids.

@@ -13,14 +13,12 @@ namespace SCS.HomePhotos.Data.Contracts
     {
         /// <summary>
         /// Gets a list of photos matching search criteria.
-        /// </summary>
-        /// <param name="dateTakenStart">The date taken start timestamp.</param>
-        /// <param name="dateTakenEnd">The date taken end timestamp.</param>
-        /// <param name="descending">if set to <c>true</c> sort descending; otherwise, sort ascending.</param>
+        /// </summary>        
+        /// <param name="dateRange">The date taken range.</param>        
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        Task<IEnumerable<Photo>> GetPhotos(DateTime dateTakenStart, DateTime dateTakenEnd, bool descending = true, int pageNum = 0, int pageSize = 200);
+        Task<IEnumerable<Photo>> GetPhotos(DateRange dateRange, int pageNum = 1, int pageSize = 200);
 
         /// <summary>
         /// Gets a list of photos by tag.
@@ -35,10 +33,11 @@ namespace SCS.HomePhotos.Data.Contracts
         /// Gets a list of photos by keywords.
         /// </summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="dateRange">The optional date range.</param>
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        Task<IEnumerable<Photo>> GetPhotos(string keywords, int pageNum = 0, int pageSize = 200);
+        Task<IEnumerable<Photo>> GetPhotos(string keywords, DateRange? dateRange = null, int pageNum = 0, int pageSize = 200);
 
         /// <summary>
         /// Gets a list of photos by photo ids.

@@ -1,17 +1,17 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
+
+using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
-using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Workers;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-
-using static System.Net.WebRequestMethods;
 
 namespace SCS.HomePhotos.Service.Core
 {
@@ -75,7 +75,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetLatestPhotos(int pageNum = 1, int pageSize = 200)
         {
-            return await _photoData.GetPhotos(DateTime.MinValue, DateTime.Now, true, pageNum, pageSize);
+            return await _photoData.GetPhotos(new DateRange(DateTime.Now, DateTime.MinValue), pageNum, pageSize);
         }
 
         /// <summary>
@@ -96,35 +96,35 @@ namespace SCS.HomePhotos.Service.Core
         /// Gets the photos by keywords.
         /// </summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="dateRange">Optional date range.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>
         /// A paged list of photos.
         /// </returns>
-        public async Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, int pageNum = 1, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, DateRange? dateRange = null, int pageNum = 1, int pageSize = 200)
         {
-            return await _photoData.GetPhotos(keywords, pageNum, pageSize);
+            return await _photoData.GetPhotos(keywords, dateRange, pageNum, pageSize);
         }
 
         /// <summary>
         /// Gets the photos by date taken.
-        /// </summary>
-        /// <param name="dateTakenStart">The date taken start.</param>
-        /// <param name="dateTakenEnd">The date taken end.</param>
+        /// </summary>        
+        /// <param name="dateRange">The specified date range.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>
         /// A paged list of photos.
         /// </returns>
-        public async Task<IEnumerable<Photo>> GetPhotosByDateTaken(DateTime dateTakenStart, DateTime dateTakenEnd, int pageNum = 1, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotosByDate(DateRange dateRange, int pageNum = 1, int pageSize = 200)
         {
-            return await _photoData.GetPhotos(dateTakenStart, dateTakenEnd, false, pageNum, pageSize);
+            return await _photoData.GetPhotos(dateRange, pageNum, pageSize);
         }
 
         /// <summary>
         /// Gets the tags.
         /// </summary>
-        /// <param name="includPhotoCounts">if set to <c>true</c> includ photo counts for each tag.</param>
+        /// <param name="includPhotoCounts">if set to <c>true</c> include photo counts for each tag.</param>
         /// <returns>A list of tags.</returns>
         public async Task<IEnumerable<Tag>> GetTags(bool includPhotoCounts = false)
         {
@@ -142,14 +142,29 @@ namespace SCS.HomePhotos.Service.Core
         /// Gets tags by keywords.
         /// </summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="dateRange">The optional date range.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>
         /// A list of tags.
         /// </returns>
-        public async Task<IEnumerable<Tag>> GetTagsByKeywords(string keywords, int pageNum, int pageSize)
+        public async Task<IEnumerable<Tag>> GetTagsByKeywords(string keywords, DateRange? dateRange, int pageNum, int pageSize)
         {
-            return await _tagData.GetTags(keywords, pageNum, pageSize);
+            return await _tagData.GetTags(keywords, dateRange, pageNum, pageSize);
+        }
+
+        /// <summary>
+        /// Gets the tags by via date range.
+        /// </summary>
+        /// <param name="dateRange">The date range.</param>
+        /// <param name="pageNum">The page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>
+        /// A list of tags.
+        /// </returns>
+        public async Task<IEnumerable<Tag>> GetTagsByDate(DateRange dateRange, int pageNum, int pageSize)
+        {
+            return await _tagData.GetTags(dateRange, pageNum, pageSize);
         }
 
         /// <summary>
@@ -217,7 +232,7 @@ namespace SCS.HomePhotos.Service.Core
                 await _skipImageData.InsertAsync(
                     new SkipImage
                     {
-                        MobileUpload = photo.MobileUpload,                        
+                        MobileUpload = photo.MobileUpload,
                         OriginalFolder = photo.OriginalFolder,
                         FileName = photo.Name
                     });
@@ -498,7 +513,7 @@ namespace SCS.HomePhotos.Service.Core
         /// Deletes the original photo image.
         /// </summary>
         /// <param name="isMobile">if set to <c>true</c> photo is a mobile upload.</param>
-        /// <param name="subfolderName">Name of the subfolder.</param>
+        /// <param name="subfolderName">Name of the sub-folder.</param>
         /// <param name="fileName">Name of the file.</param>
         private bool DeleteOriginalImage(bool isMobile, string subfolderName, string fileName)
         {
@@ -512,7 +527,7 @@ namespace SCS.HomePhotos.Service.Core
             {
                 _logger.LogError(ex, "Failed to delete original image from file system.");
                 return false;
-            }    
+            }
         }
     }
 }

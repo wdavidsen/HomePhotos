@@ -124,21 +124,21 @@ describe('PhotosComponent', () => {
     const keyword = 'party';
 
     const searchService: SearchService = TestBed.get(SearchService);
-    searchService.setKeywords(keyword);
+    searchService.setSearchInfo({keywords: keyword});
 
     expect(mockPhotoService.searchPhotos).toHaveBeenCalledTimes(1);
-    expect(component.keywords).toBe(keyword);
+    expect(component.searchInfo.keywords).toBe(keyword);
   });
 
   it('should clear search and get latest photos', () => {
     mockPhotoService.getLatest.calls.reset();
     const searchService: SearchService = TestBed.get(SearchService);
 
-    component.keywords = 'party';
-    searchService.setKeywords(null);
+    component.searchInfo = {keywords: 'party'};
+    searchService.setSearchInfo(null);
 
     expect(mockPhotoService.getLatest).toHaveBeenCalledTimes(1);
-    expect(component.keywords).toBeNull();
+    expect(component.searchInfo.keywords).toBeNull();
   });
 
   it('should render thumbnails', () => {

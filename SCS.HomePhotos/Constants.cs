@@ -31,6 +31,11 @@
         public const string RefreshRoute = "/api/auth/refresh";
 
         /// <summary>
+        /// The database date time format.
+        /// </summary>
+        public const string DatabaseDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
+        /// <summary>
         /// The accepted extensions.
         /// </summary>
         public readonly static string[] AcceptedExtensions = new string[] { "JPG", "JPEG", "PNG", "GIF", ".JPG", ".JPEG", ".PNG", ".GIF" };

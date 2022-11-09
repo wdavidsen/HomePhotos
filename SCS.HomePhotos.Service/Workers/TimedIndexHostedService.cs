@@ -15,8 +15,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-using static System.Net.WebRequestMethods;
-
 namespace SCS.HomePhotos.Workers
 {
     /// <summary>
@@ -47,7 +45,7 @@ namespace SCS.HomePhotos.Workers
         /// <param name="services">The services.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="configService">The configuration service.</param>
-        /// <param name="dblogger">The dblogger.</param>
+        /// <param name="dblogger">The db logger.</param>
         /// <param name="indexEvents">The index events.</param>
         /// <param name="metadataService">The metadata service.</param>
         public TimedIndexHostedService(IServiceProvider services, ILogger<TimedIndexHostedService> logger, IConfigService configService,
@@ -412,7 +410,7 @@ namespace SCS.HomePhotos.Workers
         }
 
         /// <summary>
-        /// Determinds whether the cache file exists.
+        /// Determines whether the cache file exists.
         /// </summary>
         /// <param name="existingPhoto">The existing photo.</param>
         /// <returns>A flag whether the cache file exists.</returns>

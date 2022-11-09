@@ -37,7 +37,7 @@ namespace SCS.HomePhotos.Web.Middleware
         }
 
         /// <summary>
-        /// Middleware entry point.
+        /// Middle-ware entry point.
         /// </summary>
         /// <param name="httpContext">The request.</param>
         /// <param name="environment">The hosting environment.</param>

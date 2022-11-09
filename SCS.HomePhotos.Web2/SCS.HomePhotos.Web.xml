@@ -124,9 +124,11 @@
             <param name="pageSize">Size of the page.</param>
             <returns>A list of photos.</returns>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.SearchPhotos(System.String,System.Int32,System.Int32)">
+        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.SearchPhotos(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32)">
             <summary>Searches photos.</summary>
             <param name="keywords">The keywords.</param>
+            <param name="fromDate">The optional date to start search.</param>
+            <param name="toDate">The optional date to end search.</param>
             <param name="pageNum">The page number.</param>
             <param name="pageSize">Size of the page.</param>
             <returns>A list of photos.</returns>
@@ -170,15 +172,17 @@
         <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.TagsController},SCS.HomePhotos.Service.Contracts.IPhotoService)">
             <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.TagsController" /> class.</summary>
             <param name="logger">The logger.</param>
-            <param name="photoSevice">The photo sevice.</param>
+            <param name="photoSevice">The photo service.</param>
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.Get">
             <summary>Gets all tags.</summary>
             <returns>A list of tags.</returns>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.SearchTags(System.String,System.Int32,System.Int32)">
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.SearchTags(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32)">
             <summary>Searches the tags.</summary>
             <param name="keywords">The keywords.</param>
+            <param name="fromDate">The optional date to start search.</param>
+            <param name="toDate">The optional date to end search.</param>
             <param name="pageNum">The page number.</param>
             <param name="pageSize">Size of the page.</param>
             <returns>A list of tags.</returns>
@@ -1145,7 +1149,7 @@
         </member>
         <member name="M:SCS.HomePhotos.Web.Middleware.ExceptionMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>
-            Middleware entry point.
+            Middle-ware entry point.
             </summary>
             <param name="httpContext">The request.</param>
             <param name="environment">The hosting environment.</param>

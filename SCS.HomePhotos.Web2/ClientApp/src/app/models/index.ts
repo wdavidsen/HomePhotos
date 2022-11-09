@@ -14,6 +14,7 @@ export * from './tokens';
 export * from './password-change';
 export  * from './avatar-update';
 export  * from './photoSlide';
+export  * from './search-info';
 
 
 

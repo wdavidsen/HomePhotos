@@ -32,13 +32,13 @@ describe('NavMenuComponent', () => {
 
   beforeEach(async(() => {
     mockToastr = jasmine.createSpyObj(['success', 'error']);
-    mockSearchService = jasmine.createSpyObj(['getHidden', 'getKeywords']);
+    mockSearchService = jasmine.createSpyObj(['getHidden', 'getSearchInfo']);
     mockAuthenticationService = jasmine.createSpyObj(['getCurrentUser', 'logout', 'loadCsrfToken']);
     mockModalService = jasmine.createSpyObj(['show', 'hide']);
     mockRouter = new RouterStub();
 
     mockSearchService.getHidden.and.returnValue(showSearchSubject.asObservable());
-    mockSearchService.getKeywords.and.returnValue(of(null));
+    mockSearchService.getSearchInfo.and.returnValue(of(null));
     mockAuthenticationService.logout.and.returnValue(of(null));
 
     TestBed.configureTestingModule({

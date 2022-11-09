@@ -47,17 +47,24 @@ namespace SCS.HomePhotos.Data.Core
 
         /// <summary>
         /// Gets a list of photos matching search criteria.
-        /// </summary>
-        /// <param name="dateTakenStart">The date taken start timestamp.</param>
-        /// <param name="dateTakenEnd">The date taken end timestamp.</param>
-        /// <param name="descending">if set to <c>true</c> sort descending; otherwise, sort ascending.</param>
+        /// </summary>        
+        /// <param name="dateRange">The date taken range.</param>
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        public async Task<IEnumerable<Photo>> GetPhotos(DateTime dateTakenStart, DateTime dateTakenEnd, bool descending = true, int pageNum = 1, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotos(DateRange dateRange, int pageNum = 1, int pageSize = 200)
         {
-            var where = "WHERE DateTaken >= @DateTakenStart AND DateTaken <= @DateTakenEnd";
-            var parameters = new { DateTakenStart = dateTakenStart.ToStartOfDay(), DateTakenEnd = dateTakenEnd.ToEndOfDay() };
+            var descending = dateRange.FromDate > dateRange.ToDate;
+
+            if (descending)
+            {
+                (dateRange.ToDate, dateRange.FromDate) = (dateRange.FromDate, dateRange.ToDate);
+            }
+
+            var where = "WHERE DateTaken BETWEEN @FromDate AND @ToDate";
+            var fromDate = dateRange.FromDate.ToStartOfDay().ToString(Constants.DatabaseDateTimeFormat);
+            var toDate = dateRange.ToDate.ToEndOfDay().ToString(Constants.DatabaseDateTimeFormat);
+            var parameters = new { FromDate = fromDate, ToDate = toDate };            
             var orderBy = "DateTaken" + (descending ? " DESC" : "");
 
             return await GetListPagedAsync<Photo>(where, parameters, orderBy, pageNum, pageSize);
@@ -67,25 +74,32 @@ namespace SCS.HomePhotos.Data.Core
         /// Gets a list of photos by keywords.
         /// </summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="dateRange">The optional date range.</param>
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        public async Task<IEnumerable<Photo>> GetPhotos(string keywords, int pageNum = 0, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotos(string keywords, DateRange? dateRange = null, int pageNum = 0, int pageSize = 200)
         {
+            if (string.IsNullOrWhiteSpace(keywords))
+            {
+                throw new ArgumentException("Keywords cannot be null or empty.", nameof(keywords));
+            }
+
             var offset = (pageNum - 1) * pageSize;
             var keywordArray = keywords.Split(' ').Select(kw => kw.Replace("'", "")).ToArray();
             var wordCount = keywordArray.Length;
 
-            var _sql = $@"SELECT p.*, {{0}} as Weight  
+            var mainsql = $@"SELECT p.*, {{0}} as Weight  
                          FROM Photo p
                          JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
                          JOIN Tag t ON pt.TagId = t.TagId ";
 
-            var _where1 = $"{Environment.NewLine}WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
-            var _where2 = $"{Environment.NewLine}WHERE t.TagName <> '' ";
+            var where1 = $"{Environment.NewLine}WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
+            var where2 = $"{Environment.NewLine}WHERE t.TagName <> '' ";
+            var where3 = dateRange != null ? ($"AND (p.DateTaken BETWEEN @FromDate AND @ToDate) ") : string.Empty;
 
             // "exact" match sql for individual words (when more than 1 is provided)
-            var sql = string.Format(_sql, 2) + ((wordCount > 1) ? _where1 : _where2);
+            var sql = string.Format(mainsql, 2) + ((wordCount > 1) ? where1 : where2) + where3;
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -95,7 +109,7 @@ namespace SCS.HomePhotos.Data.Core
             }
 
             // "starts with" match sql for individual words (when more than 1 is provided)
-            sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(_sql, 3) + ((wordCount > 1) ? _where1 : _where2);
+            sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(mainsql, 3) + ((wordCount > 1) ? where1 : where2) + where3;
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -105,7 +119,7 @@ namespace SCS.HomePhotos.Data.Core
             }
 
             // "contains" match sql for individual words (when more than 1 is provided)
-            sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(_sql, 4) + ((wordCount > 1) ? _where1 : _where2);
+            sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(mainsql, 4) + ((wordCount > 1) ? where1 : where2) + where3;
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -120,12 +134,25 @@ namespace SCS.HomePhotos.Data.Core
             // "exact" match of full keyword phrase
             if (wordCount > 1)
             {
-                sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(_sql, 1) + _where2;
+                sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(mainsql, 1) + where2 + where3;
                 sql += $"AND t.TagName = @Tag{dynamicCount + 1}";
                 
                 dynamicParams.Add($"@Tag{dynamicCount + 1}", keywords);
 
                 sql += $"{Environment.NewLine}ORDER BY Weight ASC, DateTaken DESC LIMIT {pageSize} OFFSET {offset}";
+            }
+
+            // date taken range if specified
+            if (where3.Length > 0)
+            {
+                var range = dateRange.Value;
+
+                if (range.FromDate > range.ToDate)
+                {
+                    (range.ToDate, range.FromDate) = (range.FromDate, range.ToDate);
+                }
+                dynamicParams.Add("@FromDate", range.FromDate.ToStartOfDay().ToString(Constants.DatabaseDateTimeFormat));
+                dynamicParams.Add("@ToDate", range.ToDate.ToEndOfDay().ToString(Constants.DatabaseDateTimeFormat));
             }
 
             using (var conn = GetDbConnection())

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { Tag, TagState } from '../models';
+import { SearchInfo, Tag, TagState } from '../models';
 import { map } from 'rxjs/operators';
 
 @Injectable()
@@ -16,8 +16,9 @@ export class TagService {
         return this.http.get<Tag[]>(`${environment.apiUrl}/tags`);
     }
 
-    searchTags(keywords: string): Observable<Tag[]> {
-        return this.http.get<Tag[]>(`${environment.apiUrl}/tags/search?keywords=${escape(keywords)}`);
+    searchTags(searchInfo: SearchInfo): Observable<Tag[]> {
+        const keywords = searchInfo.keywords ? encodeURIComponent(searchInfo.keywords) : '';
+        return this.http.get<Tag[]>(`${environment.apiUrl}/tags/search?keywords=${keywords}&fromDate=${searchInfo.fromDate}&toDate=${searchInfo.toDate}`);
     }
 
     addTag(tag: Tag): Observable<Tag> {
