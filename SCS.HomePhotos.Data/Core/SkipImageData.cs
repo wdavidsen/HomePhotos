@@ -26,7 +26,7 @@ namespace SCS.HomePhotos.Data.Core
         /// Test to whether a skip record exits for a particular file path.
         /// </summary>        
         /// <param name="mobileUpload">if set to <c>true</c> file is a mobile upload.</param>
-        /// <param name="originalFolder">The file subfolder.</param>
+        /// <param name="originalFolder">The file sub-folder.</param>
         /// <param name="fileName">Name of the file.</param>
         /// <returns>True if a record for file exists; otherwise, false.</returns>
         public async Task<bool> Exists(bool mobileUpload, string originalFolder, string fileName)

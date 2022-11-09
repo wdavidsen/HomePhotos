@@ -33,7 +33,7 @@ namespace SCS.HomePhotos.Service.Core
         /// Initializes a new instance of the <see cref="ImageService"/> class.
         /// </summary>
         /// <param name="imageResizer">The image resizer.</param>
-        /// <param name="imageinfoProvider">The imageinfo provider.</param>
+        /// <param name="imageinfoProvider">The image info provider.</param>
         /// <param name="photoService">The photo service.</param>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
         /// <param name="queue">The queue.</param>
@@ -52,12 +52,12 @@ namespace SCS.HomePhotos.Service.Core
         }
 
         /// <summary>
-        /// Gets the original subfolder of an image file, relative to the root folder of the mobile or regular index folder.
+        /// Gets the original sub-folder of an image file, relative to the root folder of the mobile or regular index folder.
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <param name="isMobile">if set to <c>true</c> file is a mobile upload.</param>
         /// <param name="imageFilePath">The image file path.</param>
-        /// <returns>The original subfolder name.</returns>
+        /// <returns>The original sub-folder name.</returns>
         public static string GetOriginalFolder(IDynamicConfig config, bool isMobile, string imageFilePath)
         {
             var subPath = isMobile
@@ -231,7 +231,7 @@ namespace SCS.HomePhotos.Service.Core
         /// Orients the image for proper viewing.
         /// </summary>
         /// <param name="imageFilePath">The image file path.</param>
-        /// <param name="exifDataList">The exif data list.</param>
+        /// <param name="exifDataList">The EXIF data list.</param>
         public void OrientImage(string imageFilePath, IEnumerable<ExifDirectoryBase> exifDataList)
         {
             foreach (var exifData in exifDataList)
@@ -276,7 +276,7 @@ namespace SCS.HomePhotos.Service.Core
         /// Creates the thumbnail.
         /// </summary>
         /// <param name="imageFilePath">The image file path.</param>
-        /// <param name="cachPath">The cach path.</param>
+        /// <param name="cachPath">The cache path.</param>
         /// <returns></returns>
         public string CreateThumbnail(string imageFilePath, string cachPath)
         {
@@ -303,7 +303,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="cacheFilePath">The cache file path.</param>
         /// <param name="checksum">The checksum.</param>
         /// <param name="imageLayoutInfo">The image layout information.</param>
-        /// <param name="exifDataList">The exif data list.</param>
+        /// <param name="exifDataList">The EXIF data list.</param>
         /// <param name="tags">The tags.</param>
         /// <returns></returns>
         public Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string cacheFilePath, string checksum,
@@ -348,7 +348,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <summary>
         /// Gets basic image information.
         /// </summary>
-        /// <param name="exifDataList">The exif data list.</param>
+        /// <param name="exifDataList">The EXIF data list.</param>
         /// <returns>
         /// Basic image information.
         /// </returns>

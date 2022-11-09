@@ -210,7 +210,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <summary>
         /// Gets the refresh tokens for a use.
         /// </summary>
-        /// <param name="userName">Usename of the user.</param>
+        /// <param name="userName">Username of the user.</param>
         /// <param name="issuer">The issuer.</param>
         /// <param name="audience">The audience.</param>
         /// <param name="agentIdentifier">The agent identifier.</param>
@@ -424,8 +424,8 @@ namespace SCS.HomePhotos.Service.Core
         /// Gets a user.
         /// </summary>
         /// <param name="userName">Username of the user.</param>
-        /// <param name="throwIfNotExists">if set to <c>true</c>[throw exceptin if not exists.</param>
-        /// <returns></returns>
+        /// <param name="throwIfNotExists">if set to <c>true</c>throw an exception if not exists.</param>
+        /// <returns>A user entity.</returns>
         /// <exception cref="InvalidOperationException">User does not exist: {userName}.</exception>
         protected async Task<User> GetUser(string userName, bool throwIfNotExists = true)
         {

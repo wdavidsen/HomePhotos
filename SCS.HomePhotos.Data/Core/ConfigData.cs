@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace SCS.HomePhotos.Data.Core
 {
     /// <summary>
-    /// The confgiration repository.
+    /// The configuration repository.
     /// </summary>
     /// <seealso cref="SCS.HomePhotos.Data.Core.DataBase" />
     /// <seealso cref="SCS.HomePhotos.Data.Contracts.IConfigData" />

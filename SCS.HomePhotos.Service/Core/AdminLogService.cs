@@ -32,7 +32,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </summary>
         /// <param name="pageInfo">The page information.</param>
         /// <param name="category">The category.</param>
-        /// <param name="serverity">The serverity.</param>
+        /// <param name="serverity">The severity.</param>
         /// <returns></returns>
         public async Task<DataList<LogEntry>> GetLatestLogEntries(PageInfo pageInfo, LogCategory? category, LogSeverity? serverity)
         {
@@ -43,7 +43,7 @@ namespace SCS.HomePhotos.Service.Core
         /// Adds the log entry.
         /// </summary>
         /// <param name="logEntry">The log entry.</param>
-        /// <param name="doNotRepeatTimespan">The do-not-repeat timespan. Will not log entry if the same info was already logged in within the timspan specified.</param>
+        /// <param name="doNotRepeatTimespan">The do-not-repeat timespan. Will not log entry if the same info was already logged in within the timespan specified.</param>
         public async Task AddLogEntry(LogEntry logEntry, TimeSpan doNotRepeatTimespan)
         {
             var lastEntry = await _logData.GetExistingEntry(logEntry.Message, doNotRepeatTimespan);

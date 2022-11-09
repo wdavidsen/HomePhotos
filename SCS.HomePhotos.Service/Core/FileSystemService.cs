@@ -126,7 +126,7 @@ namespace SCS.HomePhotos.Service.Core
         /// Deletes the directory files.
         /// </summary>
         /// <param name="directoryPath">The directory path.</param>
-        /// <param name="recursive">if set to <c>true</c> delete recursivly.</param>
+        /// <param name="recursive">if set to <c>true</c> delete recursively.</param>
         public void DeleteDirectoryFiles(string directoryPath, bool recursive = true)
         {
             try
@@ -150,7 +150,7 @@ namespace SCS.HomePhotos.Service.Core
         /// Deletes the image.
         /// </summary>
         /// <param name="baseFolder">The base folder.</param>
-        /// <param name="subfolderName">Name of the subfolder.</param>
+        /// <param name="subfolderName">Name of the sub-folder.</param>
         /// <param name="fileName">Name of the file.</param>
         public void DeleteImageFile(string baseFolder, string subfolderName, string fileName)
         {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SCS.HomePhotos.Data.Core
 {
     /// <summary>
-    /// Base clase for data objects.
+    /// Base class for data objects.
     /// </summary>
     /// <seealso cref="SCS.HomePhotos.Data.Contracts.IDataBase" />
     public abstract class DataBase : IDataBase

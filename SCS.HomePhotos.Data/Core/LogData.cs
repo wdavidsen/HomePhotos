@@ -25,7 +25,7 @@ namespace SCS.HomePhotos.Data.Core
         /// </summary>
         /// <param name="pageInfo">The page information.</param>
         /// <param name="category">The category.</param>
-        /// <param name="serverity">The serverity.</param>
+        /// <param name="serverity">The severity.</param>
         /// <param name="timestampStart">The timestamp start.</param>
         /// <param name="timestampEnd">The timestamp end.</param>
         /// <returns>A paged list of log entries.</returns>
