@@ -385,7 +385,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
           });           
         }
         sub.unsubscribe();
-      });2
+      });
   }
 
   selectAll() {

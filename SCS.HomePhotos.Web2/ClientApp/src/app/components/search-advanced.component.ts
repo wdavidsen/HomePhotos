@@ -1,9 +1,7 @@
 import { OnInit, Component } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { SearchInfo } from '../models';
-import { SearchService } from '../services';
 
 @Component({
     selector: 'app-search-advanced',
@@ -13,29 +11,41 @@ import { SearchService } from '../services';
 export class SearchAdvancedComponent implements OnInit {    
     searchInfo: SearchInfo;
     searchForm: UntypedFormGroup;
+    clearClicked = false;
+    okClicked = false;
+    closing = false;
     
     constructor(
         private formBuilder: UntypedFormBuilder,
-        public bsModalRef: BsModalRef,
-        private searchService: SearchService,        
-        private toastr: ToastrService) {}
+        public bsModalRef: BsModalRef) {}
 
     ngOnInit() {
-        this.setupForm(this.searchInfo);
+        this.closing = false;
+        this.setupForm(this.searchInfo);        
     }
 
-    clear() {      
+    clear() {    
+        this.closing = true;  
+        this.clearClicked = true;
+        this.okClicked = false;
         this.searchForm.reset();
-        this.onSubmit();
+        this.searchInfo = this.formToSearchInfo();        
+        this.bsModalRef.hide();
     }
 
-    cancel() {        
+    cancel() {  
+        this.closing = true;  
+        this.clearClicked = false;
+        this.okClicked = false;     
         this.bsModalRef.hide();
     }
 
     onSubmit() {
-        this.searchInfo = this.formToSearchInfo();
-        this.searchService.setSearchInfo(this.searchInfo);
+        if (this.closing) return;
+        this.closing = true;  
+        this.okClicked = true;
+        this.clearClicked = false;
+        this.searchInfo = this.formToSearchInfo();        
         this.bsModalRef.hide();
     }
 
