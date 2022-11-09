@@ -24,6 +24,11 @@ export class SearchAdvancedComponent implements OnInit {
         this.setupForm(this.searchInfo);
     }
 
+    clear() {      
+        this.searchForm.reset();
+        this.onSubmit();
+    }
+
     cancel() {        
         this.bsModalRef.hide();
     }

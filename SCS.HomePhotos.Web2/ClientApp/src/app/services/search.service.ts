@@ -11,7 +11,7 @@ export class SearchService {
     constructor(private router: Router) {
         this.router.events.subscribe(event => {
             if (event instanceof NavigationStart) {
-                this.clear();
+                this.reset();
             }
         });
     }
@@ -33,7 +33,7 @@ export class SearchService {
         this.hiddenSub.next(hidden);
     }
 
-    clear() {
+    reset() {
         this.keywordSub.next({changingContext: true});
         this.hiddenSub.next(true);
     }

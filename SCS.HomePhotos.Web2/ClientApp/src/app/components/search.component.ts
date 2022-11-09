@@ -41,10 +41,4 @@ export class SearchComponent implements OnInit, OnDestroy {
         };
         this.advancedModalRef = this.modalService.show(SearchAdvancedComponent, options);
     }
-    
-    reset() {
-        this.keywords = '';
-        this.searchInfo = {};
-        this.searchService.setSearchInfo(this.searchInfo);
-    }
 }
