@@ -315,7 +315,7 @@ namespace SCS.HomePhotos.Workers
                 var photoService = scope.ServiceProvider.GetRequiredService<IPhotoService>();
                 var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
                 var fileSystemService = scope.ServiceProvider.GetRequiredService<IFileSystemService>();
-                var skipImageData = scope.ServiceProvider.GetRequiredService<ISkipImageData>();
+                var skipImageData = scope.ServiceProvider.GetRequiredService<IFileExclusionData>();
 
                 var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = _configService.StaticConfig.ImageIndexParallelism };
                 var failCount = 0;

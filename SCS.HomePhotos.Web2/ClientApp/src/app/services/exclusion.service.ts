@@ -10,14 +10,14 @@ export class ExclusionService {
     constructor(private http: HttpClient) { }
 
     getExclusions(): Observable<FileExclusion[]> {
-        return this.http.get<FileExclusion[]>(`${environment.apiUrl}/file-exclusions`);
+        return this.http.get<FileExclusion[]>(`${environment.apiUrl}/fileExclusion`);
     }
 
     addExclusion(exclusion: FileExclusion): Observable<FileExclusion> {
-        return this.http.post<FileExclusion>(`${environment.apiUrl}/file-exclusions`, exclusion);
+        return this.http.post<FileExclusion>(`${environment.apiUrl}/fileExclusion`, exclusion);
     }
 
-    deleteTag(fileExclusionId: number): Observable<void> {
-        return this.http.delete<void>(`${environment.apiUrl}/file-exclusions/${fileExclusionId}`);
+    deleteExclusion(fileExclusionId: number): Observable<void> {
+        return this.http.delete<void>(`${environment.apiUrl}/fileExclusion/${fileExclusionId}`);
     }
 }

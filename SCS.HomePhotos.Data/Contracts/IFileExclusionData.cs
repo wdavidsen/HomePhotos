@@ -7,7 +7,7 @@ namespace SCS.HomePhotos.Data.Contracts
     /// <summary>
     /// The skip image repository.
     /// </summary>
-    public interface ISkipImageData : IDataBase<FileExclusion>
+    public interface IFileExclusionData : IDataBase<FileExclusion>
     {
         /// <summary>
         /// Test to whether a skip record exits for a particular file path.

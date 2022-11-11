@@ -22,7 +22,7 @@
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.ChangePassword(SCS.HomePhotos.Web.Models.ChangePasswordModel)">
             <summary>Changes a user's password.</summary>
-            <param name="model">The change passeord model.</param>
+            <param name="model">The change password model.</param>
             <returns>A new JWT and refresh token.</returns>
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.UpdateAvatar(SCS.HomePhotos.Web.Models.AvatarModel)">
@@ -68,6 +68,31 @@
             <summary>Refreshes a user's auth token.</summary>
             <param name="model">The refresh model.</param>
             <returns>A JWT and refresh token.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Controllers.FileExclusionController">
+            <summary>File exclusion services.</summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.FileExclusionController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.FileExclusionController},SCS.HomePhotos.Data.Contracts.IFileExclusionData,SCS.HomePhotos.IDynamicConfig)">
+            <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.FileExclusionController" /> class.</summary>
+            <param name="logger">The logger.</param>
+            <param name="fileExclusionData">The photo service.</param>
+            <param name="dynamicConfiguration">The dynamic configuration.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.FileExclusionController.Get">
+            <summary>Gets all file exclusions.</summary>
+            <returns>A list of file exclusions.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.FileExclusionController.Post(SCS.HomePhotos.Web.Dto.FileExclusion)">
+            <summary>Gets a file exclusion by id.</summary>
+            <param name="exclusion">The file exclusion to add.</param>    
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.FileExclusionController.Delete(System.Int32)">
+            <summary>Deletes a file exclusion.</summary>
+            <param name="fileExclusionId">The file exclusion id.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.FileExclusionController.GetSingle(System.Int32)">
+            <summary>Deletes a file exclusion.</summary>
+            <param name="fileExclusionId">The file exclusion id.</param>
         </member>
         <member name="T:SCS.HomePhotos.Web.Controllers.HomePhotosController">
             <summary>Base controller.</summary>
@@ -364,13 +389,14 @@
             Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.FileExclusion"/> class.
             </summary>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Dto.FileExclusion.#ctor(SCS.HomePhotos.Model.FileExclusion)">
+        <member name="M:SCS.HomePhotos.Web.Dto.FileExclusion.#ctor(SCS.HomePhotos.Model.FileExclusion,SCS.HomePhotos.IDynamicConfig)">
             <summary>
             Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.FileExclusion"/> class using the domain model class.
             </summary>
             <param name="fileExclusion">The fileExclusion.</param>
+            <param name="config">The dynamic configuration.</param>
         </member>
-        <member name="P:SCS.HomePhotos.Web.Dto.FileExclusion.ExclusionId">
+        <member name="P:SCS.HomePhotos.Web.Dto.FileExclusion.FileExclusionId">
             <summary>
             Gets or sets the skip image identifier.
             </summary>
@@ -378,34 +404,19 @@
             The skip image identifier.
             </value>        
         </member>
-        <member name="P:SCS.HomePhotos.Web.Dto.FileExclusion.MobileUpload">
+        <member name="P:SCS.HomePhotos.Web.Dto.FileExclusion.FullPath">
             <summary>
-            Gets or sets a value indicating whether image is a mobile upload.
+            Gets or sets the full path to directory or file.
             </summary>
             <value>
-              <c>true</c> if is a mobile upload; otherwise, <c>false</c>.
-            </value>       
-        </member>
-        <member name="P:SCS.HomePhotos.Web.Dto.FileExclusion.Folder">
-            <summary>
-            Gets or sets the folder.
-            </summary>
-            <value>
-            The folder.
+            The full path to directory or file.
             </value>
         </member>
-        <member name="P:SCS.HomePhotos.Web.Dto.FileExclusion.FileName">
-            <summary>
-            Gets or sets the name of the file.
-            </summary>
-            <value>
-            The name of the file.
-            </value>
-        </member>
-        <member name="M:SCS.HomePhotos.Web.Dto.FileExclusion.ToModel">
+        <member name="M:SCS.HomePhotos.Web.Dto.FileExclusion.ToModel(SCS.HomePhotos.IDynamicConfig)">
             <summary>
             Converts instance to the domain model.
             </summary>
+            <param name="config">The dynamic configuration.</param>
             <returns>The domain equivalent instance.</returns>
         </member>
         <member name="T:SCS.HomePhotos.Web.Dto.LogEntry">
@@ -1296,6 +1307,19 @@
             <summary>Gets or sets a value indicating whether to allow indeterminate.</summary>
             <value>
               <c>true</c> if allowing indeterminate; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Models.Avatar">
+            <summary>
+            Represents an avatar;
+            </summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.Avatar.AvatarImage">
+            <summary>
+            Gets or sets the avatar image.
+            </summary>
+            <value>
+            The avatar image.
+            </value>
         </member>
         <member name="T:SCS.HomePhotos.Web.Models.AvatarModel">
             <summary>The avatar model.</summary>

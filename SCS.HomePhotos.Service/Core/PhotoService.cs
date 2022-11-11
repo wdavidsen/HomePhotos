@@ -26,7 +26,7 @@ namespace SCS.HomePhotos.Service.Core
         private readonly IPhotoData _photoData;
         private readonly ITagData _tagData;
         private readonly IPhotoTagData _photoTagData;
-        private readonly ISkipImageData _skipImageData;
+        private readonly IFileExclusionData _skipImageData;
         private readonly IFileSystemService _fileSystemService;
         private readonly IDynamicConfig _dynamicConfig;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
@@ -42,7 +42,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="fileSystemService">The file system service.</param>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
         /// <param name="backgroundTaskQueue">The background task queue.</param>
-        public PhotoService(IPhotoData photoData, ITagData tagData, IPhotoTagData photoTagData, ISkipImageData skipImageData, ILogger<PhotoService> logger, IFileSystemService fileSystemService,
+        public PhotoService(IPhotoData photoData, ITagData tagData, IPhotoTagData photoTagData, IFileExclusionData skipImageData, ILogger<PhotoService> logger, IFileSystemService fileSystemService,
             IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
         {
             _photoData = photoData;

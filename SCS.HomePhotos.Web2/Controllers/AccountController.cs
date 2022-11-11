@@ -50,7 +50,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
-        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemModel))]        
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
@@ -82,7 +82,7 @@ namespace SCS.HomePhotos.Web.Controllers
         }
 
         /// <summary>Changes a user's password.</summary>
-        /// <param name="model">The change passeord model.</param>
+        /// <param name="model">The change password model.</param>
         /// <returns>A new JWT and refresh token.</returns>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -138,7 +138,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Avatar))]
         [HttpPut("updateAvatar")]
         public async Task<IActionResult> UpdateAvatar([FromForm] AvatarModel model)
         {
@@ -198,7 +198,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 throw;
             }
 
-            return Ok(new { avatarImage = newFileName });
+            return Ok(new Avatar { AvatarImage = newFileName });
         }
 
         /// <summary>Gets current user account info.</summary>

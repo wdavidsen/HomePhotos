@@ -30,7 +30,7 @@ namespace SCS.HomePhotos.Service.Test
         private readonly Mock<IPhotoData> _photoData;
         private readonly Mock<ITagData> _tagData;
         private readonly Mock<IPhotoTagData> _photoTagData;
-        private readonly Mock<ISkipImageData> _skipImageData;
+        private readonly Mock<IFileExclusionData> _skipImageData;
         private readonly Mock<ILogger<PhotoService>> _logger;
         private readonly Mock<IFileSystemService> _fileSystemService;
         private readonly Mock<IDynamicConfig> _dynamicCache;
@@ -46,7 +46,7 @@ namespace SCS.HomePhotos.Service.Test
             _tagData = new Mock<ITagData>();
             _photoTagData = new Mock<IPhotoTagData>();
             _logger = new Mock<ILogger<PhotoService>>();
-            _skipImageData = new Mock<ISkipImageData>();
+            _skipImageData = new Mock<IFileExclusionData>();
             _fileSystemService = new Mock<IFileSystemService>();
             _dynamicCache = new Mock<IDynamicConfig>();
             _backgroundQueue = new BackgroundTaskQueue();

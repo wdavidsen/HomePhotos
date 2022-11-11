@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Settings } from '../models';
+import { ToastrService } from 'ngx-toastr';
+import { FileExclusion } from '../models/file-exclusion';
 import { ExclusionService } from '../services/exclusion.service';
-import { SettingsService } from '../services/settings.service';
 
 @Component({
   selector: 'app-exclusions',
@@ -9,68 +9,51 @@ import { SettingsService } from '../services/settings.service';
   styleUrls: ['./exclusions.component.css']
 })
 export class ExclusionsComponent implements OnInit, OnDestroy {
-    folders: Array<string> = [];
+    exclusions: Array<FileExclusion> = [];
     newPath: string = '';
-    private settings: Settings;
-
+    
     constructor(
-        private settingsService: SettingsService,
-        private exclusionService: ExclusionService) {
-
+        private exclusionService: ExclusionService,
+        private toastr: ToastrService) {
     }
 
-  ngOnInit() {
-    this.settingsService.getSettings()
-        .subscribe({
-            next: s => {
-                this.settings = s;
-            }
-        });
-
-    this.folders = [
-        'c:\\homephotos\\index\\folder1',
-        'c:\\homephotos\\index\\folder2\\img-123.jpg'
-    ];
+  ngOnInit() {   
+    this.loadExclusions();
   }
 
-  ngOnDestroy() {
-    
+  ngOnDestroy() {    
+  }
+
+  loadExclusions() {
+    this.exclusionService.getExclusions()
+        .subscribe({
+            next: (exclusions) => this.exclusions = exclusions,
+            error: (e) => { console.error(e); this.toastr.success('Failed to load exclusions'); }
+        });
   }
 
   addExclusion() {
     if (this.newPath) {
-        const newPath = this.newPath.replace('/', '\\');
-        const isMobile = this.isMobilePath(newPath);
-        const isNormal = this.isIndexPath(newPath);
-
-        if (isMobile || isNormal) {
-            const relativePath = this.removeRoot(newPath, isMobile);
-            const fileName = relativePath.substring(relativePath.lastIndexOf('\\'));
-            this.exclusionService.addExclusion({
-                
+        this.exclusionService.addExclusion({fullPath: this.newPath})
+            .subscribe({
+                next: () => { 
+                    this.toastr.success('Exclusion added successfully'); 
+                    this.loadExclusions(); 
+                    this.newPath = '';
+                },
+                error: (e) => { console.error(e); this.toastr.success('Failed to add exclusion'); }
             });
-        }
     }
   }
 
   deleteExclusion(id: number) {
-
-  }
-
-  private isIndexPath(path: string): boolean {
-    return path.toLowerCase().indexOf(this.settings.indexPath.toLocaleLowerCase()) == 0;
-  }
-
-  private isMobilePath(path: string): boolean {
-    return path.toLowerCase().indexOf(this.settings.mobileUploadsFolder.toLocaleLowerCase()) == 0;
-  }
-
-  private removeRoot(path: string, isMobile: boolean): string {
-    if (isMobile) {        
-        return path.substring(this.settings.mobileUploadsFolder.length);
-    }
-    else {
-        return path.substring(this.settings.indexPath.length);
-    }
+    this.exclusionService.deleteExclusion(id)
+        .subscribe({
+            next: () => {
+                this.toastr.success('Deleted exclusion successfully');
+                this.loadExclusions(); 
+            },
+            error: (e) => { console.error(e); this.toastr.error('Failed to delete exclusion'); }
+        });
   }
 }

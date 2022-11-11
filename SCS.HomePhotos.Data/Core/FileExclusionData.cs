@@ -9,7 +9,7 @@ namespace SCS.HomePhotos.Data.Core
     /// <summary>
     /// The skip image repository.
     /// </summary>    
-    public class FileExclusionData : DataBase<FileExclusion>, ISkipImageData
+    public class FileExclusionData : DataBase<FileExclusion>, IFileExclusionData
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FileExclusionData"/> class.

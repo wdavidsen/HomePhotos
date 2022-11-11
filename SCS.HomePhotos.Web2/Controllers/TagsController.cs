@@ -27,6 +27,9 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Gets all tags.</summary>
         /// <returns>A list of tags.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]        
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Dto.Tag>))]
         [HttpGet]
         [Authorize(Policy = "Readers")]
         public async Task<IActionResult> Get()
@@ -50,6 +53,10 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A list of tags.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Dto.Tag>))]
         [HttpGet("search", Name = "SearchTags")]
         public async Task<IActionResult> SearchTags([FromQuery] string keywords,
             [FromQuery] DateTime? fromDate,
@@ -92,6 +99,10 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Merges tags.</summary>
         /// <param name="mergeInfo">The merge information.</param>
         /// <returns>Final merged tag.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
         [Authorize(Policy = "Contributers")]
         [HttpPut("merge", Name = "MergeTags")]
         public async Task<IActionResult> MergeTags([FromBody] TagMergeInfo mergeInfo)
@@ -109,6 +120,10 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Copies a tag.</summary>
         /// <param name="copyInfo">The copy information.</param>
         /// <returns>The new tag.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
         [Authorize(Policy = "Contributers")]
         [HttpPut("copy", Name = "CopyTags")]
         public async Task<IActionResult> CopyTag([FromBody] TagCopyInfo copyInfo)
@@ -126,6 +141,10 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Gets specified photos to tag.</summary>
         /// <param name="photoIds">The photo ids.</param>
         /// <returns>Batch tag info.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BatchSelectTags))]
         [Authorize(Policy = "Contributers")]
         [HttpPost("batchTag", Name = "GetPhotosToTag")]
         public async Task<IActionResult> GetPhotosToTag([FromBody] int[] photoIds)
@@ -142,6 +161,10 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Tags the photos.</summary>
         /// <param name="updateTags">The updated tags.</param>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = "Contributers")]
         [HttpPut("batchTag", Name = "TagPhotos")]
         public async Task<IActionResult> TagPhotos([FromBody] BatchUpdateTags updateTags)
@@ -158,6 +181,10 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Adds a tag.</summary>
         /// <param name="tag">The tag to add.</param>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
         [Authorize(Policy = "Contributers")]
         [HttpPost(Name = "AddTag")]
         public async Task<IActionResult> AddTag([FromBody] Dto.Tag tag)
@@ -182,6 +209,10 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Updates a tag.</summary>
         /// <param name="tag">The tag to update.</param>
         /// <returns>The updated tag.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
         [Authorize(Policy = "Contributers")]
         [HttpPut(Name = "UpdateTag")]
         public async Task<IActionResult> UpdateTag([FromBody] Dto.Tag tag)

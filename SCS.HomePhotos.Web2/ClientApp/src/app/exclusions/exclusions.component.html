@@ -10,8 +10,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let f of folders">
-                <td>{{f}}<i class="fa fa-remove float-right" title="Delete path"></i></td>
+            <tr *ngFor="let e of exclusions">
+                <td>{{e.fullPath}}<i class="fa fa-remove float-right" title="Delete path" (click)="deleteExclusion(e.fileExclusionId)"></i></td>
             </tr>
         </tbody>
     </table>
@@ -23,16 +23,3 @@
         </div>
       </div>
 </section>
-<!-- 
-<nav class="navbar navbar-expand-md navbar-light bg-light fixed-bottom">   
-    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#footerNavbarCollapse">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="footerNavbarCollapse">
-        <div class="navbar-nav">
-            <button type="button" class="btn btn-default navbar-btn" (click)="addExclusion()"><i class="fa fa-plus"></i> New</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="deleteExclusions()"><i class="fa fa-remove"></i> Delete</button>            
-        </div>
-    </div>
-</nav> -->
