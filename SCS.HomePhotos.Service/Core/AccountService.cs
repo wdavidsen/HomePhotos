@@ -298,7 +298,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>A list of users.</returns>
         public async Task<IEnumerable<User>> GetUsers()
         {
-            var users = await _userData.GetListAsync<User>();
+            var users = await _userData.GetListAsync();
 
             return users;
         }
@@ -310,7 +310,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>A list of matching users.</returns>
         public async Task<IEnumerable<User>> GetUsers(RoleType role)
         {
-            var users = await _userData.GetListAsync<User>("WHERE Role = @Role", new { Role = role.ToString() });
+            var users = await _userData.GetListAsync("WHERE Role = @Role", new { Role = role.ToString() });
 
             return users;
         }
@@ -322,7 +322,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>The user entity.</returns>
         public async Task<User> GetUser(int userId)
         {
-            var user = await _userData.GetAsync<User>(userId);
+            var user = await _userData.GetAsync(userId);
 
             return user;
         }
@@ -346,7 +346,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>A void task.</returns>
         public async Task DeleteUser(int userId)
         {
-            var exitingUser = await _userData.GetAsync<User>(userId);
+            var exitingUser = await _userData.GetAsync(userId);
             if (exitingUser == null)
             {
                 throw new InvalidOperationException("User does not exist.");
@@ -394,7 +394,7 @@ namespace SCS.HomePhotos.Service.Core
 
             if (user.UserId > 0)
             {
-                var exitingUser = await _userData.GetAsync<User>(user.UserId.Value);
+                var exitingUser = await _userData.GetAsync(user.UserId.Value);
                 if (exitingUser == null)
                 {
                     throw new InvalidOperationException("User does not exist.");

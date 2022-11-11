@@ -12,9 +12,7 @@ namespace SCS.HomePhotos.Data.Core
     /// <summary>
     /// The log data repository.
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Core.DataBase" />
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.ILogData" />
-    public class LogData : DataBase, ILogData
+    public class LogData : DataBase<LogEntry>, ILogData
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LogData"/> class.
@@ -56,8 +54,8 @@ namespace SCS.HomePhotos.Data.Core
             }
 
             var orderBy = "Timestamp" + (pageInfo.SortDescending ? " DESC" : "");
-            var data = await GetListPagedAsync<LogEntry>(where, parameters, orderBy, pageInfo.PageNum, pageInfo.PageSize);
-            pageInfo.TotalRecords = (int)await GetRecordCount<LogEntry>(where, parameters);
+            var data = await GetListPagedAsync(where, parameters, orderBy, pageInfo.PageNum, pageInfo.PageSize);
+            pageInfo.TotalRecords = (int)await GetRecordCount(where, parameters);
 
             return new DataList<LogEntry>(data, pageInfo);
         }
@@ -68,7 +66,7 @@ namespace SCS.HomePhotos.Data.Core
         /// <param name="olderThanDate">The cutoff date.</param>
         public async Task DeleteLogEntries(DateTime olderThanDate)
         {
-            var oldEntries = await GetListAsync<LogEntry>("WHERE Timestamp < @Timestamp", new { Timestamp = olderThanDate });
+            var oldEntries = await GetListAsync("WHERE Timestamp < @Timestamp", new { Timestamp = olderThanDate });
 
             foreach (var entry in oldEntries)
             {
@@ -87,7 +85,7 @@ namespace SCS.HomePhotos.Data.Core
             var timespanCutoff = DateTime.Now - age;
             var parameters = new { Message = message, TimespanCutoff = timespanCutoff };
 
-            var messages = await GetListPagedAsync<LogEntry>("Message = @Message AND Timespan >= @TimespanCutoff", parameters, "Timespan DESC", 1, 1);
+            var messages = await GetListPagedAsync("Message = @Message AND Timespan >= @TimespanCutoff", parameters, "Timespan DESC", 1, 1);
 
             return messages != null ? messages.FirstOrDefault() : null;
         }

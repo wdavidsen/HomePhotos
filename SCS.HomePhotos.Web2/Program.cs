@@ -120,6 +120,7 @@ Container.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
 // data objects
 Container.AddScoped<IPhotoData, PhotoData>();
 Container.AddScoped<ITagData, TagData>();
+Container.AddScoped<IPhotoTagData, PhotoTagData>();
 Container.AddScoped<IUserData, UserData>();
 Container.AddScoped<IUserTokenData, UserTokenData>();
 Container.AddScoped<ILogData, LogData>();

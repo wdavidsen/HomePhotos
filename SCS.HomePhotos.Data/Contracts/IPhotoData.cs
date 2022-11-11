@@ -8,8 +8,7 @@ namespace SCS.HomePhotos.Data.Contracts
     /// <summary>
     /// The photo repository.
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.IDataBase" />
-    public interface IPhotoData : IDataBase
+    public interface IPhotoData : IDataBase<Photo>
     {
         /// <summary>
         /// Gets a list of photos matching search criteria.

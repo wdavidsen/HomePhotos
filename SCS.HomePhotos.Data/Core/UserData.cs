@@ -9,9 +9,7 @@ namespace SCS.HomePhotos.Data.Core
     /// <summary>
     /// The user repository.
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Core.DataBase" />
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.IUserData" />
-    public class UserData : DataBase, IUserData
+    public class UserData : DataBase<User>, IUserData
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UserData"/> class.
@@ -26,7 +24,7 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>The user entity.</returns>
         public async Task<User> GetUser(string userName)
         {
-            var list = await GetListAsync<User>("WHERE UserName = @UserName", new { UserName = userName });
+            var list = await GetListAsync("WHERE UserName = @UserName", new { UserName = userName });
 
             return list.FirstOrDefault();
         }

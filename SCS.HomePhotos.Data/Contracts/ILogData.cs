@@ -8,15 +8,14 @@ namespace SCS.HomePhotos.Data.Contracts
     /// <summary>
     /// The log data repository
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.IDataBase" />
-    public interface ILogData : IDataBase
+    public interface ILogData : IDataBase<LogEntry>
     {
         /// <summary>
         /// Gets the log entries.
         /// </summary>
         /// <param name="pageInfo">The page information.</param>
         /// <param name="category">The category.</param>
-        /// <param name="serverity">The serverity.</param>
+        /// <param name="serverity">The severity.</param>
         /// <param name="timestampStart">The timestamp start.</param>
         /// <param name="timestampEnd">The timestamp end.</param>
         /// <returns>A paged list of log entries.</returns>

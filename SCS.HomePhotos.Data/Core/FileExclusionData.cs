@@ -8,10 +8,8 @@ namespace SCS.HomePhotos.Data.Core
 {
     /// <summary>
     /// The skip image repository.
-    /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Core.DataBase" />
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.ISkipImageData" />
-    public class FileExclusionData : DataBase, ISkipImageData
+    /// </summary>    
+    public class FileExclusionData : DataBase<FileExclusion>, ISkipImageData
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FileExclusionData"/> class.
@@ -28,7 +26,7 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>True if a record for file exists; otherwise, false.</returns>
         public async Task<bool> Exists(bool mobileUpload, string originalFolder, string fileName)
         {
-            var list = await GetListAsync<FileExclusion>("WHERE MobileUpload = @MobileUpload AND OriginalFolder = @OriginalFolder AND FileName = @FileName",
+            var list = await GetListAsync("WHERE MobileUpload = @MobileUpload AND OriginalFolder = @OriginalFolder AND FileName = @FileName",
                 new { MobileUpload = mobileUpload, OriginalFolder = originalFolder, FileName = fileName });
 
             return list.Any();

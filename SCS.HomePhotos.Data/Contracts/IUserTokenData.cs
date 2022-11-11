@@ -8,8 +8,7 @@ namespace SCS.HomePhotos.Data.Contracts
     /// <summary>
     /// The user token repository.
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.IDataBase" />
-    public interface IUserTokenData : IDataBase
+    public interface IUserTokenData : IDataBase<UserToken>
     {
         /// <summary>
         /// Deletes a user's refresh token.

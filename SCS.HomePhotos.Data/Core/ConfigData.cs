@@ -9,9 +9,7 @@ namespace SCS.HomePhotos.Data.Core
     /// <summary>
     /// The configuration repository.
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Core.DataBase" />
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.IConfigData" />
-    public class ConfigData : DataBase, IConfigData
+    public class ConfigData : DataBase<Config>, IConfigData
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigData"/> class.
@@ -25,7 +23,7 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>The configuration.</returns>
         public async Task<Config> GetConfiguration()
         {
-            var configs = await GetListAsync<Config>();
+            var configs = await GetListAsync();
 
             return configs.LastOrDefault();
         }

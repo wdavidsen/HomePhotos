@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
+using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Workers;
@@ -24,6 +25,7 @@ namespace SCS.HomePhotos.Service.Core
 
         private readonly IPhotoData _photoData;
         private readonly ITagData _tagData;
+        private readonly IPhotoTagData _photoTagData;
         private readonly ISkipImageData _skipImageData;
         private readonly IFileSystemService _fileSystemService;
         private readonly IDynamicConfig _dynamicConfig;
@@ -34,16 +36,18 @@ namespace SCS.HomePhotos.Service.Core
         /// <summary>Initializes a new instance of the <see cref="PhotoService" /> class.</summary>
         /// <param name="photoData">The photo data.</param>
         /// <param name="tagData">The tag data.</param>
+        /// <param name="photoTagData">The photo tag data.</param>
         /// <param name="skipImageData">The skip image data.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="fileSystemService">The file system service.</param>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
         /// <param name="backgroundTaskQueue">The background task queue.</param>
-        public PhotoService(IPhotoData photoData, ITagData tagData, ISkipImageData skipImageData, ILogger<PhotoService> logger, IFileSystemService fileSystemService,
+        public PhotoService(IPhotoData photoData, ITagData tagData, IPhotoTagData photoTagData, ISkipImageData skipImageData, ILogger<PhotoService> logger, IFileSystemService fileSystemService,
             IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
         {
             _photoData = photoData;
             _tagData = tagData;
+            _photoTagData = photoTagData;
             _skipImageData = skipImageData;
             _logger = logger;
             _fileSystemService = fileSystemService;
@@ -60,7 +64,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<Photo> GetPhotoByChecksum(string checksum)
         {
-            var existing = await _photoData.GetListAsync<Photo>("WHERE Checksum = @Checksum", new { Checksum = checksum });
+            var existing = await _photoData.GetListAsync("WHERE Checksum = @Checksum", new { Checksum = checksum });
 
             return existing.FirstOrDefault();
         }
@@ -184,7 +188,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <exception cref="System.InvalidOperationException">Tag id {tagId} was not found.</exception>
         public async Task DeleteTag(int tagId)
         {
-            var tag = await _tagData.GetAsync<Tag>(tagId);
+            var tag = await _tagData.GetAsync(tagId);
 
             if (tag == null)
             {
@@ -200,7 +204,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <exception cref="System.InvalidOperationException">Photo id {photoId} was not found.</exception>
         public async Task DeletePhoto(int photoId)
         {
-            var photo = await _photoData.GetAsync<Photo>(photoId);
+            var photo = await _photoData.GetAsync(photoId);
 
             if (photo == null)
             {
@@ -324,7 +328,7 @@ namespace SCS.HomePhotos.Service.Core
                 if (noise.Any(w => w.ToUpper() == tagName.ToUpper())) continue;
 
                 var tag = await GetTag(tagName, true);
-                await _tagData.AssociatePhotoTag(photo.PhotoId.Value, tag.TagId.Value);
+                await _photoTagData.AssociatePhotoTag(photo.PhotoId.Value, tag.TagId.Value);
             }
         }
 
@@ -343,10 +347,10 @@ namespace SCS.HomePhotos.Service.Core
 
             foreach (var tagId in targetTagIds)
             {
-                foreach (var assoc in await _tagData.GetPhotoTagAssociations(tagId))
+                foreach (var assoc in await _photoTagData.GetPhotoTagAssociations(tagId))
                 {
-                    await _tagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);
-                    var tag = await _tagData.GetAsync<Tag>(tagId);
+                    await _photoTagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);
+                    var tag = await _tagData.GetAsync(tagId);
 
                     if (!tag.TagName.Equals(newTagName, StringComparison.CurrentCultureIgnoreCase))
                     {
@@ -373,9 +377,9 @@ namespace SCS.HomePhotos.Service.Core
         {
             var newTag = await GetTag(newTagName, true);
 
-            foreach (var assoc in await _tagData.GetPhotoTagAssociations(sourceTagId.Value))
+            foreach (var assoc in await _photoTagData.GetPhotoTagAssociations(sourceTagId.Value))
             {
-                await _tagData.AssociatePhotoTag(assoc.PhotoId, newTag.TagId.Value);
+                await _photoTagData.AssociatePhotoTag(assoc.PhotoId, newTag.TagId.Value);
             }
 
             return newTag;
@@ -414,7 +418,7 @@ namespace SCS.HomePhotos.Service.Core
                         if (tag != null)
                         {
                             photo.Tags.Add(tag);
-                            await _tagData.AssociatePhotoTag(photo.PhotoId.Value, tag.TagId.Value);
+                            await _photoTagData.AssociatePhotoTag(photo.PhotoId.Value, tag.TagId.Value);
                         }
                     }
                 }
@@ -423,12 +427,12 @@ namespace SCS.HomePhotos.Service.Core
                 {
                     if (photo.Tags.Any(t => t.TagId == removeTagId))
                     {
-                        var tag = await _tagData.GetAsync<Tag>(removeTagId);
+                        var tag = await _tagData.GetAsync(removeTagId);
 
                         if (tag != null)
                         {
                             photo.Tags.Remove(tag);
-                            await _tagData.DissociatePhotoTag(photo.PhotoId.Value, tag.TagId.Value);
+                            await _photoTagData.DissociatePhotoTag(photo.PhotoId.Value, tag.TagId.Value);
                         }
                     }
                 }

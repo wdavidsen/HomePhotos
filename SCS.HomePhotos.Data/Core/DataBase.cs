@@ -15,13 +15,13 @@ namespace SCS.HomePhotos.Data.Core
     /// <summary>
     /// Base class for data objects.
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.IDataBase" />
-    public abstract class DataBase : IDataBase
+    /// <typeparam name="T"></typeparam>    
+    public abstract class DataBase<T> : IDataBase<T> where T : class
     {
         private readonly IStaticConfig _staticConfig;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataBase"/> class.
+        /// Initializes a new instance of the <see cref="DataBase{T}"/> class.
         /// </summary>
         /// <param name="staticConfig">The static configuration.</param>
         public DataBase(IStaticConfig staticConfig)
@@ -49,10 +49,9 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Inserts an entity.
         /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>
         /// <param name="entity">The entity.</param>
         /// <returns>The entity Id.</returns>
-        public virtual async Task<int?> InsertAsync<T>(T entity)
+        public virtual async Task<int?> InsertAsync(T entity)
         {
             using (var connection = GetDbConnection())
             {
@@ -63,10 +62,9 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Inserts an entity.
         /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>
         /// <param name="entity">The entity.</param>
         /// <returns>The entity Id.</returns>
-        public virtual int? Insert<T>(T entity)
+        public virtual int? Insert(T entity)
         {
             using (var connection = GetDbConnection())
             {
@@ -76,11 +74,10 @@ namespace SCS.HomePhotos.Data.Core
 
         /// <summary>
         /// Updates an entity.
-        /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>
+        /// </summary>        
         /// <param name="entity">The entity.</param>
         /// <returns>The number of affected records.</returns>
-        public virtual async Task<int?> UpdateAsync<T>(T entity)
+        public virtual async Task<int?> UpdateAsync(T entity)
         {
             using (var connection = GetDbConnection())
             {
@@ -90,11 +87,10 @@ namespace SCS.HomePhotos.Data.Core
 
         /// <summary>
         /// Gets an entity.
-        /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>
+        /// </summary>        
         /// <param name="id">The entity id.</param>
         /// <returns>The matching entity.</returns>
-        public virtual async Task<T> GetAsync<T>(int id)
+        public virtual async Task<T> GetAsync(int id)
         {
             using (var connection = GetDbConnection())
             {
@@ -105,11 +101,10 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Gets a list of entities.
         /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The where clause parameters.</param>
         /// <returns>The list matching entities.</returns>
-        public virtual async Task<IEnumerable<T>> GetListAsync<T>(string whereClause, object parameters)
+        public virtual async Task<IEnumerable<T>> GetListAsync(string whereClause, object parameters)
         {
             using (var connection = GetDbConnection())
             {
@@ -119,10 +114,9 @@ namespace SCS.HomePhotos.Data.Core
 
         /// <summary>
         /// Gets a list of all entities.
-        /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>        
+        /// </summary>        
         /// <returns>The list of all entities.</returns>
-        public virtual async Task<IEnumerable<T>> GetListAsync<T>()
+        public virtual async Task<IEnumerable<T>> GetListAsync()
         {
             using (var connection = GetDbConnection())
             {
@@ -133,14 +127,13 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Gets a paged list of entities.
         /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The where clause parameters.</param>
         /// <param name="orderBy">The order by field.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>The list matching entities.</returns>
-        public virtual async Task<IEnumerable<T>> GetListPagedAsync<T>(string whereClause, object parameters, string orderBy, int pageNum, int pageSize)
+        public virtual async Task<IEnumerable<T>> GetListPagedAsync(string whereClause, object parameters, string orderBy, int pageNum, int pageSize)
         {
             using (var connection = GetDbConnection())
             {
@@ -150,11 +143,10 @@ namespace SCS.HomePhotos.Data.Core
 
         /// <summary>
         /// Deletes an entity.
-        /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>
+        /// </summary>        
         /// <param name="entity">The entity to delete.</param>
         /// <returns>The number of records affected.</returns>
-        public virtual async Task<int?> DeleteAsync<T>(T entity)
+        public virtual async Task<int?> DeleteAsync(T entity)
         {
             using (var connection = GetDbConnection())
             {
@@ -164,11 +156,10 @@ namespace SCS.HomePhotos.Data.Core
 
         /// <summary>
         /// Deletes an entity.
-        /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>
+        /// </summary>        
         /// <param name="id">The entity id to delete.</param>
         /// <returns>The number of records affected.</returns>
-        public virtual async Task<int?> DeleteAsync<T>(int id)
+        public virtual async Task<int?> DeleteAsync(int id)
         {
             using (var connection = GetDbConnection())
             {
@@ -178,16 +169,15 @@ namespace SCS.HomePhotos.Data.Core
 
         /// <summary>
         /// Gets the record count.
-        /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>
+        /// </summary>        
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The where clause parameters.</param>
         /// <returns>The total record count.</returns>
-        public virtual async Task<long> GetRecordCount<T>(string whereClause, object parameters)
+        public virtual async Task<long> GetRecordCount(string whereClause, object parameters)
         {
             using (var connection = GetDbConnection())
             {
-                var tableName = GetTableName<T>();
+                var tableName = GetTableName();
                 var sql = $"SELECT COUNT(*) FROM {tableName} {whereClause}";
 
                 var result = await connection.ExecuteScalarAsync(sql, parameters);
@@ -197,10 +187,9 @@ namespace SCS.HomePhotos.Data.Core
 
         /// <summary>
         /// Gets the name of an entity's table.
-        /// </summary>
-        /// <typeparam name="T">The entity type.</typeparam>
+        /// </summary>        
         /// <returns>The table name.</returns>
-        public static string GetTableName<T>()
+        public static string GetTableName()
         {
             var tableAttribute = (TableAttribute)Attribute.GetCustomAttribute(typeof(T), typeof(TableAttribute));
             return tableAttribute.Name;

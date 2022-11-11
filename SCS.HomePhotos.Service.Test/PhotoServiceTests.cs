@@ -6,6 +6,7 @@ using Moq;
 
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
+using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Core;
@@ -28,6 +29,7 @@ namespace SCS.HomePhotos.Service.Test
         private readonly PhotoService _photoService;
         private readonly Mock<IPhotoData> _photoData;
         private readonly Mock<ITagData> _tagData;
+        private readonly Mock<IPhotoTagData> _photoTagData;
         private readonly Mock<ISkipImageData> _skipImageData;
         private readonly Mock<ILogger<PhotoService>> _logger;
         private readonly Mock<IFileSystemService> _fileSystemService;
@@ -42,13 +44,14 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoData = new Mock<IPhotoData>();
             _tagData = new Mock<ITagData>();
+            _photoTagData = new Mock<IPhotoTagData>();
             _logger = new Mock<ILogger<PhotoService>>();
             _skipImageData = new Mock<ISkipImageData>();
             _fileSystemService = new Mock<IFileSystemService>();
             _dynamicCache = new Mock<IDynamicConfig>();
             _backgroundQueue = new BackgroundTaskQueue();
 
-            _photoService = new PhotoService(_photoData.Object, _tagData.Object, _skipImageData.Object, _logger.Object, _fileSystemService.Object,
+            _photoService = new PhotoService(_photoData.Object, _tagData.Object, _photoTagData.Object, _skipImageData.Object, _logger.Object, _fileSystemService.Object,
                 _dynamicCache.Object, _backgroundQueue);
         }
 
@@ -58,7 +61,7 @@ namespace SCS.HomePhotos.Service.Test
             var photos = _fixture.CreateMany<Photo>(1);
             var checksum = _fixture.Create<string>();
 
-            _photoData.Setup(m => m.GetListAsync<Photo>(It.IsAny<string>(), It.IsAny<object>()))
+            _photoData.Setup(m => m.GetListAsync(It.IsAny<string>(), It.IsAny<object>()))
                 .ReturnsAsync(photos)
                 .Callback<string, object>((where, p) =>
                 {
@@ -68,7 +71,7 @@ namespace SCS.HomePhotos.Service.Test
 
             var result = await _photoService.GetPhotoByChecksum(checksum);
 
-            _photoData.Verify(m => m.GetListAsync<Photo>(It.IsAny<string>(), It.IsAny<object>()),
+            _photoData.Verify(m => m.GetListAsync(It.IsAny<string>(), It.IsAny<object>()),
                 Times.Once);
 
             Assert.Equal(photos.First(), result);
@@ -212,14 +215,14 @@ namespace SCS.HomePhotos.Service.Test
 
             var tags = _fixture.CreateMany<Tag>(3);
 
-            _tagData.Setup(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()));
+            _photoTagData.Setup(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()));
 
             _tagData.Setup(m => m.SaveTag(It.IsAny<Tag>()))
                 .ReturnsAsync(tag);
 
             await _photoService.AssociateTags(photo, tags.Select(t => t.TagName).ToArray());
 
-            _tagData.Verify(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()),
+            _photoTagData.Verify(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()),
                 Times.Exactly(3));
         }
 

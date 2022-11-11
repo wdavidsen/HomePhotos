@@ -6,8 +6,7 @@ namespace SCS.HomePhotos.Data.Contracts
     /// <summary>
     /// The user repository.
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.IDataBase" />
-    public interface IUserData : IDataBase
+    public interface IUserData : IDataBase<User>
     {
         /// <summary>
         /// Gets a user by username.

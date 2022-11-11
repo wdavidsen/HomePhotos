@@ -1,4 +1,5 @@
-﻿using SCS.HomePhotos.Model;
+﻿using SCS.HomePhotos.Data.Core;
+using SCS.HomePhotos.Model;
 
 using System.Threading.Tasks;
 
@@ -6,9 +7,8 @@ namespace SCS.HomePhotos.Data.Contracts
 {
     /// <summary>
     /// The configuration repository.
-    /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.IDataBase" />
-    public interface IConfigData : IDataBase
+    /// </summary>    
+    public interface IConfigData : IDataBase<Config>
     {
         /// <summary>
         /// Gets the configuration.

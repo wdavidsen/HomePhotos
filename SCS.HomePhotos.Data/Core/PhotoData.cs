@@ -12,10 +12,8 @@ namespace SCS.HomePhotos.Data.Core
 {
     /// <summary>
     /// The photo repository.
-    /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Core.DataBase" />
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.IPhotoData" />
-    public class PhotoData : DataBase, IPhotoData
+    /// </summary>    
+    public class PhotoData : DataBase<Photo>, IPhotoData
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PhotoData"/> class.
@@ -69,7 +67,7 @@ namespace SCS.HomePhotos.Data.Core
             var parameters = new { FromDate = fromDate, ToDate = toDate };
             var orderBy = "DateTaken" + (descending ? " DESC" : "");
 
-            return await GetListPagedAsync<Photo>(where, parameters, orderBy, pageNum, pageSize);
+            return await GetListPagedAsync(where, parameters, orderBy, pageNum, pageSize);
         }
 
         /// <summary>

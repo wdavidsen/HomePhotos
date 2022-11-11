@@ -13,9 +13,7 @@ namespace SCS.HomePhotos.Data.Core
     /// <summary>
     /// The tag repository.
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Data.Core.DataBase" />
-    /// <seealso cref="SCS.HomePhotos.Data.Contracts.ITagData" />
-    public class TagData : DataBase, ITagData
+    public class TagData : DataBase<Tag>, ITagData
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TagData"/> class.
@@ -29,7 +27,7 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>A list of all tags.</returns>
         public async Task<IEnumerable<Tag>> GetTags()
         {
-            return await GetListPagedAsync<Tag>("", new object(), "TagName ASC", 1, int.MaxValue);
+            return await GetListPagedAsync("", new object(), "TagName ASC", 1, int.MaxValue);
         }
 
         /// <summary>
@@ -39,7 +37,7 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>The matching tag.</returns>
         public async Task<Tag> GetTag(string tagName)
         {
-            var list = await GetListAsync<Tag>("WHERE TagName = @TagName", new { TagName = tagName });
+            var list = await GetListAsync("WHERE TagName = @TagName", new { TagName = tagName });
 
             if (list.Any())
             {
@@ -226,7 +224,7 @@ namespace SCS.HomePhotos.Data.Core
             }
             else
             {
-                var existingTag = await GetAsync<Tag>(tag.TagId.Value);
+                var existingTag = await GetAsync(tag.TagId.Value);
 
                 if (existingTag == null)
                 {
@@ -237,89 +235,6 @@ namespace SCS.HomePhotos.Data.Core
             }
 
             return tag;
-        }
-
-        /// <summary>
-        /// Gets the photos-tag associations for a tag id.
-        /// </summary>
-        /// <param name="tagId">The tag identifier.</param>
-        /// <returns>A list of photo-tags.</returns>
-        public async Task<IEnumerable<PhotoTag>> GetPhotoTagAssociations(int tagId)
-        {
-            return await GetListAsync<PhotoTag>("WHERE TagId = @TagId", new { TagId = tagId });
-        }
-
-        /// <summary>
-        /// Gets the photos-tag associations for a photo id and tag id.
-        /// </summary>
-        /// <param name="photoId">The photo identifier.</param>
-        /// <param name="tagId">The tag identifier.</param>
-        /// <returns>A list of photo-tags.</returns>
-        public async Task<IEnumerable<PhotoTag>> GetPhotoTagAssociations(int photoId, int tagId)
-        {
-            return await GetListAsync<PhotoTag>("WHERE PhotoId = @PhotoId AND TagId = @TagId", new { PhotoId = photoId, TagId = tagId });
-        }
-
-        /// <summary>
-        /// Associates a photo with a tag.
-        /// </summary>
-        /// <param name="photoId">The photo identifier.</param>
-        /// <param name="tagId">The tag identifier.</param>
-        /// <returns>A new photo-tag entity.</returns>
-        public async Task<PhotoTag> AssociatePhotoTag(int photoId, int tagId)
-        {
-            var existingTags = await GetPhotoTagAssociations(photoId, tagId);
-
-            if (existingTags.Any())
-            {
-                return existingTags.First();
-            }
-
-            var photoTag = new PhotoTag
-            {
-                PhotoId = photoId,
-                TagId = tagId
-            };
-            await InsertAsync(photoTag);
-            return photoTag;
-        }
-
-        /// <summary>
-        /// Changes a photo tag association.
-        /// </summary>
-        /// <param name="photoId">The photo identifier.</param>
-        /// <param name="existingTagId">The existing tag identifier.</param>
-        /// <param name="newTagId">The new tag identifier.</param>
-        /// <returns>A new photo-tag entity.</returns>
-        public async Task<PhotoTag> AssociatePhotoTag(int photoId, int existingTagId, int newTagId)
-        {
-            var existingTag = await GetListAsync<PhotoTag>("WHERE PhotoId = @PhotoId AND TagId = @TagId", new { PhotoId = photoId, TagId = existingTagId });
-
-            if (!existingTag.Any())
-            {
-                throw new InvalidOperationException($"{nameof(existingTagId)} not found.");
-            }
-
-            var photoTag = existingTag.First();
-            photoTag.TagId = newTagId;
-            await UpdateAsync(photoTag);
-
-            return photoTag;
-        }
-        /// <summary>
-        /// Dissociates a photo from a tag.
-        /// </summary>
-        /// <param name="photoId">The photo identifier.</param>
-        /// <param name="tagId">The tag identifier.</param>
-        /// <returns>A void task.</returns>
-        public async Task DissociatePhotoTag(int photoId, int tagId)
-        {
-            var existingTags = await GetPhotoTagAssociations(photoId, tagId);
-
-            foreach (var photoTag in existingTags)
-            {
-                await DeleteAsync(photoTag);
-            }
         }
 
         /// <summary>

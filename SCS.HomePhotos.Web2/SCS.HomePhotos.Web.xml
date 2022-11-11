@@ -354,6 +354,60 @@
             </summary>
             <returns>The domain equivalent instance.</returns>
         </member>
+        <member name="T:SCS.HomePhotos.Web.Dto.FileExclusion">
+            <summary>
+            Tab DTO.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.FileExclusion.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.FileExclusion"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.FileExclusion.#ctor(SCS.HomePhotos.Model.FileExclusion)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.FileExclusion"/> class using the domain model class.
+            </summary>
+            <param name="fileExclusion">The fileExclusion.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.FileExclusion.ExclusionId">
+            <summary>
+            Gets or sets the skip image identifier.
+            </summary>
+            <value>
+            The skip image identifier.
+            </value>        
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.FileExclusion.MobileUpload">
+            <summary>
+            Gets or sets a value indicating whether image is a mobile upload.
+            </summary>
+            <value>
+              <c>true</c> if is a mobile upload; otherwise, <c>false</c>.
+            </value>       
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.FileExclusion.Folder">
+            <summary>
+            Gets or sets the folder.
+            </summary>
+            <value>
+            The folder.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.FileExclusion.FileName">
+            <summary>
+            Gets or sets the name of the file.
+            </summary>
+            <value>
+            The name of the file.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.FileExclusion.ToModel">
+            <summary>
+            Converts instance to the domain model.
+            </summary>
+            <returns>The domain equivalent instance.</returns>
+        </member>
         <member name="T:SCS.HomePhotos.Web.Dto.LogEntry">
             <summary>
             The log entry DTO.
