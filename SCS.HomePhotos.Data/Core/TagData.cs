@@ -1,6 +1,8 @@
 ﻿using Dapper;
+
 using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

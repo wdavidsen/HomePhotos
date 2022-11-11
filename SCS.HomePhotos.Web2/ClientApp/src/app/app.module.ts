@@ -53,6 +53,8 @@ import { ChangePasswordModalComponent } from './account/change-password-modal.co
 
 import { routes } from './app.routes';
 import { SearchAdvancedComponent } from './components/search-advanced.component';
+import { ExclusionsComponent } from './exclusions/exclusions.component';
+import { ExclusionService } from './services/exclusion.service';
 
 @NgModule({
     declarations: [
@@ -72,6 +74,7 @@ import { SearchAdvancedComponent } from './components/search-advanced.component'
         AccountComponent,
         LogsComponent,
         UploadComponent,
+        ExclusionsComponent,
         // controls
         NavMenuComponent,
         SearchComponent,
@@ -125,6 +128,7 @@ import { SearchAdvancedComponent } from './components/search-advanced.component'
         ImageService,
         BsModalRef,
         TagService,
+        ExclusionService,
         LogService,
         LocalStorageService,
         { provide: HTTP_INTERCEPTORS, useClass: ProgressInterceptor, multi: true },        

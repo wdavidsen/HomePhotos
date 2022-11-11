@@ -1,11 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+
 using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Web.Controllers;
 using SCS.HomePhotos.Web.Security;
-using System;
-using System.Collections.Generic;
+
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -140,7 +138,7 @@ namespace SCS.HomePhotos.Web
         /// <value>
         /// The valid issuer.
         /// </value>
-        public string ValidIssuer { get; private set;}
+        public string ValidIssuer { get; private set; }
 
         /// <summary>
         /// Gets the valid audience.

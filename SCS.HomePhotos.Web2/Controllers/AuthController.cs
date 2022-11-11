@@ -1,20 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Models;
 using SCS.HomePhotos.Web.Security;
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("SCS.HomePhotos.Web.Test")]
 
@@ -99,7 +95,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <param name="model">The user/change password model.</param>
         /// <returns>A JWT and refresh token.</returns>
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]        
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.TokenUser))]
         [HttpPost("loginWithPasswordChange")]
         public async Task<IActionResult> LoginWithPasswordChange([FromBody] ChangePasswordModel model)
@@ -142,7 +138,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Logs-out current user.</summary>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]        
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("logout")]
         [SuppressMessage("Security", "SCS0016:Controller method is vulnerable to CSRF", Justification = "Anti-forgery detection deemed unecessary for logging out.")]

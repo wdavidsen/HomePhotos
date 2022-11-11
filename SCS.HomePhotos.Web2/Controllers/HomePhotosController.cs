@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
@@ -8,7 +7,7 @@ namespace SCS.HomePhotos.Web.Controllers
     {
         /// <summary>Initializes a new instance of the <see cref="HomePhotosController" /> class.</summary>
         public HomePhotosController()
-        {            
+        {
         }
 
         /// <summary>Gets the user agent identifier.</summary>

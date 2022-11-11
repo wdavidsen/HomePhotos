@@ -1,8 +1,11 @@
 ﻿using MetadataExtractor.Formats.Exif;
+
 using Microsoft.Extensions.Logging;
+
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Workers;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -324,7 +327,7 @@ namespace SCS.HomePhotos.Service.Core
             photo.ImageHeight = imageLayoutInfo.Height;
             photo.ImageWidth = imageLayoutInfo.Width;
             photo.ReprocessCache = false;
-            photo.MobileUpload = imageFilePath.Contains(_dynamicConfig.MobileUploadsFolder, StringComparison.InvariantCultureIgnoreCase);            
+            photo.MobileUpload = imageFilePath.Contains(_dynamicConfig.MobileUploadsFolder, StringComparison.InvariantCultureIgnoreCase);
             photo.OriginalFolder = GetOriginalFolder(_dynamicConfig, photo.MobileUpload, imageFilePath);
 
             _photoService.SavePhoto(photo);
@@ -386,8 +389,8 @@ namespace SCS.HomePhotos.Service.Core
 
             var exifData1 = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
             var exifData2 = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
-            
-            foreach (var exifData in new ExifDirectoryBase[] { exifData1 , exifData2 })
+
+            foreach (var exifData in new ExifDirectoryBase[] { exifData1, exifData2 })
             {
                 if (exifData == null)
                 {

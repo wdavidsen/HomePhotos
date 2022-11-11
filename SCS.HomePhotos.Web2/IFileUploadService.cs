@@ -1,8 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-
-namespace SCS.HomePhotos.Web
+﻿namespace SCS.HomePhotos.Web
 {
     /// <summary>
     /// Provides file upload services.

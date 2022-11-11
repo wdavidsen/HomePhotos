@@ -1,5 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System;
 
 namespace SCS.HomePhotos.Web.Security
 {

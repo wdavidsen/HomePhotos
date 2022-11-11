@@ -1,5 +1,7 @@
 ﻿using MetadataExtractor.Formats.Exif;
+
 using SCS.HomePhotos.Service.Contracts;
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,7 +35,7 @@ namespace SCS.HomePhotos.Service.Core
                 list.Add(exifData2);
             }
 
-            return list;            
+            return list;
         }
     }
 }

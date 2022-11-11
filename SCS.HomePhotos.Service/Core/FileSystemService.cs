@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+
 using SCS.HomePhotos.Service.Contracts;
+
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -48,7 +49,7 @@ namespace SCS.HomePhotos.Service.Core
             {
                 _logger.LogError(ex, "Failed to get checksum for file: {filePath}", filePath);
                 throw;
-            }            
+            }
         }
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace SCS.HomePhotos.Service.Core
             {
                 _logger.LogError(ex, "Failed to get file size for file: {filePath}", filePath);
                 throw;
-            }    
+            }
         }
 
         /// <summary>
@@ -119,7 +120,7 @@ namespace SCS.HomePhotos.Service.Core
             {
                 _logger.LogError(ex, "Failed to create directory at path: {path}", path);
                 throw;
-            }            
+            }
         }
 
         /// <summary>
@@ -175,7 +176,7 @@ namespace SCS.HomePhotos.Service.Core
             {
                 _logger.LogError(ex, "Failed to move {sourcePath} to {destinationPath}.", sourcePath, destinationPath);
                 throw;
-            }            
+            }
         }
     }
 }

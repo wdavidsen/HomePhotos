@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SCS.HomePhotos.Web.Models
+﻿namespace SCS.HomePhotos.Web.Models
 {
     /// <summary>
     /// Wrapper for uploading multiple files.

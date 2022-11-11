@@ -1,6 +1,9 @@
 ﻿using Dapper;
+
 using Microsoft.Data.Sqlite;
+
 using SCS.HomePhotos.Data.Contracts;
+
 using System;
 using System.Collections.Generic;
 using System.Data.Common;

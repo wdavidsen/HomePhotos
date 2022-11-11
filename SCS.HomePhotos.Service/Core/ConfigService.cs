@@ -1,9 +1,9 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
-using SCS.HomePhotos.Data;
+
 using SCS.HomePhotos.Data.Contracts;
-using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
+
 using System.ComponentModel;
 using System.Threading.Tasks;
 
@@ -64,11 +64,11 @@ namespace SCS.HomePhotos.Service.Core
         /// </summary>
         public async Task SetDynamicConfig()
         {
-            try 
-            { 
+            try
+            {
                 var dbConfig = await _configData.GetConfiguration();
 
-            
+
                 if (dbConfig != null)
                 {
                     dbConfig.ToDynamicConfig(DynamicConfig);

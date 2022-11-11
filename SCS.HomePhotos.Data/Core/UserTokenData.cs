@@ -1,5 +1,6 @@
 ﻿using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace SCS.HomePhotos.Data.Core
         public async Task<IEnumerable<UserToken>> GetUserTokens(int userId, bool refresh)
         {
             return await GetListAsync<UserToken>("WHERE UserId = @UserId AND Refresh = @Refresh",
-                new { UserId = userId, Refresh = refresh});
+                new { UserId = userId, Refresh = refresh });
         }
 
         /// <summary>

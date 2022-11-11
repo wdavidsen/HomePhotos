@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Models;
-using System.Collections.Generic;
+
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("SCS.HomePhotos.Web.Test")]
 
@@ -71,7 +69,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
-        [HttpPost("", Name = "AddUser")]        
+        [HttpPost("", Name = "AddUser")]
         public async Task<IActionResult> AddUser([FromBody] Dto.PasswordUser user)
         {
             if (!ModelState.IsValid)
@@ -91,7 +89,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
-        [HttpPut("{userId}", Name = "UpdateUser")]        
+        [HttpPut("{userId}", Name = "UpdateUser")]
         public async Task<IActionResult> UpdateUser([FromBody] Dto.User user)
         {
             if (!ModelState.IsValid)
@@ -126,7 +124,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpPost("{userId}/resetPassword", Name = "ResetPassword")]        
+        [HttpPost("{userId}/resetPassword", Name = "ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromRoute] int userId, [FromBody] ResetPasswordModel resetPasswordModel)
         {
             var user = await _accountService.GetUser(userId);

@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Models;
-using System;
-using System.IO;
-using System.Linq;
+
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("SCS.HomePhotos.Web.Test")]
 
@@ -50,7 +46,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Registers a user.</summary>
         /// <param name="model">The register model.</param>
-        [AllowAnonymous]        
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
@@ -88,7 +84,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Changes a user's password.</summary>
         /// <param name="model">The change passeord model.</param>
         /// <returns>A new JWT and refresh token.</returns>
-        [Authorize]        
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
@@ -138,7 +134,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Updates the avatar image.</summary>
         /// <param name="model">The avatar model.</param>
         /// <returns>The avatar image name.</returns>
-        [Authorize]        
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -222,7 +218,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Updates current user's account information.</summary>
         /// <param name="accountInfo">The account information.</param>
         /// <returns>User's account info.</returns>
-        [Authorize]        
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.AccountInfo))]

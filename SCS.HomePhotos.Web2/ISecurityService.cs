@@ -1,5 +1,5 @@
 ﻿using SCS.HomePhotos.Model;
-using System.Collections.Generic;
+
 using System.Security.Claims;
 
 namespace SCS.HomePhotos.Web

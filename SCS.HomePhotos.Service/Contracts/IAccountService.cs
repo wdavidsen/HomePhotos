@@ -1,7 +1,8 @@
-﻿using System;
+﻿using SCS.HomePhotos.Model;
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SCS.HomePhotos.Model;
 
 namespace SCS.HomePhotos.Service.Contracts
 {

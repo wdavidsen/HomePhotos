@@ -1,6 +1,8 @@
 ﻿using Dapper;
+
 using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,7 +66,7 @@ namespace SCS.HomePhotos.Data.Core
             var where = "WHERE DateTaken BETWEEN @FromDate AND @ToDate";
             var fromDate = dateRange.FromDate.ToStartOfDay().ToString(Constants.DatabaseDateTimeFormat);
             var toDate = dateRange.ToDate.ToEndOfDay().ToString(Constants.DatabaseDateTimeFormat);
-            var parameters = new { FromDate = fromDate, ToDate = toDate };            
+            var parameters = new { FromDate = fromDate, ToDate = toDate };
             var orderBy = "DateTaken" + (descending ? " DESC" : "");
 
             return await GetListPagedAsync<Photo>(where, parameters, orderBy, pageNum, pageSize);
@@ -136,7 +138,7 @@ namespace SCS.HomePhotos.Data.Core
             {
                 sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(mainsql, 1) + where2 + where3;
                 sql += $"AND t.TagName = @Tag{dynamicCount + 1}";
-                
+
                 dynamicParams.Add($"@Tag{dynamicCount + 1}", keywords);
 
                 sql += $"{Environment.NewLine}ORDER BY Weight ASC, DateTaken DESC LIMIT {pageSize} OFFSET {offset}";

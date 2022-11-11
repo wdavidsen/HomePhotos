@@ -230,7 +230,7 @@ namespace SCS.HomePhotos.Service.Core
             if (insertSkip && !string.IsNullOrWhiteSpace(photo.OriginalFolder))
             {
                 await _skipImageData.InsertAsync(
-                    new SkipImage
+                    new FileExclusion
                     {
                         MobileUpload = photo.MobileUpload,
                         OriginalFolder = photo.OriginalFolder,

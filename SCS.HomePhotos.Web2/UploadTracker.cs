@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-
-namespace SCS.HomePhotos.Web
+﻿namespace SCS.HomePhotos.Web
 {
     /// <summary>
     /// Image file upload tracker.

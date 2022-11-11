@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace SCS.HomePhotos.Web.Models
+﻿namespace SCS.HomePhotos.Web.Models
 {
     /// <summary>
     /// File upload model.

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AccountComponent } from './account/account.component';
 import { NotFoundComponent } from './errors/not-found.component';
 import { UnauthorizedComponent } from './errors/unauthorized.component';
+import { ExclusionsComponent } from './exclusions/exclusions.component';
 import { AuthGuard } from './framework';
 import { AuthAdminGuard } from './framework/auth-admin.guard';
 import { AuthUploadGuard } from './framework/auth-upload.guard';
@@ -29,6 +30,7 @@ export const routes: Routes = [
   { path: 'users/:userId', component: UserDetailComponent, canActivate: [AuthGuard, AuthAdminGuard] },
   { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
   { path: 'logs', component: LogsComponent, canActivate: [AuthGuard, AuthAdminGuard] },
+  { path: 'exclusions', component: ExclusionsComponent, canActivate: [AuthGuard, AuthAdminGuard] },
   { path: 'upload', component: UploadComponent, canActivate: [AuthGuard, AuthUploadGuard] },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'notfound', component: NotFoundComponent },

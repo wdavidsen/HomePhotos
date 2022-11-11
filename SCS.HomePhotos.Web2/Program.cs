@@ -1,22 +1,24 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Hosting.WindowsServices;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
-using SCS.HomePhotos.Web.Security;
-using SCS.HomePhotos.Model;
-using Microsoft.OpenApi.Models;
+
 using SCS.HomePhotos;
-using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Data.Contracts;
-using SCS.HomePhotos.Service.Core;
+using SCS.HomePhotos.Data.Core;
+using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
-using SCS.HomePhotos.Workers;
+using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Service.Workers;
 using SCS.HomePhotos.Web;
 using SCS.HomePhotos.Web.Hubs;
 using SCS.HomePhotos.Web.Middleware;
-using Microsoft.Extensions.Hosting.WindowsServices;
+using SCS.HomePhotos.Web.Security;
+using SCS.HomePhotos.Workers;
 
 var builder = WebApplication.CreateBuilder(
     new WebApplicationOptions
@@ -121,7 +123,7 @@ Container.AddScoped<ITagData, TagData>();
 Container.AddScoped<IUserData, UserData>();
 Container.AddScoped<IUserTokenData, UserTokenData>();
 Container.AddScoped<ILogData, LogData>();
-Container.AddScoped<ISkipImageData, SkipImageData>();
+Container.AddScoped<ISkipImageData, FileExclusionData>();
 
 // services
 Container.AddScoped<IFileSystemService, FileSystemService>();

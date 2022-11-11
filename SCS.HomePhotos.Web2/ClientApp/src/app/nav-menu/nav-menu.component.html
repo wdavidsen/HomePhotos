@@ -30,15 +30,19 @@
                 <a href="#" (click)="collapseNav()" class="dropdown-item" 
                   [routerLinkActive]="['link-active']" 
                   [routerLinkActiveOptions]="{ exact: true }" 
+                  [routerLink]="['/logs']">Activity</a>                
+                <a href="#" (click)="collapseNav()" class="dropdown-item" 
+                  [routerLinkActive]="['link-active']" 
+                  [routerLinkActiveOptions]="{ exact: true }" 
+                  [routerLink]="['/exclusions']">Exclusions</a> 
+                <a href="#" (click)="collapseNav()" class="dropdown-item" 
+                  [routerLinkActive]="['link-active']" 
+                  [routerLinkActiveOptions]="{ exact: true }" 
                   [routerLink]="['/settings']">Settings</a>              
                 <a href="#" (click)="collapseNav()" class="dropdown-item" 
                   [routerLinkActive]="['link-active']" 
                   [routerLinkActiveOptions]="{ exact: true }" 
-                  [routerLink]="['/users']">Users</a>              
-                <a href="#" (click)="collapseNav()" class="dropdown-item" 
-                  [routerLinkActive]="['link-active']" 
-                  [routerLinkActiveOptions]="{ exact: true }" 
-                  [routerLink]="['/logs']">Activity</a>                
+                  [routerLink]="['/users']">Users</a>                              
               </div>
           </div>
       </div>      

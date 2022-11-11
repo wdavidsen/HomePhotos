@@ -1,7 +1,7 @@
 <h2>Users</h2>
 
 <section>    
-    <table class="table table-sm table-striped table-bordered listing">
+    <table class="table table-lg listing">
         <thead>
             <tr>
                 <th>User Id</th>
@@ -34,7 +34,7 @@
 
     <div class="collapse navbar-collapse" id="footerNavbarCollapse">
         <div class="navbar-nav">
-            <button type="button" class="btn btn-default navbar-btn"(click)="addNewUser()"><i class="fa fa-user"></i> New</button>
+            <button type="button" class="btn btn-default navbar-btn"(click)="addNewUser()"><i class="fa fa-user-plus"></i> New</button>
             <button type="button" class="btn btn-default navbar-btn"(click)="editUser(getSelectedUsers()[0])" [disabled]="getSelectedUsers().length !== 1"><i class="fa fa-edit"></i> Edit</button>
             <button type="button" class="btn btn-default navbar-btn"(click)="deleteUser()" [disabled]="getSelectedUsers().length < 1"><i class="fa fa-remove"></i> Delete</button>
             <button type="button" class="btn btn-default navbar-btn"(click)="enableDisableUser(true)" [disabled]="getSelectedUsers().length < 1"><i class="fa fa-toggle-on"></i> Enable</button>

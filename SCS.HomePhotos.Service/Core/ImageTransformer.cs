@@ -1,13 +1,15 @@
-﻿using System;
-using System.IO;
+﻿using Microsoft.Extensions.Logging;
 
-using Microsoft.Extensions.Logging;
 using SCS.HomePhotos.Service.Contracts;
+
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+
+using System;
+using System.IO;
 
 namespace SCS.HomePhotos.Service.Core
 {
@@ -84,7 +86,7 @@ namespace SCS.HomePhotos.Service.Core
         {
             var tempPath = "";
             var tempPathResized = "";
-              
+
             try
             {
                 if (useTempFolder)
@@ -113,7 +115,7 @@ namespace SCS.HomePhotos.Service.Core
 
                     var encoder = new JpegEncoder()
                     {
-                        Quality = _staticConfig.ImageResizeQuality                       
+                        Quality = _staticConfig.ImageResizeQuality
                     };
 
                     image.Mutate(x => x.Resize(width, height));
@@ -167,7 +169,7 @@ namespace SCS.HomePhotos.Service.Core
                 image.Metadata.ExifProfile.RemoveValue(ExifTag.Orientation);
 
                 image.Save(sourcePath);
-                
+
                 return (original, image.Size());
             }
         }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Linq;
 
 namespace SCS.HomePhotos.Web.Models
 {

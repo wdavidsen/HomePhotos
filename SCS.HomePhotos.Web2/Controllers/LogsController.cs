@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {

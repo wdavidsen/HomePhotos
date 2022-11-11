@@ -6,7 +6,7 @@ namespace SCS.HomePhotos.Model
     /// The skip image entity.
     /// </summary>
     [Table("SkipImage")]
-    public class SkipImage
+    public class FileExclusion
     {
         /// <summary>
         /// Gets or sets the skip image identifier.
@@ -15,7 +15,8 @@ namespace SCS.HomePhotos.Model
         /// The skip image identifier.
         /// </value>
         [Key]
-        public int? SkipImageId { get; set; }
+        [Column("SkipImageId")]
+        public int? FileExclusionId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether image is a mobile upload.

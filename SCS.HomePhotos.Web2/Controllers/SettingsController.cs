@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Dto;
-using System;
-using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
@@ -33,7 +30,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Gets the settings.</summary>
         /// <returns>The settings.</returns>
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]        
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Settings))]
         [HttpGet]
         public IActionResult Get()
@@ -50,7 +47,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status200OK)]        
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Put([FromBody] Dto.Settings settings, bool reprocessPhotos = false)
         {
             if (!ModelState.IsValid)
@@ -81,8 +78,8 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <returns>The settings.</returns>
         [HttpPut("indexNow", Name = "UpdateIndex")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]        
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Settings))]        
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Settings))]
         public async Task<IActionResult> UpdateNow([FromQuery] bool reprocessPhotos = false)
         {
             if (reprocessPhotos)
@@ -100,7 +97,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [HttpPut("clearCache", Name = "ClearCache")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status200OK)]       
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ClearCache()
         {
             await _photoService.DeletePhotoCache(User.Identity.Name);

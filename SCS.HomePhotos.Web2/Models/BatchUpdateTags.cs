@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace SCS.HomePhotos.Web.Models
+﻿namespace SCS.HomePhotos.Web.Models
 {
     /// <summary>Batch update tag info.</summary>
     public class BatchUpdateTags

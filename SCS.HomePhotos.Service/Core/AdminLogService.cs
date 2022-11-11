@@ -2,6 +2,7 @@
 using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
+
 using System;
 using System.Threading.Tasks;
 
@@ -55,7 +56,7 @@ namespace SCS.HomePhotos.Service.Core
             else
             {
                 await _logData.UpdateAsync(logEntry);
-            }            
+            }
         }
 
         /// <summary>

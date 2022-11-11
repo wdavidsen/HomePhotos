@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SCS.HomePhotos.Web
+﻿namespace SCS.HomePhotos.Web
 {
     /// <summary>
     /// File upload info.

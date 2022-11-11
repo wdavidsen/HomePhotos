@@ -1,7 +1,4 @@
 ﻿using SCS.HomePhotos.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SCS.HomePhotos.Web.Models
 {

@@ -1,6 +1,7 @@
 ﻿using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
