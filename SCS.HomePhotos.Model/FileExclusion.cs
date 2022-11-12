@@ -5,7 +5,7 @@ namespace SCS.HomePhotos.Model
     /// <summary>
     /// The skip image entity.
     /// </summary>
-    [Table("SkipImage")]
+    [Table("FileExclusion")]
     public class FileExclusion
     {
         /// <summary>
@@ -15,7 +15,7 @@ namespace SCS.HomePhotos.Model
         /// The skip image identifier.
         /// </value>
         [Key]
-        [Column("SkipImageId")]
+        [Column("FileExclusionId")]
         public int? FileExclusionId { get; set; }
 
         /// <summary>
