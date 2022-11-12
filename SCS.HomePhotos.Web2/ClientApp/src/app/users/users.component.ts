@@ -46,19 +46,22 @@ export class UsersComponent implements OnInit {
 
   deleteUser(): void {
     if (confirm('Are you sure you want to delete ALL selected users?')) {
-        this.getUpdatableUsers('delete').forEach(userRow => this.userService.delete(userRow.userId)
-            .subscribe(
-                () => {
-                    const users = this._users.filter(u => u.userId !== userRow.userId);
-                    this.users = this.usersToUserRows(users);
-                    const msg = `Successfully deleted ${userRow.username}`;
-                    this.toastr.success(msg);
-                },
-                error => {
-                    console.error(error);
-                    const msg = `Failed to delete ${userRow.username}`;
-                    this.toastr.error(msg);
-                }));
+        this.getUpdatableUsers('delete').forEach(userRow => 
+          this.userService.delete(userRow.userId)
+            .subscribe({
+              next: () => {
+                const users = this._users.filter(u => u.userId !== userRow.userId);
+                  this.users = this.usersToUserRows(users);
+                  const msg = `Successfully deleted ${userRow.username}`;
+                  this.toastr.success(msg);
+              },
+              error: (e) => {
+                console.error(e);
+                const msg = `Failed to delete ${userRow.username}`;
+                this.toastr.error(msg);
+              }
+            })            
+          );
     }
   }
 
@@ -71,17 +74,16 @@ export class UsersComponent implements OnInit {
         userToUpdate.enabled = enabled;
 
         this.userService.save(userToUpdate)
-            .subscribe(
-                savedUser => {
-                    userRow.enabled = user.enabled = savedUser.enabled;
-                    const msg = `Successfully ${action} ${user.username}`;
-                    this.toastr.success(msg);
-                },
-                error => {
-                    console.error(error);
-                    const msg = `Failed to ${action } ${user.username}`;
-                    this.toastr.error(msg);
-                });
+        .subscribe({
+          next: (savedUser) => {
+            userRow.enabled = user.enabled = savedUser.enabled;
+            const msg = `Successfully ${action} ${user.username}`;
+            this.toastr.success(msg);},
+          error: (e) => {
+            console.error(e);
+            const msg = `Failed to ${action } ${user.username}`;
+            this.toastr.error(msg);}
+        });
     });
   }
 

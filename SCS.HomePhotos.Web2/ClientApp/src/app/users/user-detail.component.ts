@@ -49,17 +49,18 @@ export class UserDetailComponent implements OnInit {
             this.loading = true;
 
             this.userService.get(parseInt(userId, 10))
-                .subscribe(
-                    data => {
-                        this.user = data;
-                        this.setupForm(data);
-                        this.loading = false;
-                    },
-                    error => {
-                        console.error(error);
-                        this.toastr.error(`Failed to find user`);
-                        this.loading = false;
-                    });
+              .subscribe({
+                next: (data) => {
+                  this.user = data;
+                  this.setupForm(data);
+                  this.loading = false;
+                },
+                error: (e) => {
+                  console.error(e);
+                  this.toastr.error(`Failed to find user`);
+                  this.loading = false;
+                }
+              });
         }
     });
   }
@@ -76,17 +77,17 @@ export class UserDetailComponent implements OnInit {
     const tempUser = this.formToUser();
 
     this.userService.save(tempUser)
-      .subscribe(user => {
+      .subscribe({
+        next: (user) => {
           this.user = user;
           this.toastr.success(`User saved successfully`);
           this.loading = false;
-          this.setupForm(this.user);
-        },
-        error => {
-            console.error(error);
-            this.toastr.error(`Failed to save user`);
-            this.loading = false;
-        });
+          this.setupForm(this.user);},
+        error: (e) => {
+          console.error(e);
+          this.toastr.error(`Failed to save user`);
+          this.loading = false;}
+      });
   }
 
   deleteUser(): void {
@@ -96,16 +97,17 @@ export class UserDetailComponent implements OnInit {
     }
 
     this.userService.delete(this.user.userId)
-        .subscribe(() => {
-            this.router.navigate(['/users']);
-            this.loading = false;
-            this.toastr.success(`Successfully deleted user`);
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/users']);
+          this.loading = false;
+          this.toastr.success(`Successfully deleted user`);
         },
-        error => {
-            console.error(error);
-            this.toastr.error(`Failed to delete user`);
-            this.loading = false;
-        });
+        error: (e) => {
+          console.error(e);
+          this.toastr.error(`Failed to delete user`);
+          this.loading = false;}
+      });
   }
 
   resetPassword() {

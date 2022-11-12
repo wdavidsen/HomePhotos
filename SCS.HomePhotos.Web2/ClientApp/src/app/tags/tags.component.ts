@@ -130,14 +130,15 @@ export class TagsComponent implements OnInit, OnDestroy {
       };
 
       this.tagService.addTag(tag)
-        .subscribe(t => {
-          this.tagChips.push(this.tagToChip(t));
-          this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
-          this.toastr.success('Added tag successfully');
-          this.clearSelections();
-        },
-        err => this.toastr.error('Failed to add tag')
-      );
+        .subscribe({
+          next: (t) => {
+            this.tagChips.push(this.tagToChip(t));
+            this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
+            this.toastr.success('Added tag successfully');
+            this.clearSelections();
+          },
+          error: (e) => { console.error(e); this.toastr.error('Failed to add tag') }
+        });
     }
   }
 
@@ -167,17 +168,18 @@ export class TagsComponent implements OnInit, OnDestroy {
       };
 
       this.tagService.updateTag(tag)
-        .subscribe(t => {
-          const chip = this.tagChips.find(c => c.id === t.tagId);
+        .subscribe({
+          next: (t) => {
+            const chip = this.tagChips.find(c => c.id === t.tagId);
 
-          if (chip) {
-            chip.name = t.tagName;
-          }
-          this.toastr.success('Renamed tag successfully');
-          this.clearSelections();
-        },
-        err => this.toastr.error('Failed to rename tag')
-      );
+            if (chip) {
+              chip.name = t.tagName;
+            }
+            this.toastr.success('Renamed tag successfully');
+            this.clearSelections();
+          },
+          error: (e) => { console.error(e); this.toastr.error('Failed to rename tag') }
+        });        
     }
   }
 
@@ -191,13 +193,13 @@ export class TagsComponent implements OnInit, OnDestroy {
 
       this.clearDialogSubscription();
       this.dialogSubscription = this.modalService.onHidden
-          .subscribe(() => {
-            chips.forEach(chip => {
-              if (this.confirmModalRef.content.yesClicked) {
-                this.deleteTagsSubmit(chip);
-              }
-            });
+        .subscribe(() => {
+          chips.forEach(chip => {
+            if (this.confirmModalRef.content.yesClicked) {
+              this.deleteTagsSubmit(chip);
+            }
           });
+        });         
     }
   }
 
@@ -205,12 +207,13 @@ export class TagsComponent implements OnInit, OnDestroy {
 
     if (chip && chip.id) {
       this.tagService.deleteTag(chip.id)
-        .subscribe(() => {
+        .subscribe({
+          next: () => {
             this.toastr.success(`Deleted ${chip.name} successfully`);
             this.tagChips.splice(this.tagChips.indexOf(chip), 1);
           },
-          err => this.toastr.error(`Failed to delete ${chip.name}`)
-        );
+          error: (e) => { console.error(e); this.toastr.error(`Failed to delete ${chip.name}`) }
+        });
     }
   }
 
@@ -237,15 +240,16 @@ export class TagsComponent implements OnInit, OnDestroy {
     if (sourceTagId > 0 && copyTagName && copyTagName.length) {
 
       this.tagService.copyTag(sourceTagId, copyTagName)
-        .subscribe(newTag => {
-          const chip = this.tagToChip(newTag);
-          this.tagChips.push(chip);
-          this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
-          this.toastr.success('Copied tag successfully');
-          this.clearSelections();
-        },
-        err => this.toastr.error('Failed to copy tag')
-      );
+        .subscribe({
+          next: (newTag) => {
+            const chip = this.tagToChip(newTag);
+            this.tagChips.push(chip);
+            this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
+            this.toastr.success('Copied tag successfully');
+            this.clearSelections();
+          },
+          error: (e) => { console.error(e); this.toastr.error('Failed to copy tag') }
+        });      
     }
   }
 
@@ -272,16 +276,17 @@ export class TagsComponent implements OnInit, OnDestroy {
     if (sourceTagIds && sourceTagIds.length && combinedTagName && combinedTagName.length) {
 
       this.tagService.mergeTags(sourceTagIds, combinedTagName)
-        .subscribe(newTag => {
-          sourceTagIds.forEach(id => this.tagChips.splice(this.tagChips.findIndex(c => c.id === id), 1));
-          const chip = this.tagToChip(newTag);
-          this.tagChips.push(chip);
-          this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
-          this.toastr.success('Combined tags successfully');
-          this.clearSelections();
-        },
-        err => this.toastr.error('Failed to combine tags')
-      );
+        .subscribe({
+          next: (newTag) => {
+            sourceTagIds.forEach(id => this.tagChips.splice(this.tagChips.findIndex(c => c.id === id), 1));
+            const chip = this.tagToChip(newTag);
+            this.tagChips.push(chip);
+            this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
+            this.toastr.success('Combined tags successfully');
+            this.clearSelections();
+          },
+          error: (e) => { console.error(e); this.toastr.error('Failed to combine tags') }
+        });
     }
   }
 

@@ -46,11 +46,9 @@ export class LogsComponent implements OnInit {
   private loadEntries(): void {
     this.logService.getLatest(this.filters.category, this.filters.severity, this.pageInfo)
       .pipe(tap(result => this.pageInfo = result.pageInfo))
-      .subscribe(
-        entries => this.logEntries = <LogEntry[]>entries.data,
-        error => {
-          console.error(error);
-          this.toastr.error('Failed to load activity');
-        });
+      .subscribe({
+        next: (entries) => this.logEntries = <LogEntry[]>entries.data,
+        error: (e) => { console.error(e); this.toastr.error('Failed to load activity'); }
+      });
   }
 }

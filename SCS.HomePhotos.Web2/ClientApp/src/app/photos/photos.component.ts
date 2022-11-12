@@ -405,17 +405,26 @@ export class PhotosComponent implements OnInit, OnDestroy {
         case 1:
           this.photosService.getLatest(this.pageNum)
             .pipe(map(photos => this.photosToThumbnails(photos)))
-            .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
+            .subscribe({
+              next: (thumbs) => this.appendThumbnails(thumbs),
+              error: (e) => this.handleLoadError(e)
+            });            
           break;
         case 2:
           this.photosService.getPhotosByTag(this.pageNum, this.tagName)
             .pipe(map(photos => this.photosToThumbnails(photos)))
-            .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
+            .subscribe({
+              next: (thumbs) => thumbs => this.appendThumbnails(thumbs),
+              error: (e) => this.handleLoadError(e)
+            });
           break;
         case 3:
           this.photosService.searchPhotos(this.pageNum, this.searchInfo)
             .pipe(map(photos => this.photosToThumbnails(photos)))
-            .subscribe((thumbs => this.appendThumbnails(thumbs)), this.handleLoadError);
+            .subscribe({
+              next: (thumbs) => this.appendThumbnails(thumbs),
+              error: (e) => this.handleLoadError(e)
+            });
         break;
       }
     }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
 
 import { AccountService, AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
@@ -51,27 +50,28 @@ export class RegisterComponent implements OnInit {
 
         this.loading = true;
         this.accountService.register(this.registerForm.value)
-            .subscribe(
-                () => {
+            .subscribe({
+                next: () => {
                     this.toastr.success('Registration successful');
                     this.router.navigate(['/register-success']);
                 },
-                response => {
-                    if (response.error && response.error.id) {
-                        switch (response.error.id) {
+                error: (e) => {
+                    if (e.error && e.error.id) {
+                        switch (e.error.id) {
                             case 'UserNameTaken':
                             case 'PasswordStrength':
                             case 'InvalidRequestPayload':
-                                this.toastr.warning(response.error.message);
+                                this.toastr.warning(e.error.message);
                                 break;
                             default:
-                                this.toastr.error(response.error.message);
+                                this.toastr.error(e.error.message);
                                 break;
                         }
                     }
                     else {
                         this.toastr.error('Server unreachable');
                     }
-                });
+                }
+            });
     }
 }

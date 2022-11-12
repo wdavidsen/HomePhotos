@@ -4,7 +4,6 @@ import { UserSettingsService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { UserSettings } from '../models/user-settings';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-settings',

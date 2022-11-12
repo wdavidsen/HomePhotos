@@ -83,16 +83,18 @@ export class AccountAvatardModalComponent implements OnInit, OnDestroy {
 
         canvas.toBlob((blob) => {
           this.accountService.updateAvatar(this.imageService.blobToFile(blob, this.selectedfile.name))
-            .subscribe(
-              (data) => {
+            .subscribe({
+              next: (data) => {
                 this.newAvatarImage = data.avatarImage;
                 this.toastr.success('Successfully saved picture.');
                 this.bsModalRef.hide();
               },
-              () => {
+              error: (e) => {
+                console.error(e);
                 this.newAvatarImage = null;
                 this.toastr.error('Failed to save picture.');
-              });
+              }
+            });
         });
       }
     }

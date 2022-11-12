@@ -72,21 +72,21 @@ export class LoginComponent implements OnInit, OnDestroy {
 
         this.loading = true;
         this.loginSubscription = this.authenticationService.login(username, password)
-            .subscribe(
-                () => {
+            .subscribe({
+                next: () => { 
                     this.toastr.success('Sign-in successful');
                     this.router.navigate([this.returnUrl]);
                     this.loading = false;
                 },
-                response => {
-                    if (response.status > 99 && response.status < 600) {
-                        switch (response.error.id) {
+                error: (e) => {
+                    if (e.status > 99 && e.status < 600) {
+                        switch (e.error.id) {
                             case 'PasswordChangeNeeded':
-                                this.toastr.warning(response.error.message);
+                                this.toastr.warning(e.error.message);
                                 this.loginWithPasswordChange(username, password);
                                 break;
                             case 'LoginFailed':
-                                this.toastr.warning(response.error.message);
+                                this.toastr.warning(e.error.message);
                                 break;
                             default:
                                 this.toastr.error('Sign-in failed');
@@ -97,7 +97,8 @@ export class LoginComponent implements OnInit, OnDestroy {
                         this.toastr.error('Server unreachable');
                     }
                     this.loading = false;
-                });
+                }
+            });
     }
 
     private loginWithPasswordChange(username: string, password: string) {
@@ -125,18 +126,18 @@ export class LoginComponent implements OnInit, OnDestroy {
               changeInfo.newPasswordCompare = changeForm.get('newPasswordCompare').value;
 
               this.loginWithPasswordChangeSubscription = this.authenticationService.loginWithPasswordChange(changeInfo)
-                .subscribe(
-                    () => {
+                .subscribe({
+                    next: () => {
                         this.toastr.success('Sign-in with password change successful');
                         this.router.navigate([this.returnUrl]);
                         this.loading = false;
                     },
-                    response => {
-                        if (response.status > 99 && response.status < 600) {
-                            console.error(response.error);
-                            switch (response.error.id) {
+                    error: (e) => {
+                        if (e.status > 99 && e.status < 600) {
+                            console.error(e.error);
+                            switch (e.error.id) {
                                 case 'LoginFailed':
-                                    this.toastr.warning(response.error.message);
+                                    this.toastr.warning(e.error.message);
                                     break;
                                 default:
                                     this.toastr.error('Sign-in with password change failed');
@@ -147,7 +148,8 @@ export class LoginComponent implements OnInit, OnDestroy {
                             this.toastr.error('Server unreachable');
                         }
                         this.loading = false;
-                    });
+                    }
+                });
           });
       }
 }

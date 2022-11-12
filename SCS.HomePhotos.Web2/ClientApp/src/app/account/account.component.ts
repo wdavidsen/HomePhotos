@@ -65,16 +65,18 @@ export class AccountComponent implements OnInit, OnDestroy {
     const tempUser = this.formToUser();
 
     this.accountService.save(tempUser)
-      .subscribe(data => {
-        this.toastr.success(`Saved successfully`);
-        this.accountInfo = tempUser;
-        this.loading = false;
-        this.setupForm(data);
-      },
-      error => {
-          console.error(error);
+      .subscribe({
+        next: (data) => { 
+          this.toastr.success(`Saved successfully`);
+          this.accountInfo = tempUser;
+          this.loading = false;
+          this.setupForm(data);
+        },
+        error: (e) => {
+          console.error(e);
           this.toastr.error(`Failed to save`);
           this.loading = false;
+        }
       });
   }
 
@@ -107,15 +109,16 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   logout() {
     this.authenticationService.logout()
-      .subscribe(
-        () => {
-            this.toastr.success('Sign-out successful');
-            this.router.navigate(['/login']);
+      .subscribe({
+        next: () => {
+          this.toastr.success('Sign-out successful');
+          this.router.navigate(['/login']);
         },
-        error => {
-            console.error(error);
-            this.toastr.error('Sign-out failed');
-        });
+        error: (e) => {
+          console.error(e);
+          this.toastr.error('Sign-out failed');
+        }
+      });
   }
 
   private setAvatarImage(avatarImage: string) {

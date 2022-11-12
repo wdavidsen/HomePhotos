@@ -44,16 +44,17 @@ export class SettingsComponent implements OnInit {
         this.settings = settings;
         return settings;
       }))
-      .subscribe(
-        data => {
+      .subscribe({
+        next: (data) => {
           this.setupForm(data);
           this.loading = false;
         },
-        error => {
-          console.error(error);
+        error: (e) => {
+          console.error(e);
           this.toastr.error('Failed to load settings');
           this.loading = false;
-        });
+        }
+      });
   }
 
   onSubmit() {
@@ -88,17 +89,18 @@ export class SettingsComponent implements OnInit {
     const newSettings = this.formToSettings();
 
     this.settingsService.updateSettings(newSettings, reprocessPhotos)
-        .subscribe(
-          data => {
-            this.toastr.success('Successfully saved settings');
-            this.settings = newSettings;
-            this.loading = false;
-          },
-          error => {
-            console.error(error);
-            this.toastr.error('Failed to save settings');
-            this.loading = false;
-          });
+      .subscribe({
+        next: (data) => {
+          this.toastr.success('Successfully saved settings');
+          this.settings = newSettings;
+          this.loading = false;
+        },
+        error: (e) => {
+          console.error(e);
+          this.toastr.error('Failed to save settings');
+          this.loading = false;
+        }
+      });
   }
 
   promptForIndex() {
@@ -107,15 +109,15 @@ export class SettingsComponent implements OnInit {
 
   index() {
     this.settingsService.indexNow(this.indexModalData.allOrNew === 'ALL')
-      .subscribe(
-        (updatedSettings) => {
+      .subscribe({
+        next: (updatedSettings) => {
           this.f.nextIndexTime_date.setValue(moment(updatedSettings.nextIndexTime).format('YYYY-MM-DD'));
           this.f.nextIndexTime_time.setValue(moment(updatedSettings.nextIndexTime).format('HH:mm'));
 
-          this.toastr.success('Index triggered successfully');
+          this.toastr.success('Index triggered successfully')
         },
-        () => this.toastr.error('Failed to trigger index')
-      );
+        error: (e) => { console.error(e); this.toastr.error('Failed to trigger index') }
+      });
       this.indexModal.hide();
   }
 
@@ -138,18 +140,14 @@ export class SettingsComponent implements OnInit {
 
   clear() {
     this.settingsService.clearCache()
-      .subscribe(
-        () => this.toastr.success('Cached cleared successfully'),
-        () => this.toastr.error('Failed to clear cache')
-      );
+      .subscribe({
+        next: () => this.toastr.success('Cached cleared successfully'),
+        error: (e) => { console.error(e); this.toastr.error('Failed to clear cache') }
+      });
       this.indexModal.hide();
   }
 
-  cancelClear() {
-    // this.clearModal.hide();
-  }
-
-  // convenience getter for easy access to form fields
+   // convenience getter for easy access to form fields
   get f() { return this.settingsForm.controls; }
 
   private setupForm(data: Settings) {

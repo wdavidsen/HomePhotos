@@ -34,17 +34,14 @@ export class PhotoTaggerComponent implements OnInit {
             .filter(ts => !ts.indeterminate && this.dirtyTags.find(dt => dt === ts.tagName));
 
         this.tagService.updatePhotoTags(this.photoIds, updates)
-            .subscribe(
-                () => {
+            .subscribe({
+                next: () => {
                     this.toastr.success('Successfully updated tags');
                     this.dirtyTags = [];
                     this.bsModalRef.hide();
                 },
-                error => {
-                    console.error(error);
-                    this.toastr.error('Failed to update tags');
-                }
-            );
+                error: (e) => { console.error(e); this.toastr.error('Failed to update tags'); }
+            });           
     }
 
     addTag() {
@@ -78,17 +75,17 @@ export class PhotoTaggerComponent implements OnInit {
 
     private loadPhotoTagStates() {
         this.tagService.getPhototags(this.photoIds)
-            .subscribe(
-                tagStates => this.tagStates = tagStates,
-                error => console.error(error)
-            );
+            .subscribe({
+                next: (tagStates) => this.tagStates = tagStates,
+                error: (e) => console.error(e)
+            });
     }
 
     private loadAllTags() {
         this.tagService.getTags()
-            .subscribe(
-                tags => this.allTags = tags.map(t => t.tagName),
-                error => console.error(error)
-            );
+            .subscribe({
+                next: (tags) => this.allTags = tags.map(t => t.tagName),
+                error: (e) => console.error(e)
+            });
     }
 }

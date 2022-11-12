@@ -50,27 +50,28 @@ export class ResetPasswordModalComponent implements OnInit {
         };
 
         this.userService.resetPassword(this.userId, this.resetInfo)
-            .subscribe(() => {
-                this.toastr.success('Successfully reset password');
-                this.bsModalRef.hide();
-            },
-            response => {
-                if (response.error && response.error.id) {
-                    switch (response.error.id) {
-                        case 'PasswordStrength':
-                        case 'InvalidRequestPayload':
-                            this.toastr.warning(response.error.message);
-                            break;
-                        default:
-                            this.toastr.error(response.error.message);
-                            break;
+            .subscribe({
+                next: () => {
+                    this.toastr.success('Successfully reset password');
+                    this.bsModalRef.hide();
+                },
+                error: (e) => {
+                    if (e.error && e.error.id) {
+                        switch (e.error.id) {
+                            case 'PasswordStrength':
+                            case 'InvalidRequestPayload':
+                                this.toastr.warning(e.error.message);
+                                break;
+                            default:
+                                this.toastr.error(e.error.message);
+                                break;
+                        }
+                    }
+                    else {
+                        this.toastr.error('Reset password failed');
                     }
                 }
-                else {
-                    this.toastr.error('Reset password failed');
-                }
-            }
-        );
+            });
     }
 
     // convenience getter for easy access to form fields
