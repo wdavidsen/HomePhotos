@@ -182,5 +182,22 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <param name="contextUserName">Name of the context user.</param>
         /// <returns>A void task.</returns>
         Task DeletePhotoCache(string contextUserName);
+
+        /// <summary>
+        /// Deletes all photos under a specific directory.
+        /// </summary>
+        /// <param name="mobileUpload">if set to <c>true</c> directory is under mobile uploads folder.</param>
+        /// <param name="originalFolder">The original folder relative to the index/mobile uploads folder.</param>
+        /// <returns>A void task.</returns>
+        Task DeleteDirectoryPhotos(bool mobileUpload, string originalFolder);
+
+        /// <summary>
+        /// Deletes a photo by its original index location.
+        /// </summary>
+        /// <param name="mobileUpload">if set to <c>true</c> photo was a mobile upload.</param>
+        /// <param name="originalFolder">The original folder path relative to the index/mobile upload folder.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns>A void task.</returns>
+        Task DeletePhoto(bool mobileUpload, string originalFolder, string fileName);
     }
 }

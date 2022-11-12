@@ -28,7 +28,7 @@ export class ExclusionsComponent implements OnInit, OnDestroy {
     this.exclusionService.getExclusions()
         .subscribe({
             next: (exclusions) => this.exclusions = exclusions,
-            error: (e) => { console.error(e); this.toastr.success('Failed to load exclusions'); }
+            error: (e) => { console.error(e); this.toastr.error('Failed to load exclusions'); }
         });
   }
 
@@ -41,7 +41,7 @@ export class ExclusionsComponent implements OnInit, OnDestroy {
                     this.loadExclusions(); 
                     this.newPath = '';
                 },
-                error: (e) => { console.error(e); this.toastr.success('Failed to add exclusion'); }
+                error: (e) => { console.error(e); this.toastr.error('Failed to add exclusion'); }
             });
     }
   }

@@ -280,9 +280,49 @@ namespace SCS.HomePhotos.Data.Core
             var sql2 = "DELETE FROM Photo";
 
             using (var conn = GetDbConnection())
+            using (var trans = await conn.BeginTransactionAsync())
             {
                 await conn.ExecuteScalarAsync(sql1);
                 await conn.ExecuteScalarAsync(sql2);
+                trans.Commit();
+            }
+        }
+
+        /// <summary>
+        /// Deletes a photo by its original index location.
+        /// </summary>
+        /// <param name="mobileUpload">if set to <c>true</c> photo was a mobile upload.</param>
+        /// <param name="originalFolder">The original folder path relative to the index/mobile upload folder.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns>A void task.</returns>
+        public async Task DeletePhoto(bool mobileUpload, string originalFolder, string fileName)
+        {
+            var sql = "DELETE FROM PhotoTag WHERE MobileUpload = @MobileUpload AND OriginalFolder = @OriginalFolder AND FileName = @FileName";
+            
+            using (var conn = GetDbConnection())            
+            {
+                await conn.ExecuteScalarAsync(sql, new { MobileUpload = mobileUpload, OriginalFolder  = originalFolder, FileName = fileName });
+            }
+        }
+
+        /// <summary>
+        /// Deletes all photos under a specific directory.
+        /// </summary>
+        /// <param name="mobileUpload">if set to <c>true</c> directory is under mobile uploads folder.</param>
+        /// <param name="originalFolder">The original folder relative to the index/mobile uploads folder.</param>
+        public async Task DeleteDirectoryPhotos(bool mobileUpload, string originalFolder)
+        {
+            originalFolder = originalFolder.Trim('/', '\\');
+
+            var sql1 = "DELETE FROM PhotoTag WHERE PhotoId IN (SELECT PhotoId FROM Photo WHERE MobileUpload = @MobileUpload AND OriginalFolder = @OriginalFolder)";
+            var sql2 = "DELETE FROM Photo WHERE MobileUpload = @MobileUpload AND OriginalFolder = @OriginalFolder";
+
+            using (var conn = GetDbConnection())
+            using (var trans = await conn.BeginTransactionAsync())
+            {
+                await conn.ExecuteScalarAsync(sql1, new { MobileUpload = mobileUpload, OriginalFolder = originalFolder });
+                await conn.ExecuteScalarAsync(sql2, new { MobileUpload = mobileUpload, OriginalFolder = originalFolder });
+                trans.Commit();             
             }
         }
 

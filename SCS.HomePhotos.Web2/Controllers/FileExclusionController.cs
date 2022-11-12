@@ -49,6 +49,8 @@ namespace SCS.HomePhotos.Web.Controllers
                 dtos.Add(new Dto.FileExclusion(fe, _dynamicConfiguration));
             }
 
+            dtos = dtos.OrderBy(d => d.FullPath).ToList();
+
             return Ok(dtos);
         }
 

@@ -21,17 +21,17 @@ namespace SCS.HomePhotos.Service.Workers
         /// <param name="mobileUploadFolder">if set to <c>true</c> [mobile upload folder].</param>
         public IndexPath(string path, bool mobileUploadFolder)
         {
-            FullPath = path;
+            DirectoryPath = path;
             IsMobileUpload = mobileUploadFolder;    
         }
 
         /// <summary>
-        /// Gets or sets the full path.
+        /// Gets or sets the directory path.
         /// </summary>
         /// <value>
-        /// The full path.
+        /// The directory path.
         /// </value>
-        public string FullPath { get; set; }
+        public string DirectoryPath { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is mobile upload.
@@ -49,7 +49,7 @@ namespace SCS.HomePhotos.Service.Workers
         /// </returns>
         public override string ToString()
         {
-            return $"{FullPath}; Mobile={IsMobileUpload}";
+            return $"{DirectoryPath}; Mobile={IsMobileUpload}";
         }
     }
 }

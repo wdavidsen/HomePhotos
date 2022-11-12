@@ -474,6 +474,29 @@ namespace SCS.HomePhotos.Service.Core
             });
         }
 
+        /// <summary>
+        /// Deletes all photos under a specific directory.
+        /// </summary>
+        /// <param name="mobileUpload">if set to <c>true</c> directory is under mobile uploads folder.</param>
+        /// <param name="originalFolder">The original folder relative to the index/mobile uploads folder.</param>
+        /// <returns>A void task.</returns>
+        public async Task DeleteDirectoryPhotos(bool mobileUpload, string originalFolder)
+        {
+            await _photoData.DeleteDirectoryPhotos(mobileUpload, originalFolder);
+        }
+
+        /// <summary>
+        /// Deletes a photo by its original index location.
+        /// </summary>
+        /// <param name="mobileUpload">if set to <c>true</c> photo was a mobile upload.</param>
+        /// <param name="originalFolder">The original folder path relative to the index/mobile upload folder.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns>A void task.</returns>
+        public async Task DeletePhoto(bool mobileUpload, string originalFolder, string fileName)
+        {
+            await _photoData.DeletePhoto(mobileUpload, originalFolder, fileName);
+        }
+
         private async Task<IEnumerable<Tag>> GetUnusedTags()
         {
             var tagStats = await _tagData.GetTagAndPhotoCount();
@@ -533,5 +556,6 @@ namespace SCS.HomePhotos.Service.Core
                 return false;
             }
         }
+
     }
 }

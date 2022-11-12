@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SCS.HomePhotos
@@ -21,14 +22,17 @@ namespace SCS.HomePhotos
                 throw new ArgumentException("One or more segments are required.", nameof(parts));
             }
 
-            var newParts = new string[parts.Length];
+            var newParts = new List<string>();
 
             for (var i = 0; i < parts.Length; i++)
             {
-                newParts[i] = EnsureCorrectPathSeparator(parts[i]).Trim(Path.DirectorySeparatorChar);
+                if (parts[i] != null)
+                {
+                    newParts.Add(EnsureCorrectPathSeparator(parts[i]).Trim(Path.DirectorySeparatorChar));
+                }
             }
 
-            return Path.Combine(newParts);
+            return Path.Combine(newParts.ToArray());
         }
 
         /// <summary>
@@ -49,7 +53,7 @@ namespace SCS.HomePhotos
         public static string FormatRelativePath(string path)
         {
             path = EnsureCorrectPathSeparator(path);
-            return Path.DirectorySeparatorChar + path.Trim(Path.DirectorySeparatorChar);
+            return path.Trim(Path.DirectorySeparatorChar);
         }
     }
 }

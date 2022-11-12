@@ -9,11 +9,13 @@ using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Service.Workers;
 
 using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace SCS.HomePhotos.Workers
 {
@@ -25,6 +27,8 @@ namespace SCS.HomePhotos.Workers
     public class TimedIndexHostedService : IHostedService, IDisposable
     {
         private static Collection<string> _allowedExtensions = new Collection<string> { "JPG", "JPEG", "PNG" };
+        private static List<string> _excludedDirectories = new List<string>();
+
         private int executionCount = 0;
         private bool _indexingNow = false;
         private CancellationToken _indexCanellationToken;
@@ -202,7 +206,11 @@ namespace SCS.HomePhotos.Workers
                 _indexEvents.IndexStarted?.Invoke();
 
                 ProcessDirectories(indexPaths, _internalCanellationToken, _indexCanellationToken);
+                _excludedDirectories = null;
+
                 _logger.LogInformation("Completed photo image index");
+
+                RemoveExcludedPhotos();
 
                 _indexEvents.IndexCompleted?.Invoke();
 
@@ -240,6 +248,43 @@ namespace SCS.HomePhotos.Workers
             {
                 _indexingNow = false;
             }
+        }
+
+        private void RemoveExcludedPhotos()
+        {
+            Task.Run(async () => 
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var photoService = scope.ServiceProvider.GetRequiredService<IPhotoService>();
+                    var fileExclusionData = scope.ServiceProvider.GetRequiredService<IFileExclusionData>();
+
+                    foreach (var exclusion in await fileExclusionData.GetListAsync())
+                    {
+                        try
+                        {
+                            if (exclusion.FileName == null)
+                            {
+                                _logger.LogInformation("Deleting photo records listed under exclusion directory '{exclusion.OriginalFolder}' (mobile = {exclusion.MobileUpload}).",
+                                    exclusion.OriginalFolder, exclusion.MobileUpload);
+
+                                await photoService.DeleteDirectoryPhotos(exclusion.MobileUpload, exclusion.OriginalFolder);
+                            }
+                            else
+                            {
+                                _logger.LogInformation("Deleting photo '{exclusion.OriginalFolder}/{exclusion.OriginalFolder}' (mobile = {exclusion.MobileUpload}).",
+                                    exclusion.OriginalFolder, exclusion.FileName, exclusion.MobileUpload);
+
+                                await photoService.DeletePhoto(exclusion.MobileUpload, exclusion.OriginalFolder, exclusion.FileName);
+                            }                            
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Failed to remove exclusion from database.");
+                        }
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -315,17 +360,25 @@ namespace SCS.HomePhotos.Workers
                 var photoService = scope.ServiceProvider.GetRequiredService<IPhotoService>();
                 var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
                 var fileSystemService = scope.ServiceProvider.GetRequiredService<IFileSystemService>();
-                var skipImageData = scope.ServiceProvider.GetRequiredService<IFileExclusionData>();
+                var fileExclusionData = scope.ServiceProvider.GetRequiredService<IFileExclusionData>();
+
+                RefreshDirectoryExclusions(_configService.DynamicConfig, fileExclusionData);
+
+                if (_excludedDirectories.Any(p => indexPath.DirectoryPath.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    _logger.LogInformation("Skipping directory {indexPath.DirectoryPath}. A skip record exits.", indexPath.DirectoryPath);
+                    return;
+                }
 
                 var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = _configService.StaticConfig.ImageIndexParallelism };
                 var failCount = 0;
 
-                Parallel.ForEach(Directory.GetFiles(indexPath.FullPath), parallelOptions, (imageFilePath) =>
+                Parallel.ForEach(Directory.GetFiles(indexPath.DirectoryPath), parallelOptions, (imageFilePath) =>
                 {
                     var subfolder = ImageService.GetOriginalFolder(_configService.DynamicConfig, indexPath.IsMobileUpload, imageFilePath);                    
-                    var skipRecExists = skipImageData.Exists(indexPath.IsMobileUpload, subfolder, Path.GetFileName(imageFilePath)).Result;
+                    var skipFileRecExists = fileExclusionData.Exists(indexPath.IsMobileUpload, subfolder, Path.GetFileName(imageFilePath)).Result;
 
-                    if (!skipRecExists)
+                    if (!skipFileRecExists)
                     {
                         if (_allowedExtensions.Contains(Path.GetExtension(imageFilePath).TrimStart('.').ToUpper()))
                         {
@@ -402,7 +455,7 @@ namespace SCS.HomePhotos.Workers
                     }
                 });
 
-                foreach (var dirPath in Directory.GetDirectories(indexPath.FullPath))
+                foreach (var dirPath in Directory.GetDirectories(indexPath.DirectoryPath))
                 {
                     ProcessDirectory(new IndexPath(dirPath, indexPath.IsMobileUpload), internalCancellationToken, externalCancellationToken);
                 }
@@ -417,6 +470,20 @@ namespace SCS.HomePhotos.Workers
         private bool CacheFileExists(Photo existingPhoto)
         {
             return System.IO.File.Exists(Path.Combine(_configService.DynamicConfig.CacheFolder, existingPhoto.CacheFolder, "Thumb", existingPhoto.FileName));
+        }
+
+        private static void RefreshDirectoryExclusions(IDynamicConfig config, IFileExclusionData fileExclusionData)
+        {
+            if (_excludedDirectories == null)
+            {
+                _excludedDirectories = fileExclusionData.GetListAsync("WHERE FileName IS NULL", new {}).Result
+                    .Select(e => 
+                    {
+                        var basePath = e.MobileUpload ? config.MobileUploadsFolder : config.IndexPath;
+                        return FilePath.Combine(basePath, e.OriginalFolder);
+                    })
+                    .ToList();
+            }
         }
     }
 }

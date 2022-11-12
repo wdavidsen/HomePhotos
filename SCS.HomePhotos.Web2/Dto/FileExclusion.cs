@@ -76,7 +76,7 @@
             relativePath = FilePath.FormatRelativePath(relativePath);
 
             fileExclusion.OriginalFolder = Path.HasExtension(relativePath) ? Path.GetDirectoryName(relativePath) : relativePath;
-            fileExclusion.FileName = Path.HasExtension(relativePath) ? Path.GetFileName(relativePath) : string.Empty;
+            fileExclusion.FileName = Path.HasExtension(relativePath) ? Path.GetFileName(relativePath) : null;
 
             return fileExclusion;
         }

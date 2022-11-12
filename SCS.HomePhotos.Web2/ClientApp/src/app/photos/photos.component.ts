@@ -354,8 +354,8 @@ export class PhotosComponent implements OnInit, OnDestroy {
   deletePhotos() {
     const selections = this.getSelectedThumbnails();
 
-    if (selections.length > 10) {
-      const checkOptions = AlertDialogComponent.GetOptions('Delete Limit Exceeded', 'You may only delete 10 photos at a time as a safety precaution. To remove photos in bulk, please remove photos from index folder.');
+    if (selections.length > 50) {
+      const checkOptions = AlertDialogComponent.GetOptions('Delete Limit Exceeded', 'You may only delete 50 photos at a time as a safety precaution.');
       this.deleteCheckModalRef = this.modalService.show(AlertDialogComponent, checkOptions);
       return;
     }
