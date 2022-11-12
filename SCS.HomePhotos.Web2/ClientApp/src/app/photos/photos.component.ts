@@ -414,7 +414,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
           this.photosService.getPhotosByTag(this.pageNum, this.tagName)
             .pipe(map(photos => this.photosToThumbnails(photos)))
             .subscribe({
-              next: (thumbs) => thumbs => this.appendThumbnails(thumbs),
+              next: (thumbs) => this.appendThumbnails(thumbs),
               error: (e) => this.handleLoadError(e)
             });
           break;
@@ -431,6 +431,10 @@ export class PhotosComponent implements OnInit, OnDestroy {
   }
 
   private handleLoadError(error: any) {
+    if (error.status == 401) {
+      return;
+    }
+    
     const msg = 'Failed to load photos';
 
     try {

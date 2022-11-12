@@ -4,8 +4,10 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
+  
   <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" autocomplete="off">
     <div class="modal-body">
+      <p>All fields are optional</p>
       <div class="form-group">
         <label for="keywordsInput">Keywords</label>
         <input type="text" class="form-control" formControlName="keywords" id="keywordsInput">
