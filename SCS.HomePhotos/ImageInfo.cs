@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace SCS.HomePhotos
 {
     /// <summary>
-    /// A wrapper for pertinant image information.
+    /// A wrapper for pertinent image information.
     /// </summary>
     public class ImageInfo
     {

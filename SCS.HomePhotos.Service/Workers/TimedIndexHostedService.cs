@@ -376,9 +376,9 @@ namespace SCS.HomePhotos.Workers
                 Parallel.ForEach(Directory.GetFiles(indexPath.DirectoryPath), parallelOptions, (imageFilePath) =>
                 {
                     var subfolder = ImageService.GetOriginalFolder(_configService.DynamicConfig, indexPath.IsMobileUpload, imageFilePath);                    
-                    var skipFileRecExists = fileExclusionData.Exists(indexPath.IsMobileUpload, subfolder, Path.GetFileName(imageFilePath)).Result;
+                    var exclusionExists = fileExclusionData.Exists(indexPath.IsMobileUpload, subfolder, Path.GetFileName(imageFilePath)).Result;
 
-                    if (!skipFileRecExists)
+                    if (!exclusionExists)
                     {
                         if (_allowedExtensions.Contains(Path.GetExtension(imageFilePath).TrimStart('.').ToUpper()))
                         {

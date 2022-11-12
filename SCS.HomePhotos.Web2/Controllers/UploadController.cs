@@ -46,7 +46,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Route("imageUpload")]
         [RequestSizeLimit(20_000_000)] // 20 MB        
-        [SuppressMessage("Security", "SCS0018:Path traversal: injection possible in {1} argument passed to '{0}'", Justification = "Invalid characters are being checked in file name prior to passing it to steam.")]
+        [SuppressMessage("Security", "SCS0018:Path traversal: injection possible in {1} argument passed to '{0}'", Justification = "Invalid characters are being checked in file name prior to passing it to stream.")]
         public async Task<IActionResult> ImageUpload(IFormCollection formdata)
         {
             var acceptedExtensions = new string[] { "JPG", "JPEG", "PNG", "GIF" };

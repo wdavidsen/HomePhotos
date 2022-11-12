@@ -314,7 +314,6 @@ namespace SCS.HomePhotos.Service.Core
         {
             _logger.LogInformation("Saving photo with checksum {Checksum}.", checksum);
 
-            var dirTags = _fileSystemService.GetDirectoryTags(imageFilePath);
             var imageInfo = GetImageInfo(exifDataList);
             var photo = existingPhoto ?? new Photo();
 
@@ -334,9 +333,9 @@ namespace SCS.HomePhotos.Service.Core
 
             if (existingPhoto == null)
             {
-                var photoTags = dirTags.ToList();
+                var photoTags = BuildBuiltInTags(imageFilePath, imageInfo);
 
-                if (tags != null && tags.Length > 0)
+                if (tags != null)
                 {
                     photoTags.AddRange(tags);
                 }
@@ -370,7 +369,7 @@ namespace SCS.HomePhotos.Service.Core
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Failed to parse EXIF date/time taken {dateTaken}.", dateTaken);
+                    _logger.LogError(ex, "Failed to parse EXIF date/time taken '{dateTaken}'.", dateTaken);
                 }
             }
 
@@ -421,6 +420,22 @@ namespace SCS.HomePhotos.Service.Core
                 }
             }
             return value;
+        }
+
+        private List<string> BuildBuiltInTags(string imageFilePath, ImageInfo imageInfo)
+        {
+            var tags = _fileSystemService.GetDirectoryTags(imageFilePath).ToList();
+
+            if (imageInfo.DateTaken != DateTime.MinValue)
+            {
+                var yearTag = imageInfo.DateTaken.Year.ToString();
+
+                if (!tags.Contains(yearTag))
+                {
+                    tags.Add(yearTag);
+                }
+            }
+            return tags;
         }
     }
 }

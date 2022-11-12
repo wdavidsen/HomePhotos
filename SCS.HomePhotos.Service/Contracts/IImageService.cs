@@ -63,7 +63,7 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Orients the image for proper viewing.
         /// </summary>
         /// <param name="imageFilePath">The image file path.</param>
-        /// <param name="exifDataList">The exif data list.</param>
+        /// <param name="exifDataList">The EXIF data list.</param>
         void OrientImage(string imageFilePath, IEnumerable<ExifDirectoryBase> exifDataList);
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <param name="checksum">The checksum.</param>
         /// <param name="cacheSubfolder">The cache subfolder.</param>
         /// <param name="imageLayoutInfo">The image layout information.</param>
-        /// <param name="exifDataList">The exif data list.</param>
+        /// <param name="exifDataList">The EXIF data list.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>The photo object.</returns>
         Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string checksum, string cacheSubfolder,
@@ -90,7 +90,7 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <summary>
         /// Gets basic image information.
         /// </summary>
-        /// <param name="exifDataList">The exif data list.</param>
+        /// <param name="exifDataList">The EXIF data list.</param>
         /// <returns>Basic image information.</returns>
         ImageInfo GetImageInfo(IEnumerable<ExifDirectoryBase> exifDataList);
     }
