@@ -39,9 +39,9 @@
     <div class="collapse navbar-collapse" id="footerNavbarCollapse">
         <div class="navbar-nav">
             <button type="button" class="btn btn-default navbar-btn" (click)="showTagTool()" [disabled]="getSelectedThumbnails().length === 0"><i class="fa fa-tag"></i> Tag Photos</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="deletePhotos()" [disabled]="getSelectedThumbnails().length === 0"><i class="fa fa-remove"></i> Delete Photos</button>
+            <button type="button" class="btn btn-default navbar-btn" (click)="deletePhotos()" [disabled]="getSelectedThumbnails().length === 0"><i class="fa fa-remove"></i> Delete</button>
             <button type="button" class="btn btn-default navbar-btn" (click)="selectAll()"><i class="fa fa-arrows-alt"></i> Select All</button>
-            <button type="button" class="btn btn-default navbar-btn" (click)="clearSelections()" [disabled]="getSelectedThumbnails().length === 0"><i class="fa fa-eraser"></i> Clear Selections</button>            
+            <button type="button" class="btn btn-default navbar-btn" (click)="clearSelections()" [disabled]="getSelectedThumbnails().length === 0"><i class="fa fa-eraser"></i> Clear</button>            
         </div>
     </div>
 </nav>
