@@ -482,7 +482,13 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>A void task.</returns>
         public async Task DeleteDirectoryPhotos(bool mobileUpload, string originalFolder)
         {
-            await _photoData.DeleteDirectoryPhotos(mobileUpload, originalFolder);
+            var dirPhotos = await _photoData.GetListAsync("WHERE MobileUpload = @MobileUpload AND OriginalFolder = @OriginalFolder",
+                new { MobileUpload = mobileUpload, OriginalFolder = originalFolder });
+            
+            foreach (var photo in dirPhotos)
+            {                
+                await DeletePhoto(photo.PhotoId.Value);
+            }
         }
 
         /// <summary>
@@ -494,7 +500,13 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>A void task.</returns>
         public async Task DeletePhoto(bool mobileUpload, string originalFolder, string fileName)
         {
-            await _photoData.DeletePhoto(mobileUpload, originalFolder, fileName);
+            var photos = await _photoData.GetListAsync("WHERE MobileUpload = @MobileUpload AND OriginalFolder = @OriginalFolder AND FileName = @FileName",
+                new { MobileUpload = mobileUpload, OriginalFolder = originalFolder, FileName = fileName });
+
+            foreach (var photo in photos)
+            {
+                await DeletePhoto(photo.PhotoId.Value);
+            }
         }
 
         private async Task<IEnumerable<Tag>> GetUnusedTags()
