@@ -7,6 +7,13 @@
 <form [formGroup]="userSettingsForm" (ngSubmit)="onSubmit()" autocomplete="off">
   <div class="modal-body">
     <div class="form-group">
+      <label for="defaultViewSelect">Default tag</label>
+      <select class="form-control" formControlName="defaultView" id="defaultViewSelect">
+        <option value="">[Show latest photos, of all tags]</option>
+        <option *ngFor="let tag of defaultTags" [ngValue]="tag">{{tag}}</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label for="thumbSizeSelect">Thumbnail size</label>
       <select class="form-control" formControlName="thumbnailSize" id="thumbSizeSelect">
         <option *ngFor="let size of thumbSizes" [ngValue]="size">{{size}}</option>
@@ -23,7 +30,7 @@
         <input class="form-check-input" type="checkbox" formControlName="autoStartSlideshow" id="startSlideshowAutoCheck">
         <label class="form-check-label" for="startSlideshowAutoCheck">Start slideshow automatically</label>
       </div>
-    </div>
+    </div>   
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-primary">OK</button>

@@ -9,6 +9,8 @@ import { ConfirmDialogComponent } from '../common-dialog';
 import * as moment from 'moment';
 import { AuthService } from '../services';
 
+declare var RGB_Log_Shade: any;
+
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -88,6 +90,12 @@ export class SettingsComponent implements OnInit {
     this.loading = true;
     const newSettings = this.formToSettings();
 
+    console.log(newSettings.serverTagColor);
+
+    const borderColor = RGB_Log_Shade(-.7, newSettings.serverTagColor);
+    console.log(borderColor);
+    //new RGB_Log_Shade()
+
     this.settingsService.updateSettings(newSettings, reprocessPhotos)
       .subscribe({
         next: (data) => {
@@ -163,7 +171,10 @@ export class SettingsComponent implements OnInit {
       smallImageSize: [data ? data.smallImageSize : '', Validators.required],
       thumbnailSize: [data ? data.thumbnailSize : '', Validators.required],
       photoDeleteAction: [data ? data.photoDeleteAction : 0],
-      mobilePhotoDeleteAction: [data ? data.mobilePhotoDeleteAction : 1]});
+      mobilePhotoDeleteAction: [data ? data.mobilePhotoDeleteAction : 1],
+      serverTagColor: ['#ffffff'],
+      serverTagColorSelected: ['#ccc'],
+    });
   }
 
   private formToSettings(): Settings {
@@ -179,6 +190,8 @@ export class SettingsComponent implements OnInit {
     settings.thumbnailSize = this.f.thumbnailSize.value;
     settings.photoDeleteAction = this.f.photoDeleteAction.value;
     settings.mobilePhotoDeleteAction = this.f.mobilePhotoDeleteAction.value;
+    settings.serverTagColor = this.f.serverTagColor.value;
+    settings.serverTagColorSelected = this.f.serverTagColorSelected.value;
 
     return settings;
   }

@@ -1,9 +1,10 @@
 import { OnInit, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { UserSettingsService } from '../services';
+import { TagService, UserSettingsService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { UserSettings } from '../models/user-settings';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { KeyValue } from '@angular/common';
 
 @Component({
   selector: 'app-user-settings',
@@ -19,16 +20,24 @@ export class UserSettingsComponent implements OnInit {
   submitted = false;
   thumbSizes = ['Largest', 'Large', 'Medium', 'Small', 'Smallest'];
   slideSpeeds = ['Fastest', 'Fast', 'Normal', 'Slow', 'Slowest'];
+  defaultTags: Array<string> = [];
 
   constructor(
     private formBuilder: UntypedFormBuilder,
     public bsModalRef: BsModalRef,
     private userSettingsService: UserSettingsService,
+    private tagService: TagService,
     private toastr: ToastrService) {}
 
   ngOnInit() {
     this.userSettings = this.userSettingsService.userSettings;
     this.setupForm(this.userSettings);
+
+    this.tagService.getTags()
+      .subscribe({
+        next: (tags) => this.defaultTags = tags.map((t) => t.tagName),
+        error: (e) => console.error(e)
+      })
   }
 
   onSubmit() {
@@ -58,7 +67,8 @@ export class UserSettingsComponent implements OnInit {
     this.userSettingsForm = this.formBuilder.group({
       thumbnailSize: [data ? data.thumbnailSize : 'Medium', Validators.required],
       slideshowSpeed: [data ? data.slideshowSpeed : 'Normal', Validators.required],
-      autoStartSlideshow: [data ? data.autoStartSlideshow : false, Validators.required]
+      autoStartSlideshow: [data ? data.autoStartSlideshow : false, Validators.required],
+      defaultView: [data ? data.defaultView : '']
     });
   }
 
@@ -68,6 +78,7 @@ export class UserSettingsComponent implements OnInit {
     settings.thumbnailSize = this.f.thumbnailSize.value;
     settings.slideshowSpeed = this.f.slideshowSpeed.value;
     settings.autoStartSlideshow = this.f.autoStartSlideshow.value;
+    settings.defaultView = this.f.defaultView.value;
 
     return settings;
   }

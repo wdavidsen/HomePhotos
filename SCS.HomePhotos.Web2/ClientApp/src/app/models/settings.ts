@@ -9,4 +9,6 @@ export class Settings {
     thumbnailSize?: number;
     photoDeleteAction?: number;
     mobilePhotoDeleteAction?: number;
+    serverTagColor?: string;
+    serverTagColorSelected?: string;
 }

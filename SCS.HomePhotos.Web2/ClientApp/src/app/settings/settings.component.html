@@ -6,6 +6,13 @@
         <div *ngIf="submitted && f.indexPath.errors" class="invalid-feedback">
             <div *ngIf="f.indexPath.errors.required">Photos folder is required</div>
         </div>
+    </div>   
+    <div class="form-group">
+        <label for="mobileUploadsFolder">Mobile uploads folder</label>
+        <input type="text" formControlName="mobileUploadsFolder" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.mobileUploadsFolder.errors }" />
+        <div *ngIf="submitted && f.mobileUploadsFolder.errors" class="invalid-feedback">
+            <div *ngIf="f.mobileUploadsFolder.errors.required">Mobile uploads folder is required</div>
+        </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-10">
@@ -20,13 +27,6 @@
             <button type="button" class="form-control btn btn-light btn-index" (click)="promptForClear()">                
                 Clear Cache
             </button>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="mobileUploadsFolder">Mobile uploads folder</label>
-        <input type="text" formControlName="mobileUploadsFolder" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.mobileUploadsFolder.errors }" />
-        <div *ngIf="submitted && f.mobileUploadsFolder.errors" class="invalid-feedback">
-            <div *ngIf="f.mobileUploadsFolder.errors.required">Mobile uploads folder is required</div>
         </div>
     </div>
     <div class="form-row">
@@ -51,56 +51,82 @@
             </button>
         </div>
     </div>
-    <div class="form-group">
-        <label for="indexFrequencyHours">Index frequency (hours)</label>
-        <input type="number" formControlName="indexFrequencyHours" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.indexFrequencyHours.errors }" />
-        <div *ngIf="submitted && f.indexFrequencyHours.errors" class="invalid-feedback">
-            <div *ngIf="f.indexFrequencyHours.errors.required">Index frequency is required</div>
-        </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="indexFrequencyHours">Index frequency (hours)</label>
+            <input type="number" formControlName="indexFrequencyHours" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.indexFrequencyHours.errors }" />
+            <div *ngIf="submitted && f.indexFrequencyHours.errors" class="invalid-feedback">
+                <div *ngIf="f.indexFrequencyHours.errors.required">Index frequency is required</div>
+            </div>
+        </div>        
     </div>
-    <div class="form-group">
-        <label for="thumbnailSize">Photo thumbnail size</label>
-        <input type="number" formControlName="thumbnailSize" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.thumbnailSize.errors }" />
-        <div *ngIf="submitted && f.thumbnailSize.errors" class="invalid-feedback">
-            <div *ngIf="f.thumbnailSize.errors.required">Photo thumbnail size is required</div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="thumbnailSize">Photo thumbnail size</label>
+            <input type="number" formControlName="thumbnailSize" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.thumbnailSize.errors }" />
+            <div *ngIf="submitted && f.thumbnailSize.errors" class="invalid-feedback">
+                <div *ngIf="f.thumbnailSize.errors.required">Photo thumbnail size is required</div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="smallImageSize">Photo small size</label>
-        <input type="number" formControlName="smallImageSize" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.smallImageSize.errors }" />
-        <div *ngIf="submitted && f.smallImageSize.errors" class="invalid-feedback">
-            <div *ngIf="f.smallImageSize.errors.required">Photo small size is required</div>
+        <div class="form-group col-md-4" >
+            <label for="smallImageSize">Photo small size</label>
+            <input type="number" formControlName="smallImageSize" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.smallImageSize.errors }" />
+            <div *ngIf="submitted && f.smallImageSize.errors" class="invalid-feedback">
+                <div *ngIf="f.smallImageSize.errors.required">Photo small size is required</div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="largeImageSize">Photo large size</label>
-        <input type="number" formControlName="largeImageSize" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.largeImageSize.errors }" />
-        <div *ngIf="submitted && f.largeImageSize.errors" class="invalid-feedback">
-            <div *ngIf="f.largeImageSize.errors.required">Photo large size is required</div>
-        </div>
+        <div class="form-group col-md-4">
+            <label for="largeImageSize">Photo large size</label>
+            <input type="number" formControlName="largeImageSize" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.largeImageSize.errors }" />
+            <div *ngIf="submitted && f.largeImageSize.errors" class="invalid-feedback">
+                <div *ngIf="f.largeImageSize.errors.required">Photo large size is required</div>
+            </div>
+        </div>        
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="photoDeleteAction">Photo delete action</label>
             <select class="form-control form-select" aria-label="Default select example" formControlName="photoDeleteAction">
-                <option selected value="0">Delete record only</option>
-                <option value="1">Delete record and all files</option>
+                <option selected value="0">Delete database record and cache files</option>
+                <option value="1">Delete original file, database record and cache files</option>
             </select>
         </div>
         <div class="form-group col-md-6">
             <label for="mobilePhotoDeleteAction">Mobile upload photo delete action</label>
             <select class="form-control form-select" aria-label="Default select example" formControlName="mobilePhotoDeleteAction">
-                <option value="0">Delete record only</option>
-                <option selected value="1">Delete record and all files</option>
+                <option value="0">Delete database record and cache files</option>
+                <option selected value="1">Delete original file, database record and cache files</option>
             </select>
         </div>
     </div>
-    <div class="form-group">
-        <button [disabled]="loading" class="btn btn-primary">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Save
-        </button>
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            <label for="thumbnailSize">Server tag color</label>
+            <div>
+                <ngx-colors ngx-colors-trigger style="display: inline-block; margin:5px;" formControlName="serverTagColor"
+                    [hideTextInput]="true" 
+                    [hideColorPicker]="true"
+                    format="rgba"
+                    colorPickerControls="no-alpha"></ngx-colors>
+            </div>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="thumbnailSize">Server tag color selected</label>
+            <div>
+                <ngx-colors ngx-colors-trigger style="display: inline-block; margin:5px;" formControlName="serverTagColorSelected"
+                    [hideTextInput]="true" 
+                    [hideColorPicker]="true"
+                    format="rgba"
+                    colorPickerControls="no-alpha"></ngx-colors>
+            </div>
+        </div>
     </div>
+    
+    <hr />
+    <button [disabled]="loading" class="btn btn-primary">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Save
+    </button>
 </form>
 
 <div bsModal #indexModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-index-now">

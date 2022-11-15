@@ -78,8 +78,12 @@ export class PhotosComponent implements OnInit, OnDestroy {
     this.searchService.setHidden(false);
 
     this.route.paramMap.subscribe(params => {
+      const defaultTag = this.userSettings.defaultView;      
       this.tagName = params.get('tagName');
+
       console.log(`Received tag: ${this.tagName}`);
+
+      this.tagName = this.tagName || defaultTag;
 
       if (this.tagName) {
         this.pageInfoService.setTitle(this.tagName);
@@ -99,7 +103,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
           return;
         }
 
-        if (searchInfo.keywords || searchInfo.fromDate || searchInfo.toDate) {
+        if (!SearchInfo.isSearchClear(searchInfo)) {
           console.log(`Received search. keywords: ${searchInfo.keywords}; from date: ${searchInfo.fromDate}; to date: ${searchInfo.toDate}`);
           this.searchInfo = searchInfo;
           this.mode = 3;
@@ -129,15 +133,34 @@ export class PhotosComponent implements OnInit, OnDestroy {
     this.userSettingsSubscription = this.userSettingsService.getSettings()
       .subscribe(settings => {
         this.userSettings = settings;
-        this.thumbHeight = this.getThumbHeight(settings.thumbnailSize);
+        const newHeight = this.getThumbHeight(settings.thumbnailSize);
+        const defaultView = settings.defaultView;
 
-        this.thumbnails.forEach((thumb) => {
-          const ratio = thumb.thumbWidth / thumb.thumbHeight;
-          const dims = this.calculateThumbSize(ratio, this.thumbHeight);
+        if (defaultView != this.tagName) {
+          
+          if (defaultView.length && SearchInfo.isSearchClear(this.searchInfo)) {
+            this.tagName = defaultView;
+            this.mode = 2;
+          }
+          else {
+            this.searchInfo = null;
+            this.mode = 1;
+          }
 
-          thumb.thumbHeight = dims.height;
-          thumb.thumbWidth = dims.width;
-        });
+          this.resetResults();
+          this.loadPhotos();
+        }
+        else if (newHeight != this.thumbHeight) {
+          this.thumbHeight = newHeight;
+
+          this.thumbnails.forEach((thumb) => {
+            const ratio = thumb.thumbWidth / thumb.thumbHeight;
+            const dims = this.calculateThumbSize(ratio, this.thumbHeight);
+
+            thumb.thumbHeight = dims.height;
+            thumb.thumbWidth = dims.width;
+          });
+        }
       });
   }
 

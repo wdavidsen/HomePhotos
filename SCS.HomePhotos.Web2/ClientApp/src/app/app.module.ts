@@ -55,6 +55,7 @@ import { routes } from './app.routes';
 import { SearchAdvancedComponent } from './components/search-advanced.component';
 import { ExclusionsComponent } from './exclusions/exclusions.component';
 import { ExclusionService } from './services/exclusion.service';
+import { NgxColorsModule } from 'ngx-colors';
 
 @NgModule({
     declarations: [
@@ -118,7 +119,8 @@ import { ExclusionService } from './services/exclusion.service';
             preventDuplicates: true
         }),
         FileUploadModule,
-        AngularCropperjsModule
+        AngularCropperjsModule,
+        NgxColorsModule
     ],
     providers: [
         NgxSpinnerService,

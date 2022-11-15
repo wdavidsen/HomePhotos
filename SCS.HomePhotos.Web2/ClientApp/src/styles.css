@@ -45,6 +45,11 @@ code {
   display: block !important;
 }
 
+.tag-color {
+  background-color: rgb(255, 249, 196);
+  border-color: rgb(140,136,107);
+}
+
 /** Phone **/
 @media only screen and (max-width: 767px), only screen and (max-device-width: 767px) {
 
