@@ -30,6 +30,7 @@ namespace SCS.HomePhotos.Web.Dto
             ThumbnailSize = config.ThumbnailSize;
             PhotoDeleteAction = (int)config.PhotoDeleteAction;
             MobilePhotoDeleteAction = (int)config.MobilePhotoDeleteAction;
+            TagColor = config.TagColor;
         }
 
         /// <summary>
@@ -131,6 +132,14 @@ namespace SCS.HomePhotos.Web.Dto
         public int MobilePhotoDeleteAction { get; set; }
 
         /// <summary>
+        /// Gets or sets the color of the tag.
+        /// </summary>
+        /// <value>
+        /// The color of the tag.
+        /// </value>
+        public string TagColor { get; set; }
+
+        /// <summary>
         /// Converts instance to the domain model.
         /// </summary>
         /// <returns>The domain equivalent instance.</returns>
@@ -167,7 +176,8 @@ namespace SCS.HomePhotos.Web.Dto
                 IndexFrequencyHours = IndexFrequencyHours,
                 ThumbnailSize = ThumbnailSize,
                 PhotoDeleteAction = (DeleteAction)PhotoDeleteAction,
-                MobilePhotoDeleteAction = (DeleteAction)MobilePhotoDeleteAction
+                MobilePhotoDeleteAction = (DeleteAction)MobilePhotoDeleteAction,
+                TagColor = TagColor
             };
         }
     }

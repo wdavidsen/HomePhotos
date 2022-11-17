@@ -9,6 +9,7 @@ export class AccountInfo {
     role?: string;
     emailAddress?: string;
     avatarImage?: string;
+    tagColor?: string;
 
     static FromUser(user: User): AccountInfo {
         const a = new AccountInfo();
@@ -21,6 +22,7 @@ export class AccountInfo {
         a.avatarImage = user.avatarImage;
         a.lastLogin = user.lastLogin;
         a.role = user.role;
+        a.tagColor = user.tagColor;
 
         return a;
     }

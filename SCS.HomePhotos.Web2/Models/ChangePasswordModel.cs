@@ -21,7 +21,7 @@ namespace SCS.HomePhotos.Web.Models
         [Compare(nameof(NewPasswordCompare))]
         public string NewPassword { get; set; }
 
-        /// <summary>Creates new passwordcompare.</summary>
+        /// <summary>Creates new password compare.</summary>
         /// <value>The new password compare.</value>
         [Required]
         public string NewPasswordCompare { get; set; }

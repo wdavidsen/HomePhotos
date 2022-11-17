@@ -55,7 +55,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             Assert.IsType<OkResult>(response);
         }
 
-        protected override void DisposeController()
+        protected override void Dispose(bool disposing)
         {
             _settingsController.Dispose();
         }

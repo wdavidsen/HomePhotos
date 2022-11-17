@@ -28,6 +28,7 @@ namespace SCS.HomePhotos.Web.Dto
             AvatarImage = user.AvatarImage;
             Admin = user.Role == RoleType.Admin;
             LastLogin = user.LastLogin;
+            TagColor = user.TagColor;
         }
 
         /// <summary>
@@ -99,6 +100,14 @@ namespace SCS.HomePhotos.Web.Dto
         public DateTime? LastLogin { get; set; }
 
         /// <summary>
+        /// Gets or sets the color of the tag.
+        /// </summary>
+        /// <value>
+        /// The color of the tag.
+        /// </value>
+        public string TagColor { get; set; }
+
+        /// <summary>
         /// Converts instance to the domain model.
         /// </summary>
         /// <returns>The domain equivalent instance.</returns>
@@ -113,7 +122,8 @@ namespace SCS.HomePhotos.Web.Dto
                 EmailAddress = EmailAddress,
                 AvatarImage = AvatarImage,
                 Role = Admin ? RoleType.Admin : RoleType.Reader,
-                LastLogin = LastLogin                
+                LastLogin = LastLogin,
+                TagColor = TagColor
             };
         }
     }

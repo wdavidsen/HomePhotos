@@ -372,6 +372,7 @@ namespace SCS.HomePhotos.Service.Core
             exitingUser.FirstName = user.FirstName;
             exitingUser.LastName = user.LastName;
             exitingUser.EmailAddress = user.EmailAddress;
+            exitingUser.TagColor = user.TagColor;
 
             await _userData.UpdateAsync(exitingUser);
             _adminLogService.LogNeutral($"User account update for {user.UserName} succeeded.", LogCategory.Security);
@@ -407,6 +408,7 @@ namespace SCS.HomePhotos.Service.Core
                 exitingUser.Enabled = user.Enabled;
                 exitingUser.Role = user.Role;
                 exitingUser.MustChangePassword = user.MustChangePassword;
+                exitingUser.TagColor = user.TagColor;
 
                 await _userData.UpdateAsync(exitingUser);
                 _adminLogService.LogNeutral($"User account update for {user.UserName} succeeded.", LogCategory.Security);

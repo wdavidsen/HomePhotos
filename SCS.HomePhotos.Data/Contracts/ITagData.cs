@@ -23,8 +23,9 @@ namespace SCS.HomePhotos.Data.Contracts
         /// Gets the tag by name.
         /// </summary>
         /// <param name="tagName">Name of the tag.</param>
+        /// <param name="userId">The owner of the tag.</param>
         /// <returns>The matching tag.</returns>
-        Task<Tag> GetTag(string tagName);
+        Task<Tag> GetTag(string tagName, int? userId = null);
 
         /// <summary>
         /// Gets the tag and photo count.

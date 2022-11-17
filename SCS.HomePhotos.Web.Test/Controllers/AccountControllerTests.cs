@@ -17,7 +17,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 {
     public class AccountControllerTests : ControllerTestBase
     {
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         private readonly AccountController _accountController;
         private readonly Mock<ILogger<AccountController>> _logger;
@@ -270,7 +270,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             Assert.Equal(((ProblemModel)value).Id, expectedErrorCode);
         }
 
-        protected override void DisposeController()
+        protected override void Dispose(bool disposing)
         {
             _accountController.Dispose();
         }

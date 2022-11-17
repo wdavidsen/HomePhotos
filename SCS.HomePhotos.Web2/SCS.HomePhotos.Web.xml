@@ -132,8 +132,8 @@
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.PhotosController},SCS.HomePhotos.Service.Contracts.IPhotoService,SCS.HomePhotos.IStaticConfig)">
             <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.PhotosController" /> class.</summary>
-            <param name="logger">The logger.</param>
-            <param name="photoSevice">The photo sevice.</param>
+            <param name="logger">The logger.</param>        
+            <param name="photoSevice">The photo service.</param>
             <param name="staticConfig">The static configuration.</param>
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.GetLatestPhotos(System.Int32,System.Int32)">
@@ -233,12 +233,12 @@
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.AddTag(SCS.HomePhotos.Web.Dto.Tag)">
             <summary>Adds a tag.</summary>
-            <param name="tag">The tag to add.</param>
+            <param name="tag">The tag to add.</param>        
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.UpdateTag(SCS.HomePhotos.Web.Dto.Tag)">
             <summary>Updates a tag.</summary>
             <param name="tag">The tag to update.</param>
-            <returns>The updated tag.</returns>
+            <returns>The updated tag.</returns>        
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.DeleteTag(System.Int32)">
             <summary>Deletes a tag.</summary>
@@ -247,10 +247,16 @@
         <member name="T:SCS.HomePhotos.Web.Controllers.UploadController">
             <summary>Upload services.</summary>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.UploadController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.UploadController},SCS.HomePhotos.Service.Contracts.IImageService,SCS.HomePhotos.Web.IFileUploadService,SCS.HomePhotos.Service.Contracts.IAdminLogService,SCS.HomePhotos.Web.IUploadTracker)">
+        <member name="M:SCS.HomePhotos.Web.Controllers.UploadController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.UploadController},SCS.HomePhotos.Service.Contracts.IImageService,SCS.HomePhotos.Data.Contracts.IUserData,SCS.HomePhotos.Web.IFileUploadService,SCS.HomePhotos.Service.Contracts.IAdminLogService,SCS.HomePhotos.Web.IUploadTracker)">
             <summary>
             Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.UploadController"/> class.
             </summary>
+            <param name="logger">The logger.</param>
+            <param name="imageService">The image service.</param>
+            <param name="userData">The user data.</param>
+            <param name="fileUploadService">The file upload service.</param>
+            <param name="adminLogService">The admin log service.</param>
+            <param name="uploadTracker">The upload tracker.</param>
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.UploadController.ImageUpload(Microsoft.AspNetCore.Http.IFormCollection)">
             <summary>Receives an image upload.</summary>
@@ -371,6 +377,14 @@
             </summary>
             <value>
             The last login.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.AccountInfo.TagColor">
+            <summary>
+            Gets or sets the color of the tag.
+            </summary>
+            <value>
+            The color of the tag.
             </value>
         </member>
         <member name="M:SCS.HomePhotos.Web.Dto.AccountInfo.ToModel">
@@ -685,6 +699,14 @@
             The mobile photo delete action.
             </value>
         </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.TagColor">
+            <summary>
+            Gets or sets the color of the tag.
+            </summary>
+            <value>
+            The color of the tag.
+            </value>
+        </member>
         <member name="M:SCS.HomePhotos.Web.Dto.Settings.ToModel">
             <summary>
             Converts instance to the domain model.
@@ -699,7 +721,7 @@
         </member>
         <member name="T:SCS.HomePhotos.Web.Dto.Tag">
             <summary>
-            Tab DTO.
+            Tag DTO.
             </summary>
         </member>
         <member name="M:SCS.HomePhotos.Web.Dto.Tag.#ctor">
@@ -735,6 +757,22 @@
             </summary>
             <value>
             The photo count.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Tag.TagColor">
+            <summary>
+            Gets or sets the color of the tag.
+            </summary>
+            <value>
+            The color of the tag.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Tag.OwnerId">
+            <summary>
+            Gets or sets the owner identifier.
+            </summary>
+            <value>
+            The owner identifier.
             </value>
         </member>
         <member name="M:SCS.HomePhotos.Web.Dto.Tag.ToModel">
@@ -880,6 +918,14 @@
             </summary>
             <value>
               <c>true</c> if user must change password; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.User.TagColor">
+            <summary>
+            Gets or sets the color of the tag.
+            </summary>
+            <value>
+            The color of the tag.
             </value>
         </member>
         <member name="M:SCS.HomePhotos.Web.Dto.User.ToModel">
@@ -1382,7 +1428,7 @@
             <value>The new password.</value>
         </member>
         <member name="P:SCS.HomePhotos.Web.Models.ChangePasswordModel.NewPasswordCompare">
-            <summary>Creates new passwordcompare.</summary>
+            <summary>Creates new password compare.</summary>
             <value>The new password compare.</value>
         </member>
         <member name="T:SCS.HomePhotos.Web.Models.FileGroup`1">
@@ -1511,19 +1557,35 @@
             <value>The source tag identifier.</value>
         </member>
         <member name="P:SCS.HomePhotos.Web.Models.TagCopyInfo.NewTagName">
-            <summary>Creates new tagname.</summary>
+            <summary>Creates new tag name.</summary>
             <value>The new name of the tag.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TagCopyInfo.OwnerId">
+            <summary>
+            Gets or sets the owner identifier.
+            </summary>
+            <value>
+            The owner identifier.
+            </value>
         </member>
         <member name="T:SCS.HomePhotos.Web.Models.TagMergeInfo">
             <summary>Tag merge info model.</summary>
         </member>
         <member name="P:SCS.HomePhotos.Web.Models.TagMergeInfo.NewTagName">
-            <summary>Creates new tagname.</summary>
+            <summary>Creates new tag name.</summary>
             <value>The new name of the tag.</value>
         </member>
         <member name="P:SCS.HomePhotos.Web.Models.TagMergeInfo.SourceTagIds">
             <summary>Gets or sets the source tag ids.</summary>
             <value>The source tag ids.</value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.TagMergeInfo.OwnerId">
+            <summary>
+            Gets or sets the owner identifier.
+            </summary>
+            <value>
+            The owner identifier.
+            </value>
         </member>
         <member name="T:SCS.HomePhotos.Web.Models.TagState">
             <summary>Tag state model.</summary>

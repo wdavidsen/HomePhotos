@@ -22,7 +22,7 @@ namespace SCS.HomePhotos.Service.Core
     /// </summary>
     public class ImageService : IImageService
     {
-        private Random _randomNum = new Random();
+        private readonly Random _randomNum = new();
 
         private readonly IImageTransformer _imageTransformer;
         private readonly IFileSystemService _fileSystemService;
@@ -73,11 +73,11 @@ namespace SCS.HomePhotos.Service.Core
         /// <summary>
         /// Queues the image to be resized for mobile display.
         /// </summary>
-        /// <param name="contextUserName">Name of the context user.</param>
+        /// <param name="uploadedBy">User that uploaded file.</param>
         /// <param name="imageFilePath">The image file path.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>The cached file path.</returns>
-        public async Task<string> QueueMobileResize(string contextUserName, string imageFilePath, params string[] tags)
+        public async Task<string> QueueMobileResize(User uploadedBy, string imageFilePath, List<Tag> tags = null)
         {
             var checksum = _fileSystemService.GetChecksum(imageFilePath);
             var existingPhoto = await _photoService.GetPhotoByChecksum(checksum);
@@ -110,12 +110,12 @@ namespace SCS.HomePhotos.Service.Core
 
                         SavePhotoAndTags(existingPhoto, finalPath, cacheFilePath, checksum, imageLayoutInfo, metadata, tags);
 
-                        notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ProcessMobilePhoto, contextUserName, true, imageFilePath));
+                        notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ProcessMobilePhoto, uploadedBy.UserName, true, imageFilePath));
                     }
                     catch (Exception ex)
                     {
                         _logger.LogError(ex, "Failed to process image: {imageFilePath}.", imageFilePath);
-                        notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ProcessMobilePhoto, contextUserName, false, imageFilePath));
+                        notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ProcessMobilePhoto, uploadedBy.UserName, false, imageFilePath));
                     }
                 });
             });
@@ -160,7 +160,6 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>
         /// The image cache path.
         /// </returns>
-        [SuppressMessage("Security", "SCS0005:Weak random generator", Justification = "Random number is not being used for security purposes.")]
         public string CreateCachePath(string checksum, string extension)
         {
             var cachePath = Path.Combine(string.Concat(checksum.AsSpan(0, 1), _randomNum.Next(1, 10).ToString()), Guid.NewGuid() + extension);
@@ -310,7 +309,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="tags">The tags.</param>
         /// <returns></returns>
         public Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string cacheFilePath, string checksum,
-            ImageLayoutInfo imageLayoutInfo, IEnumerable<ExifDirectoryBase> exifDataList, params string[] tags)
+            ImageLayoutInfo imageLayoutInfo, IEnumerable<ExifDirectoryBase> exifDataList, List<Tag> tags = null)
         {
             _logger.LogInformation("Saving photo with checksum {Checksum}.", checksum);
 
@@ -331,16 +330,9 @@ namespace SCS.HomePhotos.Service.Core
 
             _photoService.SavePhoto(photo);
 
-            if (existingPhoto == null)
-            {
-                var photoTags = BuildBuiltInTags(imageFilePath, imageInfo);
-
-                if (tags != null)
-                {
-                    photoTags.AddRange(tags);
-                }
-                _photoService.AssociateTags(photo, photoTags.ToArray());
-            }
+            tags ??= new List<Tag>();
+            tags.AddRange(BuildBuiltInTags(imageFilePath, imageInfo));
+            _photoService.AssociateTags(photo, tags);
 
             _logger.LogInformation("Saved photo to database.");
 
@@ -422,17 +414,22 @@ namespace SCS.HomePhotos.Service.Core
             return value;
         }
 
-        private List<string> BuildBuiltInTags(string imageFilePath, ImageInfo imageInfo)
+        private List<Tag> BuildBuiltInTags(string imageFilePath, ImageInfo imageInfo)
         {
-            var tags = _fileSystemService.GetDirectoryTags(imageFilePath).ToList();
+            var tags = new List<Tag>();
+            
+            foreach (var dirTag in _fileSystemService.GetDirectoryTags(imageFilePath).ToList())
+            {
+                tags.Add(new Tag { TagName = dirTag, UserId = null }); // null = system tag
+            }
 
             if (imageInfo.DateTaken != DateTime.MinValue)
             {
                 var yearTag = imageInfo.DateTaken.Year.ToString();
 
-                if (!tags.Contains(yearTag))
+                if (!tags.Any(t => t.TagName == yearTag))
                 {
-                    tags.Add(yearTag);
+                    tags.Add(new Tag { TagName = yearTag, UserId = null }); // null = system tag
                 }
             }
             return tags;

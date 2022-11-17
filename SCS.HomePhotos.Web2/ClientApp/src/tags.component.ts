@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { TagService, SearchService, OrganizeService, AuthService, UserSettingsService } from '../services';
-import { TagChip, Tag, User, SearchInfo } from '../models';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { InputDialogComponent, ConfirmDialogComponent } from '../common-dialog';
-import { UserSettings } from '../models/user-settings';
+import { SearchInfo, Tag, TagChip, User, UserSettings } from './app/models';
+import { AuthService, OrganizeService, SearchService, TagService, UserSettingsService } from './app/services';
+import { ConfirmDialogComponent, InputDialogComponent } from './app/common-dialog';
 
 declare var RGB_Log_Shade: any;
 
@@ -136,14 +135,13 @@ export class TagsComponent implements OnInit, OnDestroy {
     if (tagName) {
       const tag: Tag = {
         tagId: 0,
-        tagName: tagName,
-        ownerId: this.currentUser.userId
+        tagName: tagName
       };
 
       this.tagService.addTag(tag)
         .subscribe({
           next: (t) => {
-            this.tagChips.push(this.tagToChip(t));
+            this.tagChips.push(this.setSearchInfo(t));
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
             this.toastr.success('Added tag successfully');
             this.clearSelections();
@@ -165,17 +163,16 @@ export class TagsComponent implements OnInit, OnDestroy {
       this.dialogSubscription = this.modalService.onHidden
         .subscribe(() => {
           if (this.inputModalRef.content.okClicked) {
-            this.renameTagSubmit(chips[0].id, chips[0].ownerId, this.inputModalRef.content.input);
+            this.renameTagSubmit(chips[0].id, this.inputModalRef.content.input);
           }
         });
     }
   }
 
-  private renameTagSubmit(tagId: number, ownerId: number, newTagName: string) {
+  private renameTagSubmit(tagId: number, newTagName: string) {
     if (newTagName && newTagName.length) {
       const tag: Tag = {
         tagId: tagId,
-        ownerId: ownerId,
         tagName: newTagName
       };
 
@@ -254,7 +251,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       this.tagService.copyTag(sourceTagId, copyTagName)
         .subscribe({
           next: (newTag) => {
-            const chip = this.tagToChip(newTag);
+            const chip = this.setSearchInfo(newTag);
             this.tagChips.push(chip);
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
             this.toastr.success('Copied tag successfully');
@@ -291,7 +288,7 @@ export class TagsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (newTag) => {
             sourceTagIds.forEach(id => this.tagChips.splice(this.tagChips.findIndex(c => c.id === id), 1));
-            const chip = this.tagToChip(newTag);
+            const chip = this.setSearchInfo(newTag);
             this.tagChips.push(chip);
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
             this.toastr.success('Combined tags successfully');
@@ -310,11 +307,11 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   private tagsToChips(photos: Tag[]): TagChip[] {
     const chips = new Array<TagChip>();
-    photos.forEach(tag => chips.push(this.tagToChip(tag)));
+    photos.forEach(tag => chips.push(this.setSearchInfo(tag)));
     return chips;
   }
 
-  private tagToChip(tag: Tag): TagChip {
+  private setSearchInfo(tag: Tag): TagChip {
     const chip = new TagChip();    
     chip.id = tag.tagId;
     chip.name = tag.tagName;

@@ -55,7 +55,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             Assert.Equal(10, ((DataList<Dto.LogEntry>)value).Data.Count);
         }
 
-        protected override void DisposeController()
+        protected override void Dispose(bool disposing)
         {
             _logsController.Dispose();
         }

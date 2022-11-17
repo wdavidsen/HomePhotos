@@ -52,6 +52,17 @@
                     <div *ngIf="f.emailAddress.errors.email">Invalid email address</div>
                 </div>
             </div>   
+            <div class="form-group">
+                <label for="thumbnailSize">Tag color</label>
+                <div>
+                    <ngx-colors ngx-colors-trigger style="display: inline-block; margin:5px;"
+                        [formControl]="f.tagColor"
+                        [hideTextInput]="true" 
+                        [hideColorPicker]="true"
+                        format="rgba"
+                        colorPickerControls="no-alpha"></ngx-colors>
+                </div>
+              </div>
             <div class="form-group btn-group">
                 <button [disabled]="loading" class="btn btn-primary" type="submit">
                     <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>

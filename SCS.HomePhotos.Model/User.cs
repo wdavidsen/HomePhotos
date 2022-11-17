@@ -53,6 +53,7 @@ namespace SCS.HomePhotos.Model
             LastLogin = user.LastLogin;
             FailedLoginCount = user.FailedLoginCount;
             MustChangePassword = user.MustChangePassword;
+            TagColor = user.TagColor;
         }
 
         /// <summary>
@@ -159,5 +160,13 @@ namespace SCS.HomePhotos.Model
         /// The password history.
         /// </value>
         public string PasswordHistory { get; set; }
+
+        /// <summary>
+        /// Gets or sets the color of the tag.
+        /// </summary>
+        /// <value>
+        /// The color of the tag.
+        /// </value>
+        public string TagColor { get; set; }
     }
 }

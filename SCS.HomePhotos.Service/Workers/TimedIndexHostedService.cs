@@ -26,10 +26,9 @@ namespace SCS.HomePhotos.Workers
     /// <seealso cref="System.IDisposable" />
     public class TimedIndexHostedService : IHostedService, IDisposable
     {
-        private static Collection<string> _allowedExtensions = new Collection<string> { "JPG", "JPEG", "PNG" };
-        private static List<string> _excludedDirectories = new List<string>();
+        private static readonly Collection<string> _allowedExtensions = new() { "JPG", "JPEG", "PNG" };
+        private static List<string> _excludedDirectories = new();
 
-        private int executionCount = 0;
         private bool _indexingNow = false;
         private CancellationToken _indexCanellationToken;
         private CancellationTokenSource _internalCanellationTokenSource;
@@ -64,7 +63,7 @@ namespace SCS.HomePhotos.Workers
             _indexEvents = indexEvents;
             _metadataService = metadataService;
 
-            configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
+            configService.DynamicConfig.PropertyChanged += Config_PropertyChanged;
         }
 
         /// <summary>
@@ -188,8 +187,6 @@ namespace SCS.HomePhotos.Workers
                 return;
             }
 
-            executionCount++;
-
             _adminlogger.LogNeutral("Photo index started.", LogCategory.Index);
             _logger.LogInformation("Photo index started.");
 
@@ -219,10 +216,10 @@ namespace SCS.HomePhotos.Workers
                 var msg = $"Photo index completed. Next photo index time: {nextStart.ToString("g")} (UTC).";
                 _adminlogger.LogNeutral(msg, LogCategory.Index);
 
-                _configService.DynamicConfig.PropertyChanged -= _config_PropertyChanged;
+                _configService.DynamicConfig.PropertyChanged -= Config_PropertyChanged;
                 _configService.DynamicConfig.NextIndexTime = nextStart;
                 _configService.DynamicConfig.IndexOnStartup = false;
-                _configService.DynamicConfig.PropertyChanged += _config_PropertyChanged;
+                _configService.DynamicConfig.PropertyChanged += Config_PropertyChanged;
             }
             catch (AggregateException ex)
             {
@@ -292,7 +289,7 @@ namespace SCS.HomePhotos.Workers
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
-        private void _config_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Config_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(DynamicConfig.IndexFrequencyHours) || e.PropertyName == nameof(DynamicConfig.NextIndexTime))
             {
@@ -474,16 +471,13 @@ namespace SCS.HomePhotos.Workers
 
         private static void RefreshDirectoryExclusions(IDynamicConfig config, IFileExclusionData fileExclusionData)
         {
-            if (_excludedDirectories == null)
-            {
-                _excludedDirectories = fileExclusionData.GetListAsync("WHERE FileName IS NULL", new {}).Result
-                    .Select(e => 
-                    {
-                        var basePath = e.MobileUpload ? config.MobileUploadsFolder : config.IndexPath;
-                        return FilePath.Combine(basePath, e.OriginalFolder);
-                    })
-                    .ToList();
-            }
+            _excludedDirectories ??= fileExclusionData.GetListAsync("WHERE FileName IS NULL", new {}).Result
+                .Select(e => 
+                {
+                    var basePath = e.MobileUpload ? config.MobileUploadsFolder : config.IndexPath;
+                    return FilePath.Combine(basePath, e.OriginalFolder);
+                })
+                .ToList();
         }
     }
 }

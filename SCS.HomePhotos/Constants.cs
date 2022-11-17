@@ -36,6 +36,11 @@
         public const string DatabaseDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 
         /// <summary>
+        /// The default tag color.
+        /// </summary>
+        public const string DefaultTagColor = "rgb(255, 249, 196)";
+
+        /// <summary>
         /// The accepted extensions.
         /// </summary>
         public readonly static string[] AcceptedExtensions = new string[] { "JPG", "JPEG", "PNG", "GIF", ".JPG", ".JPEG", ".PNG", ".GIF" };

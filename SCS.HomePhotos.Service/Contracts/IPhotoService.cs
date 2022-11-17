@@ -1,8 +1,8 @@
 ﻿using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Model;
 
-using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Service.Contracts
@@ -12,6 +12,14 @@ namespace SCS.HomePhotos.Service.Contracts
     /// </summary>
     public interface IPhotoService
     {
+        /// <summary>
+        /// Gets or sets the user context.
+        /// </summary>
+        /// <value>
+        /// The user context.
+        /// </value>
+        IPrincipal UserContext { get; set; }
+
         /// <summary>
         /// Gets the latest photos.
         /// </summary>
@@ -53,7 +61,7 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <summary>
         /// Gets the tags.
         /// </summary>
-        /// <param name="includPhotoCounts">if set to <c>true</c> includ photo counts for each tag.</param>
+        /// <param name="includPhotoCounts">if set to <c>true</c> include photo counts for each tag.</param>
         /// <returns>A list of tags.</returns>
         Task<IEnumerable<Tag>> GetTags(bool includPhotoCounts = false);
 
@@ -61,16 +69,18 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Gets the tag.
         /// </summary>
         /// <param name="tagName">Name of the tag.</param>
+        /// <param name="userId">The owner of the tag.</param>
         /// <param name="createIfMissing">if set to <c>true</c> create tag if missing.</param>
         /// <returns>A tag.</returns>
-        Task<Tag> GetTag(string tagName, bool createIfMissing = true);
+        Task<Tag> GetTag(string tagName, int? userId, bool createIfMissing = true);
 
         /// <summary>
         /// Gets the tag.
         /// </summary>
         /// <param name="tagName">Name of the tag.</param>
+        /// <param name="userId">The owner of the tag.</param>
         /// <returns>A tag.</returns>
-        Task<Tag> GetTag(string tagName);
+        Task<Tag> GetTag(string tagName, int? userId = null);
 
         /// <summary>
         /// Deletes a tag.
@@ -83,8 +93,9 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Saves a tag.
         /// </summary>
         /// <param name="tag">The tag to save.</param>
+        /// <param name="useServerContext">Whether to create new tag as a system tag.</param>
         /// <returns>The saved tag.</returns>
-        Task<Tag> SaveTag(Tag tag);
+        Task<Tag> SaveTag(TagStat tag, bool useServerContext = false);
 
         /// <summary>
         /// Saves a photo.
@@ -106,7 +117,7 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <param name="photo">The photo.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>A void task.</returns>
-        Task AssociateTags(Photo photo, params string[] tags);
+        Task AssociateTags(Photo photo, IEnumerable<Tag> tags);
 
         /// <summary>
         /// Gets a photo by checksum.
@@ -128,8 +139,9 @@ namespace SCS.HomePhotos.Service.Contracts
         /// </summary>
         /// <param name="newTagName">New name of the new tag.</param>
         /// <param name="sourceTagId">The tag to copy.</param>
+        /// <param name="useServerContext">Whether to create new tag as a system tag.</param>
         /// <returns>The new tag created.</returns>
-        Task<Tag> CopyTags(string newTagName, int? sourceTagId);
+        Task<Tag> CopyTags(string newTagName, int? sourceTagId, bool useServerContext = false);
 
         /// <summary>
         /// Gets tags by keywords.

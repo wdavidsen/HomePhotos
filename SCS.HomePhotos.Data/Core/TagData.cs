@@ -34,10 +34,20 @@ namespace SCS.HomePhotos.Data.Core
         /// Gets the tag by name.
         /// </summary>
         /// <param name="tagName">Name of the tag.</param>
+        /// <param name="userId">The owner of the tag.</param>
         /// <returns>The matching tag.</returns>
-        public async Task<Tag> GetTag(string tagName)
+        public async Task<Tag> GetTag(string tagName, int? userId = null)
         {
-            var list = await GetListAsync("WHERE TagName = @TagName", new { TagName = tagName });
+            IEnumerable<Tag> list;
+
+            if (userId == null)
+            {
+                list = await GetListAsync("WHERE TagName = @TagName AND UserId IS NULL", new { TagName = tagName });
+            }
+            else
+            {
+                list = await GetListAsync("WHERE TagName = @TagName AND UserId = @UserId", new { TagName = tagName, UserId = userId });
+            }
 
             if (list.Any())
             {
@@ -52,9 +62,12 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>A list of tags.</returns>
         public async Task<IEnumerable<TagStat>> GetTagAndPhotoCount()
         {
-            var sql = @"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount 
-                        FROM Tag t LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
-                        GROUP BY t.TagName, t.TagId 
+            var sql = @"SELECT t.TagId, t.TagName, t.UserId, u.TagColor, COUNT(p.PhotoId) AS PhotoCount 
+                        FROM Tag t 
+                        LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId 
+                        LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
+                        LEFT JOIN User u ON t.UserId = u.UserId 
+                        GROUP BY t.TagName, t.TagId, t.UserId, u.TagColor   
                         ORDER BY t.TagName";
 
             using (var conn = GetDbConnection())
@@ -70,10 +83,13 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>The tag and photo count.</returns>
         public async Task<TagStat> GetTagAndPhotoCount(string tagName)
         {
-            var sql = @"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount 
-                        FROM Tag t LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
+            var sql = @"SELECT t.TagId, t.TagName, t.UserId, u.TagColor, COUNT(p.PhotoId) AS PhotoCount 
+                        FROM Tag t 
+                        LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId 
+                        LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
+                        LEFT JOIN User u ON t.UserId = u.UserId 
                         WHERE TagName = @TagName
-                        GROUP BY t.TagName, t.TagId 
+                        GROUP BY t.TagName, t.TagId, t.UserId, u.TagColor   
                         ORDER BY t.TagName";
 
             using (var conn = GetDbConnection())
@@ -101,16 +117,17 @@ namespace SCS.HomePhotos.Data.Core
             var keywordArray = keywords.Split(' ').Select(kw => kw.Replace("'", "")).ToArray();
             var wordCount = keywordArray.Length;
 
-            var mainSql = $@"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount, {{0}} as Weight  
+            var mainSql = $@"SELECT t.TagId, t.TagName, t.UserId, u.TagColor, COUNT(p.PhotoId) AS PhotoCount, {{0}} as Weight  
                          FROM Photo p
                          LEFT JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
-                         LEFT JOIN Tag t ON pt.TagId = t.TagId ";
+                         LEFT JOIN Tag t ON pt.TagId = t.TagId 
+                         LEFT JOIN User u ON t.UserId = u.UserId ";
 
             var where1 = $"{Environment.NewLine}WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
             var where2 = $"{Environment.NewLine}WHERE t.TagName <> '' ";
             var where3 = dateRange != null ? $"AND p.DateTaken BETWEEN @FromDate AND @ToDate " : string.Empty;
 
-            var groupBy = $"{Environment.NewLine}GROUP BY t.TagName, t.TagId ";
+            var groupBy = $"{Environment.NewLine}GROUP BY t.TagName, t.TagId, t.UserId, u.TagColor ";
 
             // "exact" match sql for individual words (when more than 1 is provided)
             var sql = string.Format(mainSql, 2) + ((wordCount > 1) ? where1 : where2) + where3;
@@ -194,12 +211,13 @@ namespace SCS.HomePhotos.Data.Core
 
             var offset = (pageNum - 1) * pageSize;
 
-            var sql = $@"SELECT t.TagId, t.TagName, COUNT(p.PhotoId) AS PhotoCount   
+            var sql = $@"SELECT t.TagId, t.TagName, t.UserId, u.TagColor, COUNT(p.PhotoId) AS PhotoCount   
                          FROM Photo p
                          JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
-                         JOIN Tag t ON pt.TagId = t.TagId                          
+                         JOIN Tag t ON pt.TagId = t.TagId 
+                         LEFT JOIN User u ON t.UserId = u.UserId 
                          WHERE p.DateTaken BETWEEN @FromDate AND @ToDate 
-                         GROUP BY t.TagId, t.TagName 
+                         GROUP BY t.TagId, t.TagName, t.UserId, u.TagColor  
                          ORDER BY p.DateTaken DESC LIMIT {pageSize} OFFSET {offset} ";
 
             var fromDate = dateRange.FromDate.ToStartOfDay().ToString(Constants.DatabaseDateTimeFormat);

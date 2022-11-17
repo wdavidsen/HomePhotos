@@ -5,6 +5,7 @@ export * from './user';
 export * from './tag';
 export * from './tag-chip';
 export * from './user-row';
+export * from './user-settings';
 export * from './tag-state';
 export * from './account-info';
 export * from './log-entry';

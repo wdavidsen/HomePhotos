@@ -267,6 +267,14 @@ namespace SCS.HomePhotos
         public DeleteAction MobilePhotoDeleteAction { get; set; }
 
         /// <summary>
+        /// Gets or sets the color of the tag.
+        /// </summary>
+        /// <value>
+        /// The color of the tag.
+        /// </value>
+        public string TagColor { get; set; }
+
+        /// <summary>
         /// Gets the default configuration.
         /// </summary>
         /// <returns>The default configuration.</returns>
@@ -283,7 +291,8 @@ namespace SCS.HomePhotos
                 NextIndexTime = null,
                 IndexFrequencyHours = 24,
                 PhotoDeleteAction = DeleteAction.DeleteRecord,
-                MobilePhotoDeleteAction = DeleteAction.DeleteRecordAndFile
+                MobilePhotoDeleteAction = DeleteAction.DeleteRecordAndFile,
+                TagColor = Constants.DefaultTagColor
             };
         }
 

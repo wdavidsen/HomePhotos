@@ -21,6 +21,7 @@ export const routes: Routes = [
   { path: '', component: PhotosComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'photos', component: PhotosComponent, canActivate: [AuthGuard] },  
   { path: 'photos/:tagName', component: PhotosComponent, canActivate: [AuthGuard] },
+  { path: 'photos/:userName/:tagName', component: PhotosComponent, canActivate: [AuthGuard] },
   { path: 'tags', component: TagsComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard, AuthAdminGuard] },
   { path: 'login', component: LoginComponent },

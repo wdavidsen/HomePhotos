@@ -24,7 +24,7 @@ export class SettingsComponent implements OnInit {
   settingsForm: UntypedFormGroup;
   loading = false;
   submitted = false;
-
+  tagColor = 'rgb(255,249,196)';
   indexModalData: any = {
     allOrNew: 'NEW'
   };
@@ -90,10 +90,10 @@ export class SettingsComponent implements OnInit {
     this.loading = true;
     const newSettings = this.formToSettings();
 
-    console.log(newSettings.serverTagColor);
+    // console.log(newSettings.serverTagColor);
 
-    const borderColor = RGB_Log_Shade(-.7, newSettings.serverTagColor);
-    console.log(borderColor);
+    // const borderColor = RGB_Log_Shade(-.7, newSettings.serverTagColor);
+    // console.log(borderColor);
     //new RGB_Log_Shade()
 
     this.settingsService.updateSettings(newSettings, reprocessPhotos)
@@ -158,8 +158,7 @@ export class SettingsComponent implements OnInit {
    // convenience getter for easy access to form fields
   get f() { return this.settingsForm.controls; }
 
-  private setupForm(data: Settings) {
-
+  private setupForm(data: Settings) { 
     this.settingsForm = this.formBuilder.group({
       indexPath: [data ? data.indexPath : '', Validators.required],
       cacheFolder: [data ? data.cacheFolder : '', Validators.required],
@@ -172,8 +171,7 @@ export class SettingsComponent implements OnInit {
       thumbnailSize: [data ? data.thumbnailSize : '', Validators.required],
       photoDeleteAction: [data ? data.photoDeleteAction : 0],
       mobilePhotoDeleteAction: [data ? data.mobilePhotoDeleteAction : 1],
-      serverTagColor: ['#ffffff'],
-      serverTagColorSelected: ['#ccc'],
+      tagColor: [data ?  data.tagColor : 'rgb(255, 249, 196)']
     });
   }
 
@@ -190,8 +188,7 @@ export class SettingsComponent implements OnInit {
     settings.thumbnailSize = this.f.thumbnailSize.value;
     settings.photoDeleteAction = this.f.photoDeleteAction.value;
     settings.mobilePhotoDeleteAction = this.f.mobilePhotoDeleteAction.value;
-    settings.serverTagColor = this.f.serverTagColor.value;
-    settings.serverTagColorSelected = this.f.serverTagColorSelected.value;
+    settings.tagColor = this.f.tagColor.value;
 
     return settings;
   }

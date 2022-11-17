@@ -13,19 +13,21 @@ namespace SCS.HomePhotos.Web.Controllers
     [Route("api/[controller]")]
     public class PhotosController : HomePhotosController
     {
-        private readonly ILogger<PhotosController> _logger;
-        private readonly IPhotoService _photoSevice;
+        private readonly ILogger<PhotosController> _logger;        
+        private readonly IPhotoService _photoService;
         private readonly IStaticConfig _staticConfig;
 
         /// <summary>Initializes a new instance of the <see cref="PhotosController" /> class.</summary>
-        /// <param name="logger">The logger.</param>
-        /// <param name="photoSevice">The photo sevice.</param>
+        /// <param name="logger">The logger.</param>        
+        /// <param name="photoSevice">The photo service.</param>
         /// <param name="staticConfig">The static configuration.</param>
         public PhotosController(ILogger<PhotosController> logger, IPhotoService photoSevice, IStaticConfig staticConfig)
         {
-            _logger = logger;
-            _photoSevice = photoSevice;
+            _logger = logger;            
+            _photoService = photoSevice;
             _staticConfig = staticConfig;
+
+            _photoService.UserContext = User;
         }
 
         /// <summary>Gets the latest photos.</summary>
@@ -38,7 +40,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [HttpGet("latest", Name = "GetLatestPhotos")]
         public async Task<IActionResult> GetLatestPhotos([FromQuery] int pageNum = 1, [FromQuery] int pageSize = 400)
         {
-            var photos = await _photoSevice.GetLatestPhotos(pageNum, pageSize);
+            var photos = await _photoService.GetLatestPhotos(pageNum, pageSize);
 
             var dtos = new List<Dto.Photo>();
 
@@ -68,7 +70,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest();
             }
 
-            var photos = await _photoSevice.GetPhotosByTag(new string[] { tag }, pageNum, pageSize);
+            var photos = await _photoService.GetPhotosByTag(new string[] { tag }, pageNum, pageSize);
 
             var dtos = new List<Dto.Photo>();
 
@@ -110,11 +112,11 @@ namespace SCS.HomePhotos.Web.Controllers
 
             if (!string.IsNullOrWhiteSpace(keywords))
             {
-                photos = await _photoSevice.GetPhotosByKeywords(keywords, dateRange, pageNum, pageSize);
+                photos = await _photoService.GetPhotosByKeywords(keywords, dateRange, pageNum, pageSize);
             }
             else if (dateRange != null)
             {
-                photos = await _photoSevice.GetPhotosByDate(dateRange.Value, pageNum, pageSize);
+                photos = await _photoService.GetPhotosByDate(dateRange.Value, pageNum, pageSize);
             }
             else
             {
@@ -144,7 +146,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [HttpDelete("{photoId}", Name = "DeletePhoto")]
         public async Task<IActionResult> DeletePhoto([FromRoute] int photoId)
         {
-            await _photoSevice.DeletePhoto(photoId);
+            await _photoService.DeletePhoto(photoId);
 
             return Ok();
         }

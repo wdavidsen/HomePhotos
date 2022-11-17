@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 export class SettingsService {
 
     constructor(private http: HttpClient) {
-
     }
 
     getSettings(): Observable<Settings> {

@@ -134,6 +134,7 @@ export class AccountComponent implements OnInit, OnDestroy {
         firstName: [data ? data.firstName : '', Validators.required],
         lastName: [data ? data.lastName : '', Validators.required],
         emailAddress: [data ? data.emailAddress : '', Validators.email],
+        tagColor: [data ? data.tagColor : '']
       });
   }
 
@@ -144,6 +145,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     accountInfo.firstName = this.f.firstName.value;
     accountInfo.lastName = this.f.lastName.value;
     accountInfo.emailAddress = this.f.emailAddress.value;
+    accountInfo.tagColor = this.f.tagColor.value;
 
     return accountInfo;
   }

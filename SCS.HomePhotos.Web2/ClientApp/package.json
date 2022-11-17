@@ -40,6 +40,7 @@
     "ng-gallery": "^7.1.2",
     "ng2-file-upload": "^1.4.0",
     "ngx-bootstrap": "^8.0.0",
+    "ngx-colors": "^3.1.4",
     "ngx-spinner": "^13.1.1",
     "ngx-toastr": "^14.3.0",
     "oidc-client": "^1.11.5",

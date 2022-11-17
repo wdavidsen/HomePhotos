@@ -1,15 +1,20 @@
 ﻿using AutoFixture;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using Moq;
+
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Controllers;
 using SCS.HomePhotos.Web.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Xunit;
 
 namespace SCS.HomePhotos.Web.Test.Controllers
@@ -136,12 +141,12 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var newName = tag.TagName;
             var mergeInfo = new TagCopyInfo { NewTagName = newName, SourceTagId = 1 };
 
-            _photosService.Setup(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId))
+            _photosService.Setup(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId, It.IsAny<bool>()))
                 .ReturnsAsync(tag);
 
             var response = await _tagsController.CopyTag(mergeInfo);
 
-            _photosService.Verify(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId),
+            _photosService.Verify(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId, It.IsAny<bool>()),
                 Times.Once);
 
             Assert.IsType<OkObjectResult>(response);
@@ -163,12 +168,12 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var newName = tag.TagName;
             var mergeInfo = new TagCopyInfo { NewTagName = newName, SourceTagId = 1 };
 
-            _photosService.Setup(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId))
+            _photosService.Setup(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId, It.IsAny<bool>()))
                 .ReturnsAsync(tag);
 
             _tagsController.ModelState.AddModelError("key", "error");
 
-            _photosService.Verify(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId),
+            _photosService.Verify(m => m.CopyTags(mergeInfo.NewTagName, mergeInfo.SourceTagId, It.IsAny<bool>()),
                 Times.Never);
 
             var response = await _tagsController.CopyTag(mergeInfo);
@@ -270,12 +275,12 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var tag = _fixture.Create<Tag>();
             var dto = new Dto.Tag(tag);
 
-            _photosService.Setup(m => m.SaveTag(It.IsAny<Tag>()))
+            _photosService.Setup(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()))
                 .ReturnsAsync(tag);
 
             var response = await _tagsController.AddTag(dto);
 
-            _photosService.Verify(m => m.SaveTag(It.IsAny<Tag>()),
+            _photosService.Verify(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()),
                 Times.Once);
 
             Assert.IsType<OkObjectResult>(response);
@@ -296,14 +301,14 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var tag = _fixture.Create<Tag>();
             var dto = new Dto.Tag(tag);
 
-            _photosService.Setup(m => m.SaveTag(It.IsAny<Tag>()))
+            _photosService.Setup(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()))
                 .ReturnsAsync(tag);
 
             _tagsController.ModelState.AddModelError("key", "message");
 
             var response = await _tagsController.AddTag(dto);
 
-            _photosService.Verify(m => m.SaveTag(It.IsAny<Tag>()),
+            _photosService.Verify(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()),
                 Times.Never);
 
             Assert.IsType<BadRequestObjectResult>(response);
@@ -315,12 +320,12 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var tag = _fixture.Create<Tag>();
             var dto = new Dto.Tag(tag);
 
-            _photosService.Setup(m => m.SaveTag(It.IsAny<Tag>()))
+            _photosService.Setup(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()))
                 .Throws(new InvalidOperationException("Some message"));
 
             var response = await _tagsController.AddTag(dto);
 
-            _photosService.Verify(m => m.SaveTag(It.IsAny<Tag>()),
+            _photosService.Verify(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()),
                 Times.Once);
 
             Assert.IsType<BadRequestObjectResult>(response);
@@ -332,12 +337,12 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var tag = _fixture.Create<Tag>();
             var dto = new Dto.Tag(tag);
 
-            _photosService.Setup(m => m.SaveTag(It.IsAny<Tag>()))
+            _photosService.Setup(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()))
                 .ReturnsAsync(tag);
 
             var response = await _tagsController.UpdateTag(dto);
 
-            _photosService.Verify(m => m.SaveTag(It.IsAny<Tag>()),
+            _photosService.Verify(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()),
                 Times.Once);
 
             Assert.IsType<OkObjectResult>(response);
@@ -358,14 +363,14 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var tag = _fixture.Create<Tag>();
             var dto = new Dto.Tag(tag);
 
-            _photosService.Setup(m => m.SaveTag(It.IsAny<Tag>()))
+            _photosService.Setup(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()))
                 .ReturnsAsync(tag);
 
             _tagsController.ModelState.AddModelError("key", "message");
 
             var response = await _tagsController.UpdateTag(dto);
 
-            _photosService.Verify(m => m.SaveTag(It.IsAny<Tag>()),
+            _photosService.Verify(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()),
                 Times.Never);
 
             Assert.IsType<BadRequestObjectResult>(response);
@@ -377,12 +382,12 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var tag = _fixture.Create<Tag>();
             var dto = new Dto.Tag(tag);
 
-            _photosService.Setup(m => m.SaveTag(It.IsAny<Tag>()))
+            _photosService.Setup(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()))
                 .Throws(new InvalidOperationException("Some message"));
 
             var response = await _tagsController.UpdateTag(dto);
 
-            _photosService.Verify(m => m.SaveTag(It.IsAny<Tag>()),
+            _photosService.Verify(m => m.SaveTag(It.IsAny<TagStat>(), It.IsAny<bool>()),
                 Times.Once);
 
             Assert.IsType<BadRequestObjectResult>(response);
@@ -436,7 +441,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             Assert.IsType<BadRequestObjectResult>(response);
         }
 
-        protected override void DisposeController()
+        protected override void Dispose(bool disposing)
         {
             _tagsController.Dispose();
         }

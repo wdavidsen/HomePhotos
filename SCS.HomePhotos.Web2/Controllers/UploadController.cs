@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 
@@ -17,6 +18,7 @@ namespace SCS.HomePhotos.Web.Controllers
     {
         private readonly ILogger<UploadController> _logger;
         private readonly IImageService _imageService;
+        private readonly IUserData _userData;
         private readonly IFileUploadService _fileUploadService;
         private readonly IAdminLogService _adminLogService;
         private readonly IUploadTracker _uploadTracker;
@@ -24,11 +26,18 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="UploadController"/> class.
         /// </summary>
-        public UploadController(ILogger<UploadController> logger, IImageService imageService, IFileUploadService fileUploadService,
+        /// <param name="logger">The logger.</param>
+        /// <param name="imageService">The image service.</param>
+        /// <param name="userData">The user data.</param>
+        /// <param name="fileUploadService">The file upload service.</param>
+        /// <param name="adminLogService">The admin log service.</param>
+        /// <param name="uploadTracker">The upload tracker.</param>
+        public UploadController(ILogger<UploadController> logger, IImageService imageService, IUserData userData, IFileUploadService fileUploadService,
             IAdminLogService adminLogService, IUploadTracker uploadTracker)
         {
             _logger = logger;
             _imageService = imageService;
+            _userData = userData;
             _fileUploadService = fileUploadService;
             _adminLogService = adminLogService;
             _uploadTracker = uploadTracker;
@@ -52,11 +61,17 @@ namespace SCS.HomePhotos.Web.Controllers
             var acceptedExtensions = new string[] { "JPG", "JPEG", "PNG", "GIF" };
 
             var files = HttpContext.Request.Form.Files;
-            var tags = new List<string>();
+            List<Tag> tags;
+
+            var currentUser = await _userData.GetUser(User.Identity.Name);
 
             if (formdata.ContainsKey("tagList") && formdata["tagList"].ToString().Length > 0)
             {
-                tags = formdata["tagList"].ToString().Split(',').ToList();
+                tags = formdata["tagList"].ToString().Split(',').Select(n => new Tag { TagName = n, UserId = currentUser.UserId }).ToList(); // user tags
+            }
+            else
+            {
+                tags = new List<Tag>();
             }
 
             foreach (var file in files)
@@ -104,10 +119,9 @@ namespace SCS.HomePhotos.Web.Controllers
                     filePath = Path.Combine(tempDir, fileName);
                     await _fileUploadService.CopyFile(file, filePath, FileMode.Create);
 
-                    var user = User.Identity.Name;
-                    tags.Add($"{user} Upload");
+                    tags.Add(new Tag { TagName = $"{currentUser.UserName} Upload", UserId = null }); // system tag
 
-                    var cachePath = await _imageService.QueueMobileResize(user, filePath, tags.ToArray());
+                    var cachePath = await _imageService.QueueMobileResize(currentUser, filePath, tags);
                     LogUpload(User.Identity.Name);
 
                     _uploadTracker.AddUpload(User.Identity.Name, filePath);

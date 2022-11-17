@@ -336,7 +336,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             Assert.IsType<UnauthorizedResult>(response);
         }
 
-        protected override void DisposeController()
+        protected override void Dispose(bool disposing)
         {
             _authController.Dispose();
         }

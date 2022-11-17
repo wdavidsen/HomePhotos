@@ -102,5 +102,13 @@ namespace SCS.HomePhotos
         /// The mobile photo delete action.
         /// </value>
         DeleteAction MobilePhotoDeleteAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the color of the tag.
+        /// </summary>
+        /// <value>
+        /// The color of the tag.
+        /// </value>
+        string TagColor { get; set; }
     }
 }

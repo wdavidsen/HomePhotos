@@ -13,11 +13,11 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <summary>
         /// Queues the image to be resized for mobile display.
         /// </summary>
-        /// <param name="contextUserName">Name of the context user.</param>
+        /// <param name="uploadedBy">User that uploaded file.</param>
         /// <param name="imageFilePath">The image file path.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>The cached file path.</returns>
-        Task<string> QueueMobileResize(string contextUserName, string imageFilePath, params string[] tags);
+        Task<string> QueueMobileResize(User uploadedBy, string imageFilePath, List<Tag> tags);
 
         /// <summary>
         /// Creates the cache path.
@@ -78,7 +78,7 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <param name="tags">The tags.</param>
         /// <returns>The photo object.</returns>
         Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string checksum, string cacheSubfolder,
-            ImageLayoutInfo imageLayoutInfo, IEnumerable<ExifDirectoryBase> exifDataList, params string[] tags);
+            ImageLayoutInfo imageLayoutInfo, IEnumerable<ExifDirectoryBase> exifDataList, List<Tag> tags = null);
 
         /// <summary>
         /// Gets the image layout information.

@@ -5,7 +5,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BsModalRef, ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { of } from 'rxjs';
 import { UserSettings } from '../models/user-settings';
 import { UserSettingsService } from '../services';
 import { UserSettingsComponent } from './user-settings.component';
@@ -18,7 +17,8 @@ describe('UserSettingsComponent', () => {
   const userSettings: UserSettings = {
     thumbnailSize: 'Large',
     slideshowSpeed: 'Fast',
-    autoStartSlideshow: false
+    autoStartSlideshow: false,
+    defaultView: ''
   };
 
   beforeEach(async(() => {

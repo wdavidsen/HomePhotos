@@ -10,10 +10,18 @@ namespace SCS.HomePhotos.Web.Models
         [Required]
         public int? SourceTagId { get; set; }
 
-        /// <summary>Creates new tagname.</summary>
+        /// <summary>Creates new tag name.</summary>
         /// <value>The new name of the tag.</value>
         [Required]
         [MaxLength(50)]
         public string NewTagName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the owner identifier.
+        /// </summary>
+        /// <value>
+        /// The owner identifier.
+        /// </value>
+        public int? OwnerId { get; set; }
     }
 }

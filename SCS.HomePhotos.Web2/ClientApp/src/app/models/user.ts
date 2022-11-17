@@ -14,4 +14,5 @@ export class User {
   failedLoginCount?: Number;
   mustChangePassword?: Boolean;
   enabled?: Boolean;
+  tagColor?: string;
 }

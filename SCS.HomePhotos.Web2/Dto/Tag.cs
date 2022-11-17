@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace SCS.HomePhotos.Web.Dto
 {
     /// <summary>
-    /// Tab DTO.
+    /// Tag DTO.
     /// </summary>
     public class Tag
     {
@@ -22,6 +22,8 @@ namespace SCS.HomePhotos.Web.Dto
             TagId = tag.TagId;
             TagName = tag.TagName;
             PhotoCount = (tag is TagStat) ? ((TagStat)tag).PhotoCount : -1;
+            TagColor = (tag is TagStat) ? ((TagStat)tag).TagColor : Constants.DefaultTagColor;
+            OwnerId = (tag is TagStat) ? ((TagStat)tag).UserId : null;
         }
 
         /// <summary>
@@ -50,16 +52,34 @@ namespace SCS.HomePhotos.Web.Dto
         public int PhotoCount { get; set; }
 
         /// <summary>
+        /// Gets or sets the color of the tag.
+        /// </summary>
+        /// <value>
+        /// The color of the tag.
+        /// </value>
+        public string TagColor { get; set; }
+
+        /// <summary>
+        /// Gets or sets the owner identifier.
+        /// </summary>
+        /// <value>
+        /// The owner identifier.
+        /// </value>
+        public int? OwnerId { get; set; }
+
+        /// <summary>
         /// Converts instance to the domain model.
         /// </summary>
         /// <returns>The domain equivalent instance.</returns>
-        public Model.Tag ToModel()
+        public Model.TagStat ToModel()
         {
             var tag = new Model.TagStat
             {
                 TagId = TagId,
                 TagName = TagName,
-                PhotoCount = PhotoCount
+                PhotoCount = PhotoCount,
+                TagColor = TagColor,
+                UserId = OwnerId
             };
 
             return tag;

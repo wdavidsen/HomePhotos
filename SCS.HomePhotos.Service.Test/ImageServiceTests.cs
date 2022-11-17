@@ -68,7 +68,8 @@ namespace SCS.HomePhotos.Service.Test
             _dynamicConfig.SetupGet(o => o.ThumbnailSize).Returns(200);
             _dynamicConfig.SetupGet(o => o.MobileUploadsFolder).Returns("MobileUploads");
 
-            var cachePath = await _imageService.QueueMobileResize("wdavidsen", filePath);
+            var user = new User { UserId = 1, UserName = "wdavidsen" };
+            var cachePath = await _imageService.QueueMobileResize(user, filePath);
 
             try
             {
@@ -96,7 +97,7 @@ namespace SCS.HomePhotos.Service.Test
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Photo>()),
                 Times.Once);
 
-            _photoService.Verify(m => m.AssociateTags(It.IsAny<Photo>(), It.IsAny<string[]>()),
+            _photoService.Verify(m => m.AssociateTags(It.IsAny<Photo>(), It.IsAny<IEnumerable<Tag>>()),
                 Times.Once);
 
             _logger.Verify(m => m.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()),
@@ -108,7 +109,7 @@ namespace SCS.HomePhotos.Service.Test
             var fileParts = cachePath.Split('/', '\\');
 
             Assert.Equal(2, fileParts[0].Length);
-            Assert.Equal(checksum.Substring(0, 1), fileParts[0].Substring(0, 1));
+            Assert.Equal(checksum[..1], fileParts[0][..1]);
             Assert.Equal(Path.GetExtension(filePath), Path.GetExtension(fileParts[1]));
         }
 
@@ -129,7 +130,8 @@ namespace SCS.HomePhotos.Service.Test
             _dynamicConfig.SetupGet(o => o.ThumbnailSize).Returns(200);
             _dynamicConfig.SetupGet(o => o.MobileUploadsFolder).Returns("MobileUploads");
 
-            var cachePath = await _imageService.QueueMobileResize(completeInfo.ContextUserName, filePath);
+            var user = new User { UserId = 1, UserName = "wdavidsen" };
+            var cachePath = await _imageService.QueueMobileResize(user, filePath);
 
             var queueEvents = new Mock<IQueueEvents>();
             queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) =>
@@ -166,7 +168,8 @@ namespace SCS.HomePhotos.Service.Test
             _imageTransformer.Setup(m => m.ResizeImageByGreatestDimension(filePath, It.IsAny<string>(), 800))
                 .Throws<OutOfMemoryException>();
 
-            var cachePath = await _imageService.QueueMobileResize("wdavidsen", filePath);
+            var user = new User { UserId = 1, UserName = "wdavidsen" };
+            var cachePath = await _imageService.QueueMobileResize(user, filePath);
 
             try
             {
@@ -191,7 +194,7 @@ namespace SCS.HomePhotos.Service.Test
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Photo>()),
                 Times.Never);
 
-            _photoService.Verify(m => m.AssociateTags(It.IsAny<Photo>(), It.IsAny<string[]>()),
+            _photoService.Verify(m => m.AssociateTags(It.IsAny<Photo>(), It.IsAny<IEnumerable<Tag>>()),
                 Times.Never);
 
             //_logger.Verify(m => m.Log<FormattedLogValues>(LogLevel.Error, 0, It.IsAny<string>()),
@@ -214,7 +217,8 @@ namespace SCS.HomePhotos.Service.Test
             _imageTransformer.Setup(m => m.ResizeImageByGreatestDimension(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                 .Throws<OutOfMemoryException>();
 
-            var cachePath = await _imageService.QueueMobileResize("wdavidsen", filePath);
+            var user = new User { UserId = 1, UserName = "wdavidsen" };
+            var cachePath = await _imageService.QueueMobileResize(user, filePath);
 
             try
             {
@@ -236,7 +240,7 @@ namespace SCS.HomePhotos.Service.Test
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Photo>()),
                 Times.Never);
 
-            _photoService.Verify(m => m.AssociateTags(It.IsAny<Photo>(), It.IsAny<string[]>()),
+            _photoService.Verify(m => m.AssociateTags(It.IsAny<Photo>(), It.IsAny<IEnumerable<Tag>>()),
                 Times.Never);
 
             //_logger.Verify(m => m.Log<FormattedLogValues>(LogLevel.Error, 0, It.IsAny<string>()),
@@ -333,7 +337,7 @@ namespace SCS.HomePhotos.Service.Test
                     Assert.Equal(cacheSubfolder, photo.CacheFolder);
                 });
 
-            _photoService.Setup(m => m.AssociateTags(It.IsAny<Model.Photo>(), It.IsAny<string[]>()))
+            _photoService.Setup(m => m.AssociateTags(It.IsAny<Model.Photo>(), It.IsAny<IEnumerable<Tag>>()))
                 .Callback<Model.Photo, string[]>((photo, tags) =>
                 {
                     Assert.Equal(checksum, photo.Checksum);
@@ -356,7 +360,7 @@ namespace SCS.HomePhotos.Service.Test
             _fileSystemService.Verify(m => m.GetDirectoryTags(imageFilePath), Times.Once);
 
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Model.Photo>()), Times.Once);
-            _photoService.Verify(m => m.AssociateTags(It.IsAny<Model.Photo>(), It.IsAny<string[]>()), Times.Once);
+            _photoService.Verify(m => m.AssociateTags(It.IsAny<Model.Photo>(), It.IsAny<IEnumerable<Tag>>()), Times.Once);
         }
     }
 }

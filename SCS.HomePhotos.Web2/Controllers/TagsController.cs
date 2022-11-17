@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 using SCS.HomePhotos.Data;
+using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
+using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Models;
 
@@ -13,8 +16,8 @@ namespace SCS.HomePhotos.Web.Controllers
     [Route("api/[controller]")]
     public class TagsController : HomePhotosController
     {
-        private readonly ILogger<TagsController> _logger;
-        private readonly IPhotoService _photoSevice;
+        private readonly ILogger<TagsController> _logger;        
+        private readonly IPhotoService _photoService;
 
         /// <summary>Initializes a new instance of the <see cref="TagsController" /> class.</summary>
         /// <param name="logger">The logger.</param>
@@ -22,7 +25,9 @@ namespace SCS.HomePhotos.Web.Controllers
         public TagsController(ILogger<TagsController> logger, IPhotoService photoSevice)
         {
             _logger = logger;
-            _photoSevice = photoSevice;
+            _photoService = photoSevice;
+
+            _photoService.UserContext = User;
         }
 
         /// <summary>Gets all tags.</summary>
@@ -34,7 +39,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [Authorize(Policy = "Readers")]
         public async Task<IActionResult> Get()
         {
-            var tags = await _photoSevice.GetTags(true);
+            var tags = await _photoService.GetTags(true);
 
             var dtos = new List<Dto.Tag>();
 
@@ -75,11 +80,11 @@ namespace SCS.HomePhotos.Web.Controllers
 
             if (!string.IsNullOrWhiteSpace(keywords))
             {
-                tags = await _photoSevice.GetTagsByKeywords(keywords, dateRange, pageNum, pageSize);
+                tags = await _photoService.GetTagsByKeywords(keywords, dateRange, pageNum, pageSize);
             }
             else if (dateRange != null)
             {
-                tags = await _photoSevice.GetTagsByDate(dateRange.Value, pageNum, pageSize);
+                tags = await _photoService.GetTagsByDate(dateRange.Value, pageNum, pageSize);
             }
             else
             {
@@ -99,9 +104,9 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Merges tags.</summary>
         /// <param name="mergeInfo">The merge information.</param>
         /// <returns>Final merged tag.</returns>
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
         [Authorize(Policy = "Contributers")]
         [HttpPut("merge", Name = "MergeTags")]
@@ -111,18 +116,28 @@ namespace SCS.HomePhotos.Web.Controllers
             {
                 return BadRequest(new ProblemModel(ModelState));
             }
-
-            var finalTag = await _photoSevice.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds);
-
-            return Ok(new Dto.Tag(finalTag));
+            
+            try
+            {
+                var finalTag = await _photoService.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds);
+                return Ok(new Dto.Tag(finalTag));
+            }
+            catch (AccessException ex)
+            {
+                return StatusCode(403, new ProblemModel { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new ProblemModel { Message = ex.Message });
+            }
         }
 
         /// <summary>Copies a tag.</summary>
         /// <param name="copyInfo">The copy information.</param>
         /// <returns>The new tag.</returns>
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
         [Authorize(Policy = "Contributers")]
         [HttpPut("copy", Name = "CopyTags")]
@@ -133,17 +148,27 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest(new ProblemModel(ModelState));
             }
 
-            var newTag = await _photoSevice.CopyTags(copyInfo.NewTagName, copyInfo.SourceTagId);
-
-            return Ok(new Dto.Tag(newTag));
+            try
+            {
+                var newTag = await _photoService.CopyTags(copyInfo.NewTagName, copyInfo.SourceTagId);
+                return Ok(new Dto.Tag(newTag));
+            }
+            catch (AccessException ex)
+            {
+                return StatusCode(403, new ProblemModel { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new ProblemModel { Message = ex.Message });
+            }
         }
 
         /// <summary>Gets specified photos to tag.</summary>
         /// <param name="photoIds">The photo ids.</param>
         /// <returns>Batch tag info.</returns>
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]        
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BatchSelectTags))]
         [Authorize(Policy = "Contributers")]
         [HttpPost("batchTag", Name = "GetPhotosToTag")]
@@ -154,7 +179,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest(new ProblemModel(ModelState));
             }
 
-            var photoTags = await _photoSevice.GetTagsAndPhotos(photoIds);
+            var photoTags = await _photoService.GetTagsAndPhotos(photoIds);
 
             return Ok(new BatchSelectTags(photoIds, photoTags));
         }
@@ -174,16 +199,26 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest(new ProblemModel(ModelState));
             }
 
-            await _photoSevice.UpdatePhotoTags(updateTags.PhotoIds, updateTags.GetAddedTagNames(), updateTags.GetRemovedTagIds());
-
-            return Ok();
+            try
+            {
+                await _photoService.UpdatePhotoTags(updateTags.PhotoIds, updateTags.GetAddedTagNames(), updateTags.GetRemovedTagIds());
+                return Ok();
+            }
+            catch (AccessException ex)
+            {
+                return StatusCode(403, new ProblemModel { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new ProblemModel { Message = ex.Message });
+            }            
         }
 
         /// <summary>Adds a tag.</summary>
-        /// <param name="tag">The tag to add.</param>
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        /// <param name="tag">The tag to add.</param>        
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]        
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
         [Authorize(Policy = "Contributers")]
         [HttpPost(Name = "AddTag")]
@@ -196,22 +231,26 @@ namespace SCS.HomePhotos.Web.Controllers
 
             try
             {
-                var tagEntity = await _photoSevice.SaveTag(tag.ToModel());
+                var tagEntity = await _photoService.SaveTag(tag.ToModel());
 
                 return Ok(new Dto.Tag(tagEntity));
             }
+            catch (AccessException ex)
+            {
+                return StatusCode(403, new ProblemModel { Message = ex.Message });
+            }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new ProblemModel { Message = ex.Message });
             }
         }
 
         /// <summary>Updates a tag.</summary>
         /// <param name="tag">The tag to update.</param>
-        /// <returns>The updated tag.</returns>
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        /// <returns>The updated tag.</returns>        
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]        
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
         [Authorize(Policy = "Contributers")]
         [HttpPut(Name = "UpdateTag")]
@@ -224,13 +263,17 @@ namespace SCS.HomePhotos.Web.Controllers
 
             try
             {
-                var tagEntity = await _photoSevice.SaveTag(tag.ToModel());
+                var tagEntity = await _photoService.SaveTag(tag.ToModel());
 
                 return Ok(new Dto.Tag(tagEntity));
             }
+            catch (AccessException ex)
+            {
+                return BadRequest(new ProblemModel { Message = ex.Message });
+            }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new ProblemModel { Message = ex.Message });
             }
         }
 
@@ -251,7 +294,11 @@ namespace SCS.HomePhotos.Web.Controllers
 
             try
             {
-                await _photoSevice.DeleteTag(tagId);
+                await _photoService.DeleteTag(tagId);
+            }
+            catch (AccessException ex)
+            {
+                return BadRequest(new ProblemModel { Message = ex.Message });
             }
             catch (InvalidOperationException ex)
             {

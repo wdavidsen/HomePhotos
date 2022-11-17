@@ -31,6 +31,7 @@ namespace SCS.HomePhotos.Web.Dto
             LastLogin = user.LastLogin;
             FailedLoginCount = user.FailedLoginCount;
             MustChangePassword = user.MustChangePassword;
+            TagColor = user.TagColor;
         }
 
         /// <summary>
@@ -127,6 +128,14 @@ namespace SCS.HomePhotos.Web.Dto
         public bool MustChangePassword { get; set; }
 
         /// <summary>
+        /// Gets or sets the color of the tag.
+        /// </summary>
+        /// <value>
+        /// The color of the tag.
+        /// </value>
+        public string TagColor { get; set; }
+
+        /// <summary>
         /// Converts instance to the domain model.
         /// </summary>
         /// <returns>The domain equivalent instance.</returns>
@@ -144,7 +153,8 @@ namespace SCS.HomePhotos.Web.Dto
                 Role = Role,
                 LastLogin = LastLogin,
                 FailedLoginCount = FailedLoginCount,
-                MustChangePassword = MustChangePassword
+                MustChangePassword = MustChangePassword,
+                TagColor = TagColor
             };
         }
     }

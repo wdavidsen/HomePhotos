@@ -108,6 +108,14 @@ namespace SCS.HomePhotos.Model
         public DeleteAction MobilePhotoDeleteAction { get; set; }
 
         /// <summary>
+        /// Gets or sets the color of the tag.
+        /// </summary>
+        /// <value>
+        /// The color of the tag.
+        /// </value>
+        public string TagColor { get; set; }
+
+        /// <summary>
         /// Converts configuration to dynamic configuration entity.
         /// </summary>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
@@ -125,6 +133,7 @@ namespace SCS.HomePhotos.Model
             dynamicConfig.IndexOnStartup = IndexOnStartup;
             dynamicConfig.PhotoDeleteAction = PhotoDeleteAction;
             dynamicConfig.MobilePhotoDeleteAction = MobilePhotoDeleteAction;
+            dynamicConfig.TagColor = TagColor;
         }
 
         /// <summary>

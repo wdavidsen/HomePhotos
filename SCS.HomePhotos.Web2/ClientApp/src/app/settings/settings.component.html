@@ -101,19 +101,10 @@
     </div>
     <div class="form-row">
         <div class="form-group col-md-2">
-            <label for="thumbnailSize">Server tag color</label>
+            <label for="thumbnailSize">Server identity tag color</label>
             <div>
-                <ngx-colors ngx-colors-trigger style="display: inline-block; margin:5px;" formControlName="serverTagColor"
-                    [hideTextInput]="true" 
-                    [hideColorPicker]="true"
-                    format="rgba"
-                    colorPickerControls="no-alpha"></ngx-colors>
-            </div>
-        </div>
-        <div class="form-group col-md-2">
-            <label for="thumbnailSize">Server tag color selected</label>
-            <div>
-                <ngx-colors ngx-colors-trigger style="display: inline-block; margin:5px;" formControlName="serverTagColorSelected"
+                <ngx-colors ngx-colors-trigger style="display: inline-block; margin:5px;"
+                    [formControl]="f.tagColor"
                     [hideTextInput]="true" 
                     [hideColorPicker]="true"
                     format="rgba"

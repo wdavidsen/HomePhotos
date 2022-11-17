@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+
 using Moq;
+
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -24,8 +26,6 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             {
                 if (disposing)
                 {
-                    // dispose managed state (managed objects).
-                    DisposeController();
                 }
 
                 // free unmanaged resources (unmanaged objects) and override a finalizer below.
@@ -110,7 +110,5 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             controller.ControllerContext = controllerContext;
             controller.Url = uriHelperMock.Object;
         }
-
-        protected abstract void DisposeController();
     }
 }

@@ -15,10 +15,13 @@ using SCS.HomePhotos.Workers;
 
 using System;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Xunit;
+
+using static Dapper.SqlMapper;
 
 namespace SCS.HomePhotos.Service.Test
 {
@@ -29,11 +32,14 @@ namespace SCS.HomePhotos.Service.Test
         private readonly PhotoService _photoService;
         private readonly Mock<IPhotoData> _photoData;
         private readonly Mock<ITagData> _tagData;
+        private readonly Mock<IUserData> _userData;
         private readonly Mock<IPhotoTagData> _photoTagData;
-        private readonly Mock<IFileExclusionData> _skipImageData;
+        private readonly Mock<IFileExclusionData> _fileExclusionData;
         private readonly Mock<ILogger<PhotoService>> _logger;
         private readonly Mock<IFileSystemService> _fileSystemService;
         private readonly Mock<IDynamicConfig> _dynamicCache;
+        private readonly Mock<IPrincipal> _userContext;
+        private readonly Mock<IIdentity> _identity;
         private readonly IBackgroundTaskQueue _backgroundQueue;
 
         public PhotoServiceTests()
@@ -46,13 +52,21 @@ namespace SCS.HomePhotos.Service.Test
             _tagData = new Mock<ITagData>();
             _photoTagData = new Mock<IPhotoTagData>();
             _logger = new Mock<ILogger<PhotoService>>();
-            _skipImageData = new Mock<IFileExclusionData>();
+            _fileExclusionData = new Mock<IFileExclusionData>();
+            _userData = new Mock<IUserData>();
             _fileSystemService = new Mock<IFileSystemService>();
             _dynamicCache = new Mock<IDynamicConfig>();
+            _userContext = new Mock<IPrincipal>();
+            _identity = new Mock<IIdentity>();
             _backgroundQueue = new BackgroundTaskQueue();
 
-            _photoService = new PhotoService(_photoData.Object, _tagData.Object, _photoTagData.Object, _skipImageData.Object, _logger.Object, _fileSystemService.Object,
-                _dynamicCache.Object, _backgroundQueue);
+            _identity.SetupGet(p => p.Name).Returns("wdavidsen");
+            _userContext.SetupGet(p => p.Identity).Returns(_identity.Object);
+
+            _photoService = new PhotoService( _photoData.Object, _tagData.Object, _photoTagData.Object, _fileExclusionData.Object, _userData.Object, 
+                _logger.Object, _fileSystemService.Object, _dynamicCache.Object, _backgroundQueue);
+
+            _photoService.UserContext = _userContext.Object;
         }
 
         [Fact]
@@ -105,7 +119,7 @@ namespace SCS.HomePhotos.Service.Test
                 {
                     Assert.Equal(1, p);
                     Assert.Equal(50, s);
-                    Assert.Equal(tags.Count(), t.Count());
+                    Assert.Equal(tags.Count(), t.Length);
                 });
 
             var results = await _photoService.GetPhotosByTag(tags.ToArray(), 1, 50);
@@ -156,13 +170,13 @@ namespace SCS.HomePhotos.Service.Test
             var tag = _fixture.Create<Tag>();
             tag.TagName = tagName;
 
-            _tagData.Setup(m => m.GetTag(tagName)).ReturnsAsync(tag);
+            _tagData.Setup(m => m.GetTag(tagName, It.IsAny<int?>())).ReturnsAsync(tag);
 
             _tagData.Setup(m => m.SaveTag(It.IsAny<Tag>()));
 
-            var result = await _photoService.GetTag(tagName, false);
+            var result = await _photoService.GetTag(tagName, null, false);
 
-            _tagData.Verify(m => m.GetTag(tagName),
+            _tagData.Verify(m => m.GetTag(tagName, It.IsAny<int?>()),
                 Times.Once);
 
             _tagData.Verify(m => m.SaveTag(It.IsAny<Tag>()),
@@ -178,15 +192,15 @@ namespace SCS.HomePhotos.Service.Test
             var tagName = "B-Day";
             var tag = null as Tag;
 
-            _tagData.Setup(m => m.GetTag(tagName))
+            _tagData.Setup(m => m.GetTag(tagName, It.IsAny<int?>()))
                 .ReturnsAsync(tag);
 
             _tagData.Setup(m => m.SaveTag(It.IsAny<Tag>()))
                 .ReturnsAsync(new Tag { TagName = tagName });
 
-            var result = await _photoService.GetTag(tagName, true);
+            var result = await _photoService.GetTag(tagName, null, true);
 
-            _tagData.Verify(m => m.GetTag(tagName),
+            _tagData.Verify(m => m.GetTag(tagName, It.IsAny<int?>()),
                 Times.Once);
 
             _tagData.Verify(m => m.SaveTag(It.IsAny<Tag>()),
@@ -220,7 +234,7 @@ namespace SCS.HomePhotos.Service.Test
             _tagData.Setup(m => m.SaveTag(It.IsAny<Tag>()))
                 .ReturnsAsync(tag);
 
-            await _photoService.AssociateTags(photo, tags.Select(t => t.TagName).ToArray());
+            await _photoService.AssociateTags(photo, tags);
 
             _photoTagData.Verify(m => m.AssociatePhotoTag(It.IsAny<int>(), It.IsAny<int>()),
                 Times.Exactly(3));

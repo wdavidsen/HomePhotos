@@ -83,13 +83,13 @@ namespace SCS.HomePhotos.Service.Core
             try
             {
                 var dirs = Path.GetDirectoryName(filePath).Split('/', '\\');
-                var tag = dirs[dirs.Length - 1];
+                var tag = dirs[^1].Trim();
 
                 list.Add(tag);
 
                 if (dirs.Length > 1)
                 {
-                    tag = dirs[dirs.Length - 2];
+                    tag = dirs[^2].Trim();
 
                     if (!list.Contains(tag))
                     {

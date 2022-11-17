@@ -21,5 +21,13 @@
         /// The weight.
         /// </value>
         public int Weight { get; set; }
+
+        /// <summary>
+        /// Gets or sets the color of the tag.
+        /// </summary>
+        /// <value>
+        /// The color of the tag.
+        /// </value>
+        public string TagColor { get; set; }
     }
 }

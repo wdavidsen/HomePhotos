@@ -26,9 +26,18 @@ namespace SCS.HomePhotos.Data.Core
         /// </summary>
         /// <param name="tagId">The tag identifier.</param>
         /// <returns>A list of photo-tags.</returns>
-        public async Task<IEnumerable<PhotoTag>> GetPhotoTagAssociations(int tagId)
+        public async Task<IEnumerable<UserPhotoTag>> GetPhotoTagAssociations(int tagId)
         {
-            return await GetListAsync("WHERE TagId = @TagId", new { TagId = tagId });
+            var sql = @"SELECT pt.PhotoTagId, pt.PhotoId, t.TagId, t.TagName, t.UserId AS PhotoCount 
+                        FROM Tag t 
+                        JOIN PhotoTag pt ON t.TagId = pt.TagId 
+                        JOIN User u ON pt.UserId = u.UserId   
+                        ORDER BY t.TagName";
+
+            using (var conn = GetDbConnection())
+            {
+                return await conn.QueryAsync<UserPhotoTag>(sql);
+            }
         }
 
         /// <summary>

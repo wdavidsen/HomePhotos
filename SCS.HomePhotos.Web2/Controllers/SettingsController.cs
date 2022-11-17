@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Web.Dto;
 
 namespace SCS.HomePhotos.Web.Controllers
@@ -25,6 +26,8 @@ namespace SCS.HomePhotos.Web.Controllers
             _logger = logger;
             _dynamicConfig = dynamicConfig;
             _photoService = photoService;
+
+            _photoService.UserContext = User;
         }
 
         /// <summary>Gets the settings.</summary>
@@ -69,6 +72,7 @@ namespace SCS.HomePhotos.Web.Controllers
             _dynamicConfig.ThumbnailSize = settings.ThumbnailSize;
             _dynamicConfig.PhotoDeleteAction = (DeleteAction)settings.PhotoDeleteAction;
             _dynamicConfig.MobilePhotoDeleteAction = (DeleteAction)settings.MobilePhotoDeleteAction;
+            _dynamicConfig.TagColor = settings.TagColor;
 
             return Ok();
         }

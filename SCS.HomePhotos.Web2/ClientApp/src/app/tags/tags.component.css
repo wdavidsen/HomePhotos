@@ -8,14 +8,13 @@
         float: left;
         padding: 5px;
         margin: 0 8px 8px 0;
-        border: solid 1px #d4bd05;
-        background-color: #f1f764;
+        border: solid 1px ;
         border-radius: 5px;
         cursor: pointer;
     }
 
-    .tag-cloud .tag-selected {
-        background-color: #75ee52;
+    .tag-cloud .tag-selected {        
+        font-weight: bold;
     }
      .tag-cloud .tag-divider {
         color: #666;
@@ -32,4 +31,14 @@
         border: solid 1px #666;
         background-color: #666;
         cursor: default;
+    }
+
+    .identity-check {
+        margin-top: 7px;
+        margin-left: 50px;
+    }
+
+    .identity-check span {
+        margin-left: 10px;
+        margin-right: 30px;
     }

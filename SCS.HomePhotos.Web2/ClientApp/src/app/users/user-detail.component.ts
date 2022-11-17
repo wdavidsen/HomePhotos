@@ -132,7 +132,8 @@ export class UserDetailComponent implements OnInit {
       lastLogin: [data.lastLogin],
       failedLoginCount: [data.failedLoginCount],
       mustChangePassword: [data.mustChangePassword],
-      enabled: [data.enabled]
+      enabled: [data.enabled],
+      tagColor: [data.tagColor]
     });
 
     if (data.userId > 0) {
@@ -154,7 +155,8 @@ export class UserDetailComponent implements OnInit {
     user.mustChangePassword = this.f.mustChangePassword.value;
     user.enabled = this.f.enabled.value;
     user.role = this.f.role.value;
-
+    user.tagColor = this.f.tagColor.value;
+    
     return user;
   }
 }

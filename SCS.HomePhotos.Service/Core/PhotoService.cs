@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
-using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Workers;
@@ -12,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Service.Core
@@ -26,34 +26,48 @@ namespace SCS.HomePhotos.Service.Core
         private readonly IPhotoData _photoData;
         private readonly ITagData _tagData;
         private readonly IPhotoTagData _photoTagData;
-        private readonly IFileExclusionData _skipImageData;
+        private readonly IFileExclusionData _fileExclusionData;
+        private readonly IUserData _userData;
         private readonly IFileSystemService _fileSystemService;
         private readonly IDynamicConfig _dynamicConfig;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
 
-        private string _noiseWords = "null";
+        private readonly string _noiseWords = "null";
+        private readonly string _sysTagColor = Constants.DefaultTagColor;
 
         /// <summary>Initializes a new instance of the <see cref="PhotoService" /> class.</summary>
         /// <param name="photoData">The photo data.</param>
         /// <param name="tagData">The tag data.</param>
         /// <param name="photoTagData">The photo tag data.</param>
-        /// <param name="skipImageData">The skip image data.</param>
+        /// <param name="userData">The user data.</param>
+        /// <param name="fileExclusionData">The file exclusion data.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="fileSystemService">The file system service.</param>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
         /// <param name="backgroundTaskQueue">The background task queue.</param>
-        public PhotoService(IPhotoData photoData, ITagData tagData, IPhotoTagData photoTagData, IFileExclusionData skipImageData, ILogger<PhotoService> logger, IFileSystemService fileSystemService,
-            IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
+        public PhotoService(IPhotoData photoData, ITagData tagData, IPhotoTagData photoTagData, IFileExclusionData fileExclusionData, IUserData userData,
+            ILogger<PhotoService> logger, IFileSystemService fileSystemService, IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
         {
             _photoData = photoData;
             _tagData = tagData;
             _photoTagData = photoTagData;
-            _skipImageData = skipImageData;
+            _fileExclusionData = fileExclusionData;
+            _userData = userData;
             _logger = logger;
             _fileSystemService = fileSystemService;
             _dynamicConfig = dynamicConfig;
             _backgroundTaskQueue = backgroundTaskQueue;
+
+            _sysTagColor = dynamicConfig.TagColor;
         }
+
+        /// <summary>
+        /// Gets or sets the user context.
+        /// </summary>
+        /// <value>
+        /// The user context.
+        /// </value>
+        public IPrincipal UserContext { get; set; }
 
         /// <summary>
         /// Gets a photo by checksum.
@@ -134,7 +148,7 @@ namespace SCS.HomePhotos.Service.Core
         {
             if (includPhotoCounts)
             {
-                return await _tagData.GetTagAndPhotoCount();
+                return AssignSysTagColor(await _tagData.GetTagAndPhotoCount());
             }
             else
             {
@@ -154,7 +168,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Tag>> GetTagsByKeywords(string keywords, DateRange? dateRange, int pageNum, int pageSize)
         {
-            return await _tagData.GetTags(keywords, dateRange, pageNum, pageSize);
+            return AssignSysTagColor(await _tagData.GetTags(keywords, dateRange, pageNum, pageSize));
         }
 
         /// <summary>
@@ -168,17 +182,18 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Tag>> GetTagsByDate(DateRange dateRange, int pageNum, int pageSize)
         {
-            return await _tagData.GetTags(dateRange, pageNum, pageSize);
+            return AssignSysTagColor(await _tagData.GetTags(dateRange, pageNum, pageSize));
         }
 
         /// <summary>
         /// Gets the tag.
         /// </summary>
         /// <param name="tagName">Name of the tag.</param>
+        /// <param name="userId">The owner of the tag.</param>
         /// <returns>A tag.</returns>
-        public async Task<Tag> GetTag(string tagName)
+        public async Task<Tag> GetTag(string tagName, int? userId = null)
         {
-            return await _tagData.GetTag(tagName);
+            return await _tagData.GetTag(tagName, userId);
         }
 
         /// <summary>
@@ -189,6 +204,12 @@ namespace SCS.HomePhotos.Service.Core
         public async Task DeleteTag(int tagId)
         {
             var tag = await _tagData.GetAsync(tagId);
+            var currentUser = await GetCurrentUser();
+
+            if (currentUser.Role != RoleType.Admin && tag.UserId != currentUser.UserId)
+            {
+                throw new AccessException("Other users's tags cannot be deleted, without Admin rights.");
+            }
 
             if (tag == null)
             {
@@ -233,7 +254,7 @@ namespace SCS.HomePhotos.Service.Core
 
             if (insertSkip && !string.IsNullOrWhiteSpace(photo.OriginalFolder))
             {
-                await _skipImageData.InsertAsync(
+                await _fileExclusionData.InsertAsync(
                     new FileExclusion
                     {
                         MobileUpload = photo.MobileUpload,
@@ -252,11 +273,26 @@ namespace SCS.HomePhotos.Service.Core
         /// Saves a tag.
         /// </summary>
         /// <param name="tag">The tag to save.</param>
+        /// <param name="useServerContext">Whether to create new tag as a system tag.</param>
         /// <returns>
         /// The saved tag.
         /// </returns>
-        public async Task<Tag> SaveTag(Tag tag)
+        public async Task<Tag> SaveTag(TagStat tag, bool useServerContext = false)
         {
+            var isAdd = tag.TagId == null || tag.TagId == 0;
+            var currentUser = await GetCurrentUser();
+            var isAdmin = currentUser.Role == RoleType.Admin;
+
+            if (isAdd && useServerContext && !isAdmin)
+            {
+                throw new AccessException("Cannot create system tag, without Admin rights.");
+            }
+
+            if (isAdd && isAdmin && useServerContext)
+            {
+                tag.UserId = null;
+            }
+
             return await _tagData.SaveTag(tag);
         }
 
@@ -264,13 +300,14 @@ namespace SCS.HomePhotos.Service.Core
         /// Gets the tag.
         /// </summary>
         /// <param name="tagName">Name of the tag.</param>
+        /// <param name="userId">The owner of the tag.</param>
         /// <param name="createIfMissing">if set to <c>true</c> create tag if missing.</param>
         /// <returns>
         /// A tag.
         /// </returns>
-        public async Task<Tag> GetTag(string tagName, bool createIfMissing = true)
+        public async Task<Tag> GetTag(string tagName, int? userId, bool createIfMissing = true)
         {
-            var existing = await GetTag(tagName);
+            var existing = await GetTag(tagName, userId);
 
             if (existing != null)
             {
@@ -284,7 +321,8 @@ namespace SCS.HomePhotos.Service.Core
 
             var tag = new Tag
             {
-                TagName = tagName
+                TagName = tagName,
+                UserId = userId
             };
 
             try
@@ -319,16 +357,16 @@ namespace SCS.HomePhotos.Service.Core
         /// </summary>
         /// <param name="photo">The photo.</param>
         /// <param name="tags">The tags.</param>
-        public async Task AssociateTags(Photo photo, params string[] tags)
+        public async Task AssociateTags(Photo photo, IEnumerable<Tag> tags)
         {
             var noise = _noiseWords.Split(',');
 
-            foreach (var tagName in tags)
+            foreach (var tag in tags)
             {
-                if (noise.Any(w => w.ToUpper() == tagName.ToUpper())) continue;
+                if (noise.Any(w => w.ToUpper() == tag.TagName)) continue;
 
-                var tag = await GetTag(tagName, true);
-                await _photoTagData.AssociatePhotoTag(photo.PhotoId.Value, tag.TagId.Value);
+                var existingTag = await GetTag(tag.TagName, tag.UserId, true);
+                await _photoTagData.AssociatePhotoTag(photo.PhotoId.Value, existingTag.TagId.Value);
             }
         }
 
@@ -342,12 +380,64 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<TagStat> MergeTags(string newTagName, params int[] targetTagIds)
         {
-            var newTag = await GetTag(newTagName, true);
             var tagsToDelete = new List<string>();
+            var currentUser = await GetCurrentUser();
+            
+            var tagAssoc = new List<UserPhotoTag>();
 
             foreach (var tagId in targetTagIds)
             {
-                foreach (var assoc in await _photoTagData.GetPhotoTagAssociations(tagId))
+                tagAssoc.AddRange(await _photoTagData.GetPhotoTagAssociations(tagId));
+            }
+
+            var uniqueUsers = tagAssoc.Select(pt => pt.UserId).Distinct();
+
+            if (uniqueUsers.Count() != 1)
+            {
+                throw new InvalidOperationException("Cannot merge tags that belong to multiple users.");
+            }
+
+            if (uniqueUsers.First() == null && currentUser.Role != RoleType.Admin)
+            {
+                throw new AccessException("Cannot merge system tags without Admin rights.");
+            }
+
+            var newTag = await GetTag(newTagName, currentUser.UserId.Value, true);
+
+            foreach (var assoc in tagAssoc)
+            {
+                await _photoTagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);
+                var tag = await _tagData.GetAsync(assoc.TagId);
+
+                if (!tag.TagName.Equals(newTagName, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    tagsToDelete.Add(tag.TagName);
+                }
+            }
+
+            await DeleteUnusedTags(tagsToDelete.ToArray());
+
+            var tagStat = await _tagData.GetTagAndPhotoCount(newTagName);
+
+            return tagStat;
+
+            /*
+            foreach (var tagId in targetTagIds)
+            {
+                var photoTagAssociations = await _photoTagData.GetPhotoTagAssociations(tagId);
+                var uniqueUsers = photoTagAssociations.Select(pt => pt.UserId).Distinct();
+
+                if (uniqueUsers.Count() != 1)
+                {
+                    throw new InvalidOperationException("Cannot merge tags that belong to multiple users.");
+                }
+
+                if (uniqueUsers.First() == null && currentUser.Role != RoleType.Admin)
+                {
+                    throw new AccessException("Cannot merge system tags without Admin rights.");
+                }
+
+                foreach (var assoc in photoTagAssociations)
                 {
                     await _photoTagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);
                     var tag = await _tagData.GetAsync(tagId);
@@ -362,7 +452,7 @@ namespace SCS.HomePhotos.Service.Core
 
             var tagStat = await _tagData.GetTagAndPhotoCount(newTagName);
 
-            return tagStat;
+            return tagStat; */
         }
 
         /// <summary>
@@ -370,12 +460,21 @@ namespace SCS.HomePhotos.Service.Core
         /// </summary>
         /// <param name="newTagName">New name of the new tag.</param>
         /// <param name="sourceTagId">The tag to copy.</param>
+        /// <param name="useServerContext">Whether to create new tag as a system tag.</param>
         /// <returns>
         /// The new tag created.
         /// </returns>
-        public async Task<Tag> CopyTags(string newTagName, int? sourceTagId)
+        public async Task<Model.Tag> CopyTags(string newTagName, int? sourceTagId, bool useServerContext = false)
         {
-            var newTag = await GetTag(newTagName, true);
+            var currentUser = await GetCurrentUser();
+            var isAdmin = currentUser.Role == RoleType.Admin;
+
+            if (useServerContext && !isAdmin)
+            {
+                throw new InvalidOperationException("Cannot create system tag, without Admin rights.");
+            }
+
+            var newTag = await GetTag(newTagName, currentUser.UserId, true);
 
             foreach (var assoc in await _photoTagData.GetPhotoTagAssociations(sourceTagId.Value))
             {
@@ -392,7 +491,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>
         /// A list of tags and their photos.
         /// </returns>
-        public async Task<IEnumerable<Tag>> GetTagsAndPhotos(params int[] photoIds)
+        public async Task<IEnumerable<Model.Tag>> GetTagsAndPhotos(params int[] photoIds)
         {
             return await _photoData.GetTagsAndPhotos(photoIds);
         }
@@ -413,7 +512,7 @@ namespace SCS.HomePhotos.Service.Core
                 {
                     if (!photo.Tags.Any(t => t.TagName == addTagName))
                     {
-                        var tag = await GetTag(addTagName, true);
+                        var tag = await GetTag(addTagName, null, true);
 
                         if (tag != null)
                         {
@@ -484,9 +583,9 @@ namespace SCS.HomePhotos.Service.Core
         {
             var dirPhotos = await _photoData.GetListAsync("WHERE MobileUpload = @MobileUpload AND OriginalFolder = @OriginalFolder",
                 new { MobileUpload = mobileUpload, OriginalFolder = originalFolder });
-            
+
             foreach (var photo in dirPhotos)
-            {                
+            {
                 await DeletePhoto(photo.PhotoId.Value);
             }
         }
@@ -569,5 +668,15 @@ namespace SCS.HomePhotos.Service.Core
             }
         }
 
+        private IEnumerable<Tag> AssignSysTagColor(IEnumerable<TagStat> tags)
+        {
+            tags.ToList().ForEach(t => t.TagColor ??= _sysTagColor);
+            return tags;
+        }
+
+        private async Task<User> GetCurrentUser()
+        {
+            return await _userData.GetUser(UserContext.Identity.Name);
+        }
     }
 }

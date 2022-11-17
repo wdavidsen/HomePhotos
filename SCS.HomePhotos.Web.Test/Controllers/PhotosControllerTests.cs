@@ -1,13 +1,18 @@
 ﻿using AutoFixture;
+
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using Moq;
-using SCS.HomePhotos.Service;
+
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Controllers;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Xunit;
 
 namespace SCS.HomePhotos.Web.Test.Controllers
@@ -20,7 +25,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         private readonly Mock<ILogger<PhotosController>> _logger;
         private readonly Mock<IPhotoService> _photosService;
         private readonly Mock<IStaticConfig> _staticConfig;
-
+        
         public PhotosControllerTests()
         {
             _fixture = new Fixture();
@@ -30,7 +35,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _logger = new Mock<ILogger<PhotosController>>();
             _photosService = new Mock<IPhotoService>();
             _staticConfig = new Mock<IStaticConfig>();
-
+            
             _staticConfig.SetupGet(p => p.ImageEncryptKey).Returns("04869030587693020458265184096903");
             _staticConfig.SetupGet(p => p.ImageEncryptPasscode).Returns("2958721564856927");
 
@@ -62,7 +67,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             Assert.Equal(photos.Count(), dtos.Count);
         }
 
-        protected override void DisposeController()
+        protected override void Dispose(bool disposing)
         {
             _photosController.Dispose();
         }
