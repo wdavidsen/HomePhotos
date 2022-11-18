@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace SCS.HomePhotos.Data.Contracts
 {
     /// <summary>
-    /// The photo -> tag association data repository.
+    /// The photo-to-tag association data repository.
     /// </summary>
     public interface IPhotoTagData
     {

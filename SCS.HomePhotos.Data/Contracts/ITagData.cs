@@ -1,9 +1,6 @@
-﻿using SCS.HomePhotos.Data.Core;
-using SCS.HomePhotos.Model;
+﻿using SCS.HomePhotos.Model;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Data.Contracts
@@ -37,8 +34,9 @@ namespace SCS.HomePhotos.Data.Contracts
         /// Gets the tag and photo count.
         /// </summary>
         /// <param name="tagName">Name of the tag.</param>
+        /// <param name="userId">Name user id owner.</param>
         /// <returns>The tag and photo count.</returns>
-        Task<TagStat> GetTagAndPhotoCount(string tagName);
+        Task<TagStat> GetTagAndPhotoCount(string tagName, int? userId);
 
         /// <summary>
         /// Gets the tags by keyword.

@@ -15,4 +15,8 @@ export class User {
   mustChangePassword?: Boolean;
   enabled?: Boolean;
   tagColor?: string;
+
+  static isAdmin(user: User) {
+    return user.role != null && user.role.toUpperCase() == 'ADMIN';
+  }
 }

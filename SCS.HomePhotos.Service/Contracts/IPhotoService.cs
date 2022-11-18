@@ -10,16 +10,8 @@ namespace SCS.HomePhotos.Service.Contracts
     /// <summary>
     /// Photo service.
     /// </summary>
-    public interface IPhotoService
+    public interface IPhotoService : IHomePhotosService
     {
-        /// <summary>
-        /// Gets or sets the user context.
-        /// </summary>
-        /// <value>
-        /// The user context.
-        /// </value>
-        IPrincipal UserContext { get; set; }
-
         /// <summary>
         /// Gets the latest photos.
         /// </summary>
@@ -72,7 +64,7 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <param name="userId">The owner of the tag.</param>
         /// <param name="createIfMissing">if set to <c>true</c> create tag if missing.</param>
         /// <returns>A tag.</returns>
-        Task<Tag> GetTag(string tagName, int? userId, bool createIfMissing = true);
+        Task<Tag> GetTag(string tagName, int? userId, bool createIfMissing);
 
         /// <summary>
         /// Gets the tag.
@@ -80,7 +72,7 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <param name="tagName">Name of the tag.</param>
         /// <param name="userId">The owner of the tag.</param>
         /// <returns>A tag.</returns>
-        Task<Tag> GetTag(string tagName, int? userId = null);
+        Task<Tag> GetTag(string tagName, int? userId);
 
         /// <summary>
         /// Deletes a tag.
@@ -92,10 +84,9 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <summary>
         /// Saves a tag.
         /// </summary>
-        /// <param name="tag">The tag to save.</param>
-        /// <param name="useServerContext">Whether to create new tag as a system tag.</param>
+        /// <param name="tag">The tag to save.</param>        
         /// <returns>The saved tag.</returns>
-        Task<Tag> SaveTag(TagStat tag, bool useServerContext = false);
+        Task<Tag> SaveTag(TagStat tag);
 
         /// <summary>
         /// Saves a photo.
@@ -138,10 +129,10 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Copies a new tag with the same photo associations as another tag.
         /// </summary>
         /// <param name="newTagName">New name of the new tag.</param>
-        /// <param name="sourceTagId">The tag to copy.</param>
-        /// <param name="useServerContext">Whether to create new tag as a system tag.</param>
+        /// <param name="sourceTagId">The tag to copy.</param>        
+        /// <param name="ownerId">The owner of the new tag.</param>       
         /// <returns>The new tag created.</returns>
-        Task<Tag> CopyTags(string newTagName, int? sourceTagId, bool useServerContext = false);
+        Task<TagStat> CopyTags(string newTagName, int? sourceTagId, int? ownerId);
 
         /// <summary>
         /// Gets tags by keywords.

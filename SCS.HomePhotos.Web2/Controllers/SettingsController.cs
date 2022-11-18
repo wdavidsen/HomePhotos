@@ -26,8 +26,6 @@ namespace SCS.HomePhotos.Web.Controllers
             _logger = logger;
             _dynamicConfig = dynamicConfig;
             _photoService = photoService;
-
-            _photoService.UserContext = User;
         }
 
         /// <summary>Gets the settings.</summary>
@@ -104,6 +102,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ClearCache()
         {
+            _photoService.SetUserContext(User);
             await _photoService.DeletePhotoCache(User.Identity.Name);
 
             return Ok();

@@ -1,0 +1,19 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{title}}</h4>
+</div>
+<div class="modal-body">
+    <p *ngIf="message">{{message}}</p>
+
+    <div class="form-group">
+        <label for="input">{{label || 'Input'}}</label>
+        <input type="text" id="input" class="form-control" [(ngModel)]="tagName">
+    </div>
+    <div class="form-group form-check" *ngIf="!isUpdate && showCreateCommonCheck">
+        <input type="checkbox" class="form-check-input" id="createSharedCheck" [(ngModel)]="createAsShared">
+        <label class="form-check-label" for="createSharedCheck">Create as shared tag</label>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="ok()">OK</button>
+    <button type="button" class="btn btn-light" (click)="cancel()">Cancel</button>
+</div>

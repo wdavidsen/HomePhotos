@@ -43,9 +43,6 @@ namespace SCS.HomePhotos.Web.Controllers
             _uploadTracker = uploadTracker;
         }
 
-        // [DisableRequestSizeLimit]
-
-
         /// <summary>Receives an image upload.</summary>
         /// <param name="formdata">The form data containing images and tag info.</param>
         [HttpPost]

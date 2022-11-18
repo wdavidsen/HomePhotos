@@ -31,12 +31,12 @@ namespace SCS.HomePhotos.Data.Core
             var sql = @"SELECT pt.PhotoTagId, pt.PhotoId, t.TagId, t.TagName, t.UserId AS PhotoCount 
                         FROM Tag t 
                         JOIN PhotoTag pt ON t.TagId = pt.TagId 
-                        JOIN User u ON pt.UserId = u.UserId   
+                        WHERE t.TagId = @TagId 
                         ORDER BY t.TagName";
 
             using (var conn = GetDbConnection())
             {
-                return await conn.QueryAsync<UserPhotoTag>(sql);
+                return await conn.QueryAsync<UserPhotoTag>(sql, new { TagId = tagId });
             }
         }
 

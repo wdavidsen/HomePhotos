@@ -7,6 +7,7 @@ using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Web.Models;
 
 namespace SCS.HomePhotos.Web.Controllers
@@ -26,8 +27,6 @@ namespace SCS.HomePhotos.Web.Controllers
         {
             _logger = logger;
             _photoService = photoSevice;
-
-            _photoService.UserContext = User;
         }
 
         /// <summary>Gets all tags.</summary>
@@ -39,6 +38,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [Authorize(Policy = "Readers")]
         public async Task<IActionResult> Get()
         {
+            _photoService.SetUserContext(User);
             var tags = await _photoService.GetTags(true);
 
             var dtos = new List<Dto.Tag>();
@@ -77,6 +77,8 @@ namespace SCS.HomePhotos.Web.Controllers
             }
 
             IEnumerable<Tag> tags;
+
+            _photoService.SetUserContext(User);
 
             if (!string.IsNullOrWhiteSpace(keywords))
             {
@@ -119,6 +121,7 @@ namespace SCS.HomePhotos.Web.Controllers
             
             try
             {
+                _photoService.SetUserContext(User);
                 var finalTag = await _photoService.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds);
                 return Ok(new Dto.Tag(finalTag));
             }
@@ -150,7 +153,9 @@ namespace SCS.HomePhotos.Web.Controllers
 
             try
             {
-                var newTag = await _photoService.CopyTags(copyInfo.NewTagName, copyInfo.SourceTagId);
+                _photoService.SetUserContext(User);
+                var newTag = await _photoService.CopyTags(copyInfo.NewTagName, copyInfo.SourceTagId, copyInfo.OwnerId);
+
                 return Ok(new Dto.Tag(newTag));
             }
             catch (AccessException ex)
@@ -178,7 +183,7 @@ namespace SCS.HomePhotos.Web.Controllers
             {
                 return BadRequest(new ProblemModel(ModelState));
             }
-
+            _photoService.SetUserContext(User);
             var photoTags = await _photoService.GetTagsAndPhotos(photoIds);
 
             return Ok(new BatchSelectTags(photoIds, photoTags));
@@ -201,7 +206,9 @@ namespace SCS.HomePhotos.Web.Controllers
 
             try
             {
+                _photoService.SetUserContext(User);
                 await _photoService.UpdatePhotoTags(updateTags.PhotoIds, updateTags.GetAddedTagNames(), updateTags.GetRemovedTagIds());
+
                 return Ok();
             }
             catch (AccessException ex)
@@ -231,6 +238,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             try
             {
+                _photoService.SetUserContext(User);
                 var tagEntity = await _photoService.SaveTag(tag.ToModel());
 
                 return Ok(new Dto.Tag(tagEntity));
@@ -263,6 +271,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             try
             {
+                _photoService.SetUserContext(User);
                 var tagEntity = await _photoService.SaveTag(tag.ToModel());
 
                 return Ok(new Dto.Tag(tagEntity));
@@ -294,6 +303,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             try
             {
+                _photoService.SetUserContext(User);
                 await _photoService.DeleteTag(tagId);
             }
             catch (AccessException ex)

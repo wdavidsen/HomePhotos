@@ -12,7 +12,7 @@ namespace SCS.HomePhotos.Service.Core
     /// The admin log service.
     /// </summary>
     /// <seealso cref="SCS.HomePhotos.Service.Contracts.IAdminLogService" />
-    public class AdminLogService : IAdminLogService
+    public class AdminLogService : HomePhotosService, IAdminLogService
     {
         private readonly ILogData _logData;
         private readonly IStaticConfig _staticConfig;

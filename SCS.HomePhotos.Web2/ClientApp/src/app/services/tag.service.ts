@@ -33,8 +33,8 @@ export class TagService {
         return this.http.delete<void>(`${environment.apiUrl}/tags/${tagId}`);
     }
 
-    copyTag(sourceTagId: number, newTagName: string): Observable<Tag> {
-        return this.http.put<Tag>(`${environment.apiUrl}/tags/copy`, { SourceTagId: sourceTagId, newTagName: newTagName });
+    copyTag(sourceTagId: number, newTagName: string, ownerId: number|null): Observable<Tag> {
+        return this.http.put<Tag>(`${environment.apiUrl}/tags/copy`, { SourceTagId: sourceTagId, newTagName: newTagName, OwnerId: ownerId });
     }
 
     mergeTags(sourceTagIds: Array<number>, newTagName: string): Observable<Tag> {

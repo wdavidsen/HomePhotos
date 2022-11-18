@@ -9,7 +9,7 @@ namespace SCS.HomePhotos.Service.Contracts
     /// <summary>
     /// Account services.
     /// </summary>
-    public interface IAccountService
+    public interface IAccountService : IHomePhotosService
     {
         /// <summary>
         /// Authenticates a specified user.

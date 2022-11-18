@@ -8,6 +8,8 @@ import { ToastrService } from 'ngx-toastr';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { InputDialogComponent, ConfirmDialogComponent } from '../common-dialog';
 import { UserSettings } from '../models/user-settings';
+import { TagDialogComponent } from './tag-dialog.component';
+import { CopyTagDialogComponent } from './copy-tag-dialog.component';
 
 declare var RGB_Log_Shade: any;
 
@@ -21,11 +23,13 @@ export class TagsComponent implements OnInit, OnDestroy {
   organizeMode = false;
   filterLetter: string = null;  
   inputModalRef: BsModalRef;
-  confirmModalRef:  BsModalRef;
+  confirmModalRef: BsModalRef;
+  tagModalRef: BsModalRef;
+  copyTagModalRef: BsModalRef;
 
   private searchSubscription: Subscription;
   private organizeSubscription: Subscription;
-  private dialogSubscription: Subscription;
+  private dialogHiddenSubscription: Subscription;
   private userSettingsSubscription: Subscription;
   private currentUser: User;
   private userSettings: UserSettings;
@@ -102,17 +106,55 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   addTag() {
-    const message = 'Please new tag name.';
-    const options = InputDialogComponent.GetOptions('tag-add-dialog', 'New Tag Name', 'Name', message, '');
-    this.inputModalRef = this.modalService.show(InputDialogComponent, options);
+    const message = '';
+    const isAdmin = User.isAdmin(this.currentUser);
+    const options = TagDialogComponent.GetOptions('tag-add-dialog', 'New Tag', 'Tag Name', message, '', false, false, isAdmin);
+    this.tagModalRef = this.modalService.show(TagDialogComponent, options);
 
     this.clearDialogSubscription();
-    this.dialogSubscription = this.modalService.onHidden
+    this.dialogHiddenSubscription = this.modalService.onHidden
       .subscribe(() => {
-        if (this.inputModalRef.content.okClicked) {
-          this.addTagSubmit(this.inputModalRef.content.input);
+        if (this.tagModalRef.content.okClicked) {
+          const c = this.tagModalRef.content;
+          const tagName = c.tagName;
+
+          if (tagName && tagName.trim()) {
+            const tag: Tag = {
+              tagName: c.tagName,
+              ownerId: c.createAsShared ? null : this.currentUser.userId
+            };
+            this.addTagSubmit(tag);
+          }          
         }
       });
+  }
+
+  renameTag() {
+    const chips = this.getSelectedChips();
+
+    if (chips.length) {
+      const chip = chips[0];
+      const message = 'Please enter the new tag name.';
+      const isAdmin = User.isAdmin(this.currentUser);
+      const createAsCommon = chip.ownerId == null;
+      const options = TagDialogComponent.GetOptions('tag-rename-dialog', 'New Tag Name', 'Tag Name', message, chip.name, createAsCommon, true, isAdmin);
+      this.tagModalRef = this.modalService.show(TagDialogComponent, options);
+
+      this.clearDialogSubscription();
+      this.dialogHiddenSubscription = this.modalService.onHidden
+        .subscribe(() => {
+          if (this.tagModalRef.content.okClicked) {
+            const c = this.tagModalRef.content;
+            const tagName = c.tagName;
+
+            if (tagName && tagName.trim() && tagName.toUpperCase() != chip.name.toUpperCase()) {
+              chip.name = this.tagModalRef.content.tagName;
+              const tag = TagChip.toTag(chip);
+              this.renameTagSubmit(tag);
+            }
+          }
+        });
+    }
   }
 
   private loadTags(searchInfo: SearchInfo) {
@@ -132,17 +174,12 @@ export class TagsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private addTagSubmit(tagName: string) {
-    if (tagName) {
-      const tag: Tag = {
-        tagId: 0,
-        tagName: tagName,
-        ownerId: this.currentUser.userId
-      };
-
+  private addTagSubmit(tag: Tag) {
+    if (tag.tagName) {     
       this.tagService.addTag(tag)
         .subscribe({
           next: (t) => {
+            t.tagColor = t.ownerId ? this.currentUser.tagColor : TagChip.defaultColor;
             this.tagChips.push(this.tagToChip(t));
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
             this.toastr.success('Added tag successfully');
@@ -153,32 +190,8 @@ export class TagsComponent implements OnInit, OnDestroy {
     }
   }
 
-  renameTag() {
-    const chips = this.getSelectedChips();
-
-    if (chips.length) {
-      const message = 'Please enter the new tag name.';
-      const options = InputDialogComponent.GetOptions('tag-rename-dialog', 'New Tag Name', 'Name', message, chips[0].name);
-      this.inputModalRef = this.modalService.show(InputDialogComponent, options);
-
-      this.clearDialogSubscription();
-      this.dialogSubscription = this.modalService.onHidden
-        .subscribe(() => {
-          if (this.inputModalRef.content.okClicked) {
-            this.renameTagSubmit(chips[0].id, chips[0].ownerId, this.inputModalRef.content.input);
-          }
-        });
-    }
-  }
-
-  private renameTagSubmit(tagId: number, ownerId: number, newTagName: string) {
-    if (newTagName && newTagName.length) {
-      const tag: Tag = {
-        tagId: tagId,
-        ownerId: ownerId,
-        tagName: newTagName
-      };
-
+  private renameTagSubmit(tag: Tag) {   
+    if (tag.tagName) { 
       this.tagService.updateTag(tag)
         .subscribe({
           next: (t) => {
@@ -191,7 +204,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.clearSelections();
           },
           error: (e) => { console.error(e); this.toastr.error('Failed to rename tag') }
-        });        
+        });
     }
   }
 
@@ -204,7 +217,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       this.confirmModalRef = this.modalService.show(ConfirmDialogComponent, options);
 
       this.clearDialogSubscription();
-      this.dialogSubscription = this.modalService.onHidden
+      this.dialogHiddenSubscription = this.modalService.onHidden
         .subscribe(() => {
           chips.forEach(chip => {
             if (this.confirmModalRef.content.yesClicked) {
@@ -233,25 +246,33 @@ export class TagsComponent implements OnInit, OnDestroy {
     const chips = this.getSelectedChips();
 
     if (chips.length) {
+      const chip = chips[0];
+      const isAdmin = User.isAdmin(this.currentUser);
+      const createAsCommon = chip.ownerId == null;
       const message = 'Please enter a name for copied tag.';
-      const options = InputDialogComponent.GetOptions('tag-copy-dialog', 'Copied Tag Name', 'Name', message, chips[0].name);
-      this.inputModalRef = this.modalService.show(InputDialogComponent, options);
+      const options = CopyTagDialogComponent.GetOptions('tag-copy-dialog', 'Copied Tag Name', 'Name', message, chip.name, createAsCommon, isAdmin);
+      this.copyTagModalRef = this.modalService.show(CopyTagDialogComponent, options);
 
       this.clearDialogSubscription();
-      this.dialogSubscription = this.modalService.onHidden
+      this.dialogHiddenSubscription = this.modalService.onHidden
         .subscribe(() => {
-          if (this.inputModalRef.content.okClicked) {
-            this.copyTagSubmit(chips[0].id, this.inputModalRef.content.input);
+          if (this.copyTagModalRef.content.okClicked) {
+            const c = this.copyTagModalRef.content;
+            const tagName = c.tagName;
+            const ownerId = c.createAsShared ? null : this.currentUser.userId;
+
+            if (tagName && tagName.trim() && (tagName.toUpperCase() != chip.name.toUpperCase() || ownerId != chip.ownerId)) {
+              this.copyTagSubmit(chip.id, tagName, ownerId);
+            }
           }
         });
     }
   }
 
-  private copyTagSubmit(sourceTagId: number, copyTagName: string) {
+  private copyTagSubmit(sourceTagId: number, copyTagName: string, ownerId: number|null) {
 
-    if (sourceTagId > 0 && copyTagName && copyTagName.length) {
-
-      this.tagService.copyTag(sourceTagId, copyTagName)
+    if (sourceTagId > 0 && copyTagName) {
+      this.tagService.copyTag(sourceTagId, copyTagName, ownerId)
         .subscribe({
           next: (newTag) => {
             const chip = this.tagToChip(newTag);
@@ -274,7 +295,7 @@ export class TagsComponent implements OnInit, OnDestroy {
       this.inputModalRef = this.modalService.show(InputDialogComponent, options);
 
       this.clearDialogSubscription();
-      this.dialogSubscription = this.modalService.onHidden
+      this.dialogHiddenSubscription = this.modalService.onHidden
         .subscribe(() => {
           if (this.inputModalRef.content.okClicked) {
             this.combineTagsSubmit(chips.map(c => c.id), this.inputModalRef.content.input);
@@ -303,8 +324,8 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   private clearDialogSubscription(): void {
-    if (this.dialogSubscription) {
-      this.dialogSubscription.unsubscribe();
+    if (this.dialogHiddenSubscription) {
+      this.dialogHiddenSubscription.unsubscribe();
     }
   }
 
@@ -318,8 +339,9 @@ export class TagsComponent implements OnInit, OnDestroy {
     const chip = new TagChip();    
     chip.id = tag.tagId;
     chip.name = tag.tagName;
+    chip.ownerId = tag.ownerId;
     chip.count = tag.photoCount > 0 ? tag.photoCount : 0;
-    chip.color = tag.tagColor || 'rgb(255, 249, 196)';
+    chip.color = tag.tagColor || TagChip.defaultColor;
     chip.borderColor = RGB_Log_Shade(-.7, chip.color);
     return chip;
   }

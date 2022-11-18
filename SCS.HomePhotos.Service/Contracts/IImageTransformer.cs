@@ -5,7 +5,7 @@ namespace SCS.HomePhotos.Service.Contracts
     /// <summary>
     /// Helper class for common image operations.
     /// </summary>
-    public interface IImageTransformer
+    public interface IImageTransformer : IHomePhotosService
     {
         /// <summary>
         /// Resizes an image.

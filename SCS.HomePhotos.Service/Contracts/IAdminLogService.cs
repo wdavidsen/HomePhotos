@@ -10,7 +10,7 @@ namespace SCS.HomePhotos.Service.Contracts
     /// <summary>
     /// The admin log service.
     /// </summary>
-    public interface IAdminLogService
+    public interface IAdminLogService : IHomePhotosService
     {
         /// <summary>
         /// Adds the log entry.

@@ -66,7 +66,7 @@ namespace SCS.HomePhotos.Service.Test
             _photoService = new PhotoService( _photoData.Object, _tagData.Object, _photoTagData.Object, _fileExclusionData.Object, _userData.Object, 
                 _logger.Object, _fileSystemService.Object, _dynamicCache.Object, _backgroundQueue);
 
-            _photoService.UserContext = _userContext.Object;
+            _photoService.SetUserContext(_userContext.Object);
         }
 
         [Fact]

@@ -10,7 +10,7 @@ namespace SCS.HomePhotos.Service.Core
     /// <summary>
     /// Image metadata service.
     /// </summary>
-    public class ImageMetadataService : IImageMetadataService
+    public class ImageMetadataService : HomePhotosService, IImageMetadataService
     {
         /// <summary>
         /// Gets the EXIF data.

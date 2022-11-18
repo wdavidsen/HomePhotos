@@ -5,7 +5,7 @@ namespace SCS.HomePhotos.Service.Contracts
     /// <summary>
     /// Configuration that may be changed at runtime.
     /// </summary>
-    public interface IConfigService
+    public interface IConfigService : IHomePhotosService
     {
         /// <summary>
         /// Gets the dynamic configuration.

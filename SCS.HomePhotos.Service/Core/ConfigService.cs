@@ -13,7 +13,7 @@ namespace SCS.HomePhotos.Service.Core
     /// Configuration that may be changed at runtime.
     /// </summary>
     /// <seealso cref="SCS.HomePhotos.Service.Contracts.IConfigService" />
-    public class ConfigService : IConfigService
+    public class ConfigService : HomePhotosService, IConfigService
     {
         private readonly ILogger<ConfigService> _logger;
 

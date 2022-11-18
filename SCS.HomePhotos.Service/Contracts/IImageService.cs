@@ -8,7 +8,7 @@ namespace SCS.HomePhotos.Service.Contracts
     /// <summary>
     /// Image service.
     /// </summary>
-    public interface IImageService
+    public interface IImageService : IHomePhotosService
     {
         /// <summary>
         /// Queues the image to be resized for mobile display.

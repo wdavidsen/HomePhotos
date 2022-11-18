@@ -22,4 +22,6 @@ export class TagChip {
             ownerId: chip.ownerId
           };
     }
+
+    static get defaultColor() { return 'rgb(255, 249, 196)'; }
 }

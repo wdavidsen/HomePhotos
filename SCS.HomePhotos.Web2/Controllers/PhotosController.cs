@@ -26,8 +26,6 @@ namespace SCS.HomePhotos.Web.Controllers
             _logger = logger;            
             _photoService = photoSevice;
             _staticConfig = staticConfig;
-
-            _photoService.UserContext = User;
         }
 
         /// <summary>Gets the latest photos.</summary>
@@ -40,6 +38,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [HttpGet("latest", Name = "GetLatestPhotos")]
         public async Task<IActionResult> GetLatestPhotos([FromQuery] int pageNum = 1, [FromQuery] int pageSize = 400)
         {
+            _photoService.SetUserContext(User);
             var photos = await _photoService.GetLatestPhotos(pageNum, pageSize);
 
             var dtos = new List<Dto.Photo>();
@@ -70,6 +69,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest();
             }
 
+            _photoService.SetUserContext(User);
             var photos = await _photoService.GetPhotosByTag(new string[] { tag }, pageNum, pageSize);
 
             var dtos = new List<Dto.Photo>();
@@ -110,6 +110,8 @@ namespace SCS.HomePhotos.Web.Controllers
 
             IEnumerable<Photo> photos;
 
+            _photoService.SetUserContext(User);
+
             if (!string.IsNullOrWhiteSpace(keywords))
             {
                 photos = await _photoService.GetPhotosByKeywords(keywords, dateRange, pageNum, pageSize);
@@ -146,6 +148,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [HttpDelete("{photoId}", Name = "DeletePhoto")]
         public async Task<IActionResult> DeletePhoto([FromRoute] int photoId)
         {
+            _photoService.SetUserContext(User);
             await _photoService.DeletePhoto(photoId);
 
             return Ok();

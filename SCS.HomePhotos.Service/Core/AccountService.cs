@@ -13,7 +13,7 @@ namespace SCS.HomePhotos.Service.Core
     /// Account services.
     /// </summary>
     /// <seealso cref="SCS.HomePhotos.Service.Contracts.IAccountService" />
-    public class AccountService : IAccountService
+    public class AccountService : HomePhotosService, IAccountService
     {
         private readonly IStaticConfig _staticConfig;
         private readonly IUserData _userData;

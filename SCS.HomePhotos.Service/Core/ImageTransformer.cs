@@ -16,7 +16,7 @@ namespace SCS.HomePhotos.Service.Core
     /// <summary>
     /// Helper class for common image operations.
     /// </summary>
-    public class ImageTransformer : IImageTransformer
+    public class ImageTransformer : HomePhotosService, IImageTransformer
     {
         private readonly ILogger<ImageTransformer> _logger;
         private readonly IStaticConfig _staticConfig;

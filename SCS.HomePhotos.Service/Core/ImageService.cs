@@ -9,7 +9,6 @@ using SCS.HomePhotos.Service.Workers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -20,7 +19,7 @@ namespace SCS.HomePhotos.Service.Core
     /// <summary>
     /// Image service.
     /// </summary>
-    public class ImageService : IImageService
+    public class ImageService : HomePhotosService, IImageService
     {
         private readonly Random _randomNum = new();
 
@@ -417,7 +416,7 @@ namespace SCS.HomePhotos.Service.Core
         private List<Tag> BuildBuiltInTags(string imageFilePath, ImageInfo imageInfo)
         {
             var tags = new List<Tag>();
-            
+
             foreach (var dirTag in _fileSystemService.GetDirectoryTags(imageFilePath).ToList())
             {
                 tags.Add(new Tag { TagName = dirTag, UserId = null }); // null = system tag

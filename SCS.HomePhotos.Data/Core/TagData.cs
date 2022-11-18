@@ -80,21 +80,22 @@ namespace SCS.HomePhotos.Data.Core
         /// Gets the tag and photo count.
         /// </summary>
         /// <param name="tagName">Name of the tag.</param>
+        /// <param name="userId">Name user id owner.</param>
         /// <returns>The tag and photo count.</returns>
-        public async Task<TagStat> GetTagAndPhotoCount(string tagName)
+        public async Task<TagStat> GetTagAndPhotoCount(string tagName, int? userId)
         {
             var sql = @"SELECT t.TagId, t.TagName, t.UserId, u.TagColor, COUNT(p.PhotoId) AS PhotoCount 
                         FROM Tag t 
                         LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId 
                         LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
                         LEFT JOIN User u ON t.UserId = u.UserId 
-                        WHERE TagName = @TagName
+                        WHERE TagName = @TagName AND u.UserId = @UserId 
                         GROUP BY t.TagName, t.TagId, t.UserId, u.TagColor   
                         ORDER BY t.TagName";
 
             using (var conn = GetDbConnection())
             {
-                return await conn.QuerySingleAsync<TagStat>(sql, new { TagName = tagName });
+                return await conn.QuerySingleAsync<TagStat>(sql, new { TagName = tagName, UserId = userId });
             }
         }
 

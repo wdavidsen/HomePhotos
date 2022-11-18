@@ -6,7 +6,7 @@ namespace SCS.HomePhotos.Service.Contracts
     /// <summary>
     /// Image metadata service.
     /// </summary>
-    public interface IImageMetadataService
+    public interface IImageMetadataService : IHomePhotosService
     {
         /// <summary>
         /// Gets the EXIF data.

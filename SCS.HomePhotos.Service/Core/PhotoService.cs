@@ -19,7 +19,7 @@ namespace SCS.HomePhotos.Service.Core
     /// <summary>
     /// Photo services.
     /// </summary>
-    public class PhotoService : IPhotoService
+    public class PhotoService : HomePhotosService, IPhotoService
     {
         private readonly ILogger<PhotoService> _logger;
 
@@ -60,14 +60,6 @@ namespace SCS.HomePhotos.Service.Core
 
             _sysTagColor = dynamicConfig.TagColor;
         }
-
-        /// <summary>
-        /// Gets or sets the user context.
-        /// </summary>
-        /// <value>
-        /// The user context.
-        /// </value>
-        public IPrincipal UserContext { get; set; }
 
         /// <summary>
         /// Gets a photo by checksum.
@@ -191,7 +183,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="tagName">Name of the tag.</param>
         /// <param name="userId">The owner of the tag.</param>
         /// <returns>A tag.</returns>
-        public async Task<Tag> GetTag(string tagName, int? userId = null)
+        public async Task<Tag> GetTag(string tagName, int? userId)
         {
             return await _tagData.GetTag(tagName, userId);
         }
@@ -273,24 +265,18 @@ namespace SCS.HomePhotos.Service.Core
         /// Saves a tag.
         /// </summary>
         /// <param name="tag">The tag to save.</param>
-        /// <param name="useServerContext">Whether to create new tag as a system tag.</param>
         /// <returns>
         /// The saved tag.
         /// </returns>
-        public async Task<Tag> SaveTag(TagStat tag, bool useServerContext = false)
+        public async Task<Tag> SaveTag(TagStat tag)
         {
             var isAdd = tag.TagId == null || tag.TagId == 0;
             var currentUser = await GetCurrentUser();
             var isAdmin = currentUser.Role == RoleType.Admin;
 
-            if (isAdd && useServerContext && !isAdmin)
+            if (isAdd && tag.UserId == null && !isAdmin)
             {
                 throw new AccessException("Cannot create system tag, without Admin rights.");
-            }
-
-            if (isAdd && isAdmin && useServerContext)
-            {
-                tag.UserId = null;
             }
 
             return await _tagData.SaveTag(tag);
@@ -305,7 +291,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>
         /// A tag.
         /// </returns>
-        public async Task<Tag> GetTag(string tagName, int? userId, bool createIfMissing = true)
+        public async Task<Tag> GetTag(string tagName, int? userId, bool createIfMissing)
         {
             var existing = await GetTag(tagName, userId);
 
@@ -334,7 +320,7 @@ namespace SCS.HomePhotos.Service.Core
                 // unique constraint race condition?
                 if (ex.ErrorCode == 19)
                 {
-                    return await GetTag(tagName);
+                    return await GetTag(tagName, userId);
                 }
                 else
                 {
@@ -417,7 +403,7 @@ namespace SCS.HomePhotos.Service.Core
 
             await DeleteUnusedTags(tagsToDelete.ToArray());
 
-            var tagStat = await _tagData.GetTagAndPhotoCount(newTagName);
+            var tagStat = await _tagData.GetTagAndPhotoCount(newTagName, null);
 
             return tagStat;
 
@@ -460,28 +446,30 @@ namespace SCS.HomePhotos.Service.Core
         /// </summary>
         /// <param name="newTagName">New name of the new tag.</param>
         /// <param name="sourceTagId">The tag to copy.</param>
-        /// <param name="useServerContext">Whether to create new tag as a system tag.</param>
+        /// <param name="ownerId">The owner of the new tag.</param>   
         /// <returns>
         /// The new tag created.
         /// </returns>
-        public async Task<Model.Tag> CopyTags(string newTagName, int? sourceTagId, bool useServerContext = false)
+        public async Task<Model.TagStat> CopyTags(string newTagName, int? sourceTagId, int? ownerId)
         {
             var currentUser = await GetCurrentUser();
             var isAdmin = currentUser.Role == RoleType.Admin;
 
-            if (useServerContext && !isAdmin)
+            if (ownerId == null && !isAdmin)
             {
                 throw new InvalidOperationException("Cannot create system tag, without Admin rights.");
             }
 
-            var newTag = await GetTag(newTagName, currentUser.UserId, true);
+            var newTag = await GetTag(newTagName, ownerId, true);
 
             foreach (var assoc in await _photoTagData.GetPhotoTagAssociations(sourceTagId.Value))
             {
                 await _photoTagData.AssociatePhotoTag(assoc.PhotoId, newTag.TagId.Value);
             }
 
-            return newTag;
+            var tagStat = await _tagData.GetTagAndPhotoCount(newTag.TagName, newTag.UserId);
+
+            return tagStat;
         }
 
         /// <summary>
@@ -676,7 +664,7 @@ namespace SCS.HomePhotos.Service.Core
 
         private async Task<User> GetCurrentUser()
         {
-            return await _userData.GetUser(UserContext.Identity.Name);
+            return await _userData.GetUser(User.Identity.Name);
         }
     }
 }

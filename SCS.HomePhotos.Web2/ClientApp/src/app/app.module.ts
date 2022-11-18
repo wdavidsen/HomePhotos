@@ -56,6 +56,8 @@ import { SearchAdvancedComponent } from './components/search-advanced.component'
 import { ExclusionsComponent } from './exclusions/exclusions.component';
 import { ExclusionService } from './services/exclusion.service';
 import { NgxColorsModule } from 'ngx-colors';
+import { CopyTagDialogComponent } from './tags/copy-tag-dialog.component';
+import { TagDialogComponent } from './tags/tag-dialog.component';
 
 @NgModule({
     declarations: [
@@ -91,6 +93,8 @@ import { NgxColorsModule } from 'ngx-colors';
         ConfirmDialogComponent,
         AlertDialogComponent,
         InputDialogComponent,
+        CopyTagDialogComponent,
+        TagDialogComponent,
         UserDetailComponent,
         UserSettingsComponent,
         UploadPhotoTaggerComponent,

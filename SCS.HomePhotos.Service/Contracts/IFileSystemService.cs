@@ -5,7 +5,7 @@ namespace SCS.HomePhotos.Service.Contracts
     /// <summary>
     /// File system service.
     /// </summary>
-    public interface IFileSystemService
+    public interface IFileSystemService : IHomePhotosService
     {
         /// <summary>
         /// Creates the directory.

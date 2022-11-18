@@ -13,7 +13,7 @@ namespace SCS.HomePhotos.Service.Core
     /// File system service.
     /// </summary>
     /// <seealso cref="SCS.HomePhotos.Service.Contracts.IFileSystemService" />
-    public class FileSystemService : IFileSystemService
+    public class FileSystemService : HomePhotosService, IFileSystemService
     {
         private readonly ILogger<FileSystemService> _logger;
 
