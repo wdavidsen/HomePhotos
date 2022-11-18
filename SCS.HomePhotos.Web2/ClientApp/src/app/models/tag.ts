@@ -4,4 +4,5 @@ export class Tag {
     photoCount?: number;
     tagColor?: string;
     ownerId?: number;
+    ownerUsername?: string;
 }

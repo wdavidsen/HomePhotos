@@ -34,11 +34,14 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <summary>
         /// Gets the photos by tag.
         /// </summary>
-        /// <param name="tags">The tags.</param>
+        /// <param name="tag">The tags.</param>
+        /// <param name="owner">The username owner of tags.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
-        /// <returns>A paged list of photos.</returns>
-        Task<IEnumerable<Photo>> GetPhotosByTag(string[] tags, int pageNum = 0, int pageSize = 200);
+        /// <returns>
+        /// A paged list of photos.
+        /// </returns>
+        Task<IEnumerable<Photo>> GetPhotosByTag(string tag, string owner, int pageNum = 1, int pageSize = 200);
 
         /// <summary>
         /// Gets the photos by keywords.

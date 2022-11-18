@@ -24,11 +24,31 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Gets a list of photos by tag.
         /// </summary>
-        /// <param name="tags">The tags to search by.</param>
+        /// <param name="tag">The tag to search on.</param>
+        /// <param name="ownerId">The user id owner of tags.</param>
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        public async Task<IEnumerable<Photo>> GetPhotos(string[] tags, int pageNum = 1, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotos(string tag, int? ownerId, int pageNum = 1, int pageSize = 200)
+        {
+            if (ownerId.HasValue)
+            {
+                return await GetUserPhotos(tag, ownerId.Value, pageNum, pageSize); 
+            }
+            else
+            {
+                return await GetSharedPhotos(tag, pageNum, pageSize);
+            }            
+        }
+
+        /// <summary>
+        /// Gets photos matching shared tag.
+        /// </summary>
+        /// <param name="tag">The tag name.</param>
+        /// <param name="pageNum">The page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>A list of matching photos.</returns>
+        public async Task<IEnumerable<Photo>> GetSharedPhotos(string tag, int pageNum = 1, int pageSize = 200)
         {
             var offset = (pageNum - 1) * pageSize;
 
@@ -36,12 +56,37 @@ namespace SCS.HomePhotos.Data.Core
                          FROM Photo p
                          JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
                          JOIN Tag t ON pt.TagId = t.TagId 
-                         WHERE t.TagName IN @Tags
+                         WHERE t.TagName = @Tag AND t.UserId IS NULL 
                          ORDER BY p.DateTaken DESC LIMIT {pageSize} OFFSET {offset}";
 
             using (var conn = GetDbConnection())
             {
-                return await conn.QueryAsync<Photo>(sql, new { Tags = tags });
+                return await conn.QueryAsync<Photo>(sql, new { Tag = tag });
+            }
+        }
+
+        /// <summary>
+        /// Gets photos matching user tag.
+        /// </summary>
+        /// <param name="tag">The tag name.</param>
+        /// <param name="ownerId">The tag owner user id.</param>
+        /// <param name="pageNum">The page number.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <returns>A list of matching photos.</returns>
+        public async Task<IEnumerable<Photo>> GetUserPhotos(string tag, int ownerId, int pageNum = 1, int pageSize = 200)
+        {
+            var offset = (pageNum - 1) * pageSize;
+
+            var sql = $@"SELECT p.* 
+                         FROM Photo p
+                         JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
+                         JOIN Tag t ON pt.TagId = t.TagId 
+                         WHERE t.TagName = @Tag AND t.UserId = @UserId   
+                         ORDER BY p.DateTaken DESC LIMIT {pageSize} OFFSET {offset}";
+
+            using (var conn = GetDbConnection())
+            {
+                return await conn.QueryAsync<Photo>(sql, new { Tag = tag, UserId = ownerId });
             }
         }
 

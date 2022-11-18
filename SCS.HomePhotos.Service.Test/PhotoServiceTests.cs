@@ -111,20 +111,20 @@ namespace SCS.HomePhotos.Service.Test
         public async Task GetPhotosByTag()
         {
             var photos = _fixture.CreateMany<Photo>(50);
-            var tags = _fixture.CreateMany<string>(3);
+            var tag = _fixture.Create<string>();
 
-            _photoData.Setup(m => m.GetPhotos(It.IsAny<string[]>(), 1, 50))
+            _photoData.Setup(m => m.GetPhotos(It.IsAny<string>(), It.IsAny<int?>(), 1, 50))
                 .ReturnsAsync(photos)
-                .Callback<string[], int, int>((t, p, s) =>
+                .Callback<string, int, int>((t, p, s) =>
                 {
                     Assert.Equal(1, p);
                     Assert.Equal(50, s);
-                    Assert.Equal(tags.Count(), t.Length);
+                    Assert.Equal(tag, t);
                 });
 
-            var results = await _photoService.GetPhotosByTag(tags.ToArray(), 1, 50);
+            var results = await _photoService.GetPhotosByTag(tag, "wdavidsen", 50);
 
-            _photoData.Verify(m => m.GetPhotos(It.IsAny<string[]>(), 1, 50),
+            _photoData.Verify(m => m.GetPhotos(It.IsAny<string>(), It.IsAny<int?>(), 1, 50),
                 Times.Once);
 
             Assert.Equal(50, results.Count());

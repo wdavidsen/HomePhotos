@@ -22,11 +22,12 @@ namespace SCS.HomePhotos.Data.Contracts
         /// <summary>
         /// Gets a list of photos by tag.
         /// </summary>
-        /// <param name="tags">The tags to search by.</param>
+        /// <param name="tag">The tag to search on.</param>
+        /// <param name="ownerId">The user id owner of tags.</param>
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        Task<IEnumerable<Photo>> GetPhotos(string[] tags, int pageNum = 0, int pageSize = 200);
+        Task<IEnumerable<Photo>> GetPhotos(string tag, int? ownerId, int pageNum = 0, int pageSize = 200);
 
         /// <summary>
         /// Gets a list of photos by keywords.

@@ -85,7 +85,12 @@ export class TagsComponent implements OnInit, OnDestroy {
       chip.selected = !chip.selected;
     }
     else {
-      this.router.navigate(['/photos', chip.name]);
+      if (chip.ownerUsername) {        
+        this.router.navigate(['/photos', chip.ownerUsername, chip.name]);
+      }
+      else {
+        this.router.navigate(['/photos', chip.name]);
+      }
     }
   }
 
@@ -340,6 +345,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     chip.id = tag.tagId;
     chip.name = tag.tagName;
     chip.ownerId = tag.ownerId;
+    chip.ownerUsername = tag.ownerUsername;
     chip.count = tag.photoCount > 0 ? tag.photoCount : 0;
     chip.color = tag.tagColor || TagChip.defaultColor;
     chip.borderColor = RGB_Log_Shade(-.7, chip.color);

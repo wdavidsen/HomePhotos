@@ -142,9 +142,10 @@
             <param name="pageSize">Size of the page.</param>
             <returns>A list of photos.</returns>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.GetPhotosByTag(System.String,System.Int32,System.Int32)">
+        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.GetPhotosByTag(System.String,System.String,System.Int32,System.Int32)">
             <summary>Gets photos by tag.</summary>
             <param name="tag">The tag.</param>
+            <param name="owner">The tag owner username.</param>
             <param name="pageNum">The page number.</param>
             <param name="pageSize">Size of the page.</param>
             <returns>A list of photos.</returns>
@@ -769,10 +770,18 @@
         </member>
         <member name="P:SCS.HomePhotos.Web.Dto.Tag.OwnerId">
             <summary>
-            Gets or sets the owner identifier.
+            Gets or sets the tag owner's identifier.
             </summary>
             <value>
-            The owner identifier.
+            The tag owner's identifier.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Tag.OwnerUsername">
+            <summary>
+            Gets or sets tag owner's username.
+            </summary>
+            <value>
+            The tag owner's username.
             </value>
         </member>
         <member name="M:SCS.HomePhotos.Web.Dto.Tag.ToModel">

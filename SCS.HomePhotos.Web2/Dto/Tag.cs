@@ -24,6 +24,7 @@ namespace SCS.HomePhotos.Web.Dto
             PhotoCount = (tag is TagStat) ? ((TagStat)tag).PhotoCount : -1;
             TagColor = (tag is TagStat) ? ((TagStat)tag).TagColor : Constants.DefaultTagColor;
             OwnerId = (tag is TagStat) ? ((TagStat)tag).UserId : null;
+            OwnerUsername = (tag is TagStat) ? ((TagStat)tag).UserName : null;
         }
 
         /// <summary>
@@ -60,12 +61,20 @@ namespace SCS.HomePhotos.Web.Dto
         public string TagColor { get; set; }
 
         /// <summary>
-        /// Gets or sets the owner identifier.
+        /// Gets or sets the tag owner's identifier.
         /// </summary>
         /// <value>
-        /// The owner identifier.
+        /// The tag owner's identifier.
         /// </value>
         public int? OwnerId { get; set; }
+
+        /// <summary>
+        /// Gets or sets tag owner's username.
+        /// </summary>
+        /// <value>
+        /// The tag owner's username.
+        /// </value>
+        public string OwnerUsername { get; set; }
 
         /// <summary>
         /// Converts instance to the domain model.
@@ -79,7 +88,8 @@ namespace SCS.HomePhotos.Web.Dto
                 TagName = TagName,
                 PhotoCount = PhotoCount,
                 TagColor = TagColor,
-                UserId = OwnerId
+                UserId = OwnerId,
+                UserName = OwnerUsername
             };
 
             return tag;

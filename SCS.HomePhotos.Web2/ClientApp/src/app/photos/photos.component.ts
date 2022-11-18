@@ -24,6 +24,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
   thumbHeight = 100;
   thumbnails: Thumbnail[] = [];
   tagName: string;
+  tagOwner: string|null;
   organizeMode = false;
   taggerModalRef: BsModalRef;  
   confirmDeleteModalRef: BsModalRef;
@@ -80,8 +81,9 @@ export class PhotosComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe(params => {
       const defaultTag = this.userSettings.defaultView;      
       this.tagName = params.get('tagName');
+      this.tagOwner = params.get('userName');
 
-      console.log(`Received tag: ${this.tagName}`);
+      console.log(`Received tag: ${this.tagName}, owner ${this.tagOwner}`);
 
       this.tagName = this.tagName || defaultTag;
 
@@ -434,7 +436,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
             });            
           break;
         case 2:
-          this.photosService.getPhotosByTag(this.pageNum, this.tagName)
+          this.photosService.getPhotosByTag(this.pageNum, this.tagName, this.tagOwner)
             .pipe(map(photos => this.photosToThumbnails(photos)))
             .subscribe({
               next: (thumbs) => this.appendThumbnails(thumbs),

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Web.Models;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
@@ -54,23 +55,33 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Gets photos by tag.</summary>
         /// <param name="tag">The tag.</param>
+        /// <param name="owner">The tag owner username.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A list of photos.</returns>
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Dto.Photo>))]
         [HttpGet("byTag", Name = "GetPhotosByTag")]
-        public async Task<IActionResult> GetPhotosByTag([FromQuery] string tag, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 400)
+        public async Task<IActionResult> GetPhotosByTag([FromQuery] string tag, [FromQuery] string owner, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 400)
         {
             if (string.IsNullOrWhiteSpace(tag))
             {
                 return BadRequest();
             }
 
-            _photoService.SetUserContext(User);
-            var photos = await _photoService.GetPhotosByTag(new string[] { tag }, pageNum, pageSize);
+            IEnumerable<Photo> photos;
+
+            try
+            {
+                _photoService.SetUserContext(User);
+                photos = await _photoService.GetPhotosByTag(tag, owner, pageNum, pageSize);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return BadRequest(new ProblemModel { Message = ex.Message });
+            }
 
             var dtos = new List<Dto.Photo>();
 

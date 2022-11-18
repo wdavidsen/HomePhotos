@@ -29,5 +29,13 @@
         /// The color of the tag.
         /// </value>
         public string TagColor { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tag owner username.
+        /// </summary>
+        /// <value>
+        /// The tag owner username.
+        /// </value>
+        public string UserName { get; set; }
     }
 }

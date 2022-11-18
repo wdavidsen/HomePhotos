@@ -14,12 +14,14 @@ export class TagChip {
     color?: string;
     borderColor?: string;
     ownerId?: number;
+    ownerUsername?: string;
 
     static toTag(chip: TagChip): Tag {
         return {
             tagId: chip.id,
             tagName: chip.name,
-            ownerId: chip.ownerId
+            ownerId: chip.ownerId,
+            ownerUsername: chip.ownerUsername
           };
     }
 

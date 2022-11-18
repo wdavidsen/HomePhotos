@@ -91,15 +91,28 @@ namespace SCS.HomePhotos.Service.Core
         /// <summary>
         /// Gets the photos by tag.
         /// </summary>
-        /// <param name="tags">The tags.</param>
+        /// <param name="tag">The tags.</param>
+        /// <param name="owner">The username owner of tags.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>
         /// A paged list of photos.
         /// </returns>
-        public async Task<IEnumerable<Photo>> GetPhotosByTag(string[] tags, int pageNum = 1, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotosByTag(string tag, string owner, int pageNum = 1, int pageSize = 200)
         {
-            return await _photoData.GetPhotos(tags, pageNum, pageSize);
+            var userId = null as int?;
+
+            if (owner != null)
+            {
+                var user = await _userData.GetUser(owner);
+
+                if (user == null)
+                {
+                    throw new EntityNotFoundException($"User '{owner}' not found.");
+                }
+                userId = user.UserId;
+            }
+            return await _photoData.GetPhotos(tag, userId, pageNum, pageSize);
         }
 
         /// <summary>

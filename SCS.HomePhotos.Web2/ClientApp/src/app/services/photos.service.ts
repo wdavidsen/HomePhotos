@@ -15,8 +15,8 @@ export class PhotosService {
         return this.http.get<Photo[]>(`${environment.apiUrl}/photos/latest?pageNum=${pageNum}`);
     }
 
-    getPhotosByTag(pageNum: number, tagName: string): Observable<Photo[]> {
-        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/byTag?pageNum=${pageNum}&tag=${escape(tagName)}`);
+    getPhotosByTag(pageNum: number, tagName: string, owner: string|null): Observable<Photo[]> {
+        return this.http.get<Photo[]>(`${environment.apiUrl}/photos/byTag?pageNum=${pageNum}&tag=${encodeURIComponent(tagName)}&owner=${owner ?? ''}`);
     }
 
     searchPhotos(pageNum: number, searchInfo: SearchInfo) {
