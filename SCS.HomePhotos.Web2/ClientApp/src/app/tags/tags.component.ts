@@ -10,6 +10,7 @@ import { InputDialogComponent, ConfirmDialogComponent } from '../common-dialog';
 import { UserSettings } from '../models/user-settings';
 import { TagDialogComponent } from './tag-dialog.component';
 import { CopyTagDialogComponent } from './copy-tag-dialog.component';
+import { faHeartPulse } from '@fortawesome/free-solid-svg-icons';
 
 declare var RGB_Log_Shade: any;
 
@@ -112,8 +113,8 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   addTag() {
     const message = '';
-    const isAdmin = User.isAdmin(this.currentUser);
-    const options = TagDialogComponent.GetOptions('tag-add-dialog', 'New Tag', 'Tag Name', message, '', false, false, isAdmin);
+    const showRadios = User.isAdmin(this.currentUser) || User.isContributer(this.currentUser); 
+    const options = TagDialogComponent.GetOptions('tag-add-dialog', 'New Tag', 'Tag Name', message, '', 'S', showRadios, false);
     this.tagModalRef = this.modalService.show(TagDialogComponent, options);
 
     this.clearDialogSubscription();
@@ -126,7 +127,7 @@ export class TagsComponent implements OnInit, OnDestroy {
           if (tagName && tagName.trim()) {
             const tag: Tag = {
               tagName: c.tagName,
-              ownerId: c.createAsShared ? null : this.currentUser.userId
+              ownerId: c.tagType == 'S' ? null : this.currentUser.userId
             };
             this.addTagSubmit(tag);
           }          
@@ -140,9 +141,8 @@ export class TagsComponent implements OnInit, OnDestroy {
     if (chips.length) {
       const chip = chips[0];
       const message = 'Please enter the new tag name.';
-      const isAdmin = User.isAdmin(this.currentUser);
-      const createAsCommon = chip.ownerId == null;
-      const options = TagDialogComponent.GetOptions('tag-rename-dialog', 'New Tag Name', 'Tag Name', message, chip.name, createAsCommon, true, isAdmin);
+      const showRadios = User.isAdmin(this.currentUser) || User.isContributer(this.currentUser);       
+      const options = TagDialogComponent.GetOptions('tag-rename-dialog', 'New Tag Name', 'Tag Name', message, chip.name, 'S', showRadios, true);
       this.tagModalRef = this.modalService.show(TagDialogComponent, options);
 
       this.clearDialogSubscription();
@@ -252,10 +252,10 @@ export class TagsComponent implements OnInit, OnDestroy {
 
     if (chips.length) {
       const chip = chips[0];
-      const isAdmin = User.isAdmin(this.currentUser);
-      const createAsCommon = chip.ownerId == null;
+      const tagType = chip.ownerId ? 'P' : 'S';
+      const showRadios = User.isAdmin(this.currentUser) || User.isContributer(this.currentUser);       
       const message = 'Please enter a name for copied tag.';
-      const options = CopyTagDialogComponent.GetOptions('tag-copy-dialog', 'Copied Tag Name', 'Name', message, chip.name, createAsCommon, isAdmin);
+      const options = CopyTagDialogComponent.GetOptions('tag-copy-dialog', 'Copied Tag Name', 'Name', message, chip.name, tagType, showRadios);
       this.copyTagModalRef = this.modalService.show(CopyTagDialogComponent, options);
 
       this.clearDialogSubscription();
@@ -263,11 +263,10 @@ export class TagsComponent implements OnInit, OnDestroy {
         .subscribe(() => {
           if (this.copyTagModalRef.content.okClicked) {
             const c = this.copyTagModalRef.content;
-            const tagName = c.tagName;
-            const ownerId = c.createAsShared ? null : this.currentUser.userId;
-
-            if (tagName && tagName.trim() && (tagName.toUpperCase() != chip.name.toUpperCase() || ownerId != chip.ownerId)) {
-              this.copyTagSubmit(chip.id, tagName, ownerId);
+            
+            if (c.tagName && c.tagName.trim() && (c.tagName.toUpperCase() != chip.name.toUpperCase() || c.tagType != tagType)) {
+              const ownerId = c.tagType == 'S' ? null : this.currentUser.userId;
+              this.copyTagSubmit(chip.id, c.tagName, ownerId);
             }
           }
         });

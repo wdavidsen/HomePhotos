@@ -19,4 +19,12 @@ export class User {
   static isAdmin(user: User) {
     return user.role != null && user.role.toUpperCase() == 'ADMIN';
   }
+
+  static isReader(user: User) {
+    return user.role != null && user.role.toUpperCase() == 'READER';
+  }
+
+  static isContributer(user: User) {
+    return user.role != null && user.role.toUpperCase() == 'CONTRIBUTER';
+  }
 }

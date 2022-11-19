@@ -12,14 +12,14 @@ export class CopyTagDialogComponent {
     message: string;
     label: string;
     tagName: string;
-    createAsShared: boolean;
-    showCreateCommonCheck: boolean; 
+    tagType: string = 'S';
     okClicked: boolean;
-    cancelClicked: boolean;
+    cancelClicked: boolean; 
+    showTagType: boolean;  
 
     constructor(private bsModalRef: BsModalRef) {}
 
-    static GetOptions(className: string, title: string, label: string, message: string, tagName: string, createAsShared: boolean, showCreateCommonCheck: boolean): ModalOptions {
+    static GetOptions(className: string, title: string, label: string, message: string, tagName: string, tagType: string, showTagType: boolean): ModalOptions {
         return {
             class: className,
             ignoreBackdropClick: false,
@@ -28,11 +28,11 @@ export class CopyTagDialogComponent {
               title: title,
               label: label,
               message: message,
-              tagName: tagName,
-              createAsShared: createAsShared,
-              showCreateCommonCheck: showCreateCommonCheck,
+              tagName: tagName,              
+              tagType: tagType,
               okClicked: false,
-              cancelClicked: false
+              cancelClicked: false,
+              showTagType: showTagType
             }
         };
     }

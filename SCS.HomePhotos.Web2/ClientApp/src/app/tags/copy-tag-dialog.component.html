@@ -8,9 +8,13 @@
         <label for="input">{{label || 'Input'}}</label>
         <input type="text" id="input" class="form-control" [(ngModel)]="tagName">
     </div>
-    <div class="form-group form-check" *ngIf="showCreateCommonCheck">
-        <input type="checkbox" class="form-check-input" id="createSharedCheck" [(ngModel)]="createAsShared">
-        <label class="form-check-label" for="createSharedCheck">Create as shared tag</label>
+    <div class="form-check form-check-inline" *ngIf="showTagType">
+        <input class="form-check-input" type="radio" id="sharedRadio" value="S" [(ngModel)]="tagType" [checked]="tagType == 'S'">
+        <label class="form-check-label" for="sharedRadio">Shared tag</label>
+    </div>
+    <div class="form-check form-check-inline" *ngIf="showTagType">
+        <input class="form-check-input" type="radio" id="personalRadio" value="P" [(ngModel)]="tagType" [checked]="tagType == 'P'">
+        <label class="form-check-label" for="personalRadio">Personal tag</label>
     </div>
 </div>
 <div class="modal-footer">

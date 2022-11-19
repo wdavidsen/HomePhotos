@@ -12,15 +12,15 @@ export class TagDialogComponent {
     message: string;
     label: string;
     tagName: string;
-    createAsShared: boolean;
-    isUpdate: boolean = false;
+    tagType: string = 'S';
     okClicked: boolean;
     cancelClicked: boolean; 
-    showCreateCommonCheck: boolean;  
+    showTagType: boolean;  
+    isUpdate: boolean;  
 
     constructor(private bsModalRef: BsModalRef) {}
 
-    static GetOptions(className: string, title: string, label: string, message: string, tagName: string, createAsShared: boolean, isUpdate: boolean, showCreateCommonCheck: boolean): ModalOptions {
+    static GetOptions(className: string, title: string, label: string, message: string, tagName: string, tagType: string, showTagType: boolean, isUpdate: boolean): ModalOptions {
         return {
             class: className,
             ignoreBackdropClick: false,
@@ -29,12 +29,12 @@ export class TagDialogComponent {
               title: title,
               label: label,
               message: message,
-              tagName: tagName,
-              createAsShared: createAsShared,
-              isUpdate: isUpdate,
+              tagName: tagName,              
+              tagType: tagType,
               okClicked: false,
               cancelClicked: false,
-              showCreateCommonCheck: showCreateCommonCheck
+              showTagType: showTagType,
+              isUpdate: isUpdate
             }
         };
     }
