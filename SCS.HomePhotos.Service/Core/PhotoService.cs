@@ -127,12 +127,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, DateRange? dateRange = null, int pageNum = 1, int pageSize = 200)
         {
-            var photos = await _photoData.GetPhotos(keywords, dateRange, pageNum, pageSize);
-
-            var distinctPhotos = photos.Distinct().ToList();
-            var start = (pageNum - 1) * pageSize;
-
-            return distinctPhotos.Skip(start).Take(pageSize);
+            return await _photoData.GetPhotos(keywords, dateRange, pageNum, pageSize);
         }
 
         /// <summary>

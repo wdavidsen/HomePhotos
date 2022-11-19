@@ -205,10 +205,17 @@ namespace SCS.HomePhotos.Data.Core
                 dynamicParams.Add("@ToDate", range.ToDate.ToEndOfDay().ToString(Constants.DatabaseDateTimeFormat));
             }
 
+            IEnumerable<Photo> photos;
+
             using (var conn = GetDbConnection())
             {
-                return await conn.QueryAsync<Photo>(sql, dynamicParams);
+                photos = await conn.QueryAsync<Photo>(sql, dynamicParams);                
             }
+
+            var distinctPhotos = photos.Distinct().ToList();
+            var start = (pageNum - 1) * pageSize;
+
+            return distinctPhotos.Skip(start).Take(pageSize);
         }
 
         /// <summary>
