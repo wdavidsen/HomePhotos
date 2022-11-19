@@ -25,7 +25,7 @@ namespace SCS.HomePhotos.Data.Core
         /// Gets a list of photos by tag.
         /// </summary>
         /// <param name="tag">The tag to search on.</param>
-        /// <param name="ownerId">The user id owner of tags.</param>
+        /// <param name="ownerId">The user id owner of tags. If null, shared photos will be returned; if a number greater than 0, photos specific to the user id will be returned.</param>
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
@@ -183,8 +183,13 @@ namespace SCS.HomePhotos.Data.Core
                 sql += $"AND t.TagName = @Tag{dynamicCount + 1}";
 
                 dynamicParams.Add($"@Tag{dynamicCount + 1}", keywords);
+            }
 
-                sql += $"{Environment.NewLine}ORDER BY Weight ASC, DateTaken DESC LIMIT {pageSize} OFFSET {offset}";
+            // apply weighting and paging
+            if (wordCount > 1)
+            {
+                //sql += $"{Environment.NewLine}ORDER BY Weight ASC, DateTaken DESC LIMIT {pageSize} OFFSET {offset}";
+                sql += $"{Environment.NewLine}ORDER BY Weight ASC, DateTaken DESC";
             }
 
             // date taken range if specified
