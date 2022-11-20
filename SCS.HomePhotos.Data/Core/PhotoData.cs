@@ -245,7 +245,7 @@ namespace SCS.HomePhotos.Data.Core
                         lookup.Add(tag.TagId.Value, tempTag = tag);
                     }
 
-                    tempTag.Photos = tempTag.Photos ?? new List<Photo>();
+                    tempTag.Photos ??= new List<Photo>();
                     tempTag.Photos.Add(photo);
 
                     return isDup ? null : tempTag;
@@ -283,7 +283,7 @@ namespace SCS.HomePhotos.Data.Core
                         lookup.Add(photo.PhotoId.Value, tempPhoto = photo);
                     }
 
-                    tempPhoto.Tags = tempPhoto.Tags ?? new List<Tag>();
+                    tempPhoto.Tags ??= new List<Tag>();
                     tempPhoto.Tags.Add(tag);
 
                     return isDup ? null : tempPhoto;

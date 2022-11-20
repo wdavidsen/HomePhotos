@@ -10,7 +10,6 @@ import { InputDialogComponent, ConfirmDialogComponent } from '../common-dialog';
 import { UserSettings } from '../models/user-settings';
 import { TagDialogComponent } from './tag-dialog.component';
 import { CopyTagDialogComponent } from './copy-tag-dialog.component';
-import { faHeartPulse } from '@fortawesome/free-solid-svg-icons';
 
 declare var RGB_Log_Shade: any;
 
@@ -140,9 +139,10 @@ export class TagsComponent implements OnInit, OnDestroy {
 
     if (chips.length) {
       const chip = chips[0];
+      const tagType = chip.ownerId ? 'P' : 'S';
       const message = 'Please enter the new tag name.';
       const showRadios = User.isAdmin(this.currentUser) || User.isContributer(this.currentUser);       
-      const options = TagDialogComponent.GetOptions('tag-rename-dialog', 'New Tag Name', 'Tag Name', message, chip.name, 'S', showRadios, true);
+      const options = TagDialogComponent.GetOptions('tag-rename-dialog', 'New Tag Name', 'Tag Name', message, chip.name, tagType, showRadios, true);
       this.tagModalRef = this.modalService.show(TagDialogComponent, options);
 
       this.clearDialogSubscription();
@@ -185,10 +185,11 @@ export class TagsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (t) => {
             t.tagColor = t.ownerId ? this.currentUser.tagColor : TagChip.defaultColor;
-            this.tagChips.push(this.tagToChip(t));
+            const chip = this.tagToChip(t);
+            chip.selected = true;
+            this.tagChips.push(chip);
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
             this.toastr.success('Added tag successfully');
-            this.clearSelections();
           },
           error: (e) => { console.error(e); this.toastr.error('Failed to add tag') }
         });
@@ -206,7 +207,6 @@ export class TagsComponent implements OnInit, OnDestroy {
               chip.name = t.tagName;
             }
             this.toastr.success('Renamed tag successfully');
-            this.clearSelections();
           },
           error: (e) => { console.error(e); this.toastr.error('Failed to rename tag') }
         });
@@ -254,8 +254,8 @@ export class TagsComponent implements OnInit, OnDestroy {
       const chip = chips[0];
       const tagType = chip.ownerId ? 'P' : 'S';
       const showRadios = User.isAdmin(this.currentUser) || User.isContributer(this.currentUser);       
-      const message = 'Please enter a name for copied tag.';
-      const options = CopyTagDialogComponent.GetOptions('tag-copy-dialog', 'Copied Tag Name', 'Name', message, chip.name, tagType, showRadios);
+      const message = 'Please enter a name for copied tag to be created.';
+      const options = CopyTagDialogComponent.GetOptions('tag-copy-dialog', 'Copied Tag Name', 'Tag Name', message, chip.name, tagType, showRadios);
       this.copyTagModalRef = this.modalService.show(CopyTagDialogComponent, options);
 
       this.clearDialogSubscription();
@@ -267,6 +267,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             if (c.tagName && c.tagName.trim() && (c.tagName.toUpperCase() != chip.name.toUpperCase() || c.tagType != tagType)) {
               const ownerId = c.tagType == 'S' ? null : this.currentUser.userId;
               this.copyTagSubmit(chip.id, c.tagName, ownerId);
+              chip.selected = false;
             }
           }
         });
@@ -280,10 +281,10 @@ export class TagsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (newTag) => {
             const chip = this.tagToChip(newTag);
+            chip.selected = true;
             this.tagChips.push(chip);
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
-            this.toastr.success('Copied tag successfully');
-            this.clearSelections();
+            this.toastr.success('Copied tag successfully');            
           },
           error: (e) => { console.error(e); this.toastr.error('Failed to copy tag') }
         });      
@@ -293,36 +294,44 @@ export class TagsComponent implements OnInit, OnDestroy {
   combineTags() {
     const chips = this.getSelectedChips();
 
-    if (chips.length) {
-      const message = 'Please enter a name for the combined tags.';
-      const options = InputDialogComponent.GetOptions('tag-combine-dialog', 'Combined Tag Name', 'Name', message, chips[0].name);
-      this.inputModalRef = this.modalService.show(InputDialogComponent, options);
-
+    if (chips.length) {      
+      const chip = chips[0];
+      const tagType = chip.ownerId ? 'P' : 'S';
+      const showRadios = User.isAdmin(this.currentUser) || User.isContributer(this.currentUser);       
+      const message = 'Please enter a name for combined tag to be created.';
+      const options = CopyTagDialogComponent.GetOptions('tag-combine-dialog', 'Combined Tag Name', 'Tag Name', message, chip.name, tagType, showRadios);
+      this.copyTagModalRef = this.modalService.show(CopyTagDialogComponent, options);
+      
       this.clearDialogSubscription();
       this.dialogHiddenSubscription = this.modalService.onHidden
         .subscribe(() => {
-          if (this.inputModalRef.content.okClicked) {
-            this.combineTagsSubmit(chips.map(c => c.id), this.inputModalRef.content.input);
+          if (this.copyTagModalRef.content.okClicked) {
+            const c = this.copyTagModalRef.content;
+            
+            if (c.tagName && c.tagName.trim() && (c.tagName.toUpperCase() != chip.name.toUpperCase() || c.tagType != tagType)) {
+              const ownerId = c.tagType == 'S' ? null : this.currentUser.userId;
+              this.combineTagsSubmit(chips.map(c => c.id), c.tagName, ownerId);
+            }
           }
         });
     }
   }
 
-  private combineTagsSubmit(sourceTagIds: number[], combinedTagName: string) {
+  private combineTagsSubmit(sourceTagIds: number[], combinedTagName: string, ownerId: number|null) {
 
     if (sourceTagIds && sourceTagIds.length && combinedTagName && combinedTagName.length) {
 
-      this.tagService.mergeTags(sourceTagIds, combinedTagName)
+      this.tagService.mergeTags(sourceTagIds, combinedTagName, ownerId)
         .subscribe({
           next: (newTag) => {
             sourceTagIds.forEach(id => this.tagChips.splice(this.tagChips.findIndex(c => c.id === id), 1));
             const chip = this.tagToChip(newTag);
+            chip.selected = true;
             this.tagChips.push(chip);
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
-            this.toastr.success('Combined tags successfully');
-            this.clearSelections();
+            this.toastr.success('Combined tags successfully');            
           },
-          error: (e) => { console.error(e); this.toastr.error('Failed to combine tags') }
+          error: (e) => { console.error(e); this.toastr.error(e.error.message ?? 'Failed to combine tags') }
         });
     }
   }

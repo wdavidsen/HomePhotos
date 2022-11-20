@@ -150,7 +150,7 @@ describe('NavMenuComponent', () => {
   describe('Non-Admin Context', () => {
 
     beforeEach(() => {
-      mockAuthenticationService.getCurrentUser.and.returnValue(of({userId: 1, username: 'jdoe', role: 'Contributer'}));
+      mockAuthenticationService.getCurrentUser.and.returnValue(of({userId: 1, username: 'jdoe', role: 'Contributor'}));
       navSubject.next(new NavigationEnd(0, '/photos', null));
       showSearchSubject.next(false);
 
@@ -165,7 +165,7 @@ describe('NavMenuComponent', () => {
     });
   });
 
-  describe('Non-Contributer Context', () => {
+  describe('Non-Contributor Context', () => {
 
     beforeEach(() => {
       mockAuthenticationService.getCurrentUser.and.returnValue(of({userId: 1, username: 'jdoe', role: 'Reader'}));

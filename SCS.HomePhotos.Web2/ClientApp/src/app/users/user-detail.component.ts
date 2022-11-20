@@ -16,7 +16,7 @@ export class UserDetailComponent implements OnInit {
   private currentUser: User;
   user: User;
   userForm: UntypedFormGroup;
-  roles = ['Reader', 'Contributer', 'Admin'];
+  roles = ['Reader', 'Contributor', 'Admin'];
   loading = false;
   submitted = false;
   resetPasswordModalRef: BsModalRef;

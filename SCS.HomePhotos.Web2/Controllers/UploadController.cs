@@ -11,7 +11,7 @@ namespace SCS.HomePhotos.Web.Controllers
 {
     /// <summary>Upload services.</summary>
     [Authorize]
-    [Authorize(Roles = "Admin,Contributer")]
+    [Authorize(Roles = "Admin,Contributor")]
     [Route("api/[controller]")]
     [ApiController]
     public class UploadController : HomePhotosController

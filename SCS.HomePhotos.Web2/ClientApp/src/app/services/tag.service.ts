@@ -37,8 +37,8 @@ export class TagService {
         return this.http.put<Tag>(`${environment.apiUrl}/tags/copy`, { SourceTagId: sourceTagId, newTagName: newTagName, OwnerId: ownerId });
     }
 
-    mergeTags(sourceTagIds: Array<number>, newTagName: string): Observable<Tag> {
-        return this.http.put<Tag>(`${environment.apiUrl}/tags/merge`, { sourceTagIds: sourceTagIds, newTagName: newTagName });
+    mergeTags(sourceTagIds: Array<number>, newTagName: string, ownerId: number|null): Observable<Tag> {
+        return this.http.put<Tag>(`${environment.apiUrl}/tags/merge`, { sourceTagIds: sourceTagIds, newTagName: newTagName, OwnerId: ownerId });
     }
 
     getPhototags(photoIds: number[]): Observable<TagState[]> {

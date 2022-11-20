@@ -28,7 +28,7 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>A list of photo-tags.</returns>
         public async Task<IEnumerable<UserPhotoTag>> GetPhotoTagAssociations(int tagId)
         {
-            var sql = @"SELECT pt.PhotoTagId, pt.PhotoId, t.TagId, t.TagName, t.UserId AS PhotoCount 
+            var sql = @"SELECT pt.PhotoTagId, pt.PhotoId, t.TagId, t.TagName, t.UserId  
                         FROM Tag t 
                         JOIN PhotoTag pt ON t.TagId = pt.TagId 
                         WHERE t.TagId = @TagId 

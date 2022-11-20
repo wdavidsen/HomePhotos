@@ -289,7 +289,7 @@ namespace SCS.HomePhotos.Service.Core
 
             if (isAdd && tag.UserId == null && !isAdmin)
             {
-                throw new AccessException("Cannot create system tag, without Admin rights.");
+                throw new AccessException("Cannot create shared tag, without Admin rights.");
             }
 
             return await _tagData.SaveTag(tag);
@@ -374,10 +374,11 @@ namespace SCS.HomePhotos.Service.Core
         /// </summary>
         /// <param name="newTagName">New name of the tag.</param>
         /// <param name="targetTagIds">The target tag ids.</param>
+        /// <param name="ownerId">The owner user id of new merged tag.</param>
         /// <returns>
         /// The merged tag.
         /// </returns>
-        public async Task<TagStat> MergeTags(string newTagName, params int[] targetTagIds)
+        public async Task<TagStat> MergeTags(string newTagName, int[] targetTagIds, int? ownerId)
         {
             var tagsToDelete = new List<string>();
             var currentUser = await GetCurrentUser();
@@ -391,67 +392,20 @@ namespace SCS.HomePhotos.Service.Core
 
             var uniqueUsers = tagAssoc.Select(pt => pt.UserId).Distinct();
 
-            if (uniqueUsers.Count() != 1)
+            if (uniqueUsers.Any(u => u == null) && currentUser.Role != RoleType.Admin)
             {
-                throw new InvalidOperationException("Cannot merge tags that belong to multiple users.");
+                throw new AccessException("Cannot merge common tags without Admin rights.");
             }
 
-            if (uniqueUsers.First() == null && currentUser.Role != RoleType.Admin)
-            {
-                throw new AccessException("Cannot merge system tags without Admin rights.");
-            }
-
-            var newTag = await GetTag(newTagName, currentUser.UserId.Value, true);
+            var newTag = await GetTag(newTagName, ownerId, true);
 
             foreach (var assoc in tagAssoc)
             {
-                await _photoTagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);
-                var tag = await _tagData.GetAsync(assoc.TagId);
-
-                if (!tag.TagName.Equals(newTagName, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    tagsToDelete.Add(tag.TagName);
-                }
+                await _photoTagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);                
             }
+            await DeleteUnusedTags();
 
-            await DeleteUnusedTags(tagsToDelete.ToArray());
-
-            var tagStat = await _tagData.GetTagAndPhotoCount(newTagName, null);
-
-            return tagStat;
-
-            /*
-            foreach (var tagId in targetTagIds)
-            {
-                var photoTagAssociations = await _photoTagData.GetPhotoTagAssociations(tagId);
-                var uniqueUsers = photoTagAssociations.Select(pt => pt.UserId).Distinct();
-
-                if (uniqueUsers.Count() != 1)
-                {
-                    throw new InvalidOperationException("Cannot merge tags that belong to multiple users.");
-                }
-
-                if (uniqueUsers.First() == null && currentUser.Role != RoleType.Admin)
-                {
-                    throw new AccessException("Cannot merge system tags without Admin rights.");
-                }
-
-                foreach (var assoc in photoTagAssociations)
-                {
-                    await _photoTagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);
-                    var tag = await _tagData.GetAsync(tagId);
-
-                    if (!tag.TagName.Equals(newTagName, StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        tagsToDelete.Add(tag.TagName);
-                    }
-                }
-            }
-            await DeleteUnusedTags(tagsToDelete.ToArray());
-
-            var tagStat = await _tagData.GetTagAndPhotoCount(newTagName);
-
-            return tagStat; */
+            return await _tagData.GetTagAndPhotoCount(newTagName, ownerId);
         }
 
         /// <summary>
@@ -470,7 +424,7 @@ namespace SCS.HomePhotos.Service.Core
 
             if (ownerId == null && !isAdmin)
             {
-                throw new InvalidOperationException("Cannot create system tag, without Admin rights.");
+                throw new InvalidOperationException("Cannot create shared tag, without Admin rights.");
             }
 
             var newTag = await GetTag(newTagName, ownerId, true);
@@ -480,7 +434,7 @@ namespace SCS.HomePhotos.Service.Core
                 await _photoTagData.AssociatePhotoTag(assoc.PhotoId, newTag.TagId.Value);
             }
 
-            var tagStat = await _tagData.GetTagAndPhotoCount(newTag.TagName, newTag.UserId);
+            var tagStat = await _tagData.GetTagAndPhotoCount(newTag.TagName, ownerId);
 
             return tagStat;
         }
@@ -616,14 +570,11 @@ namespace SCS.HomePhotos.Service.Core
             return tagStats.Where(ts => ts.PhotoCount == 0);
         }
 
-        private async Task DeleteUnusedTags(params string[] tagNames)
+        private async Task DeleteUnusedTags()
         {
             foreach (var tag in await GetUnusedTags())
-            {
-                if (tagNames.Any(n => n == tag.TagName))
-                {
-                    await _tagData.DeleteAsync(tag);
-                }
+            {                
+                await _tagData.DeleteAsync(tag);                
             }
         }
 

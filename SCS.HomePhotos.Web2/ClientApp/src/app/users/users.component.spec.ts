@@ -18,7 +18,7 @@ describe('UsersComponent', () => {
         lastLogin: new Date(), failedLoginCount: 0, enabled: true, selected: false },
     { userId: 2, username: 'jdoe', firstName: 'John', lastName: 'Doe', role: 'Reader',
         lastLogin: new Date(), failedLoginCount: 0, enabled: true, selected: false },
-    { userId: 3, username: 'jsmith', firstName: 'Jane', lastName: 'Smith', role: 'Contributer',
+    { userId: 3, username: 'jsmith', firstName: 'Jane', lastName: 'Smith', role: 'Contributor',
         lastLogin: new Date(), failedLoginCount: 0, enabled: true, selected: false }
   ];
 

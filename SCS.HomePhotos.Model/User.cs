@@ -13,9 +13,9 @@ namespace SCS.HomePhotos.Model
         /// </summary>
         Reader = 0,
         /// <summary>
-        /// The contributer role.
+        /// The contributor role.
         /// </summary>
-        Contributer = 1,
+        Contributor = 1,
         /// <summary>
         /// The admin role.
         /// </summary>

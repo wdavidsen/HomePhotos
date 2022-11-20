@@ -16,6 +16,8 @@
         <input class="form-check-input" type="radio" id="personalRadio" value="P" [(ngModel)]="tagType" [checked]="tagType == 'P'">
         <label class="form-check-label" for="personalRadio">Personal tag</label>
     </div>
+    <p *ngIf="!(!isUpdate && showTagType) && tagType == 'S'">This is a shared tag.</p>
+    <p *ngIf="!(!isUpdate && showTagType) && tagType == 'P'">This is a personal tag.</p>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="ok()">OK</button>

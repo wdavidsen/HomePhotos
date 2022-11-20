@@ -13,7 +13,7 @@ describe('RegisterComponent', () => {
   let fixture: ComponentFixture<RegisterComponent>;
   let mockToastr, mockAuthenticationService, mockAccountService;
 
-  const userInfo = {userId: 1, username: 'wdavidsen', firstName: 'Bill', lastName: 'Davidsen', password: 'password1', passwordCompare: 'password1', role: 'Contributer' };
+  const userInfo = {userId: 1, username: 'wdavidsen', firstName: 'Bill', lastName: 'Davidsen', password: 'password1', passwordCompare: 'password1', role: 'Contributor' };
 
   const setupEditForm = (data) => {
     const formBuilder = TestBed.get(UntypedFormBuilder);

@@ -25,6 +25,6 @@ export class User {
   }
 
   static isContributer(user: User) {
-    return user.role != null && user.role.toUpperCase() == 'CONTRIBUTER';
+    return user.role != null && user.role.toUpperCase() == 'CONTRIBUTOR';
   }
 }

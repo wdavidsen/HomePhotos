@@ -125,8 +125,11 @@ namespace SCS.HomePhotos.Service.Contracts
         /// </summary>
         /// <param name="newTagName">New name of the tag.</param>
         /// <param name="targetTagIds">The target tag ids.</param>
-        /// <returns>The merged tag.</returns>
-        Task<TagStat> MergeTags(string newTagName, params int[] targetTagIds);
+        /// <param name="ownerId">The owner user id of new merged tag.</param>
+        /// <returns>
+        /// The merged tag.
+        /// </returns>
+        Task<TagStat> MergeTags(string newTagName, int[] targetTagIds, int? ownerId);
 
         /// <summary>
         /// Copies a new tag with the same photo associations as another tag.

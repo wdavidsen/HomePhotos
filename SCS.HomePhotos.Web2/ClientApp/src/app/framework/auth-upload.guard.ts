@@ -17,7 +17,7 @@ export class AuthUploadGuard implements CanActivate {
     canLoad() {
       const role = this.authService.currentUserValue.role;
 
-      if (role === 'Admin' || role === 'Contributer') {
+      if (role === 'Admin' || role === 'Contributor') {
         return true;
       }
 

@@ -54,8 +54,8 @@ Container.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 Container.AddAuthorization(options =>
 {
     options.AddPolicy("Admins", policy => policy.RequireRole(RoleType.Admin.ToString()));
-    options.AddPolicy("Contributers", policy => policy.RequireRole(RoleType.Contributer.ToString(), RoleType.Admin.ToString()));
-    options.AddPolicy("Readers", policy => policy.RequireRole(RoleType.Reader.ToString(), RoleType.Contributer.ToString(), RoleType.Admin.ToString()));
+    options.AddPolicy("Contributors", policy => policy.RequireRole(RoleType.Contributor.ToString(), RoleType.Admin.ToString()));
+    options.AddPolicy("Readers", policy => policy.RequireRole(RoleType.Reader.ToString(), RoleType.Contributor.ToString(), RoleType.Admin.ToString()));
 });
 
 Container.AddCors(options =>

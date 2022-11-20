@@ -93,13 +93,14 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var tag = _fixture.Create<TagStat>();
             var newName = tag.TagName;
             var mergeInfo = new TagMergeInfo { NewTagName = newName, SourceTagIds = new int[] { 1, 2, 3 } };
+            var ownerId = null as int?;
 
-            _photosService.Setup(m => m.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds))
+            _photosService.Setup(m => m.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds, ownerId))
                 .ReturnsAsync(tag);
 
             var response = await _tagsController.MergeTags(mergeInfo);
 
-            _photosService.Verify(m => m.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds),
+            _photosService.Verify(m => m.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds, ownerId),
                 Times.Once);
 
             Assert.IsType<OkObjectResult>(response);
@@ -120,13 +121,14 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var tag = _fixture.Create<TagStat>();
             var newName = tag.TagName;
             var mergeInfo = new TagMergeInfo { NewTagName = newName, SourceTagIds = new int[] { 1, 2, 3 } };
+            var ownerId = null as int?;
 
-            _photosService.Setup(m => m.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds))
+            _photosService.Setup(m => m.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds, ownerId))
                .ReturnsAsync(tag);
 
             _tagsController.ModelState.AddModelError("key", "error");
 
-            _photosService.Verify(m => m.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds),
+            _photosService.Verify(m => m.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds, ownerId),
                Times.Never);
 
             var response = await _tagsController.MergeTags(mergeInfo);

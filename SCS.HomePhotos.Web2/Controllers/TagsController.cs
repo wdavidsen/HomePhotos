@@ -110,7 +110,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
-        [Authorize(Policy = "Contributers")]
+        [Authorize(Policy = "Contributors")]
         [HttpPut("merge", Name = "MergeTags")]
         public async Task<IActionResult> MergeTags([FromBody] TagMergeInfo mergeInfo)
         {
@@ -122,7 +122,7 @@ namespace SCS.HomePhotos.Web.Controllers
             try
             {
                 _photoService.SetUserContext(User);
-                var finalTag = await _photoService.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds);
+                var finalTag = await _photoService.MergeTags(mergeInfo.NewTagName, mergeInfo.SourceTagIds, mergeInfo.OwnerId);
                 return Ok(new Dto.Tag(finalTag));
             }
             catch (AccessException ex)
@@ -142,7 +142,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
-        [Authorize(Policy = "Contributers")]
+        [Authorize(Policy = "Contributors")]
         [HttpPut("copy", Name = "CopyTags")]
         public async Task<IActionResult> CopyTag([FromBody] TagCopyInfo copyInfo)
         {
@@ -175,7 +175,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BatchSelectTags))]
-        [Authorize(Policy = "Contributers")]
+        [Authorize(Policy = "Contributors")]
         [HttpPost("batchTag", Name = "GetPhotosToTag")]
         public async Task<IActionResult> GetPhotosToTag([FromBody] int[] photoIds)
         {
@@ -195,7 +195,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize(Policy = "Contributers")]
+        [Authorize(Policy = "Contributors")]
         [HttpPut("batchTag", Name = "TagPhotos")]
         public async Task<IActionResult> TagPhotos([FromBody] BatchUpdateTags updateTags)
         {
@@ -227,7 +227,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]        
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
-        [Authorize(Policy = "Contributers")]
+        [Authorize(Policy = "Contributors")]
         [HttpPost(Name = "AddTag")]
         public async Task<IActionResult> AddTag([FromBody] Dto.Tag tag)
         {
@@ -260,7 +260,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]        
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Tag))]
-        [Authorize(Policy = "Contributers")]
+        [Authorize(Policy = "Contributors")]
         [HttpPut(Name = "UpdateTag")]
         public async Task<IActionResult> UpdateTag([FromBody] Dto.Tag tag)
         {
@@ -288,7 +288,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Deletes a tag.</summary>
         /// <param name="tagId">The tag id.</param>
-        [Authorize(Policy = "Contributers")]
+        [Authorize(Policy = "Contributors")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
