@@ -191,7 +191,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
             this.toastr.success('Added tag successfully');
           },
-          error: (e) => { console.error(e); this.toastr.error('Failed to add tag') }
+          error: (e) => { console.error(e); this.toastr.error(e.error.message ?? 'Failed to add tag') }
         });
     }
   }
@@ -208,7 +208,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             }
             this.toastr.success('Renamed tag successfully');
           },
-          error: (e) => { console.error(e); this.toastr.error('Failed to rename tag') }
+          error: (e) => { console.error(e); this.toastr.error(e.error.message ?? 'Failed to rename tag') }
         });
     }
   }
@@ -242,7 +242,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.toastr.success(`Deleted ${chip.name} successfully`);
             this.tagChips.splice(this.tagChips.indexOf(chip), 1);
           },
-          error: (e) => { console.error(e); this.toastr.error(`Failed to delete ${chip.name}`) }
+          error: (e) => { console.error(e); this.toastr.error(e.error.message ?? `Failed to delete ${chip.name}`) }
         });
     }
   }
@@ -286,7 +286,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
             this.toastr.success('Copied tag successfully');            
           },
-          error: (e) => { console.error(e); this.toastr.error('Failed to copy tag') }
+          error: (e) => { console.error(e); this.toastr.error(e.error.message ?? 'Failed to copy tag') }
         });      
     }
   }

@@ -392,9 +392,9 @@ namespace SCS.HomePhotos.Service.Core
 
             var uniqueUsers = tagAssoc.Select(pt => pt.UserId).Distinct();
 
-            if (uniqueUsers.Any(u => u == null) && currentUser.Role != RoleType.Admin)
+            if (uniqueUsers.Any(u => u != currentUser.UserId) && currentUser.Role != RoleType.Admin)
             {
-                throw new AccessException("Cannot merge common tags without Admin rights.");
+                throw new AccessException("Cannot merge these tags without Admin rights.");
             }
 
             var newTag = await GetTag(newTagName, ownerId, true);
