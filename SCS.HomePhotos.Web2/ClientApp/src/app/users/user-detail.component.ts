@@ -129,10 +129,10 @@ export class UserDetailComponent implements OnInit {
       lastName: [data.lastName, Validators.required],
       emailAddress: [data.emailAddress, Validators.email],
       role: [data.role, Validators.required],
-      lastLogin: [data.lastLogin],
-      failedLoginCount: [data.failedLoginCount],
-      mustChangePassword: [data.mustChangePassword],
-      enabled: [data.enabled],
+      lastLogin: [data.lastLogin], 
+      failedLoginCount: [data.failedLoginCount ?? 0],
+      mustChangePassword: [data.mustChangePassword ?? true],
+      enabled: [data.enabled ?? true],
       tagColor: [data.tagColor]
     });
 
