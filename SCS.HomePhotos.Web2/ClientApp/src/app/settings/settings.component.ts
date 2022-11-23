@@ -134,23 +134,25 @@ export class SettingsComponent implements OnInit {
   }
 
   promptForClear() {
-    const message = 'Are you sure you want to clear the photo cache? This action may take several minutes to complete.';
-    const options = ConfirmDialogComponent.GetOptions('confirm-clear-dialog', 'Clear Cache', message, true);
+    let message = 'This action will delete all cache images and delete photos and tag records from the database; '
+    message += 'original files and uploaded files will be unaffected, as well as the settings on this page.  Are you sure you want to do this?';
+
+    const options = ConfirmDialogComponent.GetOptions('factory-reset-dialog', 'Factory Reset', message, true);
     this.confirmModalRef = this.modalService.show(ConfirmDialogComponent, options);
 
     this.modalService.onHidden
       .subscribe(() => {
         if (this.confirmModalRef.content.yesClicked) {
-          this.clear();
+          this.factoryReset();
         }
       });
   }
 
-  clear() {
-    this.settingsService.clearCache()
+  factoryReset() {
+    this.settingsService.factoryReset()
       .subscribe({
-        next: () => this.toastr.success('Cached cleared successfully'),
-        error: (e) => { console.error(e); this.toastr.error('Failed to clear cache') }
+        next: () => this.toastr.success('Reset completed successfully'),
+        error: (e) => { console.error(e); this.toastr.error('Reset failed') }
       });
       this.indexModal.hide();
   }

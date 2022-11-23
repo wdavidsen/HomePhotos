@@ -95,15 +95,15 @@ namespace SCS.HomePhotos.Web.Controllers
             return Ok(settings);
         }
 
-        /// <summary>Clears the photo cache.</summary>
-        [HttpPut("clearCache", Name = "ClearCache")]
+        /// <summary>Clears the application of all photos and tags and deletes the image file cache.</summary>
+        [HttpPut("factoryReset", Name = "FactoryReset")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ClearCache()
+        public async Task<IActionResult> FactoryReset()
         {
             _photoService.SetUserContext(User);
-            await _photoService.DeletePhotoCache(User.Identity.Name);
+            await _photoService.ResetPhotosAndTags(User.Identity.Name);
 
             return Ok();
         }

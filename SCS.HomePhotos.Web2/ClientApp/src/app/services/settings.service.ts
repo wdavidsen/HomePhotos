@@ -32,8 +32,8 @@ export class SettingsService {
         return this.http.put<Settings>(url, {});
     }
 
-    clearCache(): Observable<void> {
-        const url = `${environment.apiUrl}/settings/clearCache`;
+    factoryReset(): Observable<void> {
+        const url = `${environment.apiUrl}/settings/factoryReset`;
 
         return this.http.put<void>(url, {});
     }

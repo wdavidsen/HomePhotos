@@ -15,50 +15,36 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group col-md-10">
+        <div class="form-group col-md-12">
             <label for="cacheFolder">Photo index cache folder</label>
             <input type="text" formControlName="cacheFolder" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.cacheFolder.errors }" />
             <div *ngIf="submitted && f.cacheFolder.errors" class="invalid-feedback">
                 <div *ngIf="f.cacheFolder.errors.required">Photo index cache folder is required</div>
             </div>
         </div>
-        <div class="form-group col-md-2">   
-            <label class="btn-index-label">Clear Now</label>
-            <button type="button" class="form-control btn btn-light btn-index" (click)="promptForClear()">                
-                Clear Cache
-            </button>
-        </div>
     </div>
     <div class="form-row">
-        <div class="form-group col-md-5">
+        <div class="form-group col-md-4">
             <label for="nextIndexTime_date">Next index date</label>
             <input type="date" formControlName="nextIndexTime_date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime_date.errors }" />
             <div *ngIf="submitted && f.nextIndexTime_date.errors" class="invalid-feedback">
                 <div *ngIf="f.nextIndexTime_date.errors.required">Next index time is required</div>
             </div>
         </div>
-        <div class="form-group col-md-5">
+        <div class="form-group col-md-4">
             <label for="nextIndexTime_time">Next index time</label>
             <input type="time" formControlName="nextIndexTime_time" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime_time.errors }" />
             <div *ngIf="submitted && f.nextIndexTime_time.errors" class="invalid-feedback">
                 <div *ngIf="f.nextIndexTime_time.errors.required">Next index time is required</div>
             </div>
         </div>
-        <div class="form-group col-md-2">   
-            <label class="btn-index-label">Index Now</label>
-            <button type="button" class="form-control btn btn-light btn-index" (click)="promptForIndex()">                
-                Index Now
-            </button>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-4">   
             <label for="indexFrequencyHours">Index frequency (hours)</label>
             <input type="number" formControlName="indexFrequencyHours" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.indexFrequencyHours.errors }" />
             <div *ngIf="submitted && f.indexFrequencyHours.errors" class="invalid-feedback">
                 <div *ngIf="f.indexFrequencyHours.errors.required">Index frequency is required</div>
             </div>
-        </div>        
+        </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-4">
@@ -117,7 +103,13 @@
     <button [disabled]="loading" class="btn btn-primary">
         <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
         Save
-    </button>
+    </button>     
+    <button type="button" class="btn btn-secondary btn-index" (click)="promptForIndex()">                
+        Index Now
+    </button> 
+    <button type="button" class="btn btn-secondary btn-index" (click)="promptForClear()">                
+        Factory Reset
+    </button> 
 </form>
 
 <div bsModal #indexModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-index-now">
