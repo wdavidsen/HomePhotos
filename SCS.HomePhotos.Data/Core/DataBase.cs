@@ -43,7 +43,10 @@ namespace SCS.HomePhotos.Data.Core
                 dbPath = AppDomain.CurrentDomain.BaseDirectory + dbPath;
             }
 
-            return new SqliteConnection($"Data Source={dbPath}");
+            var conn = new SqliteConnection($"Data Source={dbPath}");
+            conn.Open();
+
+            return conn;
         }
 
         /// <summary>

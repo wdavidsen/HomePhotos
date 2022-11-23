@@ -13,6 +13,10 @@
             border: solid 4px yellow;
         }
 
+.tab-disabled {
+    font-style: italic !important;
+}
+
 #blueimp-gallery > ol.indicator {
     display: none !important;
 }

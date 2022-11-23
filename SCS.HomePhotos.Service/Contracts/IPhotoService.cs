@@ -57,8 +57,9 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Gets the tags.
         /// </summary>
         /// <param name="includPhotoCounts">if set to <c>true</c> include photo counts for each tag.</param>
+        /// <param name="username">The owner user id of the tags. If set to null, shared tags will be returned.</param>
         /// <returns>A list of tags.</returns>
-        Task<IEnumerable<Tag>> GetTags(bool includPhotoCounts = false);
+        Task<IEnumerable<Tag>> GetTags(string username = null, bool includPhotoCounts = false);
 
         /// <summary>
         /// Gets the tag.
@@ -167,17 +168,19 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Gets the tags and photos of provided photo ids.
         /// </summary>
         /// <param name="photoIds">The photo ids.</param>
+        /// <param name="username">The owner username of the tags.</param>
         /// <returns>A list of tags and their photos.</returns>
-        Task<IEnumerable<Tag>> GetTagsAndPhotos(params int[] photoIds);
+        Task<IEnumerable<Tag>> GetTagsAndPhotos(string username, params int[] photoIds);
 
         /// <summary>
         /// Updates multiple photos with multiple tags.
         /// </summary>
+        /// <param name="username">The owner username of the tags.</param>
         /// <param name="photoIds">The photo ids to update.</param>
         /// <param name="addTag">The tag to assign.</param>
         /// <param name="removeTagIds">The tag ids to be removed.</param>
         /// <returns>A void task.</returns>
-        Task UpdatePhotoTags(List<int> photoIds, List<string> addTag, List<int> removeTagIds);
+        Task UpdatePhotoTags(string username, List<int> photoIds, List<string> addTag, List<int> removeTagIds);
 
         /// <summary>
         /// Flags photos for reprocessing.
@@ -190,7 +193,7 @@ namespace SCS.HomePhotos.Service.Contracts
         /// </summary>
         /// <param name="contextUserName">Name of the context user.</param>
         /// <returns>A void task.</returns>
-        Task DeletePhotoCache(string contextUserName);
+        Task ResetPhotosAndTags(string contextUserName);
 
         /// <summary>
         /// Deletes all photos under a specific directory.

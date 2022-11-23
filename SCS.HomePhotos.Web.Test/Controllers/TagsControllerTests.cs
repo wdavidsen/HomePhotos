@@ -44,11 +44,11 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         {
             var tags = _fixture.CreateMany<Tag>(10);
 
-            _photosService.Setup(m => m.GetTags(true)).ReturnsAsync(tags);
+            _photosService.Setup(m => m.GetTags(null, true)).ReturnsAsync(tags);
 
             var response = await _tagsController.Get();
 
-            _photosService.Verify(m => m.GetTags(true),
+            _photosService.Verify(m => m.GetTags(null, true),
                 Times.Once);
 
             Assert.IsType<OkObjectResult>(response);
@@ -189,12 +189,12 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var photoIds = _fixture.CreateMany<int>(5).ToArray();
             var tags = _fixture.CreateMany<Tag>(5);
 
-            _photosService.Setup(m => m.GetTagsAndPhotos(photoIds))
+            _photosService.Setup(m => m.GetTagsAndPhotos(null, photoIds))
                 .ReturnsAsync(tags);
 
-            var response = await _tagsController.GetPhotosToTag(photoIds);
+            var response = await _tagsController.GetSharedPhotosToTag(photoIds);
 
-            _photosService.Verify(m => m.GetTagsAndPhotos(photoIds),
+            _photosService.Verify(m => m.GetTagsAndPhotos(null, photoIds),
                 Times.Once);
 
             Assert.IsType<OkObjectResult>(response);
@@ -214,14 +214,14 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var photoIds = _fixture.CreateMany<int>(5).ToArray();
             var tags = _fixture.CreateMany<Tag>(5);
 
-            _photosService.Setup(m => m.GetTagsAndPhotos(photoIds))
+            _photosService.Setup(m => m.GetTagsAndPhotos(null, photoIds))
                 .ReturnsAsync(tags);
 
             _tagsController.ModelState.AddModelError("key", "error");
 
-            var response = await _tagsController.GetPhotosToTag(photoIds);
+            var response = await _tagsController.GetSharedPhotosToTag(photoIds);
 
-            _photosService.Verify(m => m.GetTagsAndPhotos(photoIds),
+            _photosService.Verify(m => m.GetTagsAndPhotos(null, photoIds),
                 Times.Never);
 
             Assert.IsType<BadRequestObjectResult>(response);
@@ -230,6 +230,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task UpdatePhotoTags()
         {
+            var username = "wdavidsen";
             var photoIds = _fixture.CreateMany<int>(5);
             var tagStates = _fixture.CreateMany<TagState>(5);
             var batchUpdate = new BatchUpdateTags
@@ -238,11 +239,11 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 TagStates = tagStates.ToList()
             };
 
-            _photosService.Setup(m => m.UpdatePhotoTags(It.IsAny<List<int>>(), It.IsAny<List<string>>(), It.IsAny<List<int>>()));
+            _photosService.Setup(m => m.UpdatePhotoTags(It.IsAny<string>(), It.IsAny<List<int>>(), It.IsAny<List<string>>(), It.IsAny<List<int>>()));
 
-            var response = await _tagsController.TagPhotos(batchUpdate);
+            var response = await _tagsController.TagPersonalPhotos(username, batchUpdate);
 
-            _photosService.Verify(m => m.UpdatePhotoTags(It.IsAny<List<int>>(), It.IsAny<List<string>>(), It.IsAny<List<int>>()),
+            _photosService.Verify(m => m.UpdatePhotoTags(It.IsAny<string>(), It.IsAny<List<int>>(), It.IsAny<List<string>>(), It.IsAny<List<int>>()),
                 Times.Once);
 
             Assert.IsType<OkResult>(response);
@@ -251,6 +252,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         [Fact]
         public async Task UpdatePhotoTagsInvalid()
         {
+            var username = "wdavidsen";
             var photoIds = _fixture.CreateMany<int>(5);
             var tagStates = _fixture.CreateMany<TagState>(5);
             var batchUpdate = new BatchUpdateTags
@@ -259,13 +261,13 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 TagStates = tagStates.ToList()
             };
 
-            _photosService.Setup(m => m.UpdatePhotoTags(It.IsAny<List<int>>(), It.IsAny<List<string>>(), It.IsAny<List<int>>()));
+            _photosService.Setup(m => m.UpdatePhotoTags(username, It.IsAny<List<int>>(), It.IsAny<List<string>>(), It.IsAny<List<int>>()));
 
             _tagsController.ModelState.AddModelError("key", "message");
 
-            var response = await _tagsController.TagPhotos(batchUpdate);
+            var response = await _tagsController.TagPersonalPhotos(username, batchUpdate);
 
-            _photosService.Verify(m => m.UpdatePhotoTags(It.IsAny<List<int>>(), It.IsAny<List<string>>(), It.IsAny<List<int>>()),
+            _photosService.Verify(m => m.UpdatePhotoTags(username, It.IsAny<List<int>>(), It.IsAny<List<string>>(), It.IsAny<List<int>>()),
                 Times.Never);
 
             Assert.IsType<BadRequestObjectResult>(response);

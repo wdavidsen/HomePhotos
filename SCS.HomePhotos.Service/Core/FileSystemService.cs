@@ -128,23 +128,10 @@ namespace SCS.HomePhotos.Service.Core
         /// </summary>
         /// <param name="directoryPath">The directory path.</param>
         /// <param name="recursive">if set to <c>true</c> delete recursively.</param>
-        public void DeleteDirectoryFiles(string directoryPath, bool recursive = true)
+        /// <param name="deleteGuidNamesOnly">if set to <c>true</c> delete only files with GUID names.</param>
+        public void DeleteDirectoryFiles(string directoryPath, bool recursive = false, bool deleteGuidNamesOnly = false)
         {
-            try
-            {
-                foreach (var subdir in Directory.GetDirectories(directoryPath))
-                {
-                    var deletePath = subdir.TrimEnd('/', '\\') + "_ToDelete";
-
-                    Directory.Move(subdir, deletePath);
-                    Directory.Delete(deletePath, recursive);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to delete directory: {directoryPath}", directoryPath);
-                throw;
-            }
+            DeleteDirectoriesAndFiles(directoryPath, recursive, deleteGuidNamesOnly, 0);
         }
 
         /// <summary>
@@ -177,6 +164,45 @@ namespace SCS.HomePhotos.Service.Core
                 _logger.LogError(ex, "Failed to move {sourcePath} to {destinationPath}.", sourcePath, destinationPath);
                 throw;
             }
+        }
+
+        private void DeleteDirectoriesAndFiles(string directoryPath, bool recursive = false, bool deleteGuidNamesOnly = false, int level = 0)
+        {
+            if (recursive)
+            {
+                foreach (var dir in Directory.GetDirectories(directoryPath))
+                {
+                    DeleteDirectoriesAndFiles(dir, recursive, deleteGuidNamesOnly, level + 1);
+                }
+            }
+
+            foreach (var file in Directory.GetFiles(directoryPath))
+            {
+                if (deleteGuidNamesOnly && !Guid.TryParse(Path.GetFileNameWithoutExtension(file), out var g))
+                {
+                    continue;
+                }
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (IOException ex)
+                {
+                    _logger.LogError(ex, "Failed to delete file: {file}", file);
+                }
+            }
+
+            if (level > 0 && Directory.GetFiles(directoryPath).Length == 0 && Directory.GetDirectories(directoryPath).Length == 0)
+            {
+                try
+                {
+                    Directory.Delete(directoryPath);
+                }
+                catch (IOException ex)
+                {
+                    _logger.LogError(ex, "Failed to delete directory: {directoryPath}", directoryPath);
+                }                
+            }      
         }
     }
 }

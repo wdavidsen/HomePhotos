@@ -220,16 +220,20 @@ namespace SCS.HomePhotos.Data.Core
 
         /// <summary>
         /// Gets a list of photos by photo ids.
-        /// </summary>
+        /// </summary>        
         /// <param name="photoIds">The photo ids.</param>
+        /// <param name="userId">The owner username of the tags.</param>
         /// <returns>A photo page list.</returns>
-        public async Task<IEnumerable<Tag>> GetTagsAndPhotos(int[] photoIds)
+        public async Task<IEnumerable<Tag>> GetTagsAndPhotos(int[] photoIds, int? userId = null)
         {
-            var sql = @"SELECT t.TagId, t.TagName, p.PhotoId, p.Checksum, p.Name, p.Name, p.FileName, p.DateTaken, p.DateFileCreated, p.CacheFolder, p.ImageHeight, p.ImageWidth 
+            var userClause = userId == null ? "t.UserId IS NULL " : "t.UserId = @UserId ";
+
+            var sql = @$"SELECT t.TagId, t.TagName, p.PhotoId, p.Checksum, p.Name, p.Name, p.FileName, p.DateTaken, p.DateFileCreated, p.CacheFolder, p.ImageHeight, p.ImageWidth 
                         FROM Photo p 
                         JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId 
                         JOIN Tag t ON pt.TagId = t.TagId 
-                        WHERE p.PhotoId IN @PhotoIds ";
+                        WHERE p.PhotoId IN @PhotoIds AND {userClause} 
+                        ORDER BY t.TagName ";
 
             var lookup = new Dictionary<int, Tag>();
 
@@ -250,7 +254,7 @@ namespace SCS.HomePhotos.Data.Core
 
                     return isDup ? null : tempTag;
                 },
-                splitOn: "PhotoId", param: new { PhotoIds = photoIds });
+                splitOn: "PhotoId", param: new { PhotoIds = photoIds, UserId = userId });
 
                 return tags.Where(t => t != null);
             }
@@ -259,9 +263,10 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Gets a list of photos and tags by photo ids.
         /// </summary>
+        /// <param name="username">The owner username of the tags.</param>
         /// <param name="photoIds">The photo ids.</param>
         /// <returns>A photo page list.</returns>
-        public async Task<IEnumerable<Photo>> GetPhotosAndTags(int[] photoIds)
+        public async Task<IEnumerable<Photo>> GetPhotosAndTags(string username, int[] photoIds)
         {
             var sql = @"SELECT p.PhotoId, p.Checksum, p.Name, p.Name, p.FileName, p.DateTaken, p.DateFileCreated, p.CacheFolder, p.ImageHeight, p.ImageWidth, t.TagId, t.TagName   
                         FROM Photo p 
@@ -335,13 +340,13 @@ namespace SCS.HomePhotos.Data.Core
         {
             var sql1 = "DELETE FROM PhotoTag";
             var sql2 = "DELETE FROM Photo";
+            var sql3 = "DELETE FROM Tag";
 
-            using (var conn = GetDbConnection())
-            using (var trans = await conn.BeginTransactionAsync())
+            using (var conn = GetDbConnection())            
             {
                 await conn.ExecuteScalarAsync(sql1);
                 await conn.ExecuteScalarAsync(sql2);
-                trans.Commit();
+                await conn.ExecuteScalarAsync(sql3);
             }
         }
 

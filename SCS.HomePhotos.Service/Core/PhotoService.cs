@@ -148,16 +148,19 @@ namespace SCS.HomePhotos.Service.Core
         /// Gets the tags.
         /// </summary>
         /// <param name="includPhotoCounts">if set to <c>true</c> include photo counts for each tag.</param>
+        /// <param name="username">The owner username of the tags. If set to null, shared tags will be returned.</param>
         /// <returns>A list of tags.</returns>
-        public async Task<IEnumerable<Tag>> GetTags(bool includPhotoCounts = false)
+        public async Task<IEnumerable<Tag>> GetTags(string username = null, bool includPhotoCounts = false)
         {
+            var user = (username != null) ? await _userData.GetUser(username) : null;
+
             if (includPhotoCounts)
             {
-                return AssignSysTagColor(await _tagData.GetTagAndPhotoCount());
+                return AssignSysTagColor(await _tagData.GetTagAndPhotoCount(user?.UserId));
             }
             else
             {
-                return await _tagData.GetTags();
+                return await _tagData.GetTags(user?.UserId);
             }
         }
 
@@ -442,24 +445,29 @@ namespace SCS.HomePhotos.Service.Core
         /// <summary>
         /// Gets the tags and photos of provided photo ids.
         /// </summary>
+        /// <param name="username">The owner username of the tags.</param>
         /// <param name="photoIds">The photo ids.</param>
         /// <returns>
         /// A list of tags and their photos.
         /// </returns>
-        public async Task<IEnumerable<Model.Tag>> GetTagsAndPhotos(params int[] photoIds)
+        public async Task<IEnumerable<Model.Tag>> GetTagsAndPhotos(string username, params int[] photoIds)
         {
-            return await _photoData.GetTagsAndPhotos(photoIds);
+            var user = await _userData.GetUser(username);
+
+            return await _photoData.GetTagsAndPhotos(photoIds, user?.UserId);
         }
 
         /// <summary>
         /// Updates the photo tags.
         /// </summary>
+        /// <param name="username">The owner username of the tags.</param>
         /// <param name="photoIds">The photo ids.</param>
         /// <param name="addTagNames">The add tag names.</param>
         /// <param name="removeTagIds">The remove tag ids.</param>
-        public async Task UpdatePhotoTags(List<int> photoIds, List<string> addTagNames, List<int> removeTagIds)
+        public async Task UpdatePhotoTags(string username, List<int> photoIds, List<string> addTagNames, List<int> removeTagIds)
         {
-            var photos = await _photoData.GetPhotosAndTags(photoIds.ToArray());
+            var user = await _userData.GetUser(username);
+            var photos = await _photoData.GetPhotosAndTags(user?.UserName, photoIds.ToArray());
 
             foreach (var photo in photos)
             {
@@ -467,7 +475,7 @@ namespace SCS.HomePhotos.Service.Core
                 {
                     if (!photo.Tags.Any(t => t.TagName == addTagName))
                     {
-                        var tag = await GetTag(addTagName, null, true);
+                        var tag = await GetTag(addTagName, user?.UserId, true);
 
                         if (tag != null)
                         {
@@ -505,7 +513,7 @@ namespace SCS.HomePhotos.Service.Core
         /// Deletes the entire photo file cache.
         /// </summary>
         /// <param name="contextUserName">Name of the context user.</param>
-        public async Task DeletePhotoCache(string contextUserName)
+        public async Task ResetPhotosAndTags(string contextUserName)
         {
             await _photoData.DeletePhotos();
 
@@ -516,7 +524,7 @@ namespace SCS.HomePhotos.Service.Core
 
                     try
                     {
-                        _fileSystemService.DeleteDirectoryFiles(_dynamicConfig.CacheFolder);
+                        _fileSystemService.DeleteDirectoryFiles(_dynamicConfig.CacheFolder, true, true);
                         notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ClearCache, contextUserName, true));
                     }
                     catch (Exception ex)

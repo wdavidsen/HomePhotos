@@ -5,22 +5,44 @@
     </button>
 </div>
 <div class="modal-body">
-    <form class="tag-tool form-inline" autocomplete="off">        
-        <div class="form-group mb-2">            
-            <input [(ngModel)]="selectedTag" [typeahead]="allTags" class="form-control" placeholder="New tag..." name="tagSearchTypeahead" id="tagSearchTypeahead">             
-        </div>
-        <div class="form-group mx-sm-3 mb-2">
-            <button type="button" class="btn btn-light" (click)="addTag()">Add</button>
-        </div>
-    </form>
-    <div class="form-group tag-group">
-        <app-tri-check *ngFor="let ts of tagStates"
-            [label]="ts.tagName" 
-            [checked]="ts.checked" 
-            [indeterminate]="ts.indeterminate" 
-            [allowIndeterminate]="ts.allowIndeterminate"
-            (changed)="tagStateChanged($event)"></app-tri-check>
-    </div>    
+    <tabset #tabset>
+        <tab heading="Shared Tags">
+            <form class="tag-tool form-inline" autocomplete="off">        
+                <div class="form-group mb-2">            
+                    <input [(ngModel)]="selectedTag_shared" [typeahead]="allTags_shared" class="form-control" placeholder="New shared tag..." name="tagSearchTypeahead_shared" id="tagSearchTypeahead_shared">             
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <button type="button" class="btn btn-light" (click)="addTag_shared()">Add</button>
+                </div>
+            </form>
+            <div class="form-group tag-group">
+                <app-tri-check *ngFor="let ts of tagStates_shared"
+                    [label]="ts.tagName" 
+                    [checked]="ts.checked" 
+                    [indeterminate]="ts.indeterminate" 
+                    [allowIndeterminate]="ts.allowIndeterminate"
+                    (changed)="tagStateChanged_shared($event)"></app-tri-check>
+            </div>    
+        </tab>
+        <tab heading="Personal Tags">
+            <form class="tag-tool form-inline" autocomplete="off">        
+                <div class="form-group mb-2">            
+                    <input [(ngModel)]="selectedTag_personal" [typeahead]="allTags_personal" class="form-control" placeholder="New personal tag..." name="tagSearchTypeahead_personal" id="tagSearchTypeahead_personal">             
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <button type="button" class="btn btn-light" (click)="addTag_personal()">Add</button>
+                </div>
+            </form>
+            <div class="form-group tag-group">
+                <app-tri-check *ngFor="let ts of tagStates_personal"
+                    [label]="ts.tagName" 
+                    [checked]="ts.checked" 
+                    [indeterminate]="ts.indeterminate" 
+                    [allowIndeterminate]="ts.allowIndeterminate"
+                    (changed)="tagStateChanged_personal($event)"></app-tri-check>
+            </div>    
+        </tab>
+    </tabset>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="saveTags()">OK</button>

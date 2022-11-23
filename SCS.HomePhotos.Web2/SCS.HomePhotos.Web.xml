@@ -189,8 +189,8 @@
             <param name="reprocessPhotos">if set to <c>true</c> reprocess photos.</param>
             <returns>The settings.</returns>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.SettingsController.ClearCache">
-            <summary>Clears the photo cache.</summary>
+        <member name="M:SCS.HomePhotos.Web.Controllers.SettingsController.FactoryReset">
+            <summary>Clears the application of all photos and tags and deletes the image file cache.</summary>
         </member>
         <member name="T:SCS.HomePhotos.Web.Controllers.TagsController">
             <summary>Tag services.</summary>
@@ -202,6 +202,11 @@
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.Get">
             <summary>Gets all tags.</summary>
+            <returns>A list of tags.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.Get(System.String)">
+            <summary>Gets all tags.</summary>
+            <param name="username">The owner username of the tags.</param>
             <returns>A list of tags.</returns>
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.SearchTags(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32)">
@@ -223,13 +228,24 @@
             <param name="copyInfo">The copy information.</param>
             <returns>The new tag.</returns>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.GetPhotosToTag(System.Int32[])">
-            <summary>Gets specified photos to tag.</summary>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.GetSharedPhotosToTag(System.Int32[])">
+            <summary>Gets specified photos to tag.</summary>        
             <param name="photoIds">The photo ids.</param>
             <returns>Batch tag info.</returns>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.TagPhotos(SCS.HomePhotos.Web.Models.BatchUpdateTags)">
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.GetPersonalPhotosToTag(System.String,System.Int32[])">
+            <summary>Gets specified photos to tag.</summary>
+            <param name="username">The owner username of the tags.</param>
+            <param name="photoIds">The photo ids.</param>
+            <returns>Batch tag info.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.TagSharedPhotos(SCS.HomePhotos.Web.Models.BatchUpdateTags)">
             <summary>Tags the photos.</summary>
+            <param name="updateTags">The updated tags.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.TagPersonalPhotos(System.String,SCS.HomePhotos.Web.Models.BatchUpdateTags)">
+            <summary>Tags the photos.</summary>
+            <param name="username">The owner username of the tags.</param>
             <param name="updateTags">The updated tags.</param>
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.TagsController.AddTag(SCS.HomePhotos.Web.Dto.Tag)">

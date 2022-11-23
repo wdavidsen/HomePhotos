@@ -41,17 +41,19 @@ namespace SCS.HomePhotos.Data.Contracts
 
         /// <summary>
         /// Gets a list of photos by photo ids.
-        /// </summary>
+        /// </summary>        
         /// <param name="photoIds">The photo ids.</param>
+        /// <param name="userId">The owner username of the tags.</param>
         /// <returns>A photo page list.</returns>
-        Task<IEnumerable<Tag>> GetTagsAndPhotos(int[] photoIds);
+        Task<IEnumerable<Tag>> GetTagsAndPhotos(int[] photoIds, int? userId = null);
 
         /// <summary>
         /// Gets a list of photos and tags by photo ids.
         /// </summary>
+        /// <param name="username">The owner username of the tags.</param>
         /// <param name="photoIds">The photo ids.</param>
         /// <returns>A photo page list.</returns>
-        Task<IEnumerable<Photo>> GetPhotosAndTags(params int[] photoIds);
+        Task<IEnumerable<Photo>> GetPhotosAndTags(string username, params int[] photoIds);
 
         /// <summary>
         /// Saves a photo entity.

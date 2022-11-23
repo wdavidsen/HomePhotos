@@ -153,11 +153,11 @@ namespace SCS.HomePhotos.Service.Test
         {
             var tags = _fixture.CreateMany<Tag>(10);
 
-            _tagData.Setup(m => m.GetTags()).ReturnsAsync(tags);
+            _tagData.Setup(m => m.GetTags(It.IsAny<int?>())).ReturnsAsync(tags);
 
-            var results = await _photoService.GetTags(false);
+            var results = await _photoService.GetTags(null);
 
-            _tagData.Verify(m => m.GetTags(), Times.Once);
+            _tagData.Verify(m => m.GetTags(It.IsAny<int?>()), Times.Once);
 
             Assert.Equal(tags.Count(), results.Count());
             Assert.IsType<Tag>(results.First());
@@ -256,9 +256,9 @@ namespace SCS.HomePhotos.Service.Test
             var completeInfo = new TaskCompleteInfo(TaskType.ClearCache, "wdavidsen", true);
 
             _photoData.Setup(m => m.DeletePhotos());
-            _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()));
+            _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()));
 
-            await _photoService.DeletePhotoCache(completeInfo.ContextUserName);
+            await _photoService.ResetPhotosAndTags(completeInfo.ContextUserName);
 
             try
             {
@@ -270,7 +270,7 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoData.Verify(m => m.DeletePhotos(),
                 Times.Once);
-            _fileSystemService.Verify(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()),
+            _fileSystemService.Verify(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()),
                 Times.Once);
         }
 
@@ -280,9 +280,9 @@ namespace SCS.HomePhotos.Service.Test
             var completeInfo = new TaskCompleteInfo(TaskType.ClearCache, "wdavidsen", true);
 
             _photoData.Setup(m => m.DeletePhotos());
-            _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()));
+            _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()));
 
-            await _photoService.DeletePhotoCache(completeInfo.ContextUserName);
+            await _photoService.ResetPhotosAndTags(completeInfo.ContextUserName);
 
             var queueEvents = new Mock<IQueueEvents>();
             queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) =>
@@ -308,12 +308,12 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoData.Setup(m => m.DeletePhotos());
 
-            _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()))
+            _fileSystemService.Setup(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
                 .Throws(new Exception("Some error"));
 
             /* _logger.Setup(m => m.Log<FormattedLogValues>(LogLevel.Error, 0, It.IsAny<string>(), It.IsAny<Exception>(), It.IsAny<Func<FormattedLogValues, Exception, string>>())); */
 
-            await _photoService.DeletePhotoCache(completeInfo.ContextUserName);
+            await _photoService.ResetPhotosAndTags(completeInfo.ContextUserName);
 
             var queueEvents = new Mock<IQueueEvents>();
             queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) =>
@@ -333,7 +333,7 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoData.Verify(m => m.DeletePhotos(),
                 Times.Once);
-            _fileSystemService.Verify(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>()),
+            _fileSystemService.Verify(m => m.DeleteDirectoryFiles(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()),
                 Times.Once);
 
             /* _logger.Verify(m => m.Log(It.IsAny<LogLevel>(), 0, It.IsAny<PhotoService>(), It.IsAny<Exception>(), It.IsAny<Func<PhotoService, Exception, string>>()),

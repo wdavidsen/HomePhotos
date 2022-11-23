@@ -7,13 +7,11 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class TagService {
+    constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) {
-
-    }
-
-    getTags(): Observable<Tag[]> {
-        return this.http.get<Tag[]>(`${environment.apiUrl}/tags`);
+    getTags(userName?: string): Observable<Tag[]> {
+        const url = userName ? `${environment.apiUrl}/tags/${userName}`: `${environment.apiUrl}/tags`;
+        return this.http.get<Tag[]>(url);
     }
 
     searchTags(searchInfo: SearchInfo): Observable<Tag[]> {
@@ -41,16 +39,18 @@ export class TagService {
         return this.http.put<Tag>(`${environment.apiUrl}/tags/merge`, { sourceTagIds: sourceTagIds, newTagName: newTagName, OwnerId: ownerId });
     }
 
-    getPhototags(photoIds: number[]): Observable<TagState[]> {
-        return this.http.post<TagState[]>(`${environment.apiUrl}/tags/batchTag`, photoIds)
+    getPhototags(photoIds: number[], userName?: string): Observable<TagState[]> {
+        const url = userName ? `${environment.apiUrl}/tags/${userName}/batchTag`: `${environment.apiUrl}/tags/batchTag`;
+        return this.http.post<TagState[]>(url, photoIds)
             .pipe(map(data => data['tags']));
     }
 
-    updatePhotoTags(photoIds: number[], tagStates: TagState[]): Observable<any> {
+    updatePhotoTags(photoIds: number[], tagStates: TagState[], userName?: string): Observable<any> {
+        const url = userName ? `${environment.apiUrl}/tags/${userName}/batchTag`: `${environment.apiUrl}/tags/batchTag`;
         const payload = {
             photoIds: photoIds,
             tagStates: tagStates
         };
-        return this.http.put(`${environment.apiUrl}/tags/batchTag`, payload);
+        return this.http.put(url, payload);
     }
 }

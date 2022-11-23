@@ -58,6 +58,7 @@ import { ExclusionService } from './services/exclusion.service';
 import { NgxColorsModule } from 'ngx-colors';
 import { CopyTagDialogComponent } from './tags/copy-tag-dialog.component';
 import { TagDialogComponent } from './tags/tag-dialog.component';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 @NgModule({
     declarations: [
@@ -117,6 +118,7 @@ import { TagDialogComponent } from './tags/tag-dialog.component';
         AlertModule.forRoot(),
         TypeaheadModule.forRoot(),
         BsDatepickerModule.forRoot(),
+        TabsModule.forRoot(),
         ToastrModule.forRoot({
             timeOut: 4000,
             positionClass: 'toast-bottom-right',

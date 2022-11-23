@@ -38,8 +38,9 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Deletes the directory files.
         /// </summary>
         /// <param name="cacheFolder">The cache folder.</param>
-        /// <param name="recursive">if set to <c>true</c> delete files recursivly.</param>
-        void DeleteDirectoryFiles(string cacheFolder, bool recursive = true);
+        /// <param name="recursive">if set to <c>true</c> delete files recursively.</param>
+        /// <param name="deleteGuidNamesOnly">if set to <c>true</c> delete only files with GUID names.</param>
+        void DeleteDirectoryFiles(string cacheFolder, bool recursive = true, bool deleteGuidNamesOnly = false);
 
         /// <summary>
         /// Deletes the image.

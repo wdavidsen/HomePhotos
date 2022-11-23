@@ -24,10 +24,14 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Gets all tags.
         /// </summary>
+        /// <param name="userId">The owner of the tags.</param>
         /// <returns>A list of all tags.</returns>
-        public async Task<IEnumerable<Tag>> GetTags()
+        public async Task<IEnumerable<Tag>> GetTags(int? userId = null)
         {
-            return await GetListPagedAsync("", new object(), "TagName ASC", 1, int.MaxValue);
+            var whereClause = userId != null ? "WHERE UserId = @UserId " : string.Empty;
+            var parameters = userId != null ? new { UserId = userId } : new object();
+
+            return await GetListPagedAsync(whereClause, parameters, "TagName ASC", 1, int.MaxValue);
         }
 
         /// <summary>
@@ -59,20 +63,24 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Gets the tag and photo count.
         /// </summary>
+        /// <param name="userId">Name user id owner.</param>
         /// <returns>A list of tags.</returns>
-        public async Task<IEnumerable<TagStat>> GetTagAndPhotoCount()
+        public async Task<IEnumerable<TagStat>> GetTagAndPhotoCount(int? userId = null)
         {
-            var sql = @"SELECT t.TagId, t.TagName, t.UserId, u.TagColor, u.UserName, COUNT(p.PhotoId) AS PhotoCount 
+            var userClause = userId == null ? string.Empty : "WHERE u.UserId = @UserId ";
+
+            var sql = @$"SELECT t.TagId, t.TagName, t.UserId, u.TagColor, u.UserName, COUNT(p.PhotoId) AS PhotoCount 
                         FROM Tag t 
                         LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId 
                         LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
                         LEFT JOIN User u ON t.UserId = u.UserId 
+                        {userClause} 
                         GROUP BY t.TagName, t.TagId, t.UserId, u.TagColor, u.UserName   
                         ORDER BY t.TagName";
 
             using (var conn = GetDbConnection())
             {
-                return await conn.QueryAsync<TagStat>(sql);
+                return await conn.QueryAsync<TagStat>(sql, new { UserId = userId });
             }
         }
 

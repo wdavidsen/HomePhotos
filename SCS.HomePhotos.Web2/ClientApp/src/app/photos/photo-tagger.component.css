@@ -2,6 +2,14 @@
     margin: 20px
 }
 
+.tab-disabled {
+    font-style: italic !important;
+}
+
 app-tri-check {
     margin-right: 10px;
+}
+
+form {
+    margin-top: 30px;
 }

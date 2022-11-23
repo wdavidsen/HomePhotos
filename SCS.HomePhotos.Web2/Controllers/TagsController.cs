@@ -39,7 +39,30 @@ namespace SCS.HomePhotos.Web.Controllers
         public async Task<IActionResult> Get()
         {
             _photoService.SetUserContext(User);
-            var tags = await _photoService.GetTags(true);
+            var tags = await _photoService.GetTags(null, true);
+
+            var dtos = new List<Dto.Tag>();
+
+            foreach (var tag in tags)
+            {
+                dtos.Add(new Dto.Tag(tag));
+            }
+
+            return Ok(dtos);
+        }
+
+        /// <summary>Gets all tags.</summary>
+        /// <param name="username">The owner username of the tags.</param>
+        /// <returns>A list of tags.</returns>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Dto.Tag>))]
+        [HttpGet("{username}")]
+        [Authorize(Policy = "Readers")]
+        public async Task<IActionResult> Get([FromRoute] string username)
+        {
+            _photoService.SetUserContext(User);
+            var tags = await _photoService.GetTags(username, true);
 
             var dtos = new List<Dto.Tag>();
 
@@ -168,7 +191,7 @@ namespace SCS.HomePhotos.Web.Controllers
             }
         }
 
-        /// <summary>Gets specified photos to tag.</summary>
+        /// <summary>Gets specified photos to tag.</summary>        
         /// <param name="photoIds">The photo ids.</param>
         /// <returns>Batch tag info.</returns>
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]        
@@ -176,15 +199,37 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BatchSelectTags))]
         [Authorize(Policy = "Contributors")]
-        [HttpPost("batchTag", Name = "GetPhotosToTag")]
-        public async Task<IActionResult> GetPhotosToTag([FromBody] int[] photoIds)
+        [HttpPost("batchTag", Name = "GetSharedPhotosToTag")]
+        public async Task<IActionResult> GetSharedPhotosToTag([FromBody] int[] photoIds)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(new ProblemModel(ModelState));
             }
             _photoService.SetUserContext(User);
-            var photoTags = await _photoService.GetTagsAndPhotos(photoIds);
+            var photoTags = await _photoService.GetTagsAndPhotos(null, photoIds);
+
+            return Ok(new BatchSelectTags(photoIds, photoTags));
+        }
+
+        /// <summary>Gets specified photos to tag.</summary>
+        /// <param name="username">The owner username of the tags.</param>
+        /// <param name="photoIds">The photo ids.</param>
+        /// <returns>Batch tag info.</returns>
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BatchSelectTags))]
+        [Authorize(Policy = "Contributors")]
+        [HttpPost("{username}/batchTag", Name = "GetPersonalPhotosToTag")]
+        public async Task<IActionResult> GetPersonalPhotosToTag([FromRoute] string username, [FromBody] int[] photoIds)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ProblemModel(ModelState));
+            }
+            _photoService.SetUserContext(User);
+            var photoTags = await _photoService.GetTagsAndPhotos(username, photoIds);
 
             return Ok(new BatchSelectTags(photoIds, photoTags));
         }
@@ -196,8 +241,8 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Policy = "Contributors")]
-        [HttpPut("batchTag", Name = "TagPhotos")]
-        public async Task<IActionResult> TagPhotos([FromBody] BatchUpdateTags updateTags)
+        [HttpPut("batchTag", Name = "TagSharedPhotos")]
+        public async Task<IActionResult> TagSharedPhotos([FromBody] BatchUpdateTags updateTags)
         {
             if (!ModelState.IsValid)
             {
@@ -207,7 +252,7 @@ namespace SCS.HomePhotos.Web.Controllers
             try
             {
                 _photoService.SetUserContext(User);
-                await _photoService.UpdatePhotoTags(updateTags.PhotoIds, updateTags.GetAddedTagNames(), updateTags.GetRemovedTagIds());
+                await _photoService.UpdatePhotoTags(null, updateTags.PhotoIds, updateTags.GetAddedTagNames(), updateTags.GetRemovedTagIds());
 
                 return Ok();
             }
@@ -219,6 +264,39 @@ namespace SCS.HomePhotos.Web.Controllers
             {
                 return BadRequest(new ProblemModel { Message = ex.Message });
             }            
+        }
+
+        /// <summary>Tags the photos.</summary>
+        /// <param name="username">The owner username of the tags.</param>
+        /// <param name="updateTags">The updated tags.</param>
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Policy = "Contributors")]
+        [HttpPut("{username}/batchTag", Name = "TagPersonalPhotos")]
+        public async Task<IActionResult> TagPersonalPhotos([FromRoute]string username, [FromBody] BatchUpdateTags updateTags)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ProblemModel(ModelState));
+            }
+
+            try
+            {
+                _photoService.SetUserContext(User);
+                await _photoService.UpdatePhotoTags(username, updateTags.PhotoIds, updateTags.GetAddedTagNames(), updateTags.GetRemovedTagIds());
+
+                return Ok();
+            }
+            catch (AccessException ex)
+            {
+                return StatusCode(403, new ProblemModel { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new ProblemModel { Message = ex.Message });
+            }
         }
 
         /// <summary>Adds a tag.</summary>
