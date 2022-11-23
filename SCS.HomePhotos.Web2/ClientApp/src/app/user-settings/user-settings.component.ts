@@ -35,7 +35,17 @@ export class UserSettingsComponent implements OnInit {
 
     this.tagService.getTags()
       .subscribe({
-        next: (tags) => this.defaultTags = tags.map((t) => t.tagName),
+        next: (tags) => {
+          let options = tags.sort((a, b) => {
+            if (a.ownerId ?? 99 < b.ownerId ?? 99) { return -1; }
+            if (a.ownerId ?? 99> b.ownerId ?? 99) { return 1; }
+            return 0;
+          })
+          .map((t) => `${t.tagName} (${t.ownerUsername ?? 'Shared'})`);
+          // options = options.sort();
+          
+          this.defaultTags = options;
+        },
         error: (e) => console.error(e)
       })
   }
@@ -79,7 +89,7 @@ export class UserSettingsComponent implements OnInit {
     settings.slideshowSpeed = this.f.slideshowSpeed.value;
     settings.autoStartSlideshow = this.f.autoStartSlideshow.value;
     settings.defaultView = this.f.defaultView.value;
-
+    
     return settings;
   }
 }

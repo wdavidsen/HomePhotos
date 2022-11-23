@@ -79,13 +79,19 @@ export class PhotosComponent implements OnInit, OnDestroy {
     this.searchService.setHidden(false);
 
     this.route.paramMap.subscribe(params => {
-      const defaultTag = this.userSettings.defaultView;      
+      const defaultView = this.userSettings.defaultView;      
       this.tagName = params.get('tagName');
       this.tagOwner = params.get('userName');
 
-      console.log(`Received tag: ${this.tagName}, owner ${this.tagOwner}`);
+      if (!this.tagName) {
+        if (defaultView) {
+          var viewParts = UserSettings.parseDefaultView(defaultView);
+          this.tagOwner = viewParts[0];
+          this.tagName = viewParts[1];
+        }
+      }
 
-      this.tagName = this.tagName || defaultTag;
+      console.log(`Received tag: ${this.tagName}, owner ${this.tagOwner}`);
 
       if (this.tagName) {
         this.pageInfoService.setTitle(this.tagName);
@@ -138,10 +144,12 @@ export class PhotosComponent implements OnInit, OnDestroy {
         const newHeight = this.getThumbHeight(settings.thumbnailSize);
         const defaultView = settings.defaultView;
 
-        if (defaultView != this.tagName) {
-          
-          if (defaultView.length && SearchInfo.isSearchClear(this.searchInfo)) {
-            this.tagName = defaultView;
+        if (defaultView && UserSettings.parseDefaultView(defaultView)[1] != this.tagName) {
+
+          if (SearchInfo.isSearchClear(this.searchInfo)) {
+            var viewParts = UserSettings.parseDefaultView(defaultView);
+            this.tagOwner = viewParts[0];
+            this.tagName = viewParts[1];
             this.mode = 2;
           }
           else {
