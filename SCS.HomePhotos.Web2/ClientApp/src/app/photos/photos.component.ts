@@ -376,6 +376,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
         class: 'photo-tagger-dialog',
         initialState: {
           title: 'Photo Tagger',
+          caller: 'PhotoList',
           photoIds: selections.map(s => s.photoId)
         }
       };

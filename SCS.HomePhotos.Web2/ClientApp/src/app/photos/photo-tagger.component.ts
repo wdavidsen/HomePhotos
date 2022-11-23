@@ -23,6 +23,7 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
     selectedTag_personal: string;
     tagStates_personal: TagState[];
     dirtyTags_personal: string[] = [];    
+    caller: string = 'PhotoList';
     username: string;
     @ViewChild('tabset', { static: false }) tabset?: TabsetComponent;
  
@@ -36,10 +37,12 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
             });
         }
 
-    ngOnInit() {                
-        this.loadSharedPhotoTagStates();
-        this.loadAllSharedTags();        
-        this.loadPersonalPhotoTagStates();
+    ngOnInit() {    
+        if (this.caller.toUpperCase() == 'PHOTOLIST') {
+            this.loadSharedPhotoTagStates();
+            this.loadPersonalPhotoTagStates();
+        }
+        this.loadAllSharedTags();
         this.loadAllPersonalTags();  
     }
 
@@ -49,7 +52,13 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
         // this.tabset.tabs[1].customClass = 'tab-disabled';
     }
       
-    saveTags() {
+    ok() {
+        if (this.caller.toUpperCase() == 'PHOTOUPLOAD') {
+            return;
+        }
+
+        this.bsModalRef.hide();
+
         const updatesShared = this.tagStates_shared
             .filter(ts => !ts.indeterminate && this.dirtyTags_shared.find(dt => dt === ts.tagName));
 
@@ -58,8 +67,7 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
                 .subscribe({
                     next: () => {
                         this.toastr.success('Successfully updated shared tags');
-                        this.dirtyTags_shared = [];
-                        this.bsModalRef.hide();
+                        this.dirtyTags_shared = [];                        
                     },
                     error: (e) => { console.error(e); this.toastr.error('Failed to update shared tags'); }
                 });       
@@ -73,8 +81,7 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
                 .subscribe({
                     next: () => {
                         this.toastr.success('Successfully updated personal tags');
-                        this.dirtyTags_personal = [];
-                        this.bsModalRef.hide();
+                        this.dirtyTags_personal = [];                        
                     },
                     error: (e) => { console.error(e); this.toastr.error('Failed to update personal tags'); }
                 });       

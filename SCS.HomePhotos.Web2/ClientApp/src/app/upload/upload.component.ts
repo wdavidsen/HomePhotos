@@ -3,9 +3,9 @@ import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap/modal';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
-import { UploadPhotoTaggerComponent } from './upload-photo-tagger.component';
 import { TagState, User } from '../models';
 import { AuthService } from '../services';
+import { PhotoTaggerComponent } from '../photos/photo-tagger.component';
 
 declare const loadImage: any;
 
@@ -26,7 +26,8 @@ export class UploadComponent implements OnInit {
   taggerModalRef: BsModalRef;
   thumbnails: Array<string> = [];
 
-  private tagList: TagState[] = [];
+  private tagList_shared: TagState[] = [];
+  private tagList_personal: TagState[] = [];
   private currentUser: User;
 
   constructor(
@@ -73,8 +74,7 @@ export class UploadComponent implements OnInit {
 
     this.uploader.onCompleteAll = () => {
       this.toastr.info('Upload complete');
-    };
-    
+    };    
   }
 
   fileOverBase(e: any): void {
@@ -110,9 +110,11 @@ export class UploadComponent implements OnInit {
   tagPhotos() {
     const initialState = {
       title: 'Photo Tagger',
-      tagStates: this.tagList
+      tagStates_shared: this.tagList_shared,
+      tagStates_personal: this.tagList_personal,
+      caller: 'PhotoUpload'
     };
-    this.taggerModalRef = this.modalService.show(UploadPhotoTaggerComponent, {initialState});
+    this.taggerModalRef = this.modalService.show(PhotoTaggerComponent, {initialState});
   }
 
   private createThumbnail(fileItem: any, index: number) {
@@ -130,11 +132,16 @@ export class UploadComponent implements OnInit {
   }
 
   private uploadFiles() {
-    const list = this.tagList.length ? this.tagList
+    const list1 = this.tagList_shared.length ? this.tagList_shared      
       .filter(ts => ts.checked)
-      .map(ts => ts.tagName).join(',') : null;
+      .map(ts => `0^${ts.tagName}`) : [];
 
-    const data = { tagList: list };
+    const list2 = this.tagList_personal.length ? this.tagList_personal      
+      .filter(ts => ts.checked)
+      .map(ts => `${this.currentUser.userId}^${ts.tagName}`) : [];
+
+    const listFinal = list1.concat(list2).join(',');
+    const data = { tagList: listFinal };
 
     this.uploader.options.additionalParameter = data;
     this.uploader.uploadAll();

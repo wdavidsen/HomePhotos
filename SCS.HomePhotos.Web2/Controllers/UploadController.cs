@@ -58,17 +58,35 @@ namespace SCS.HomePhotos.Web.Controllers
             var acceptedExtensions = new string[] { "JPG", "JPEG", "PNG", "GIF" };
 
             var files = HttpContext.Request.Form.Files;
-            List<Tag> tags;
+            var tags = new List<Tag>();
 
             var currentUser = await _userData.GetUser(User.Identity.Name);
 
             if (formdata.ContainsKey("tagList") && formdata["tagList"].ToString().Length > 0)
             {
-                tags = formdata["tagList"].ToString().Split(',').Select(n => new Tag { TagName = n, UserId = currentUser.UserId }).ToList(); // user tags
-            }
-            else
-            {
-                tags = new List<Tag>();
+                var list = formdata["tagList"].ToString().Split(',');
+
+                foreach (var item in list)
+                {
+                    var idAndTag = item.Split('^');
+
+                    if (idAndTag.Length > 1 && int.TryParse(idAndTag[0], out var userId))
+                    {
+                        tags.Add(new Tag
+                        {
+                            UserId = userId > 0 ? userId : null,
+                            TagName = idAndTag[1]
+                        });
+                    }
+                    else
+                    {
+                        tags.Add(new Tag
+                        {
+                            UserId = null,
+                            TagName = idAndTag[1]
+                        });
+                    }                    
+                }
             }
 
             foreach (var file in files)
