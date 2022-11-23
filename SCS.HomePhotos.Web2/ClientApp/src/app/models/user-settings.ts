@@ -4,7 +4,7 @@ export class UserSettings {
     this.thumbnailSize = 'Large';
     this.slideshowSpeed = 'Normal';
     this.autoStartSlideshow = false;
-    this.defaultView = ''
+    this.defaultView = null
   }
 
   thumbnailSize: string;

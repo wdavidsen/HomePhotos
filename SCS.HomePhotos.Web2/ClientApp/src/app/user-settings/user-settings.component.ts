@@ -4,7 +4,6 @@ import { TagService, UserSettingsService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { UserSettings } from '../models/user-settings';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { KeyValue } from '@angular/common';
 
 @Component({
   selector: 'app-user-settings',
@@ -42,8 +41,7 @@ export class UserSettingsComponent implements OnInit {
             return 0;
           })
           .map((t) => `${t.tagName} (${t.ownerUsername ?? 'Shared'})`);
-          // options = options.sort();
-          
+                    
           this.defaultTags = options;
         },
         error: (e) => console.error(e)
