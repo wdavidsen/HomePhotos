@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
-using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Web.Dto;
 
 namespace SCS.HomePhotos.Web.Controllers
@@ -16,16 +16,19 @@ namespace SCS.HomePhotos.Web.Controllers
         private readonly ILogger<SettingsController> _logger;
         private readonly IDynamicConfig _dynamicConfig;
         private readonly IPhotoService _photoService;
+        private readonly IAdminLogService _adminLogService;
 
         /// <summary>Initializes a new instance of the <see cref="SettingsController" /> class.</summary>
         /// <param name="logger">The logger.</param>
+        /// <param name="adminLogService">The admin logger.</param>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
         /// <param name="photoService">The photo service.</param>
-        public SettingsController(ILogger<SettingsController> logger, IDynamicConfig dynamicConfig, IPhotoService photoService)
+        public SettingsController(ILogger<SettingsController> logger, IAdminLogService adminLogService, IDynamicConfig dynamicConfig, IPhotoService photoService)
         {
             _logger = logger;
             _dynamicConfig = dynamicConfig;
             _photoService = photoService;
+            _adminLogService = adminLogService;
         }
 
         /// <summary>Gets the settings.</summary>
@@ -72,6 +75,8 @@ namespace SCS.HomePhotos.Web.Controllers
             _dynamicConfig.MobilePhotoDeleteAction = (DeleteAction)settings.MobilePhotoDeleteAction;
             _dynamicConfig.TagColor = settings.TagColor;
 
+            _adminLogService.LogElevated($"Application settings have been updated.", LogCategory.Security);
+
             return Ok();
         }
 
@@ -84,6 +89,8 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Settings))]
         public async Task<IActionResult> UpdateNow([FromQuery] bool reprocessPhotos = false)
         {
+            _adminLogService.LogElevated($"Image index has been manually triggered by {User.Identity.Name}.", LogCategory.Index);
+
             if (reprocessPhotos)
             {
                 await _photoService.FlagPhotosForReprocessing();
@@ -102,6 +109,8 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> FactoryReset()
         {
+            _adminLogService.LogHigh($"Factory reset has been triggered by {User.Identity.Name}.", LogCategory.Security);
+
             _photoService.SetUserContext(User);
             await _photoService.ResetPhotosAndTags(User.Identity.Name);
 
