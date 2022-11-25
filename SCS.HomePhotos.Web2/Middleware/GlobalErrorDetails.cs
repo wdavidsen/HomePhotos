@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SCS.HomePhotos.Web.Middleware
+﻿namespace SCS.HomePhotos.Web.Middleware
 {
     /// <summary>
     /// The global middleware error handler.

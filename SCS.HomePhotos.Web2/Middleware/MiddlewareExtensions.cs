@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace SCS.HomePhotos.Web.Middleware
+﻿namespace SCS.HomePhotos.Web.Middleware
 {
     /// <summary>
     /// Middleware extension methods.

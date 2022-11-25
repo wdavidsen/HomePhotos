@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Web.Middleware
 {

@@ -31,6 +31,7 @@ namespace SCS.HomePhotos.Service.Core
         private readonly IFileSystemService _fileSystemService;
         private readonly IDynamicConfig _dynamicConfig;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
+        private readonly IAdminLogService _adminLogService;
 
         private readonly string _noiseWords = "null";
         private readonly string _sysTagColor = Constants.DefaultTagColor;
@@ -46,7 +47,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="dynamicConfig">The dynamic configuration.</param>
         /// <param name="backgroundTaskQueue">The background task queue.</param>
         public PhotoService(IPhotoData photoData, ITagData tagData, IPhotoTagData photoTagData, IFileExclusionData fileExclusionData, IUserData userData,
-            ILogger<PhotoService> logger, IFileSystemService fileSystemService, IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
+            ILogger<PhotoService> logger, IAdminLogService adminLogger, IFileSystemService fileSystemService, IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
         {
             _photoData = photoData;
             _tagData = tagData;
@@ -54,6 +55,7 @@ namespace SCS.HomePhotos.Service.Core
             _fileExclusionData = fileExclusionData;
             _userData = userData;
             _logger = logger;
+            _adminLogService = adminLogger;
             _fileSystemService = fileSystemService;
             _dynamicConfig = dynamicConfig;
             _backgroundTaskQueue = backgroundTaskQueue;
@@ -506,6 +508,8 @@ namespace SCS.HomePhotos.Service.Core
         /// </summary>
         public async Task FlagPhotosForReprocessing()
         {
+            _adminLogService.LogElevated($"Image index has been manually triggered by {User.Identity.Name}.", LogCategory.Index);
+
             await _photoData.FlagPhotosForReprocessing();
         }
 
@@ -515,6 +519,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="contextUserName">Name of the context user.</param>
         public async Task ResetPhotosAndTags(string contextUserName)
         {
+            _adminLogService.LogHigh($"Factory reset has been triggered by {User.Identity.Name}.", LogCategory.Security);
             await _photoData.DeletePhotos();
 
             _backgroundTaskQueue.QueueBackgroundWorkItem((token, notifier) =>

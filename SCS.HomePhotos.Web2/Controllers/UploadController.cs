@@ -64,29 +64,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
             if (formdata.ContainsKey("tagList") && formdata["tagList"].ToString().Length > 0)
             {
-                var list = formdata["tagList"].ToString().Split(',');
-
-                foreach (var item in list)
-                {
-                    var idAndTag = item.Split('^');
-
-                    if (idAndTag.Length > 1 && int.TryParse(idAndTag[0], out var userId))
-                    {
-                        tags.Add(new Tag
-                        {
-                            UserId = userId > 0 ? userId : null,
-                            TagName = idAndTag[1]
-                        });
-                    }
-                    else
-                    {
-                        tags.Add(new Tag
-                        {
-                            UserId = null,
-                            TagName = idAndTag[1]
-                        });
-                    }                    
-                }
+                PopulateUploadTags(formdata, tags);
             }
 
             foreach (var file in files)
@@ -149,6 +127,33 @@ namespace SCS.HomePhotos.Web.Controllers
             }
 
             return Ok();
+        }
+
+        private static void PopulateUploadTags(IFormCollection formdata, List<Tag> tags)
+        {
+            var list = formdata["tagList"].ToString().Split(',');
+
+            foreach (var item in list)
+            {
+                var idAndTag = item.Split('^');
+
+                if (idAndTag.Length > 1 && int.TryParse(idAndTag[0], out var userId))
+                {
+                    tags.Add(new Tag
+                    {
+                        UserId = userId > 0 ? userId : null,
+                        TagName = idAndTag[1]
+                    });
+                }
+                else
+                {
+                    tags.Add(new Tag
+                    {
+                        UserId = null,
+                        TagName = idAndTag[1]
+                    });
+                }
+            }
         }
 
         private void LogUpload(string username)

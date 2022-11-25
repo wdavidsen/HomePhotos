@@ -1,15 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SCS.HomePhotos.Web.Middleware
+﻿namespace SCS.HomePhotos.Web.Middleware
 {
     /// <summary>
-    /// Avaitar image middleware.
+    /// Avatar image middleware.
     /// </summary>
     public class AvatarImageMiddleware
     {
@@ -37,7 +29,7 @@ namespace SCS.HomePhotos.Web.Middleware
         {
             var request = httpContext.Request;
 
-            if (request.Method.Equals("GET", StringComparison.InvariantCultureIgnoreCase)                
+            if (request.Method.Equals("GET", StringComparison.InvariantCultureIgnoreCase)
                 && httpContext.Request.Path.Value.StartsWith(Constants.AvatarRoute, StringComparison.InvariantCultureIgnoreCase))
             {
                 var imagePath = Path.Combine(env.WebRootPath.TrimEnd('/', '\\'), Constants.AvatarDefaultFile);
@@ -60,8 +52,8 @@ namespace SCS.HomePhotos.Web.Middleware
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "Failed to serve avatar image");                    
-                }                
+                    logger.LogError(ex, "Failed to serve avatar image");
+                }
 
                 httpContext.Response.Headers.Add("Cache-Control", "Public");
                 httpContext.Response.Headers.Add("Expires", DateTime.UtcNow.AddDays(30).ToString("u"));

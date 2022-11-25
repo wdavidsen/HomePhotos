@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-
-namespace SCS.HomePhotos.Web.Middleware
+﻿namespace SCS.HomePhotos.Web.Middleware
 {
     /// <summary>
     /// Middleware for serving photo image files.
