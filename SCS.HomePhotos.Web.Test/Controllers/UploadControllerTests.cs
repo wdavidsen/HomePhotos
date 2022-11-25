@@ -57,12 +57,14 @@ namespace SCS.HomePhotos.Web.Test.Controllers
 
             SetControllerContext(_uploadController, "POST", user.UserName, formCollecton);
 
+            _userData.Setup(m => m.GetUser(user.UserName)).ReturnsAsync(user);
+
             var cachePath = "c1/A2A44CAE-2EC8-4610-BA4D-6995878B1183.jpg";
 
             _fileUploadService.Setup(m => m.CopyFile(It.IsAny<IFormFile>(), It.IsAny<string>(), FileMode.Create));
             _imageService.Setup(m => m.QueueMobileResize(user, It.IsAny<string>(), tags))
                 .ReturnsAsync(cachePath)
-                .Callback<string, string, string[]>((contextUserName, imageFilePath, tags) =>
+                .Callback<Model.User, string, List<Model.Tag>>((user, imageFilePath, tags) =>
                 {
                     Assert.Equal(fileName, Path.GetFileName(imageFilePath));
                 });
@@ -80,7 +82,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _fileUploadService.Verify(m => m.CopyFile(It.IsAny<IFormFile>(), It.IsAny<string>(), FileMode.Create),
                 Times.Once);
 
-            _imageService.Verify(m => m.QueueMobileResize(It.IsAny<Model.User>(), It.IsAny<string>(), tags),
+            _imageService.Verify(m => m.QueueMobileResize(It.IsAny<Model.User>(), It.IsAny<string>(), It.IsAny<List<Model.Tag>>()),
                 Times.Once);
 
             _uploadTracker.Verify(m => m.AddUpload(user.UserName, It.IsAny<string>()),

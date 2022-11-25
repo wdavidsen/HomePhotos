@@ -43,6 +43,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="userData">The user data.</param>
         /// <param name="fileExclusionData">The file exclusion data.</param>
         /// <param name="logger">The logger.</param>
+        /// <param name="adminLogger">The admin logger.</param>
         /// <param name="fileSystemService">The file system service.</param>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
         /// <param name="backgroundTaskQueue">The background task queue.</param>

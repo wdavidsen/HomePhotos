@@ -150,7 +150,7 @@ namespace SCS.HomePhotos.Web.Controllers
                     tags.Add(new Tag
                     {
                         UserId = null,
-                        TagName = idAndTag[1]
+                        TagName = idAndTag[0]
                     });
                 }
             }

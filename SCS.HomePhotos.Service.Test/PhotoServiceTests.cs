@@ -111,17 +111,22 @@ namespace SCS.HomePhotos.Service.Test
         {
             var photos = _fixture.CreateMany<Photo>(50);
             var tag = _fixture.Create<string>();
+            var owner = "wdavidsen";
+            var ownerId = 1 as int?;
+
+            _userData.Setup(m => m.GetUser(owner)).ReturnsAsync(new Model.User { UserName = owner, UserId = ownerId });
 
             _photoData.Setup(m => m.GetPhotos(It.IsAny<string>(), It.IsAny<int?>(), 1, 50))
                 .ReturnsAsync(photos)
-                .Callback<string, int, int>((t, p, s) =>
+                .Callback<string, int?, int, int>((t, o, pageNum, pageSize) =>
                 {
-                    Assert.Equal(1, p);
-                    Assert.Equal(50, s);
+                    Assert.Equal(1, pageNum);
+                    Assert.Equal(50, pageSize);
                     Assert.Equal(tag, t);
-                });
+                    Assert.Equal(ownerId, o);
+                }); 
 
-            var results = await _photoService.GetPhotosByTag(tag, "wdavidsen", 50);
+            var results = await _photoService.GetPhotosByTag(tag, owner, 1, 50);
 
             _photoData.Verify(m => m.GetPhotos(It.IsAny<string>(), It.IsAny<int?>(), 1, 50),
                 Times.Once);

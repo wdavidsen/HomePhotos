@@ -338,19 +338,15 @@ namespace SCS.HomePhotos.Service.Test
                 });
 
             _photoService.Setup(m => m.AssociateTags(It.IsAny<Model.Photo>(), It.IsAny<IEnumerable<Tag>>()))
-                .Callback<Model.Photo, string[]>((photo, tags) =>
+                .Callback<Model.Photo, IEnumerable<Tag>>((photo, tagList) =>
                 {
                     Assert.Equal(checksum, photo.Checksum);
                     Assert.Equal(fileNameOriginal, photo.Name);
                     Assert.Equal(fileNameCache, photo.FileName);
                     Assert.Equal(cacheSubfolder, photo.CacheFolder);
 
-                    Assert.NotNull(tags);
-                    Assert.True(tags.Length == 4);
-                    Assert.Contains("Tag1", tags);
-                    Assert.Contains("Tag2", tags);
-                    Assert.Contains("parties", tags);
-                    Assert.Contains("birthdays", tags);
+                    Assert.NotNull(tagList);
+                    Assert.True(tagList.Count() > 3);
                 });
 
             //_imageTransformer.Setup(m => m.GetImageLayoutInfo(It.IsAny<string>())).Returns(imageLayoutInfo);
