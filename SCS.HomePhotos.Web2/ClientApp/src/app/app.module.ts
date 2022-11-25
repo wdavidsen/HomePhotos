@@ -42,7 +42,6 @@ import { AlertComponent, OrganizeComponent, PageInfoComponent, SearchComponent }
 import { ResetPasswordModalComponent } from './users/reset-password-modal.component';
 import { AccountAvatardModalComponent } from './account/account-avatar-modal.component';
 import { AlertDialogComponent, ConfirmDialogComponent, InputDialogComponent } from './common-dialog';
-import { UploadPhotoTaggerComponent } from './upload/upload-photo-tagger.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { TriCheckComponent } from './components/tri-check.component';
 import { LogsComponent } from './logs/logs.component';
@@ -98,7 +97,6 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
         TagDialogComponent,
         UserDetailComponent,
         UserSettingsComponent,
-        UploadPhotoTaggerComponent,
         SearchAdvancedComponent,
         // other        
         SecurePipe

@@ -169,9 +169,10 @@
         <member name="T:SCS.HomePhotos.Web.Controllers.SettingsController">
             <summary>Settings services.</summary>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.SettingsController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.SettingsController},SCS.HomePhotos.IDynamicConfig,SCS.HomePhotos.Service.Contracts.IPhotoService)">
+        <member name="M:SCS.HomePhotos.Web.Controllers.SettingsController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.SettingsController},SCS.HomePhotos.Service.Contracts.IAdminLogService,SCS.HomePhotos.IDynamicConfig,SCS.HomePhotos.Service.Contracts.IPhotoService)">
             <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.SettingsController" /> class.</summary>
             <param name="logger">The logger.</param>
+            <param name="adminLogService">The admin logger.</param>
             <param name="dynamicConfig">The dynamic configuration.</param>
             <param name="photoService">The photo service.</param>
         </member>
@@ -1244,7 +1245,7 @@
         </member>
         <member name="T:SCS.HomePhotos.Web.Middleware.AvatarImageMiddleware">
             <summary>
-            Avaitar image middleware.
+            Avatar image middleware.
             </summary>
         </member>
         <member name="M:SCS.HomePhotos.Web.Middleware.AvatarImageMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">

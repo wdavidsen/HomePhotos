@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+
+using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Controllers;
 using System;
 using System.Threading.Tasks;
@@ -16,13 +18,15 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         private readonly SettingsController _settingsController;
         private readonly Mock<ILogger<SettingsController>> _logger;
         private readonly Mock<IDynamicConfig> _dynamicConfig;
+        private readonly Mock<IAdminLogService> _adminLogger;
 
         public SettingsControllerTests()
         {
             _logger = new Mock<ILogger<SettingsController>>();
             _dynamicConfig = new Mock<IDynamicConfig>();
+            _adminLogger = new Mock<IAdminLogService>();
 
-            _settingsController = new SettingsController(_logger.Object, _dynamicConfig.Object, null);
+            _settingsController = new SettingsController(_logger.Object, _adminLogger.Object, _dynamicConfig.Object, null);
         }
 
         [Fact]

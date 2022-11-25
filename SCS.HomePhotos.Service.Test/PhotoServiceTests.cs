@@ -6,7 +6,6 @@ using Moq;
 
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
-using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Core;
@@ -21,8 +20,6 @@ using System.Threading.Tasks;
 
 using Xunit;
 
-using static Dapper.SqlMapper;
-
 namespace SCS.HomePhotos.Service.Test
 {
     public class PhotoServiceTests
@@ -36,6 +33,7 @@ namespace SCS.HomePhotos.Service.Test
         private readonly Mock<IPhotoTagData> _photoTagData;
         private readonly Mock<IFileExclusionData> _fileExclusionData;
         private readonly Mock<ILogger<PhotoService>> _logger;
+        private readonly Mock<IAdminLogService> _adminLogger;
         private readonly Mock<IFileSystemService> _fileSystemService;
         private readonly Mock<IDynamicConfig> _dynamicCache;
         private readonly Mock<IPrincipal> _userContext;
@@ -52,6 +50,7 @@ namespace SCS.HomePhotos.Service.Test
             _tagData = new Mock<ITagData>();
             _photoTagData = new Mock<IPhotoTagData>();
             _logger = new Mock<ILogger<PhotoService>>();
+            _adminLogger = new Mock<IAdminLogService>();
             _fileExclusionData = new Mock<IFileExclusionData>();
             _userData = new Mock<IUserData>();
             _fileSystemService = new Mock<IFileSystemService>();
@@ -63,8 +62,8 @@ namespace SCS.HomePhotos.Service.Test
             _identity.SetupGet(p => p.Name).Returns("wdavidsen");
             _userContext.SetupGet(p => p.Identity).Returns(_identity.Object);
 
-            _photoService = new PhotoService( _photoData.Object, _tagData.Object, _photoTagData.Object, _fileExclusionData.Object, _userData.Object, 
-                _logger.Object, _fileSystemService.Object, _dynamicCache.Object, _backgroundQueue);
+            _photoService = new PhotoService(_photoData.Object, _tagData.Object, _photoTagData.Object, _fileExclusionData.Object, _userData.Object,
+                _logger.Object, _adminLogger.Object, _fileSystemService.Object, _dynamicCache.Object, _backgroundQueue);
 
             _photoService.SetUserContext(_userContext.Object);
         }

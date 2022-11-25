@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Web.Dto;
 
 namespace SCS.HomePhotos.Web.Controllers
@@ -89,10 +90,9 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.Settings))]
         public async Task<IActionResult> UpdateNow([FromQuery] bool reprocessPhotos = false)
         {
-            _adminLogService.LogElevated($"Image index has been manually triggered by {User.Identity.Name}.", LogCategory.Index);
-
             if (reprocessPhotos)
             {
+                _photoService.SetUserContext(User);
                 await _photoService.FlagPhotosForReprocessing();
             }
             _dynamicConfig.NextIndexTime = DateTime.UtcNow.AddSeconds(5);
@@ -109,8 +109,6 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> FactoryReset()
         {
-            _adminLogService.LogHigh($"Factory reset has been triggered by {User.Identity.Name}.", LogCategory.Security);
-
             _photoService.SetUserContext(User);
             await _photoService.ResetPhotosAndTags(User.Identity.Name);
 
