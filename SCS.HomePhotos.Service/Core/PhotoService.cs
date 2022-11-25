@@ -36,12 +36,14 @@ namespace SCS.HomePhotos.Service.Core
         private readonly string _noiseWords = "null";
         private readonly string _sysTagColor = Constants.DefaultTagColor;
 
-        /// <summary>Initializes a new instance of the <see cref="PhotoService" /> class.</summary>
-        /// <param name="photoData">The photo data.</param>
-        /// <param name="tagData">The tag data.</param>
-        /// <param name="photoTagData">The photo tag data.</param>
-        /// <param name="userData">The user data.</param>
-        /// <param name="fileExclusionData">The file exclusion data.</param>
+        /// <summary>
+        /// The photo service.
+        /// </summary>
+        /// <param name="photoData">The photo data repository.</param>
+        /// <param name="tagData">The tag data repository.</param>
+        /// <param name="photoTagData">The photo tag data repository.</param>
+        /// <param name="fileExclusionData">The file exclusion data repository.</param>
+        /// <param name="userData">The user data repository.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="adminLogger">The admin logger.</param>
         /// <param name="fileSystemService">The file system service.</param>
