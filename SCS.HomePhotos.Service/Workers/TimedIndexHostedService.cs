@@ -406,7 +406,10 @@ namespace SCS.HomePhotos.Workers
 
                                         var smallImagePath = imageService.CreateSmallImage(fullImagePath, cacheFilePath);
                                         imageService.CreateThumbnail(smallImagePath, cacheFilePath);
-                                        imageService.SavePhotoAndTags(existingPhoto, imageFilePath, cacheFilePath, checksum, imageLayoutInfo, exifData);
+
+                                        var imageInfo = imageService.GetImageInfo(exifData);
+                                        var tags = BuildBuiltInTags(fileSystemService, imageFilePath, imageInfo);
+                                        imageService.SavePhotoAndTags(existingPhoto, imageFilePath, cacheFilePath, checksum, imageLayoutInfo, imageInfo, tags);
                                     }
                                     else
                                     {
@@ -478,6 +481,33 @@ namespace SCS.HomePhotos.Workers
                     return FilePath.Combine(basePath, e.OriginalFolder);
                 })
                 .ToList();
+        }
+
+
+        private List<Tag> BuildBuiltInTags(IFileSystemService fileSystemService, string imageFilePath, ImageInfo imageInfo)
+        {
+            var tags = new List<Tag>();
+
+            foreach (var dirTag in fileSystemService.GetDirectoryTags(_configService.DynamicConfig.IndexPath, imageFilePath))
+            {
+                tags.Add(new Tag { TagName = dirTag, UserId = null }); // null = system tag
+            }
+
+            foreach (var dirTag in fileSystemService.GetDirectoryTags(_configService.DynamicConfig.MobileUploadsFolder, imageFilePath))
+            {
+                tags.Add(new Tag { TagName = dirTag, UserId = null }); // null = system tag
+            }
+
+            if (imageInfo.DateTaken != DateTime.MinValue)
+            {
+                var yearTag = imageInfo.DateTaken.Year.ToString();
+
+                if (!tags.Any(t => t.TagName == yearTag))
+                {
+                    tags.Add(new Tag { TagName = yearTag, UserId = null }); // null = system tag
+                }
+            }
+            return tags;
         }
     }
 }

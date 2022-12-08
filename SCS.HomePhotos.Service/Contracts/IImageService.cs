@@ -74,11 +74,11 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <param name="checksum">The checksum.</param>
         /// <param name="cacheSubfolder">The cache subfolder.</param>
         /// <param name="imageLayoutInfo">The image layout information.</param>
-        /// <param name="exifDataList">The EXIF data list.</param>
+        /// <param name="imageInfo">The image metadata.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>The photo object.</returns>
         Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string checksum, string cacheSubfolder,
-            ImageLayoutInfo imageLayoutInfo, IEnumerable<ExifDirectoryBase> exifDataList, List<Tag> tags = null);
+            ImageLayoutInfo imageLayoutInfo, ImageInfo imageInfo, List<Tag> tags);
 
         /// <summary>
         /// Gets the image layout information.

@@ -112,8 +112,6 @@ namespace SCS.HomePhotos.Web.Controllers
                     filePath = Path.Combine(tempDir, fileName);
                     await _fileUploadService.CopyFile(file, filePath, FileMode.Create);
 
-                    tags.Add(new Tag { TagName = $"{currentUser.UserName} Upload", UserId = null }); // system tag
-
                     var cachePath = await _imageService.QueueMobileResize(currentUser, filePath, tags);
                     LogUpload(User.Identity.Name);
 

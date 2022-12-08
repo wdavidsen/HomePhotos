@@ -53,11 +53,11 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
     }
       
     ok() {
+        this.bsModalRef.hide();
+        
         if (this.caller.toUpperCase() == 'PHOTOUPLOAD') {
             return;
         }
-
-        this.bsModalRef.hide();
 
         const updatesShared = this.tagStates_shared
             .filter(ts => !ts.indeterminate && this.dirtyTags_shared.find(dt => dt === ts.tagName));

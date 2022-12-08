@@ -30,9 +30,10 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <summary>
         /// Gets the directory tags.
         /// </summary>
+        /// <param name="basePath">The base path.</param>
         /// <param name="filePath">The file path.</param>
         /// <returns>A list of tags.</returns>
-        IEnumerable<string> GetDirectoryTags(string filePath);
+        IEnumerable<string> GetDirectoryTags(string basePath, string filePath);
 
         /// <summary>
         /// Deletes the directory files.

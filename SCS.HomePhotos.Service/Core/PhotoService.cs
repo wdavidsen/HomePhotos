@@ -378,6 +378,29 @@ namespace SCS.HomePhotos.Service.Core
         }
 
         /// <summary>
+        /// Associates the user to photo from tags if possible.
+        /// </summary>
+        /// <param name="photo">The photo.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>A void task.</returns>
+        public async Task AssociateUser(Photo photo, List<Tag> tags)
+        {
+            var users = await _userData.GetListAsync();
+            
+            tags.Reverse();
+
+            foreach (var tag in tags)
+            {
+                var user = users.FirstOrDefault(u => u.UserName.Equals(tag.TagName, StringComparison.InvariantCultureIgnoreCase));
+
+                if (user != null)
+                {
+                    photo.UserId = user.UserId;
+                }
+            }
+        }
+
+        /// <summary>
         /// Merges several tags.
         /// </summary>
         /// <param name="newTagName">New name of the tag.</param>

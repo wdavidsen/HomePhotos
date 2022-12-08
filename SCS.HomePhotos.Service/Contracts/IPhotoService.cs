@@ -115,6 +115,14 @@ namespace SCS.HomePhotos.Service.Contracts
         Task AssociateTags(Photo photo, IEnumerable<Tag> tags);
 
         /// <summary>
+        /// Associates the user to photo from tags if possible.
+        /// </summary>
+        /// <param name="photo">The photo.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>A void task.</returns>
+        Task AssociateUser(Photo photo, List<Tag> tags);
+
+        /// <summary>
         /// Gets a photo by checksum.
         /// </summary>
         /// <param name="checksum">The photo file checksum.</param>
@@ -210,6 +218,6 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <param name="originalFolder">The original folder path relative to the index/mobile upload folder.</param>
         /// <param name="fileName">Name of the file.</param>
         /// <returns>A void task.</returns>
-        Task DeletePhoto(bool mobileUpload, string originalFolder, string fileName);
+        Task DeletePhoto(bool mobileUpload, string originalFolder, string fileName);        
     }
 }

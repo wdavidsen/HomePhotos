@@ -6,6 +6,14 @@
 </div>
 <form [formGroup]="userSettingsForm" (ngSubmit)="onSubmit()" autocomplete="off">
   <div class="modal-body">
+    <!-- <div class="form-group">
+      <label for="defaultViewSelect">Photo filter</label>
+      <select class="form-control" formControlName="defaultView" id="defaultViewSelect">
+        <option selected>Show all photos and tags</option>
+        <option>Show shared and personal photos and tags</option>
+        <option>Show personal photos and tags only</option>
+      </select>
+    </div> -->
     <div class="form-group">
       <label for="defaultViewSelect">Default tag</label>
       <select class="form-control" formControlName="defaultView" id="defaultViewSelect">

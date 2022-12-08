@@ -74,26 +74,40 @@ namespace SCS.HomePhotos.Service.Core
         /// <summary>
         /// Gets the directory tags.
         /// </summary>
+        /// <param name="basePath">The base file path.</param>
         /// <param name="filePath">The file path.</param>
         /// <returns>A list of tags.</returns>
-        public IEnumerable<string> GetDirectoryTags(string filePath)
+        public IEnumerable<string> GetDirectoryTags(string basePath, string filePath)
         {
+            if (basePath is null)
+            {
+                throw new ArgumentNullException(nameof(basePath));
+            }
+
+            if (filePath is null)
+            {
+                throw new ArgumentNullException(nameof(filePath));
+            }
+
             var list = new List<string>();
 
-            try
+            if (!filePath.Contains(basePath, StringComparison.CurrentCultureIgnoreCase))
             {
-                var dirs = Path.GetDirectoryName(filePath).Split('/', '\\');
-                var tag = dirs[^1].Trim();
+                return list;
+            }
 
-                list.Add(tag);
+            try
 
-                if (dirs.Length > 1)
+            {
+                var relativePath = Path.GetRelativePath(basePath, filePath);
+
+                var segments = Path.GetDirectoryName(relativePath).Split('/', '\\');
+
+                foreach (var s in segments)
                 {
-                    tag = dirs[^2].Trim();
-
-                    if (!list.Contains(tag))
+                    if (!list.Contains(s.Trim()))
                     {
-                        list.Add(tag);
+                        list.Add(s.Trim());
                     }
                 }
             }

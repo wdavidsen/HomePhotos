@@ -104,10 +104,13 @@ namespace SCS.HomePhotos.Service.Core
                         var smallImagePath = CreateSmallImage(fullImagePath, cacheFilePath);
                         CreateThumbnail(smallImagePath, cacheFilePath);
 
-                        var finalPath = GetMobileUploadPath(imageFilePath);
+                        var firstTag = tags.Any() ? tags.First().TagName : null;
+                        var finalPath = GetMobileUploadPath(imageFilePath, uploadedBy.UserName, firstTag);
                         _fileSystemService.MoveFile(imageFilePath, finalPath, true);
+                        tags.Add(new Tag { TagName = $"{uploadedBy.UserName} Upload", UserId = null }); // system tag
 
-                        SavePhotoAndTags(existingPhoto, finalPath, cacheFilePath, checksum, imageLayoutInfo, metadata, tags);
+                        var imageInfo = GetImageInfo(metadata);
+                        SavePhotoAndTags(existingPhoto, finalPath, cacheFilePath, checksum, imageLayoutInfo, imageInfo, tags);
 
                         notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ProcessMobilePhoto, uploadedBy.UserName, true, imageFilePath));
                     }
@@ -126,11 +129,13 @@ namespace SCS.HomePhotos.Service.Core
         /// Gets the mobile upload path.
         /// </summary>
         /// <param name="sourcePath">The source path.</param>
-        /// <returns></returns>
-        private string GetMobileUploadPath(string sourcePath)
+        /// <param name="uploadedBy">The username who uploaded file.</param>
+        /// <param name="firstTag">The first tag for uploaded file.</param>
+        /// <returns>The full mobile upload directory for uploaded file.</returns>
+        private string GetMobileUploadPath(string sourcePath, string uploadedBy, string firstTag)
         {
-            var subfolder = DateTime.Today.ToString("yyyy-MM");
-            var fullDir = Path.Combine(_dynamicConfig.MobileUploadsFolder, subfolder);
+            //var subfolder = DateTime.Today.ToString("yyyy-MM");
+            var fullDir = Path.Combine(_dynamicConfig.MobileUploadsFolder, uploadedBy, firstTag?.CleanForFileName());
 
             Directory.CreateDirectory(fullDir);
 
@@ -304,15 +309,14 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="cacheFilePath">The cache file path.</param>
         /// <param name="checksum">The checksum.</param>
         /// <param name="imageLayoutInfo">The image layout information.</param>
-        /// <param name="exifDataList">The EXIF data list.</param>
+        /// <param name="imageInfo">The image metadata.</param>
         /// <param name="tags">The tags.</param>
-        /// <returns></returns>
+        /// <returns>The updated/created photo.</returns>
         public Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string cacheFilePath, string checksum,
-            ImageLayoutInfo imageLayoutInfo, IEnumerable<ExifDirectoryBase> exifDataList, List<Tag> tags = null)
+            ImageLayoutInfo imageLayoutInfo, ImageInfo imageInfo, List<Tag> tags)
         {
             _logger.LogInformation("Saving photo with checksum {Checksum}.", checksum);
 
-            var imageInfo = GetImageInfo(exifDataList);
             var photo = existingPhoto ?? new Photo();
 
             photo.Name = Path.GetFileName(imageFilePath);
@@ -327,11 +331,11 @@ namespace SCS.HomePhotos.Service.Core
             photo.MobileUpload = imageFilePath.Contains(_dynamicConfig.MobileUploadsFolder, StringComparison.InvariantCultureIgnoreCase);
             photo.OriginalFolder = GetOriginalFolder(_dynamicConfig, photo.MobileUpload, imageFilePath);
 
-            _photoService.SavePhoto(photo);
+            _photoService.AssociateUser(photo, tags);
+            tags.ForEach(t => t.UserId = photo.UserId);
 
-            tags ??= new List<Tag>();
-            tags.AddRange(BuildBuiltInTags(imageFilePath, imageInfo));
-            _photoService.AssociateTags(photo, tags);
+            _photoService.SavePhoto(photo);
+            _photoService.AssociateTags(photo, tags);            
 
             _logger.LogInformation("Saved photo to database.");
 
@@ -411,27 +415,6 @@ namespace SCS.HomePhotos.Service.Core
                 }
             }
             return value;
-        }
-
-        private List<Tag> BuildBuiltInTags(string imageFilePath, ImageInfo imageInfo)
-        {
-            var tags = new List<Tag>();
-
-            foreach (var dirTag in _fileSystemService.GetDirectoryTags(imageFilePath).ToList())
-            {
-                tags.Add(new Tag { TagName = dirTag, UserId = null }); // null = system tag
-            }
-
-            if (imageInfo.DateTaken != DateTime.MinValue)
-            {
-                var yearTag = imageInfo.DateTaken.Year.ToString();
-
-                if (!tags.Any(t => t.TagName == yearTag))
-                {
-                    tags.Add(new Tag { TagName = yearTag, UserId = null }); // null = system tag
-                }
-            }
-            return tags;
         }
     }
 }

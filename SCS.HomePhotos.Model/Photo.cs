@@ -108,6 +108,14 @@ namespace SCS.HomePhotos.Model
         public string OriginalFolder { get; set; }
 
         /// <summary>
+        /// Gets or sets the user identifier.
+        /// </summary>
+        /// <value>
+        /// The user identifier.
+        /// </value>
+        public int? UserId { get; set; }
+
+        /// <summary>
         /// Gets or sets the search weight.
         /// </summary>
         /// <value>
@@ -146,7 +154,8 @@ namespace SCS.HomePhotos.Model
             if (p.ImageWidth != ImageWidth) return false;
             if (p.MobileUpload != MobileUpload) return false;
             if (p.OriginalFolder != OriginalFolder) return false;
-            
+            if (p.UserId != UserId) return false;
+
             return true;
         }
 
@@ -159,7 +168,7 @@ namespace SCS.HomePhotos.Model
         public override int GetHashCode()
         {
             return PhotoId.GetHashCode() ^ Name.GetHashCode() ^ FileName.GetHashCode() ^ DateFileCreated.GetHashCode() ^ DateTaken.GetHashCode() ^ CacheFolder.GetHashCode() ^
-                Checksum.GetHashCode() ^ ImageHeight ^ ImageWidth ^ MobileUpload.GetHashCode() ^ OriginalFolder.GetHashCode();
+                Checksum.GetHashCode() ^ ImageHeight ^ ImageWidth ^ MobileUpload.GetHashCode() ^ OriginalFolder.GetHashCode() ^ UserId.GetHashCode();
         }
     }
 }

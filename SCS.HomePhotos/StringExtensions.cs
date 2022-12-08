@@ -1,6 +1,7 @@
 ﻿using CryptoNet;
 
 using System;
+using System.IO;
 using System.Text;
 
 namespace SCS.HomePhotos
@@ -37,8 +38,8 @@ namespace SCS.HomePhotos
         /// </summary>
         /// <param name="text">The text to encrypt.</param>
         /// <param name="key">The key to use.</param>
-        /// <param name="passcode">The passcode to use.</param>
-        /// <returns>An encripted string.</returns>
+        /// <param name="passcode">The pass code to use.</param>
+        /// <returns>An encrypted string.</returns>
         public static string Encrypt(this string text, string key, string passcode)
         {
             var keyBytes = Encoding.UTF8.GetBytes(key);
@@ -55,7 +56,7 @@ namespace SCS.HomePhotos
         /// </summary>
         /// <param name="text">The text to decode.</param>
         /// <param name="key">The key to use.</param>
-        /// <param name="passcode">The passcode to use.</param>
+        /// <param name="passcode">The pass code to use.</param>
         /// <returns>The decrypted string.</returns>
         public static string Decrypt(this string text, string key, string passcode)
         {
@@ -65,6 +66,20 @@ namespace SCS.HomePhotos
             ICryptoNet decryptClient = new CryptoNetAes(keyBytes, iv);
 
             return decryptClient.DecryptToString(Convert.FromBase64String(text.Replace("-", "+").Replace("_", "/")));
+        }
+
+        /// <summary>
+        /// Cleans a string to allow it to used as a file name.
+        /// </summary>
+        /// <param name="text">The text to clean.</param>
+        /// <returns>The cleaned string.</returns>
+        public static string CleanForFileName(this string text)
+        {
+            foreach (var c in Path.GetInvalidFileNameChars())
+            {
+                text = text.Replace(c.ToString(), string.Empty);
+            }
+            return text;
         }
     } 
 }
