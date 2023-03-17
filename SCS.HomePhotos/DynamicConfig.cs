@@ -25,6 +25,10 @@ namespace SCS.HomePhotos
         private int _largeImageSize;
         private DateTime? _nextIndexTime;
         private int _indexFrequencyHours;
+        private DeleteAction _photoDeleteAction;
+        private DeleteAction _mobilePhotoDeleteAction;
+        private UserPhotoScope _userPhotoViewScope;
+        private string _tagColor;
         #endregion
 
         /// <summary>
@@ -256,7 +260,22 @@ namespace SCS.HomePhotos
         /// <value>
         /// The photo delete action.
         /// </value>
-        public DeleteAction PhotoDeleteAction { get; set; }
+        public DeleteAction PhotoDeleteAction 
+        {
+            get
+            {
+                return _photoDeleteAction;
+            }
+
+            set
+            {
+                if (value != _photoDeleteAction)
+                {
+                    _photoDeleteAction = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the mobile photo delete action.
@@ -264,7 +283,45 @@ namespace SCS.HomePhotos
         /// <value>
         /// The mobile photo delete action.
         /// </value>
-        public DeleteAction MobilePhotoDeleteAction { get; set; }
+        public DeleteAction MobilePhotoDeleteAction
+        {
+            get
+            {
+                return _mobilePhotoDeleteAction;
+            }
+
+            set
+            {
+                if (value != _mobilePhotoDeleteAction)
+                {
+                    _mobilePhotoDeleteAction = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the user photo view scope.
+        /// </summary>
+        /// <value>
+        /// The user photo view scope.
+        /// </value>
+        public UserPhotoScope UserPhotoViewScope
+        {
+            get
+            {
+                return _userPhotoViewScope;
+            }
+
+            set
+            {
+                if (value != _userPhotoViewScope)
+                {
+                    _userPhotoViewScope = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the color of the tag.
@@ -272,7 +329,22 @@ namespace SCS.HomePhotos
         /// <value>
         /// The color of the tag.
         /// </value>
-        public string TagColor { get; set; }
+        public string TagColor
+        {
+            get
+            {
+                return _tagColor;
+            }
+
+            set
+            {
+                if (value != _tagColor)
+                {
+                    _tagColor = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the default configuration.
@@ -292,6 +364,7 @@ namespace SCS.HomePhotos
                 IndexFrequencyHours = 24,
                 PhotoDeleteAction = DeleteAction.DeleteRecord,
                 MobilePhotoDeleteAction = DeleteAction.DeleteRecordAndFile,
+                UserPhotoViewScope = UserPhotoScope.Everything,
                 TagColor = Constants.DefaultTagColor
             };
         }

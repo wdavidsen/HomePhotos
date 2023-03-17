@@ -30,6 +30,7 @@ namespace SCS.HomePhotos.Web.Dto
             ThumbnailSize = config.ThumbnailSize;
             PhotoDeleteAction = (int)config.PhotoDeleteAction;
             MobilePhotoDeleteAction = (int)config.MobilePhotoDeleteAction;
+            UserPhotoViewScope = (int)config.UserPhotoViewScope;
             TagColor = config.TagColor;
         }
 
@@ -130,6 +131,15 @@ namespace SCS.HomePhotos.Web.Dto
         /// </value>
         [Required]
         public int MobilePhotoDeleteAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user photo view scope.
+        /// </summary>
+        /// <value>
+        /// The user photo view scope.
+        /// </value>
+        [Required]
+        public int UserPhotoViewScope { get; set; }
 
         /// <summary>
         /// Gets or sets the color of the tag.

@@ -26,14 +26,14 @@
     <div class="form-row">
         <div class="form-group col-md-4">
             <label for="nextIndexTime_date">Next index date</label>
-            <input type="date" formControlName="nextIndexTime_date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime_date.errors }" />
+            <input type="date" formControlName="nextIndexTime_date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime_date.errors }" required/>
             <div *ngIf="submitted && f.nextIndexTime_date.errors" class="invalid-feedback">
                 <div *ngIf="f.nextIndexTime_date.errors.required">Next index time is required</div>
             </div>
         </div>
         <div class="form-group col-md-4">
             <label for="nextIndexTime_time">Next index time</label>
-            <input type="time" formControlName="nextIndexTime_time" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime_time.errors }" />
+            <input type="time" formControlName="nextIndexTime_time" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime_time.errors }" required />
             <div *ngIf="submitted && f.nextIndexTime_time.errors" class="invalid-feedback">
                 <div *ngIf="f.nextIndexTime_time.errors.required">Next index time is required</div>
             </div>
@@ -72,14 +72,14 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="photoDeleteAction">Photo delete action</label>
-            <select class="form-control form-select" aria-label="Default select example" formControlName="photoDeleteAction">
+            <select class="form-control form-select" aria-label="Photo delete action" formControlName="photoDeleteAction">
                 <option selected value="0">Delete database record and cache files</option>
                 <option value="1">Delete original file, database record and cache files</option>
             </select>
         </div>
         <div class="form-group col-md-6">
             <label for="mobilePhotoDeleteAction">Mobile upload photo delete action</label>
-            <select class="form-control form-select" aria-label="Default select example" formControlName="mobilePhotoDeleteAction">
+            <select class="form-control form-select" aria-label="Mobile upload photo delete action<" formControlName="mobilePhotoDeleteAction">
                 <option value="0">Delete database record and cache files</option>
                 <option selected value="1">Delete original file, database record and cache files</option>
             </select>
@@ -87,7 +87,7 @@
     </div>
     <div class="form-row">
         <div class="form-group col-md-4">
-            <label for="thumbnailSize">Server identity tag color</label>
+            <label for="thumbnailSize">Shared photo tag color</label>
             <div>
                 <ngx-colors ngx-colors-trigger style="display: inline-block; margin:5px;"
                     [formControl]="f.tagColor"
@@ -97,19 +97,19 @@
                     colorPickerControls="no-alpha"></ngx-colors>
             </div>
         </div>
-        <!-- <div class="form-group col-md-8">
-            <label for="thumbnailSize">Non Admins can:</label>
+        <div class="form-group col-md-8">
+            <label for="thumbnailSize">All users can:</label>
             <div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
-                    <label class="form-check-label" for="inlineRadio1">View everything</label>
+                    <input class="form-check-input" type="radio" formControlName="userPhotoViewScope" value="0" [checked]="f.userPhotoViewScope.value == 0" id="viewAllScopeRadio">
+                    <label class="form-check-label" for="viewAllScopeRadio">View everything</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                    <label class="form-check-label" for="inlineRadio2">View shared, personal</label>
+                    <input class="form-check-input" type="radio" formControlName="userPhotoViewScope" value="10" [checked]="f.userPhotoViewScope.value == 10" id="viewCharedPersonalScopeRadio">
+                    <label class="form-check-label" for="viewCharedPersonalScopeRadio">View shared, personal only (Admins can override)</label>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
     
     <hr />

@@ -150,9 +150,10 @@
             <param name="pageSize">Size of the page.</param>
             <returns>A list of photos.</returns>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.SearchPhotos(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32)">
+        <member name="M:SCS.HomePhotos.Web.Controllers.PhotosController.SearchPhotos(System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32)">
             <summary>Searches photos.</summary>
             <param name="keywords">The keywords.</param>
+            <param name="username">The optional user filter.</param>
             <param name="fromDate">The optional date to start search.</param>
             <param name="toDate">The optional date to end search.</param>
             <param name="pageNum">The page number.</param>
@@ -717,6 +718,14 @@
             The mobile photo delete action.
             </value>
         </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.Settings.UserPhotoViewScope">
+            <summary>
+            Gets or sets the user photo view scope.
+            </summary>
+            <value>
+            The user photo view scope.
+            </value>
+        </member>
         <member name="P:SCS.HomePhotos.Web.Dto.Settings.TagColor">
             <summary>
             Gets or sets the color of the tag.
@@ -1196,11 +1205,11 @@
             Invalid token
             </exception>
         </member>
-        <member name="M:SCS.HomePhotos.Web.ISecurityService.GetUserClaims(System.String,SCS.HomePhotos.Model.RoleType)">
+        <member name="M:SCS.HomePhotos.Web.ISecurityService.GetUserClaims(SCS.HomePhotos.Model.User,SCS.HomePhotos.Model.RoleType)">
             <summary>
             Gets a user's claims.
             </summary>
-            <param name="userName">Username of the user.</param>
+            <param name="user">The user.</param>
             <param name="role">The user role.</param>
             <returns>A list of claims.</returns>
         </member>
@@ -1734,11 +1743,11 @@
             </summary>
             <returns>The refresh token.</returns>
         </member>
-        <member name="M:SCS.HomePhotos.Web.SecurityService.GetUserClaims(System.String,SCS.HomePhotos.Model.RoleType)">
+        <member name="M:SCS.HomePhotos.Web.SecurityService.GetUserClaims(SCS.HomePhotos.Model.User,SCS.HomePhotos.Model.RoleType)">
             <summary>
             Gets a user's claims.
-            </summary>
-            <param name="userName">Username of the user.</param>
+            </summary>        
+            <param name="user">The user.</param>
             <param name="role">The user role.</param>
             <returns>A list of claims.</returns>
         </member>

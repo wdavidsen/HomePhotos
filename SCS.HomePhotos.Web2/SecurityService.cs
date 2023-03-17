@@ -114,20 +114,20 @@ namespace SCS.HomePhotos.Web
 
         /// <summary>
         /// Gets a user's claims.
-        /// </summary>
-        /// <param name="userName">Username of the user.</param>
+        /// </summary>        
+        /// <param name="user">The user.</param>
         /// <param name="role">The user role.</param>
         /// <returns>A list of claims.</returns>
-        public List<Claim> GetUserClaims(string userName, RoleType role)
+        public List<Claim> GetUserClaims(Model.User user, RoleType role)
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userName),
-                new Claim(JwtRegisteredClaimNames.UniqueName, userName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Typ, Guid.NewGuid().ToString())
             };
 
-            claims.Add(new Claim(ClaimTypes.Name, userName));
+            claims.Add(new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"));
             claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
 
             return claims;

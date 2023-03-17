@@ -55,9 +55,9 @@ namespace SCS.HomePhotos.Web
         /// <summary>
         /// Gets a user's claims.
         /// </summary>
-        /// <param name="userName">Username of the user.</param>
+        /// <param name="user">The user.</param>
         /// <param name="role">The user role.</param>
         /// <returns>A list of claims.</returns>
-        List<Claim> GetUserClaims(string userName, RoleType role);
+        List<Claim> GetUserClaims(Model.User user, RoleType role);
     }
 }

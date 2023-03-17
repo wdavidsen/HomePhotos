@@ -80,7 +80,7 @@ describe('SettingsComponent', () => {
     const sub = new Subject<any>();
     mockSettingsService.clearCache.and.returnValue(sub.asObservable());
 
-    component.clear();
+    component.factoryReset();
 
     expect(mockSettingsService.clearCache).toHaveBeenCalledTimes(1);
 
@@ -94,7 +94,7 @@ describe('SettingsComponent', () => {
     const sub = new Subject<any>();
     mockSettingsService.clearCache.and.returnValue(sub.asObservable());
 
-    component.clear();
+    component.factoryReset();
 
     expect(mockSettingsService.clearCache).toHaveBeenCalledTimes(1);
 

@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h4 class="modal-title pull-left">Advanced Search</h4>
+    <h4 class="modal-title pull-left">Search</h4>
     <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -7,17 +7,24 @@
   
   <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" autocomplete="off">
     <div class="modal-body">
-      <p>All fields are optional</p>
+      <p><em>All fields are optional</em></p>
       <div class="form-group">
-        <label for="keywordsInput">Keywords</label>
+        <label for="keywordsInput">Search keywords</label>
         <input type="text" class="form-control" formControlName="keywords" id="keywordsInput">
       </div>
       <div class="form-group">
-        <label for="fromDateInput">Start date</label>
+        <label for="usernameSelect">Photo owner</label>
+        <select class="form-control form-select" aria-label="User select" formControlName="username" id="usernameSelect">
+          <option value=""></option>
+          <option *ngFor="let u of users" [ngValue]="u">{{u}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="fromDateInput">Photo taken after</label>
         <input type="date" class="form-control" formControlName="fromDate" id="fromDateInput">
       </div>
       <div class="form-group">
-        <label for="toDateInput">End date</label>
+        <label for="toDateInput">Photo taken before</label>
         <input type="date" class="form-control" formControlName="toDate" id="toDateInput">
       </div>      
     </div>

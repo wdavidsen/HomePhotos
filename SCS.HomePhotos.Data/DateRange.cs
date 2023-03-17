@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dapper;
+
+using System;
 
 namespace SCS.HomePhotos.Data
 {
@@ -53,5 +55,50 @@ namespace SCS.HomePhotos.Data
         /// To date.
         /// </value>
         public DateTime ToDate { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the data range is cleared.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is cleared; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsCleared 
+        {
+            get
+            {
+                return FromDate != DateTime.MinValue && ToDate != DateTime.MinValue;
+            }
+        }
+
+        /// <summary>
+        /// Gets the where clause for a SQL query.
+        /// </summary>
+        /// <param name="tableAlias">The table alias.</param>
+        /// <param name="prefixWithAnd">if set to <c>true</c> prefix with "AND".</param>
+        /// <returns>The where clause SQL.</returns>
+        internal (string Sql, DynamicParameters Parameters) GetWhereClause(string tableAlias = "", bool prefixWithAnd = false)
+        {
+            var sep = string.IsNullOrEmpty(tableAlias) ? string.Empty : ".";
+            var parameters = new DynamicParameters();
+
+            var sql = $"{tableAlias}{sep}DateTaken BETWEEN @FromDate AND @ToDate ";
+
+            var fromDate = FromDate;
+            var toDate = ToDate;   
+
+            if (FromDate > toDate)
+            {
+                (fromDate, toDate) = (toDate, fromDate);
+            }
+
+            parameters.Add("FromDate", fromDate.ToStartOfDay().ToString(Constants.DatabaseDateTimeFormat));
+            parameters.Add("ToDate", toDate.ToEndOfDay().ToString(Constants.DatabaseDateTimeFormat));
+
+            if (prefixWithAnd)
+            {
+                sql = "AND " + sql;
+            }
+            return (sql, parameters);
+        }
     }
 }

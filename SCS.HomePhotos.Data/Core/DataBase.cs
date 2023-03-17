@@ -109,6 +109,8 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>The list matching entities.</returns>
         public virtual async Task<IEnumerable<T>> GetListAsync(string whereClause, object parameters)
         {
+            whereClause = EnsureWhere(whereClause);
+
             using (var connection = GetDbConnection())
             {
                 return await connection.GetListAsync<T>(whereClause, parameters);
@@ -138,6 +140,8 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>The list matching entities.</returns>
         public virtual async Task<IEnumerable<T>> GetListPagedAsync(string whereClause, object parameters, string orderBy, int pageNum, int pageSize)
         {
+            whereClause = EnsureWhere(whereClause);
+
             using (var connection = GetDbConnection())
             {
                 return await connection.GetListPagedAsync<T>(pageNum, pageSize, whereClause, orderBy, parameters);
@@ -178,6 +182,8 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>The total record count.</returns>
         public virtual async Task<long> GetRecordCount(string whereClause, object parameters)
         {
+            whereClause = EnsureWhere(whereClause);
+
             using (var connection = GetDbConnection())
             {
                 var tableName = GetTableName();
@@ -196,6 +202,20 @@ namespace SCS.HomePhotos.Data.Core
         {
             var tableAttribute = (TableAttribute)Attribute.GetCustomAttribute(typeof(T), typeof(TableAttribute));
             return tableAttribute.Name;
+        }
+
+        /// <summary>
+        /// Ensures the where clause starts with "WHERE".
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns>A where clause starting with "WHERE".</returns>
+        private static string EnsureWhere(string whereClause)
+        {
+            if (!whereClause.StartsWith("WHERE", StringComparison.InvariantCultureIgnoreCase))
+            {
+                whereClause = $"WHERE {whereClause}";
+            }
+            return whereClause;
         }
     }
 }

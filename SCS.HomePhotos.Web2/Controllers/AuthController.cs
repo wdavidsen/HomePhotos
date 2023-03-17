@@ -76,7 +76,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 }
             }
 
-            var claims = _securityService.GetUserClaims(model.UserName, result.User.Role);
+            var claims = _securityService.GetUserClaims(result.User, result.User.Role);
             var newJwtToken = _securityService.GenerateToken(claims);
             var newRefreshToken = _securityService.GenerateRefreshToken();
 
@@ -120,7 +120,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest((new ProblemModel { Id = "CurrentPasswordFailed", Message = "Current password validation failed." }));
             }
 
-            var claims = _securityService.GetUserClaims(model.UserName, loginResult.User.Role);
+            var claims = _securityService.GetUserClaims(loginResult.User, loginResult.User.Role);
             var newJwtToken = _securityService.GenerateToken(claims);
             var newRefreshToken = _securityService.GenerateRefreshToken();
 

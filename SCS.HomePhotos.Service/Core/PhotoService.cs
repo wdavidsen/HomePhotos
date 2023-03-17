@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Principal;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Service.Core
@@ -51,6 +51,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="backgroundTaskQueue">The background task queue.</param>
         public PhotoService(IPhotoData photoData, ITagData tagData, IPhotoTagData photoTagData, IFileExclusionData fileExclusionData, IUserData userData,
             ILogger<PhotoService> logger, IAdminLogService adminLogger, IFileSystemService fileSystemService, IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
+            : base (dynamicConfig)
         {
             _photoData = photoData;
             _tagData = tagData;
@@ -90,7 +91,11 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetLatestPhotos(int pageNum = 1, int pageSize = 200)
         {
-            return await _photoData.GetPhotos(new DateRange(DateTime.Now, DateTime.MinValue), pageNum, pageSize);
+            var scope = GetViewScope(UserPhotoScope.Everything, User.Identity.Name);
+
+            var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
+
+            return await _photoData.GetPhotos(userFilter, new DateRange(DateTime.Now, DateTime.MinValue), pageNum, pageSize);
         }
 
         /// <summary>
@@ -105,48 +110,50 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetPhotosByTag(string tag, string owner, int pageNum = 1, int pageSize = 200)
         {
-            var userId = null as int?;
+            var scope = GetViewScope(UserPhotoScope.Everything, owner);
 
-            if (owner != null)
-            {
-                var user = await _userData.GetUser(owner);
+            var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 
-                if (user == null)
-                {
-                    throw new EntityNotFoundException($"User '{owner}' not found.");
-                }
-                userId = user.UserId;
-            }
-            return await _photoData.GetPhotos(tag, userId, pageNum, pageSize);
+            return await _photoData.GetPhotos(userFilter, tag, pageNum, pageSize);
         }
 
         /// <summary>
         /// Gets the photos by keywords.
         /// </summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="username">The username filter (optional).</param>
         /// <param name="dateRange">Optional date range.</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>
         /// A paged list of photos.
         /// </returns>
-        public async Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, DateRange? dateRange = null, int pageNum = 1, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, string username, DateRange dateRange, int pageNum = 1, int pageSize = 200)
         {
-            return await _photoData.GetPhotos(keywords, dateRange, pageNum, pageSize);
+            var scope = GetViewScope(UserPhotoScope.Everything, username);
+
+            var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
+
+            return await _photoData.GetPhotos(userFilter, dateRange, keywords, pageNum, pageSize);
         }
 
         /// <summary>
         /// Gets the photos by date taken.
         /// </summary>        
         /// <param name="dateRange">The specified date range.</param>
+        /// <param name="username">The username filter (optional).</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>
         /// A paged list of photos.
         /// </returns>
-        public async Task<IEnumerable<Photo>> GetPhotosByDate(DateRange dateRange, int pageNum = 1, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotosByDate(DateRange dateRange, string username, int pageNum = 1, int pageSize = 200)
         {
-            return await _photoData.GetPhotos(dateRange, pageNum, pageSize);
+            var scope = GetViewScope(UserPhotoScope.Everything, username);
+
+            var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
+
+            return await _photoData.GetPhotos(userFilter, dateRange, pageNum, pageSize);
         }
 
         /// <summary>
@@ -157,15 +164,17 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>A list of tags.</returns>
         public async Task<IEnumerable<Tag>> GetTags(string username = null, bool includPhotoCounts = false)
         {
-            var user = (username != null) ? await _userData.GetUser(username) : null;
+            var scope = GetViewScope(UserPhotoScope.Everything, username);
+
+            var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 
             if (includPhotoCounts)
             {
-                return AssignSysTagColor(await _tagData.GetTagAndPhotoCount(user?.UserId));
+                return AssignSysTagColor(await _tagData.GetTagAndPhotoCount(userFilter));
             }
             else
             {
-                return await _tagData.GetTags(user?.UserId);
+                return await _tagData.GetTags(userFilter);
             }
         }
 
@@ -386,7 +395,7 @@ namespace SCS.HomePhotos.Service.Core
         public async Task AssociateUser(Photo photo, List<Tag> tags)
         {
             var users = await _userData.GetListAsync();
-            
+
             tags.Reverse();
 
             foreach (var tag in tags)
@@ -413,7 +422,7 @@ namespace SCS.HomePhotos.Service.Core
         {
             var tagsToDelete = new List<string>();
             var currentUser = await GetCurrentUser();
-            
+
             var tagAssoc = new List<UserPhotoTag>();
 
             foreach (var tagId in targetTagIds)
@@ -432,7 +441,7 @@ namespace SCS.HomePhotos.Service.Core
 
             foreach (var assoc in tagAssoc)
             {
-                await _photoTagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);                
+                await _photoTagData.AssociatePhotoTag(assoc.PhotoId, assoc.TagId, newTag.TagId.Value);
             }
             await DeleteUnusedTags();
 
@@ -604,7 +613,7 @@ namespace SCS.HomePhotos.Service.Core
 
         private async Task<IEnumerable<Tag>> GetUnusedTags()
         {
-            var tagStats = await _tagData.GetTagAndPhotoCount();
+            var tagStats = await _tagData.GetTagAndPhotoCount(new UserFilter());
 
             return tagStats.Where(ts => ts.PhotoCount == 0);
         }
@@ -612,8 +621,8 @@ namespace SCS.HomePhotos.Service.Core
         private async Task DeleteUnusedTags()
         {
             foreach (var tag in await GetUnusedTags())
-            {                
-                await _tagData.DeleteAsync(tag);                
+            {
+                await _tagData.DeleteAsync(tag);
             }
         }
 
@@ -668,6 +677,21 @@ namespace SCS.HomePhotos.Service.Core
         private async Task<User> GetCurrentUser()
         {
             return await _userData.GetUser(User.Identity.Name);
+        }
+
+        private async Task<int?> GetFilterUserId(string userName)
+        {
+            if (string.IsNullOrEmpty(userName))
+            {
+                return (await GetCurrentUser()).UserId;
+            }
+            var user = await _userData.GetUser(userName);
+
+            if (user == null)
+            {
+                throw new EntityNotFoundException($"User '{userName}' not found.");
+            }
+            return user.UserId.Value;
         }
     }
 }

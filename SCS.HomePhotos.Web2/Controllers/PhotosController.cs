@@ -96,6 +96,7 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Searches photos.</summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="username">The optional user filter.</param>
         /// <param name="fromDate">The optional date to start search.</param>
         /// <param name="toDate">The optional date to end search.</param>
         /// <param name="pageNum">The page number.</param>
@@ -107,12 +108,13 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Dto.Photo>))]
         [HttpGet("search", Name = "SearchPhotos")]
         public async Task<IActionResult> SearchPhotos([FromQuery] string keywords,
+            [FromQuery] string username,
             [FromQuery] DateTime? fromDate,
             [FromQuery] DateTime? toDate,
             [FromQuery] int pageNum = 1,
             [FromQuery] int pageSize = 400)
         {
-            var dateRange = null as DateRange?;
+            var dateRange = new DateRange();
 
             if (fromDate != null || toDate != null)
             {
@@ -125,11 +127,11 @@ namespace SCS.HomePhotos.Web.Controllers
 
             if (!string.IsNullOrWhiteSpace(keywords))
             {
-                photos = await _photoService.GetPhotosByKeywords(keywords, dateRange, pageNum, pageSize);
+                photos = await _photoService.GetPhotosByKeywords(keywords, username, dateRange, pageNum, pageSize);
             }
-            else if (dateRange != null)
+            else if (!dateRange.IsCleared)
             {
-                photos = await _photoService.GetPhotosByDate(dateRange.Value, pageNum, pageSize);
+                photos = await _photoService.GetPhotosByDate(dateRange, username, pageNum, pageSize);
             }
             else
             {

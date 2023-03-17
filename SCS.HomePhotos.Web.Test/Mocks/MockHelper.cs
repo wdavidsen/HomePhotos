@@ -56,7 +56,7 @@ namespace SCS.HomePhotos.Web.Test.Mocks
             mock.Setup(m => m.GenerateToken(It.IsAny<IEnumerable<Claim>>()))
                 .Returns(token);
 
-            mock.Setup(m => m.GetUserClaims(It.IsAny<string>(), It.IsAny<RoleType>()))
+            mock.Setup(m => m.GetUserClaims(It.IsAny<Model.User>(), It.IsAny<RoleType>()))
                 .Returns(claims);
 
             mock.Setup(m => m.GetPrincipalFromExpiredToken(It.IsAny<string>()))

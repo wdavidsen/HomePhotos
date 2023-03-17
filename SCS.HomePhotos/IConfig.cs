@@ -104,6 +104,14 @@ namespace SCS.HomePhotos
         DeleteAction MobilePhotoDeleteAction { get; set; }
 
         /// <summary>
+        /// Gets or sets the user photo view scope.
+        /// </summary>
+        /// <value>
+        /// The user photo view scope.
+        /// </value>
+        UserPhotoScope UserPhotoViewScope { get; set; }
+
+        /// <summary>
         /// Gets or sets the color of the tag.
         /// </summary>
         /// <value>

@@ -94,13 +94,14 @@ namespace SCS.HomePhotos.Service.Test
         public async Task GetLatestPhotos()
         {
             var photos = _fixture.CreateMany<Photo>(50);
+            var userFilter = new UserFilter(1);
 
-            _photoData.Setup(m => m.GetPhotos(It.IsAny<DateRange>(), 1, 50))
+            _photoData.Setup(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<DateRange>(), 1, 50))
                 .ReturnsAsync(photos);
 
             var results = await _photoService.GetLatestPhotos(1, 50);
 
-            _photoData.Verify(m => m.GetPhotos(It.IsAny<DateRange>(), 1, 50),
+            _photoData.Verify(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<DateRange>(), 1, 50),
                 Times.Once);
 
             Assert.Equal(50, results.Count());
@@ -113,10 +114,11 @@ namespace SCS.HomePhotos.Service.Test
             var tag = _fixture.Create<string>();
             var owner = "wdavidsen";
             var ownerId = 1 as int?;
+            var userFilter = new UserFilter(1);
 
             _userData.Setup(m => m.GetUser(owner)).ReturnsAsync(new Model.User { UserName = owner, UserId = ownerId });
 
-            _photoData.Setup(m => m.GetPhotos(It.IsAny<string>(), It.IsAny<int?>(), 1, 50))
+            _photoData.Setup(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<string>(), 1, 50))
                 .ReturnsAsync(photos)
                 .Callback<string, int?, int, int>((t, o, pageNum, pageSize) =>
                 {
@@ -128,7 +130,7 @@ namespace SCS.HomePhotos.Service.Test
 
             var results = await _photoService.GetPhotosByTag(tag, owner, 1, 50);
 
-            _photoData.Verify(m => m.GetPhotos(It.IsAny<string>(), It.IsAny<int?>(), 1, 50),
+            _photoData.Verify(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<string>(), 1, 50),
                 Times.Once);
 
             Assert.Equal(50, results.Count());
@@ -140,13 +142,14 @@ namespace SCS.HomePhotos.Service.Test
             var startDate = DateTime.Now.AddDays(-7);
             var endDate = DateTime.Now;
             var photos = _fixture.CreateMany<Photo>(50);
+            var userFilter = new UserFilter(1);
 
-            _photoData.Setup(m => m.GetPhotos(It.IsAny<DateRange>(), 1, 50))
+            _photoData.Setup(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<DateRange>(), 1, 50))
                 .ReturnsAsync(photos);
 
-            var results = await _photoService.GetPhotosByDate(new DateRange(startDate, endDate), 1, 50);
+            var results = await _photoService.GetPhotosByDate(new DateRange(startDate, endDate), null, 1, 50);
 
-            _photoData.Verify(m => m.GetPhotos(It.IsAny<DateRange>(), 1, 50),
+            _photoData.Verify(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<DateRange>(), 1, 50),
                 Times.Once);
 
             Assert.Equal(50, results.Count());
@@ -157,11 +160,11 @@ namespace SCS.HomePhotos.Service.Test
         {
             var tags = _fixture.CreateMany<Tag>(10);
 
-            _tagData.Setup(m => m.GetTags(It.IsAny<int?>())).ReturnsAsync(tags);
+            _tagData.Setup(m => m.GetTags(It.IsAny<UserFilter>())).ReturnsAsync(tags);
 
             var results = await _photoService.GetTags(null);
 
-            _tagData.Verify(m => m.GetTags(It.IsAny<int?>()), Times.Once);
+            _tagData.Verify(m => m.GetTags(It.IsAny<UserFilter>()), Times.Once);
 
             Assert.Equal(tags.Count(), results.Count());
             Assert.IsType<Tag>(results.First());

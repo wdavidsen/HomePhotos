@@ -24,80 +24,47 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Gets a list of photos by tag.
         /// </summary>
+        /// <param name="userFilter">The user filter information.</param>
         /// <param name="tag">The tag to search on.</param>
-        /// <param name="ownerId">The user id owner of tags. If null, shared photos will be returned; if a number greater than 0, photos specific to the user id will be returned.</param>
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        public async Task<IEnumerable<Photo>> GetPhotos(string tag, int? ownerId, int pageNum = 1, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotos(UserFilter userFilter, string tag, int pageNum = 1, int pageSize = 200)
         {
-            if (ownerId.HasValue)
+            if (string.IsNullOrWhiteSpace(tag))
             {
-                return await GetUserPhotos(tag, ownerId.Value, pageNum, pageSize); 
+                throw new ArgumentException("Tag cannot be null or empty.", nameof(tag));
             }
-            else
-            {
-                return await GetSharedPhotos(tag, pageNum, pageSize);
-            }            
-        }
 
-        /// <summary>
-        /// Gets photos matching shared tag.
-        /// </summary>
-        /// <param name="tag">The tag name.</param>
-        /// <param name="pageNum">The page number.</param>
-        /// <param name="pageSize">Size of the page.</param>
-        /// <returns>A list of matching photos.</returns>
-        public async Task<IEnumerable<Photo>> GetSharedPhotos(string tag, int pageNum = 1, int pageSize = 200)
-        {
             var offset = (pageNum - 1) * pageSize;
+            var userClause = userFilter.GetWhereClause("p", true);
 
             var sql = $@"SELECT p.* 
                          FROM Photo p
                          JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
                          JOIN Tag t ON pt.TagId = t.TagId 
-                         WHERE t.TagName = @Tag AND t.UserId IS NULL 
+                         WHERE t.TagName = @Tag {userClause.Sql}    
                          ORDER BY p.DateTaken DESC LIMIT {pageSize} OFFSET {offset}";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Tag", tag);
+            parameters.AddDynamicParams(userClause.Parameters);
 
             using (var conn = GetDbConnection())
             {
-                return await conn.QueryAsync<Photo>(sql, new { Tag = tag });
-            }
-        }
-
-        /// <summary>
-        /// Gets photos matching user tag.
-        /// </summary>
-        /// <param name="tag">The tag name.</param>
-        /// <param name="ownerId">The tag owner user id.</param>
-        /// <param name="pageNum">The page number.</param>
-        /// <param name="pageSize">Size of the page.</param>
-        /// <returns>A list of matching photos.</returns>
-        public async Task<IEnumerable<Photo>> GetUserPhotos(string tag, int ownerId, int pageNum = 1, int pageSize = 200)
-        {
-            var offset = (pageNum - 1) * pageSize;
-
-            var sql = $@"SELECT p.* 
-                         FROM Photo p
-                         JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
-                         JOIN Tag t ON pt.TagId = t.TagId 
-                         WHERE t.TagName = @Tag AND t.UserId = @UserId   
-                         ORDER BY p.DateTaken DESC LIMIT {pageSize} OFFSET {offset}";
-
-            using (var conn = GetDbConnection())
-            {
-                return await conn.QueryAsync<Photo>(sql, new { Tag = tag, UserId = ownerId });
+                return await conn.QueryAsync<Photo>(sql, parameters);
             }
         }
 
         /// <summary>
         /// Gets a list of photos matching search criteria.
         /// </summary>        
-        /// <param name="dateRange">The date taken range.</param>
+        /// <param name="userFilter">The user filter information.</param>
+        /// <param name="dateRange">The date taken range.</param>        
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        public async Task<IEnumerable<Photo>> GetPhotos(DateRange dateRange, int pageNum = 1, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotos(UserFilter userFilter, DateRange dateRange, int pageNum = 1, int pageSize = 200)
         {
             var descending = dateRange.FromDate > dateRange.ToDate;
 
@@ -106,24 +73,24 @@ namespace SCS.HomePhotos.Data.Core
                 (dateRange.ToDate, dateRange.FromDate) = (dateRange.FromDate, dateRange.ToDate);
             }
 
-            var where = "WHERE DateTaken BETWEEN @FromDate AND @ToDate";
-            var fromDate = dateRange.FromDate.ToStartOfDay().ToString(Constants.DatabaseDateTimeFormat);
-            var toDate = dateRange.ToDate.ToEndOfDay().ToString(Constants.DatabaseDateTimeFormat);
-            var parameters = new { FromDate = fromDate, ToDate = toDate };
+            var dateClause = dateRange.GetWhereClause();
+            var userClause = userFilter.GetWhereClause();                        
             var orderBy = "DateTaken" + (descending ? " DESC" : "");
+            var query = QueryBuilder.AndFilters(dateClause, userClause);
 
-            return await GetListPagedAsync(where, parameters, orderBy, pageNum, pageSize);
+            return await GetListPagedAsync(query.Sql, query.Parameters, orderBy, pageNum, pageSize);
         }
 
         /// <summary>
         /// Gets a list of photos by keywords.
         /// </summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="userFilter">The user filter information.</param>
         /// <param name="dateRange">The optional date range.</param>
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        public async Task<IEnumerable<Photo>> GetPhotos(string keywords, DateRange? dateRange = null, int pageNum = 0, int pageSize = 200)
+        public async Task<IEnumerable<Photo>> GetPhotos(UserFilter userFilter, DateRange dateRange, string keywords, int pageNum = 0, int pageSize = 200)
         {
             if (string.IsNullOrWhiteSpace(keywords))
             {
@@ -141,10 +108,11 @@ namespace SCS.HomePhotos.Data.Core
 
             var where1 = $"{Environment.NewLine}WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
             var where2 = $"{Environment.NewLine}WHERE t.TagName <> '' ";
-            var where3 = dateRange != null ? $"AND p.DateTaken BETWEEN @FromDate AND @ToDate " : string.Empty;
+            var dateClause = dateRange.GetWhereClause("p", true);
+            var userClause = userFilter.GetWhereClause("p", true);
 
             // "exact" match sql for individual words (when more than 1 is provided)
-            var sql = string.Format(mainsql, 2) + ((wordCount > 1) ? where1 : where2) + where3;
+            var sql = string.Format(mainsql, 2) + ((wordCount > 1) ? where1 : where2) + dateClause.Sql + userClause.Sql;
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -154,7 +122,7 @@ namespace SCS.HomePhotos.Data.Core
             }
 
             // "starts with" match sql for individual words (when more than 1 is provided)
-            sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(mainsql, 3) + ((wordCount > 1) ? where1 : where2) + where3;
+            sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(mainsql, 3) + ((wordCount > 1) ? where1 : where2) + dateClause.Sql + userClause.Sql;
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -164,7 +132,7 @@ namespace SCS.HomePhotos.Data.Core
             }
 
             // "contains" match sql for individual words (when more than 1 is provided)
-            sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(mainsql, 4) + ((wordCount > 1) ? where1 : where2) + where3;
+            sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(mainsql, 4) + ((wordCount > 1) ? where1 : where2) + dateClause.Sql + userClause.Sql;
 
             for (var j = 0; j < keywordArray.Length; j++)
             {
@@ -179,7 +147,7 @@ namespace SCS.HomePhotos.Data.Core
             // "exact" match of full keyword phrase
             if (wordCount > 1)
             {
-                sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(mainsql, 1) + where2 + where3;
+                sql += $"{Environment.NewLine}UNION{Environment.NewLine}" + string.Format(mainsql, 1) + where2 + dateClause.Sql + userClause.Sql;
                 sql += $"AND t.TagName = @Tag{dynamicCount + 1}";
 
                 dynamicParams.Add($"@Tag{dynamicCount + 1}", keywords);
@@ -193,16 +161,14 @@ namespace SCS.HomePhotos.Data.Core
             }
 
             // date taken range if specified
-            if (where3.Length > 0)
+            if (dateClause.Sql.Length > 0)
             {
-                var range = dateRange.Value;
+                dynamicParams.AddDynamicParams(dateClause.Parameters);
+            }
 
-                if (range.FromDate > range.ToDate)
-                {
-                    (range.ToDate, range.FromDate) = (range.FromDate, range.ToDate);
-                }
-                dynamicParams.Add("@FromDate", range.FromDate.ToStartOfDay().ToString(Constants.DatabaseDateTimeFormat));
-                dynamicParams.Add("@ToDate", range.ToDate.ToEndOfDay().ToString(Constants.DatabaseDateTimeFormat));
+            if (userClause.Sql.Length > 0)
+            {
+                dynamicParams.AddDynamicParams(userClause.Parameters);
             }
 
             IEnumerable<Photo> photos;

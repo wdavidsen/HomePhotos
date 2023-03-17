@@ -70,16 +70,20 @@ namespace SCS.HomePhotos.Web.Test.Services
         [Fact]
         public void GetUserClaims()
         {
-            var userName = "wdavidsen";
+            var user = new Model.User
+            {
+                UserName = "wdavidsen",
+                UserId = 1
+            };
             var role = RoleType.Admin;
 
-            var claims = _securityService.GetUserClaims(userName, role);
+            var claims = _securityService.GetUserClaims(user, role);
 
             Assert.True(claims.Count == 5);
-            Assert.Equal(userName, claims[0].Value);
-            Assert.Equal(userName, claims[1].Value);
+            Assert.Equal(user.UserName, claims[0].Value);
+            Assert.Equal(user.UserId.ToString(), claims[1].Value);
             Assert.Equal(Guid.NewGuid().ToString().Length, Guid.Parse(claims[2].Value).ToString().Length);
-            Assert.Equal(userName, claims[3].Value);
+            Assert.Equal($"{user.FirstName} {user.LastName}", claims[3].Value);
             Assert.Equal(role.ToString(), claims[4].Value);
 
         }

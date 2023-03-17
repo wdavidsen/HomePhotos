@@ -9,5 +9,6 @@ export class Settings {
     thumbnailSize?: number;
     photoDeleteAction?: number;
     mobilePhotoDeleteAction?: number;
+    userPhotoViewScope?: number;
     tagColor?: string;
 }

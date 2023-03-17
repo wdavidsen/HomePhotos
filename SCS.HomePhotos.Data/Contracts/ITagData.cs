@@ -13,9 +13,9 @@ namespace SCS.HomePhotos.Data.Contracts
         /// <summary>
         /// Gets all tags.
         /// </summary>
-        /// <param name="userId">The owner of the tags.</param>
+        /// <param name="userFilter">The user scope filter.</param>
         /// <returns>A list of all tags.</returns>
-        Task<IEnumerable<Tag>> GetTags(int? userId = null);
+        Task<IEnumerable<Tag>> GetTags(UserFilter userFilter);
 
         /// <summary>
         /// Gets the tag by name.
@@ -28,9 +28,9 @@ namespace SCS.HomePhotos.Data.Contracts
         /// <summary>
         /// Gets the tag and photo count.
         /// </summary>
-        /// <param name="userId">Name user id owner.</param>
+        /// <param name="userFilter">The user scope filter.</param>
         /// <returns>A list of tags.</returns>
-        Task<IEnumerable<TagStat>> GetTagAndPhotoCount(int? userId = null);
+        Task<IEnumerable<TagStat>> GetTagAndPhotoCount(UserFilter userFilter);
 
         /// <summary>
         /// Gets the tag and photo count.

@@ -22,14 +22,15 @@ namespace SCS.HomePhotos.Service.Contracts
 
         /// <summary>
         /// Gets the photos by date taken.
-        /// </summary>        
-        /// <param name="dateRange">The specified date range.</param>
+        /// </summary>                
+        /// <param name="dateRange">Date range filter (optional).</param>
+        /// <param name="username">The username filter (optional).</param>
         /// <param name="pageNum">The page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>
         /// A paged list of photos.
         /// </returns>
-        Task<IEnumerable<Photo>> GetPhotosByDate(DateRange dateRange, int pageNum = 1, int pageSize = 200);
+        Task<IEnumerable<Photo>> GetPhotosByDate(DateRange dateRange, string username, int pageNum = 1, int pageSize = 200);
 
         /// <summary>
         /// Gets the photos by tag.
@@ -47,11 +48,12 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Gets the photos by keywords.
         /// </summary>
         /// <param name="keywords">The keywords.</param>
-        /// <param name="dateRange">Optional date range.</param>
-        /// <param name="pageNum">The page number.</param>
-        /// <param name="pageSize">Size of the page.</param>
+        /// <param name="username">The username filter (optional).</param>
+        /// <param name="dateRange">Date range filter (optional).</param>
+        /// <param name="pageNum">The page number (optional).</param>
+        /// <param name="pageSize">Size of the page (optional).</param>
         /// <returns>A paged list of photos.</returns>
-        Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, DateRange? dateRange = null, int pageNum = 1, int pageSize = 200);
+        Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, string username, DateRange dateRange, int pageNum = 1, int pageSize = 200);
 
         /// <summary>
         /// Gets the tags.

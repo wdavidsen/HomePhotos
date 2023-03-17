@@ -173,6 +173,7 @@ export class SettingsComponent implements OnInit {
       thumbnailSize: [data ? data.thumbnailSize : '', Validators.required],
       photoDeleteAction: [data ? data.photoDeleteAction : 0],
       mobilePhotoDeleteAction: [data ? data.mobilePhotoDeleteAction : 1],
+      userPhotoViewScope: [data ? data.userPhotoViewScope : 1],
       tagColor: [data ?  data.tagColor : 'rgb(255, 249, 196)']
     });
   }
@@ -190,6 +191,7 @@ export class SettingsComponent implements OnInit {
     settings.thumbnailSize = this.f.thumbnailSize.value;
     settings.photoDeleteAction = this.f.photoDeleteAction.value;
     settings.mobilePhotoDeleteAction = this.f.mobilePhotoDeleteAction.value;
+    settings.userPhotoViewScope = this.f.userPhotoViewScope.value;
     settings.tagColor = this.f.tagColor.value;
 
     return settings;

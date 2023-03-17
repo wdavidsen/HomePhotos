@@ -24,14 +24,13 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Gets all tags.
         /// </summary>
-        /// <param name="userId">The owner of the tags.</param>
+        /// <param name="userFilter">The user scope filter.</param>
         /// <returns>A list of all tags.</returns>
-        public async Task<IEnumerable<Tag>> GetTags(int? userId = null)
+        public async Task<IEnumerable<Tag>> GetTags(UserFilter userFilter)
         {
-            var whereClause = userId != null ? "WHERE UserId = @UserId " : string.Empty;
-            var parameters = userId != null ? new { UserId = userId } : new object();
+            var whereClause = userFilter.GetWhereClause();
 
-            return await GetListPagedAsync(whereClause, parameters, "TagName ASC", 1, int.MaxValue);
+            return await GetListPagedAsync(whereClause.Sql, whereClause.Parameters, "TagName ASC", 1, int.MaxValue);
         }
 
         /// <summary>
@@ -63,24 +62,24 @@ namespace SCS.HomePhotos.Data.Core
         /// <summary>
         /// Gets the tag and photo count.
         /// </summary>
-        /// <param name="userId">Name user id owner.</param>
+        /// <param name="userFilter">The user scope filter.</param>
         /// <returns>A list of tags.</returns>
-        public async Task<IEnumerable<TagStat>> GetTagAndPhotoCount(int? userId = null)
+        public async Task<IEnumerable<TagStat>> GetTagAndPhotoCount(UserFilter userFilter)
         {
-            var userClause = userId == null ? string.Empty : "WHERE u.UserId = @UserId ";
+            var userClause = userFilter.GetWhereClause("t", true);
 
             var sql = @$"SELECT t.TagId, t.TagName, t.UserId, u.TagColor, u.UserName, COUNT(p.PhotoId) AS PhotoCount 
                         FROM Tag t 
                         LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId 
                         LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
                         LEFT JOIN User u ON t.UserId = u.UserId 
-                        {userClause} 
+                        {userClause.Sql} 
                         GROUP BY t.TagName, t.TagId, t.UserId, u.TagColor, u.UserName   
                         ORDER BY t.TagName";
 
             using (var conn = GetDbConnection())
             {
-                return await conn.QueryAsync<TagStat>(sql, new { UserId = userId });
+                return await conn.QueryAsync<TagStat>(sql, userClause.Parameters);
             }
         }
 

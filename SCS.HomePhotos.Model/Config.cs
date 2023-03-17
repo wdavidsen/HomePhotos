@@ -108,6 +108,14 @@ namespace SCS.HomePhotos.Model
         public DeleteAction MobilePhotoDeleteAction { get; set; }
 
         /// <summary>
+        /// Gets or sets the user photo view scope.
+        /// </summary>
+        /// <value>
+        /// The user photo view scope.
+        /// </value>
+        public UserPhotoScope UserPhotoViewScope { get; set; }
+
+        /// <summary>
         /// Gets or sets the color of the tag.
         /// </summary>
         /// <value>
@@ -133,6 +141,7 @@ namespace SCS.HomePhotos.Model
             dynamicConfig.IndexOnStartup = IndexOnStartup;
             dynamicConfig.PhotoDeleteAction = PhotoDeleteAction;
             dynamicConfig.MobilePhotoDeleteAction = MobilePhotoDeleteAction;
+            dynamicConfig.UserPhotoViewScope = UserPhotoViewScope;
             dynamicConfig.TagColor = TagColor;
         }
 
@@ -154,6 +163,8 @@ namespace SCS.HomePhotos.Model
             IndexOnStartup = dynamicConfig.IndexOnStartup;
             PhotoDeleteAction = dynamicConfig.PhotoDeleteAction;
             MobilePhotoDeleteAction = dynamicConfig.MobilePhotoDeleteAction;
+            UserPhotoViewScope = dynamicConfig.UserPhotoViewScope;
+            TagColor = dynamicConfig.TagColor;
         }
     }
 }

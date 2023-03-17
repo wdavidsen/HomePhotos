@@ -74,6 +74,7 @@ namespace SCS.HomePhotos.Web.Controllers
             _dynamicConfig.ThumbnailSize = settings.ThumbnailSize;
             _dynamicConfig.PhotoDeleteAction = (DeleteAction)settings.PhotoDeleteAction;
             _dynamicConfig.MobilePhotoDeleteAction = (DeleteAction)settings.MobilePhotoDeleteAction;
+            _dynamicConfig.UserPhotoViewScope = (UserPhotoScope)settings.UserPhotoViewScope;
             _dynamicConfig.TagColor = settings.TagColor;
 
             _adminLogService.LogElevated($"Application settings have been updated.", LogCategory.Security);

@@ -13,31 +13,33 @@ namespace SCS.HomePhotos.Data.Contracts
         /// <summary>
         /// Gets a list of photos matching search criteria.
         /// </summary>        
+        /// <param name="userFilter">The user filter information.</param>
         /// <param name="dateRange">The date taken range.</param>        
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        Task<IEnumerable<Photo>> GetPhotos(DateRange dateRange, int pageNum = 1, int pageSize = 200);
+        Task<IEnumerable<Photo>> GetPhotos(UserFilter userFilter, DateRange dateRange, int pageNum = 1, int pageSize = 200);
 
         /// <summary>
         /// Gets a list of photos by tag.
         /// </summary>
+        /// <param name="userFilter">The user filter information.</param>
         /// <param name="tag">The tag to search on.</param>
-        /// <param name="ownerId">The user id owner of tags.</param>
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        Task<IEnumerable<Photo>> GetPhotos(string tag, int? ownerId, int pageNum = 0, int pageSize = 200);
+        Task<IEnumerable<Photo>> GetPhotos(UserFilter userFilter, string tag, int pageNum = 0, int pageSize = 200);
 
         /// <summary>
         /// Gets a list of photos by keywords.
         /// </summary>
         /// <param name="keywords">The keywords.</param>
+        /// <param name="userFilter">The user filter information.</param>
         /// <param name="dateRange">The optional date range.</param>
         /// <param name="pageNum">The list page number.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns>A photo page list.</returns>
-        Task<IEnumerable<Photo>> GetPhotos(string keywords, DateRange? dateRange = null, int pageNum = 0, int pageSize = 200);
+        Task<IEnumerable<Photo>> GetPhotos(UserFilter userFilter, DateRange dateRange, string keywords, int pageNum = 0, int pageSize = 200);
 
         /// <summary>
         /// Gets a list of photos by photo ids.
