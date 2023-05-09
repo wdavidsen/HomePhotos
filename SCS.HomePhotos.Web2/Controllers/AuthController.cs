@@ -9,6 +9,7 @@ using SCS.HomePhotos.Web.Models;
 using SCS.HomePhotos.Web.Security;
 
 using System.Diagnostics.CodeAnalysis;
+using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
@@ -184,12 +185,19 @@ namespace SCS.HomePhotos.Web.Controllers
                 return Unauthorized();
             }
 
-            var userName = principal.Identity.Name;
+            var claim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (claim == null)
+            {
+                return Unauthorized();
+            }
+
+            var username = claim.Value;
             var savedRefreshTokens = new List<UserToken>();
 
             try
             {
-                savedRefreshTokens = await _accountService.GetRefreshTokens(userName, _jwtAuthentication.ValidIssuer, _jwtAuthentication.ValidAudience, agentId);
+                savedRefreshTokens = await _accountService.GetRefreshTokens(username, _jwtAuthentication.ValidIssuer, _jwtAuthentication.ValidAudience, agentId);
             }
             catch (InvalidOperationException)
             {
@@ -205,8 +213,8 @@ namespace SCS.HomePhotos.Web.Controllers
             var newRefreshToken = _securityService.GenerateRefreshToken();
 
             var refreshTokenExpiration = DateTime.UtcNow.AddDays(_staticConfig.RefreshTokenExpirationDays);
-            await _accountService.DeleteRefreshToken(userName, model.RefreshToken);
-            await _accountService.SaveRefreshToken(userName, newRefreshToken, agentId,
+            await _accountService.DeleteRefreshToken(username, model.RefreshToken);
+            await _accountService.SaveRefreshToken(username, newRefreshToken, agentId,
                 _jwtAuthentication.ValidIssuer, _jwtAuthentication.ValidAudience, refreshTokenExpiration);
 
             return Ok(new TokenResultModel
