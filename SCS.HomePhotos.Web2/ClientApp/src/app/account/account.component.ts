@@ -72,8 +72,8 @@ export class AccountComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.setupForm(data);
         },
-        error: (e) => {
-          console.error(e);
+        error(response) {
+          console.error(response);
           this.toastr.error(`Failed to save`);
           this.loading = false;
         }
@@ -114,8 +114,8 @@ export class AccountComponent implements OnInit, OnDestroy {
           this.toastr.success('Sign-out successful');
           this.router.navigate(['/login']);
         },
-        error: (e) => {
-          console.error(e);
+        error(response) {
+          console.error(response);
           this.toastr.error('Sign-out failed');
         }
       });

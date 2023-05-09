@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { FileExclusion } from '../models/file-exclusion';
@@ -28,7 +29,7 @@ export class ExclusionsComponent implements OnInit, OnDestroy {
     this.exclusionService.getExclusions()
         .subscribe({
             next: (exclusions) => this.exclusions = exclusions,
-            error: (e) => { console.error(e); this.toastr.error('Failed to load exclusions'); }
+            error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error('Failed to load exclusions'); }
         });
   }
 
@@ -41,7 +42,7 @@ export class ExclusionsComponent implements OnInit, OnDestroy {
                     this.loadExclusions(); 
                     this.newPath = '';
                 },
-                error: (e) => { console.error(e); this.toastr.error('Failed to add exclusion'); }
+                error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error('Failed to add exclusion'); }
             });
     }
   }
@@ -53,7 +54,7 @@ export class ExclusionsComponent implements OnInit, OnDestroy {
                 this.toastr.success('Deleted exclusion successfully');
                 this.loadExclusions(); 
             },
-            error: (e) => { console.error(e); this.toastr.error('Failed to delete exclusion'); }
+            error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error('Failed to delete exclusion'); }
         });
   }
 }

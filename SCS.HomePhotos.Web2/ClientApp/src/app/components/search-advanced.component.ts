@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { OnInit, Component } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -26,7 +27,7 @@ export class SearchAdvancedComponent implements OnInit {
             .pipe(map(tags => tags.map(t => t.ownerUsername)))
             .subscribe({
               next: (users) => this.users = [...new Set(users)].filter(u => u != null),
-              error: (e) => console.error(e)
+              error: (response: HttpErrorResponse) => console.error(response)
             });
         }
 

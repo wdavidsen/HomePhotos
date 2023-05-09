@@ -74,11 +74,11 @@ namespace SCS.HomePhotos.Web.Controllers
                 }
                 else
                 {
-                    return BadRequest();
+                    return BadRequest(new ProblemModel { Id = "InvalidRequestPayload", Message = "Hmmm...something is amis." });
                 }
             }
 
-            return Ok();
+            return Ok(new RegisteredInfo (_staticConfig.AutoApproveRegistrations));
         }
 
         /// <summary>Changes a user's password.</summary>

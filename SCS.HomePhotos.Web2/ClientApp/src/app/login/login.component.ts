@@ -8,8 +8,12 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ChangePasswordModalComponent } from '../account/change-password-modal.component';
 import { Subscription } from 'rxjs';
 import { PasswordChange } from '../models';
+import { HttpErrorResponse } from '@angular/common/http';
 
-@Component({ templateUrl: 'login.component.html' })
+@Component({ 
+    selector: "login-form",
+    templateUrl: 'login.component.html' 
+})
 export class LoginComponent implements OnInit, OnDestroy {
     loginForm: UntypedFormGroup;
     loading = false;
@@ -67,9 +71,10 @@ export class LoginComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const username = this.f.username.value;
-        const password = this.f.password.value;
+        this.login(this.f.username.value, this.f.password.value);
+    }
 
+    public login(username: string, password: string) {
         this.loading = true;
         this.loginSubscription = this.authenticationService.login(username, password)
             .subscribe({
@@ -78,15 +83,15 @@ export class LoginComponent implements OnInit, OnDestroy {
                     this.router.navigate([this.returnUrl]);
                     this.loading = false;
                 },
-                error: (e) => {
-                    if (e.status > 99 && e.status < 600) {
-                        switch (e.error.id) {
+                error: (response: HttpErrorResponse) => {
+                    if (response.status > 99 && response.status < 600) {
+                        switch (response.error.id) {
                             case 'PasswordChangeNeeded':
-                                this.toastr.warning(e.error.message);
+                                this.toastr.warning(response.error.message);
                                 this.loginWithPasswordChange(username, password);
                                 break;
                             case 'LoginFailed':
-                                this.toastr.warning(e.error.message);
+                                this.toastr.warning(response.error.message);
                                 break;
                             default:
                                 this.toastr.error('Sign-in failed');
@@ -101,7 +106,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             });
     }
 
-    private loginWithPasswordChange(username: string, password: string) {
+    public loginWithPasswordChange(username: string, password: string) {
         const changeInfo: PasswordChange = {
             userName: username,
             currentPassword: password,
@@ -132,12 +137,12 @@ export class LoginComponent implements OnInit, OnDestroy {
                         this.router.navigate([this.returnUrl]);
                         this.loading = false;
                     },
-                    error: (e) => {
-                        if (e.status > 99 && e.status < 600) {
-                            console.error(e.error);
-                            switch (e.error.id) {
+                    error: (response: HttpErrorResponse) => {
+                        if (response.status > 99 && response.status < 600) {
+                            console.error(response.error.error);
+                            switch (response.error.error.id) {
                                 case 'LoginFailed':
-                                    this.toastr.warning(e.error.message);
+                                    this.toastr.warning(response.error.message);
                                     break;
                                 default:
                                     this.toastr.error('Sign-in with password change failed');

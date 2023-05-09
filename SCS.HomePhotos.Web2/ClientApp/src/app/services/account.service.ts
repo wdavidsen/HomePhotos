@@ -12,8 +12,8 @@ export class AccountService {
     constructor(private http: HttpClient, private authService: AuthService) { }
 
     register(user: User) {
-        return this.http.post(`${environment.apiUrl}/account/register`, user)
-            .pipe(this.handleServiceUnavailable());
+        return this.http.post(`${environment.apiUrl}/account/register`, user);
+            // .pipe(this.handleServiceUnavailable());
     }
 
     changePassword(changeInfo: PasswordChange): Observable<any> {
@@ -38,13 +38,13 @@ export class AccountService {
         return this.http.put<AccountInfo>(`${environment.apiUrl}/account`, user);
     }
 
-    handleServiceUnavailable() {
-        return catchError(response => {
-            if (response.status === 0) {
-                response.errror = { id: 'ServiceUnreachable', message: 'Service not reachable, or offline'};
-            }
-            return response;
-        });
-    }
+    // handleServiceUnavailable() {
+    //     return catchError(response => {
+    //         if (response.status === 0) {
+    //             response.errror = { id: 'ServiceUnreachable', message: 'Service not reachable, or offline'};
+    //         }
+    //         return response;
+    //     });
+    // }
 }
 

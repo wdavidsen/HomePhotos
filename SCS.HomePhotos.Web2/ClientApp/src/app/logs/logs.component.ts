@@ -5,6 +5,7 @@ import { LogService } from '../services/log.service';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination/pagination.component';
 import { tap } from 'rxjs/operators';
 import { AuthService } from '../services';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-logs',
@@ -48,7 +49,7 @@ export class LogsComponent implements OnInit {
       .pipe(tap(result => this.pageInfo = result.pageInfo))
       .subscribe({
         next: (entries) => this.logEntries = <LogEntry[]>entries.data,
-        error: (e) => { console.error(e); this.toastr.error('Failed to load activity'); }
+        error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error('Failed to load activity'); }
       });
   }
 }

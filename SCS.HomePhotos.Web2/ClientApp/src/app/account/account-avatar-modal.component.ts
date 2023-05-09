@@ -89,8 +89,8 @@ export class AccountAvatardModalComponent implements OnInit, OnDestroy {
                 this.toastr.success('Successfully saved picture.');
                 this.bsModalRef.hide();
               },
-              error: (e) => {
-                console.error(e);
+              error(response) {
+                console.error(response);
                 this.newAvatarImage = null;
                 this.toastr.error('Failed to save picture.');
               }

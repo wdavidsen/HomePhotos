@@ -12,6 +12,7 @@ import { PhotoTaggerComponent } from './photo-tagger.component';
 import { UserSettings } from '../models/user-settings';
 import { environment } from 'src/environments/environment';
 import { AlertDialogComponent, ConfirmDialogComponent } from '../common-dialog';
+import { HttpErrorResponse } from '@angular/common/http';
 
 declare const blueimp: any;
 
@@ -411,8 +412,8 @@ export class PhotosComponent implements OnInit, OnDestroy {
                     this.thumbnails.splice(index, 1);
                     this.toastr.success('Photo deleted successfully');
                   },
-                  error: (e) => {
-                    console.error(`Failed to delete photo ${photoId}. ${e.message}`);
+                  error: (response: HttpErrorResponse)  => {
+                    console.error(`Failed to delete photo ${photoId}. ${response.error.message}`);
                     this.toastr.error(`Failed to delete photo`)
                   }
                 });
@@ -441,7 +442,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
             .pipe(map(photos => this.photosToThumbnails(photos)))
             .subscribe({
               next: (thumbs) => this.appendThumbnails(thumbs),
-              error: (e) => this.handleLoadError(e)
+              error: (response: HttpErrorResponse)  => this.handleLoadError(response.error)
             });            
           break;
         case 2:
@@ -449,7 +450,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
             .pipe(map(photos => this.photosToThumbnails(photos)))
             .subscribe({
               next: (thumbs) => this.appendThumbnails(thumbs),
-              error: (e) => this.handleLoadError(e)
+              error: (response: HttpErrorResponse)  => this.handleLoadError(response.error)
             });
           break;
         case 3:
@@ -457,7 +458,7 @@ export class PhotosComponent implements OnInit, OnDestroy {
             .pipe(map(photos => this.photosToThumbnails(photos)))
             .subscribe({
               next: (thumbs) => this.appendThumbnails(thumbs),
-              error: (e) => this.handleLoadError(e)
+              error: (response: HttpErrorResponse)  => this.handleLoadError(response.error)
             });
         break;
       }

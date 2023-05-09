@@ -29,9 +29,9 @@ export class ChangePasswordModalComponent implements OnInit {
       ngOnInit() {
         this.changePasswordForm = this.formBuilder.group({
             username: [this.userName, [Validators.required]],
-            currentPassword: [null, [Validators.required, Validators.minLength(8)]],
-            newPassword: [null, [Validators.required, Validators.minLength(8)]],
-            newPasswordCompare: [null, [Validators.required, Validators.minLength(8)]]
+            currentPassword: [null, [Validators.required]],
+            newPassword: [null, [Validators.required]],
+            newPasswordCompare: [null, [Validators.required]]
         }, {
             validator: MustMatch('newPassword', 'newPasswordCompare')
         });
@@ -59,29 +59,32 @@ export class ChangePasswordModalComponent implements OnInit {
             return;
         }
 
+        const toastr = this.toastr;
+
         this.accountService.changePassword(this.changeInfo)
-            .subscribe(() => {
-                this.toastr.success('Successfully changed password');
-                this.bsModalRef.hide();
-            },
-            response => {
-                if (response.error && response.error.id) {
-                  switch (response.error.id) {
-                        case 'CurrentPasswordFailed':
-                        case 'PasswordStrength':
-                        case 'InvalidRequestPayload':
-                            this.toastr.warning(response.error.message);
-                            break;
-                        default:
-                            this.toastr.error(response.error.message);
-                            break;
-                    }
-                }
-                else {
-                    this.toastr.error('Change password failed');
-                }
-            }
-        );
+            .subscribe({
+                next: () => {
+                    toastr.success('Successfully changed password');
+                    this.bsModalRef.hide();
+                },
+                error(response) {
+                    if (response.error && response.error.id) {
+                        switch (response.error.id) {
+                              case 'CurrentPasswordFailed':
+                              case 'PasswordStrength':
+                              case 'InvalidRequestPayload':
+                                  toastr.warning(response.error.message);
+                                  break;
+                              default:
+                                  toastr.error(response.error.message);
+                                  break;
+                          }
+                      }
+                      else {
+                          toastr.error('Change password failed');
+                      }     
+                },
+            });
     }
 
     // convenience getter for easy access to form fields

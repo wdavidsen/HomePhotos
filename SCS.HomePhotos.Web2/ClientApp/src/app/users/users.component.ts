@@ -4,6 +4,7 @@ import { UserRow, User } from '../models';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-users',
@@ -55,8 +56,8 @@ export class UsersComponent implements OnInit {
                   const msg = `Successfully deleted ${userRow.username}`;
                   this.toastr.success(msg);
               },
-              error: (e) => {
-                console.error(e);
+              error: (response: HttpErrorResponse) => {
+                console.error(response);
                 const msg = `Failed to delete ${userRow.username}`;
                 this.toastr.error(msg);
               }
@@ -79,8 +80,8 @@ export class UsersComponent implements OnInit {
             userRow.enabled = user.enabled = savedUser.enabled;
             const msg = `Successfully ${action} ${user.username}`;
             this.toastr.success(msg);},
-          error: (e) => {
-            console.error(e);
+          error: (response: HttpErrorResponse) => {
+            console.error(response);
             const msg = `Failed to ${action } ${user.username}`;
             this.toastr.error(msg);}
         });

@@ -1,16 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { AccountService, AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { MustMatch } from '../validators/must-match.validator';
+import { HttpErrorResponse } from '@angular/common/http';
+import { RegisteredInfo } from '../models';
+import { LoginComponent } from '../login/login.component';
 
 @Component({ templateUrl: 'register.component.html' })
 export class RegisterComponent implements OnInit {
     registerForm: UntypedFormGroup;
     loading = false;
-    submitted = false;
+    submitted = false;    
+    @ViewChild(LoginComponent) loginForm: LoginComponent;
 
     constructor (
         private formBuilder: UntypedFormBuilder,
@@ -30,8 +34,8 @@ export class RegisterComponent implements OnInit {
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             username: ['', Validators.required],
-            password: ['', [Validators.required, Validators.minLength(8)]],
-            passwordCompare: ['', [Validators.required, Validators.minLength(8)]]
+            password: ['', [Validators.required]],
+            passwordCompare: ['', [Validators.required]]
         }, {
             validator: MustMatch('password', 'passwordCompare')
         });
@@ -51,27 +55,34 @@ export class RegisterComponent implements OnInit {
         this.loading = true;
         this.accountService.register(this.registerForm.value)
             .subscribe({
-                next: () => {
+                next: (nextStep: RegisteredInfo) => {
                     this.toastr.success('Registration successful');
-                    this.router.navigate(['/register-success']);
+
+                    if (nextStep.autoApproved) {
+                        this.loginForm.login(this.f.username.value, this.f.password.value);
+                    }
+                    else {
+                        this.router.navigate(['/register-success']);
+                    }                    
                 },
-                error: (e) => {
-                    if (e.error && e.error.id) {
-                        switch (e.error.id) {
+                error: (response: HttpErrorResponse) => {                                        
+                    if (response.error && response.error.id) {
+                        switch (response.error.id) {
                             case 'UserNameTaken':
                             case 'PasswordStrength':
                             case 'InvalidRequestPayload':
-                                this.toastr.warning(e.error.message);
+                                this.toastr.warning(response.error.message);
                                 break;
                             default:
-                                this.toastr.error(e.error.message);
+                                this.toastr.error(response.error.message);
                                 break;
                         }
                     }
                     else {
                         this.toastr.error('Server unreachable');
                     }
-                }
+                },
+                complete: () => this.loading = false
             });
     }
 }

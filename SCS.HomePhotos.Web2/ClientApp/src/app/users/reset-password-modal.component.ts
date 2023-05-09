@@ -5,6 +5,7 @@ import { UserService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { PasswordChange } from '../models';
 import { MustMatch } from '../validators/must-match.validator';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-reset-password-modal',
@@ -29,8 +30,8 @@ export class ResetPasswordModalComponent implements OnInit {
       ngOnInit() {
         this.resetPasswordForm = this.formBuilder.group({
             username: [this.userName, [Validators.required]],
-            newPassword: [null, [Validators.required, Validators.minLength(8)]],
-            newPasswordCompare: [null, [Validators.required, Validators.minLength(8)]]
+            newPassword: [null, [Validators.required, ]],
+            newPasswordCompare: [null, [Validators.required, ]]
         }, {
             validator: MustMatch('newPassword', 'newPasswordCompare')
         });
@@ -55,15 +56,15 @@ export class ResetPasswordModalComponent implements OnInit {
                     this.toastr.success('Successfully reset password');
                     this.bsModalRef.hide();
                 },
-                error: (e) => {
-                    if (e.error && e.error.id) {
-                        switch (e.error.id) {
+                error: (response: HttpErrorResponse)  => {
+                    if (response.error && response.error.id) {
+                        switch (response.error.id) {
                             case 'PasswordStrength':
                             case 'InvalidRequestPayload':
-                                this.toastr.warning(e.error.message);
+                                this.toastr.warning(response.error.message);
                                 break;
                             default:
-                                this.toastr.error(e.error.message);
+                                this.toastr.error(response.error.message);
                                 break;
                         }
                     }

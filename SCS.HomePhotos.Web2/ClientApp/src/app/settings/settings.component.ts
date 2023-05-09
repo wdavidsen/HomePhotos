@@ -8,6 +8,7 @@ import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap/modal'
 import { ConfirmDialogComponent } from '../common-dialog';
 import * as moment from 'moment';
 import { AuthService } from '../services';
+import { HttpErrorResponse } from '@angular/common/http';
 
 declare var RGB_Log_Shade: any;
 
@@ -51,8 +52,8 @@ export class SettingsComponent implements OnInit {
           this.setupForm(data);
           this.loading = false;
         },
-        error: (e) => {
-          console.error(e);
+        error: (response: HttpErrorResponse)  => {
+          console.error(response);
           this.toastr.error('Failed to load settings');
           this.loading = false;
         }
@@ -103,8 +104,8 @@ export class SettingsComponent implements OnInit {
           this.settings = newSettings;
           this.loading = false;
         },
-        error: (e) => {
-          console.error(e);
+        error: (response: HttpErrorResponse) => {
+          console.error(response);
           this.toastr.error('Failed to save settings');
           this.loading = false;
         }
@@ -124,7 +125,7 @@ export class SettingsComponent implements OnInit {
 
           this.toastr.success('Index triggered successfully')
         },
-        error: (e) => { console.error(e); this.toastr.error('Failed to trigger index') }
+        error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error('Failed to trigger index') }
       });
       this.indexModal.hide();
   }
@@ -152,7 +153,7 @@ export class SettingsComponent implements OnInit {
     this.settingsService.factoryReset()
       .subscribe({
         next: () => this.toastr.success('Reset completed successfully'),
-        error: (e) => { console.error(e); this.toastr.error('Reset failed') }
+        error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error('Reset failed') }
       });
       this.indexModal.hide();
   }

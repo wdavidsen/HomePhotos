@@ -4,6 +4,7 @@ import { TagService, UserSettingsService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { UserSettings } from '../models/user-settings';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-settings',
@@ -44,7 +45,7 @@ export class UserSettingsComponent implements OnInit {
                     
           this.defaultTags = options;
         },
-        error: (e) => console.error(e)
+        error: (response: HttpErrorResponse) => console.error(response)
       })
   }
 

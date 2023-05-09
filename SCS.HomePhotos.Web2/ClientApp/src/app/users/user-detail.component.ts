@@ -6,6 +6,7 @@ import { User } from '../models';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ResetPasswordModalComponent } from './reset-password-modal.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-detail',
@@ -55,8 +56,8 @@ export class UserDetailComponent implements OnInit {
                   this.setupForm(data);
                   this.loading = false;
                 },
-                error: (e) => {
-                  console.error(e);
+                error: (response: HttpErrorResponse) => {
+                  console.error(response);
                   this.toastr.error(`Failed to find user`);
                   this.loading = false;
                 }
@@ -83,8 +84,8 @@ export class UserDetailComponent implements OnInit {
           this.toastr.success(`User saved successfully`);
           this.loading = false;
           this.setupForm(this.user);},
-        error: (e) => {
-          console.error(e);
+        error: (response: HttpErrorResponse) => {
+          console.error(response);
           this.toastr.error(`Failed to save user`);
           this.loading = false;}
       });
@@ -103,8 +104,8 @@ export class UserDetailComponent implements OnInit {
           this.loading = false;
           this.toastr.success(`Successfully deleted user`);
         },
-        error: (e) => {
-          console.error(e);
+        error: (response: HttpErrorResponse) => {
+          console.error(response);
           this.toastr.error(`Failed to delete user`);
           this.loading = false;}
       });

@@ -112,6 +112,14 @@ namespace SCS.HomePhotos
         public int PhotoExpirationDays { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to automatic approve new user registrations.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if automatically approving new user registrations; otherwise, <c>false</c>.
+        /// </value>
+        public bool AutoApproveRegistrations { get; set; }
+
+        /// <summary>
         /// Builds the static configuration.
         /// </summary>
         /// <param name="config">The configuration.</param>

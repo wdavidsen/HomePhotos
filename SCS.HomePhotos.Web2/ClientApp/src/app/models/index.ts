@@ -13,9 +13,9 @@ export * from './page-info';
 export * from './data-list';
 export * from './tokens';
 export * from './password-change';
-export  * from './avatar-update';
-export  * from './photoSlide';
-export  * from './search-info';
-
+export * from './avatar-update';
+export * from './photoSlide';
+export * from './search-info';
+export * from './registered-info'
 
 

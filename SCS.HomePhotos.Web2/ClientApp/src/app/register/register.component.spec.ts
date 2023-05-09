@@ -21,8 +21,8 @@ describe('RegisterComponent', () => {
         firstName: [data.firstName, Validators.required],
         lastName: [data.lastName, Validators.required],
         username: [data.username, Validators.required],
-        password: [data.password, [Validators.required, Validators.minLength(8)]],
-        passwordCompare: [data.passwordCompare, [Validators.required, Validators.minLength(8)]]
+        password: [data.password, [Validators.required, ]],
+        passwordCompare: [data.passwordCompare, [Validators.required, ]]
     });
   };
 

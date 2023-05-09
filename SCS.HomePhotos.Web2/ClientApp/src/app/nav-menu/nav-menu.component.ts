@@ -6,6 +6,7 @@ import { filter } from 'rxjs/operators';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { UserSettingsComponent } from '../user-settings/user-settings.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-nav-menu',
@@ -75,8 +76,8 @@ export class NavMenuComponent implements OnInit {
           this.toastr.success('Sign-out successful');
           this.router.navigate(['/login']);
         },
-        error: (e) => {
-          console.error(e);
+        error: (response: HttpErrorResponse) => {
+          console.error(response);
           this.toastr.error('Sign-out failed');
         }
       });

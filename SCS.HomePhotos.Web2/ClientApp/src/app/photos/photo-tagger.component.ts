@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TagState } from '../models';
 import { TriCheckState } from '../components/tri-check.component';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-photo-tagger',
@@ -69,7 +70,7 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
                         this.toastr.success('Successfully updated shared tags');
                         this.dirtyTags_shared = [];                        
                     },
-                    error: (e) => { console.error(e); this.toastr.error('Failed to update shared tags'); }
+                    error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error('Failed to update shared tags'); }
                 });       
         }    
 
@@ -83,7 +84,7 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
                         this.toastr.success('Successfully updated personal tags');
                         this.dirtyTags_personal = [];                        
                     },
-                    error: (e) => { console.error(e); this.toastr.error('Failed to update personal tags'); }
+                    error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error('Failed to update personal tags'); }
                 });       
         }    
     }
@@ -154,7 +155,7 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
         this.tagService.getPhototags(this.photoIds)
             .subscribe({
                 next: (states) => this.tagStates_shared = states ?? [],
-                error: (e) => console.error(e)
+                error: (response: HttpErrorResponse) => console.error(response)
             });
     }
 
@@ -162,7 +163,7 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
         this.tagService.getPhototags(this.photoIds, this.username)
             .subscribe({
                 next: (states) => this.tagStates_personal = states ?? [],
-                error: (e) => console.error(e)
+                error: (response: HttpErrorResponse) => console.error(response)
             });
     }
 
@@ -170,7 +171,7 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
         this.tagService.getTags()
             .subscribe({
                 next: (tags) => this.allTags_shared = tags.map(t => t.tagName) ?? [],
-                error: (e) => console.error(e)
+                error: (response: HttpErrorResponse) => console.error(response)
             });
     }
 
@@ -178,7 +179,7 @@ export class PhotoTaggerComponent implements OnInit, AfterViewInit  {
         this.tagService.getTags(this.username)
             .subscribe({
                 next: (tags) => this.allTags_personal = tags.map(t => t.tagName) ?? [],
-                error: (e) => console.error(e)
+                error: (response: HttpErrorResponse) => console.error(response)
             });
     }
 }

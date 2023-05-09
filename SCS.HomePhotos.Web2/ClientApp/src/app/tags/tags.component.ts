@@ -10,6 +10,7 @@ import { InputDialogComponent, ConfirmDialogComponent } from '../common-dialog';
 import { UserSettings } from '../models/user-settings';
 import { TagDialogComponent } from './tag-dialog.component';
 import { CopyTagDialogComponent } from './copy-tag-dialog.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 declare var RGB_Log_Shade: any;
 
@@ -191,7 +192,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
             this.toastr.success('Added tag successfully');
           },
-          error: (e) => { console.error(e); this.toastr.error(e.error.message ?? 'Failed to add tag') }
+          error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error(response.error.message ?? 'Failed to add tag') }
         });
     }
   }
@@ -208,7 +209,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             }
             this.toastr.success('Renamed tag successfully');
           },
-          error: (e) => { console.error(e); this.toastr.error(e.error.message ?? 'Failed to rename tag') }
+          error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error(response.error.message ?? 'Failed to rename tag') }
         });
     }
   }
@@ -242,7 +243,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.toastr.success(`Deleted ${chip.name} successfully`);
             this.tagChips.splice(this.tagChips.indexOf(chip), 1);
           },
-          error: (e) => { console.error(e); this.toastr.error(e.error.message ?? `Failed to delete ${chip.name}`) }
+          error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error(response.error.message ?? `Failed to delete ${chip.name}`) }
         });
     }
   }
@@ -286,7 +287,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
             this.toastr.success('Copied tag successfully');            
           },
-          error: (e) => { console.error(e); this.toastr.error(e.error.message ?? 'Failed to copy tag') }
+          error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error(response.error.message ?? 'Failed to copy tag') }
         });      
     }
   }
@@ -331,7 +332,7 @@ export class TagsComponent implements OnInit, OnDestroy {
             this.tagChips = this.tagChips.sort((a, b) => a.name < b.name ? - 1 : 1);
             this.toastr.success('Combined tags successfully');            
           },
-          error: (e) => { console.error(e); this.toastr.error(e.error.message ?? 'Failed to combine tags') }
+          error: (response: HttpErrorResponse) => { console.error(response); this.toastr.error(response.error.message ?? 'Failed to combine tags') }
         });
     }
   }

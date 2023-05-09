@@ -1538,6 +1538,25 @@
             <summary>Gets or sets the refresh token.</summary>
             <value>The refresh token.</value>
         </member>
+        <member name="T:SCS.HomePhotos.Web.Models.RegisteredInfo">
+            <summary>
+            Next step information for after a user successfully registers.
+            </summary>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Models.RegisteredInfo.AutoApproved">
+            <summary>
+            Gets or sets a value indicating whether user was auto-approved.
+            </summary>
+            <value>
+              <c>true</c> if auto-approved; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Models.RegisteredInfo.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Models.RegisteredInfo"/> class.
+            </summary>
+            <param name="autoApproved">if set to <c>true</c> [automatic approved].</param>
+        </member>
         <member name="T:SCS.HomePhotos.Web.Models.RegisterModel">
             <summary>User registration model.</summary>
         </member>
