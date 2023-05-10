@@ -115,9 +115,12 @@ namespace SCS.HomePhotos.Service.Core
                 return result;
             }
 
-            var newUser = new User(user);
-            newUser.PasswordHash = PasswordHash.CreateHash(password);
-            newUser.Enabled = _staticConfig.AutoApproveRegistrations;
+            var newUser = new User(user)
+            {
+                PasswordHash = PasswordHash.CreateHash(password),
+                Enabled = _staticConfig.AutoApproveRegistrations,
+                Role = await GetRegistrationRole()
+            };
 
             await _userData.InsertAsync(newUser);
             _adminLogService.LogNeutral($"New user registration for {user.UserName} succeeded.", LogCategory.Security);
@@ -440,6 +443,15 @@ namespace SCS.HomePhotos.Service.Core
             }
 
             return user;
+        }
+
+        private async Task<RoleType> GetRegistrationRole()
+        {
+            if (_staticConfig.MakeFirstRegistrationAdmin && !(await _userData.GetListAsync()).Any())
+            {
+                return RoleType.Admin;
+            }
+            return RoleType.Reader;
         }
 
         /// <summary>

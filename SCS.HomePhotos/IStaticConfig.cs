@@ -116,5 +116,13 @@
         ///   <c>true</c> if automatically approving new user registrations; otherwise, <c>false</c>.
         /// </value>
         bool AutoApproveRegistrations { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to make the first registrated user an Admin. Set this to false after setup for increased security.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> to make first registrated user an Admin; otherwise, <c>false</c>.
+        /// </value>
+        bool MakeFirstRegistrationAdmin { get; set; }
     }
 }
