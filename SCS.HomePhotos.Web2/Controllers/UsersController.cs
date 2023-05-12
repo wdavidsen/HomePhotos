@@ -68,6 +68,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.User))]
         [HttpPost("", Name = "AddUser")]
         public async Task<IActionResult> AddUser([FromBody] Dto.PasswordUser user)
@@ -77,9 +78,27 @@ namespace SCS.HomePhotos.Web.Controllers
                 return BadRequest(new ProblemModel(ModelState));
             }
 
-            var updatedUser = await _accountService.SaveUser(user.ToModel(), user.Password);
+            var result = await _accountService.Register(user.ToModel(), user.Password);
 
-            return Ok(new Dto.User(updatedUser));
+            if (!result.Success)
+            {
+                if (result.UserNameTaken)
+                {
+                    return Conflict(new ProblemModel { Id = "UserNameTaken", Message = "User name is already taken." });
+                }
+                else if (result.PasswordNotStrong)
+                {
+                    return BadRequest(new ProblemModel { Id = "PasswordStrength", Message = "Password needs to be stronger." });
+                }
+                else
+                {
+                    return BadRequest(new ProblemModel { Id = "InvalidRequestPayload", Message = "Hmmm...something is amis." });
+                }
+            }
+
+            var newUser = await _accountService.GetUser(user.Username);
+
+            return Ok(new Dto.User(newUser));
         }
 
         /// <summary>Updates a user.</summary>

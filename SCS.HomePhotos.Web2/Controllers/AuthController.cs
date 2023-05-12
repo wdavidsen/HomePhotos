@@ -9,7 +9,6 @@ using SCS.HomePhotos.Web.Models;
 using SCS.HomePhotos.Web.Security;
 
 using System.Diagnostics.CodeAnalysis;
-using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
@@ -161,7 +160,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Refreshes a user's auth token.</summary>
         /// <param name="model">The refresh model.</param>
         /// <returns>A JWT and refresh token.</returns>
-        [AllowAnonymous]
+        [AllowAnonymous]        
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResultModel))]
@@ -222,6 +221,19 @@ namespace SCS.HomePhotos.Web.Controllers
                 Jwt = newJwtToken,
                 RefreshToken = newRefreshToken
             });
+        }
+
+        /// <summary>
+        /// Returns the password requirements for new users.
+        /// </summary>
+        /// <returns>Password requiements</returns>
+        [AllowAnonymous]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("pass-requirements")]
+        public IActionResult PasswordRequirements()
+        {
+            return Ok(_staticConfig.PasswordRequirements);
         }
     }
 }

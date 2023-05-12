@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { mapTo, tap } from 'rxjs/operators';
 import { Tokens } from '../models/tokens';
 import { environment } from '../../environments/environment';
-import { PasswordChange, User } from '../models';
+import { PasswordChange, PasswordRequirements, User } from '../models';
 
 // based on: https://angular-academy.com/angular-jwt/
 @Injectable({
@@ -70,6 +70,10 @@ export class AuthService {
 
   getJwtToken() {
     return localStorage.getItem(this.JWT_TOKEN);
+  }
+
+  getPasswordRequirements() {
+    return this.http.get<PasswordRequirements>(`${environment.apiUrl}/auth/pass-requirements`);
   }
 
   storeTokens(tokens: Tokens) {

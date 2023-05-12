@@ -51,7 +51,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
         [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemModel))]        
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RegisteredInfo))]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {

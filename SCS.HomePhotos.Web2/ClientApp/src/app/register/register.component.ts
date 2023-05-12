@@ -6,14 +6,17 @@ import { AccountService, AuthService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { MustMatch } from '../validators/must-match.validator';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RegisteredInfo } from '../models';
+import { PasswordRequirements, RegisteredInfo } from '../models';
 import { LoginComponent } from '../login/login.component';
 
 @Component({ templateUrl: 'register.component.html' })
 export class RegisterComponent implements OnInit {
     registerForm: UntypedFormGroup;
     loading = false;
-    submitted = false;    
+    submitted = false;
+    passwordReq = new PasswordRequirements();
+    passwordReqHelp = '';
+
     @ViewChild(LoginComponent) loginForm: LoginComponent;
 
     constructor (
@@ -30,13 +33,29 @@ export class RegisterComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.authenticationService.getPasswordRequirements()
+            .subscribe({
+                next: (req) => {      
+                    this.passwordReq = req;              
+                    this.passwordReqHelp = `(${req.minLength}+ characters required; at leaset ${req.digits} number, ${req.specialCharacters} special character & ${req.uppercaseCharacters} uppercase character)`;
+                    this.setupForm(req);
+                },
+                error: (response: HttpErrorResponse) => console.error(response)
+        });
+
+        this.setupForm(this.passwordReq);
+    }
+
+    setupForm(passReq: PasswordRequirements) {
         this.registerForm = this.formBuilder.group({
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             username: ['', Validators.required],
-            password: ['', [Validators.required]],
+            emailAddress: ['', Validators.email],
+            password: ['', [Validators.required, Validators.minLength(passReq?.minLength ?? 8)]],
             passwordCompare: ['', [Validators.required]]
-        }, {
+        },
+        {
             validator: MustMatch('password', 'passwordCompare')
         });
     }
@@ -56,6 +75,7 @@ export class RegisterComponent implements OnInit {
         this.accountService.register(this.registerForm.value)
             .subscribe({
                 next: (nextStep: RegisteredInfo) => {
+                    this.loading = false;
                     this.toastr.success('Registration successful');
 
                     if (nextStep.autoApproved) {
@@ -65,7 +85,8 @@ export class RegisterComponent implements OnInit {
                         this.router.navigate(['/register-success']);
                     }                    
                 },
-                error: (response: HttpErrorResponse) => {                                        
+                error: (response: HttpErrorResponse) => { 
+                    this.loading = false;                        
                     if (response.error && response.error.id) {
                         switch (response.error.id) {
                             case 'UserNameTaken':
@@ -81,8 +102,7 @@ export class RegisterComponent implements OnInit {
                     else {
                         this.toastr.error('Server unreachable');
                     }
-                },
-                complete: () => this.loading = false
+                }
             });
     }
 }

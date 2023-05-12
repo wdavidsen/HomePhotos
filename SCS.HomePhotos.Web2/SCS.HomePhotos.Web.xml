@@ -69,6 +69,12 @@
             <param name="model">The refresh model.</param>
             <returns>A JWT and refresh token.</returns>
         </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AuthController.PasswordRequirements">
+            <summary>
+            Returns the password requirements for new users.
+            </summary>
+            <returns>Password requiements</returns>
+        </member>
         <member name="T:SCS.HomePhotos.Web.Controllers.FileExclusionController">
             <summary>File exclusion services.</summary>
         </member>

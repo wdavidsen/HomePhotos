@@ -17,5 +17,5 @@ export * from './avatar-update';
 export * from './photoSlide';
 export * from './search-info';
 export * from './registered-info'
-
+export * from './PasswordRequirements'
 

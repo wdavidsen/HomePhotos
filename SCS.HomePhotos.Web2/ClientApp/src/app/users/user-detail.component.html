@@ -1,8 +1,8 @@
-<h2 *ngIf="user.userId">{{user.firstName}} {{user.lastName}}</h2>
-<h2 *ngIf="!user.userId">New User</h2>
+<h2 *ngIf="user?.userId">{{user.firstName}} {{user.lastName}}</h2>
+<h2 *ngIf="!user?.userId">New User</h2>
 
 
-<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()" *ngIf="userForm">
 
   <div class="row">
     <div class="col-6">
@@ -12,43 +12,22 @@
     </div>
     <div class="col-6">
       <section class="summary-info">
-        <p *ngIf="user.userId">Last login: {{user.lastLogin | date:'medium'}} | Failed login count: {{user.failedLoginCount}}</p>
+        <p *ngIf="user?.userId">Last login: {{user.lastLogin | date:'medium'}} | Failed login count: {{user.failedLoginCount}}</p>
       </section>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-12">
+    <div class="col-12">      
       <div class="form-group">
-        <label for="usernameInput">User id</label>
-        <input type="text" formControlName="username" class="form-control" id="usernameInput" [readonly]="user.userId" />
-        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-          <div *ngIf="f.username.errors.required">Password is required</div>
-        </div>
-      </div>
-      <div class="form-group" *ngIf="!user.userId">
-        <label for="passwordInput">Password</label>
-        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" id="passwordInput" />
-        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-          <div *ngIf="f.password.errors.required">Password is required</div>
-        </div>
-      </div>
-      <div class="form-group" *ngIf="!user.userId">
-        <label for="passwordCompareInput">Confirm password</label>
-        <input type="password" formControlName="passwordCompare" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" id="passwordCompareInput" />
-        <div *ngIf="submitted && f.passwordCompare.errors" class="invalid-feedback">
-          <div *ngIf="f.passwordCompare.errors.required">Password is required</div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="firstNameInput">First name</label>
+        <label for="firstNameInput">First name *</label>
         <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" id="firstNameInput" />
         <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
           <div *ngIf="f.firstName.errors.required">First name is required</div>
         </div>
       </div>
       <div class="form-group">
-        <label for="lastNameInput">Last name</label>
+        <label for="lastNameInput">Last name *</label>
         <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" id="lastNameInput" />
         <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
           <div *ngIf="f.lastName.errors.required">Last name is required</div>
@@ -57,11 +36,35 @@
       <div class="form-group">
         <label for="emailAddressInput">Email</label>
         <input type="text" formControlName="emailAddress" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.emailAddress.errors }" id="emailAddressInput" />
-        <div *ngIf="submitted && f.emailAddress.errors" class="invalid-feedback">
-            <div *ngIf="f.emailAddress.errors.required">Email is required</div>
+        <div *ngIf="submitted && f.emailAddress.errors" class="invalid-feedback">            
             <div *ngIf="f.emailAddress.errors.email">Invalid email address</div>
         </div>
       </div>      
+      <div class="form-group">
+        <label for="usernameInput">Username *</label>
+        <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" id="usernameInput" [readonly]="user.userId" />
+        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+          <div *ngIf="f.username.errors.required">Username is required</div>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!user.userId">
+        <label for="passwordInput">Password *</label><br/>
+        <label class="font-weight-light">{{passwordReqHelp}}</label>
+        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" id="passwordInput" />
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+          <div *ngIf="f.password.errors.required">Password is required</div>
+          <div *ngIf="f.password.errors.minlength">Password must be at least 8 characters</div>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!user.userId">
+        <label for="passwordCompareInput">Confirm password *</label>
+        <input type="password" formControlName="passwordCompare" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" id="passwordCompareInput" />
+        <div *ngIf="submitted && f.passwordCompare.errors" class="invalid-feedback">
+          <div *ngIf="f.passwordCompare.errors.required">Password is required</div>
+          <div *ngIf="f.passwordCompare.errors.minlength">Confirm confirmation must be at least 8 characters</div>
+          <div *ngIf="f.passwordCompare.errors.mustMatch">Confirmation password and new password must match</div>
+        </div>
+      </div>
       <div class="form-group">
         <label for="roleSelect">Role</label>
         <select class="form-control" formControlName="role" id="roleSelect">
