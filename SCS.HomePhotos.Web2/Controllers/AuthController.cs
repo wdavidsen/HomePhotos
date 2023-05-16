@@ -141,7 +141,6 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("logout")]
-        [SuppressMessage("Security", "SCS0016:Controller method is vulnerable to CSRF", Justification = "Anti-forgery detection deemed unnecessary for logging out.")]
         public async Task<IActionResult> Logout()
         {
             var userName = User?.Identity?.Name;

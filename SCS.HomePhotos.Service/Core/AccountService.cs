@@ -349,12 +349,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>A void task.</returns>
         public async Task DeleteUser(int userId)
         {
-            var exitingUser = await _userData.GetAsync(userId);
-            if (exitingUser == null)
-            {
-                throw new InvalidOperationException("User does not exist.");
-            }
-
+            var exitingUser = await _userData.GetAsync(userId) ?? throw new InvalidOperationException("User does not exist.");
             await _userData.DeleteAsync(exitingUser);
             _adminLogService.LogNeutral($"User account deletion for {exitingUser.UserName} succeeded.", LogCategory.Security);
         }
@@ -366,12 +361,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>The user entity.</returns>
         public async Task<User> UpdateAccount(User user)
         {
-            var exitingUser = await _userData.GetUser(user.UserName);
-            if (exitingUser == null)
-            {
-                throw new InvalidOperationException("User does not exist.");
-            }
-
+            var exitingUser = await _userData.GetUser(user.UserName) ?? throw new InvalidOperationException("User does not exist.");
             exitingUser.FirstName = user.FirstName;
             exitingUser.LastName = user.LastName;
             exitingUser.EmailAddress = user.EmailAddress;
@@ -398,11 +388,7 @@ namespace SCS.HomePhotos.Service.Core
 
             if (user.UserId > 0)
             {
-                var exitingUser = await _userData.GetAsync(user.UserId.Value);
-                if (exitingUser == null)
-                {
-                    throw new InvalidOperationException("User does not exist.");
-                }
+                var exitingUser = await _userData.GetAsync(user.UserId.Value) ?? throw new InvalidOperationException("User does not exist.");
 
                 exitingUser.FirstName = user.FirstName;
                 exitingUser.LastName = user.LastName;
