@@ -55,7 +55,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 new Model.Tag { TagName = "wdavidsen Upload" }
             };
 
-            SetControllerContext(_uploadController, "POST", user.UserName, formCollecton);
+            SetControllerContext(_uploadController, "POST", user.UserName, user.UserId.Value, formCollecton);
 
             _userData.Setup(m => m.GetUser(user.UserName)).ReturnsAsync(user);
 
@@ -103,7 +103,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 new Model.Tag { TagName = "wdavidsen Upload" }
             };
 
-            SetControllerContext(_uploadController, "POST", user.UserName, formCollecton);
+            SetControllerContext(_uploadController, "POST", user.UserName, user.UserId.Value, formCollecton);
 
             _fileUploadService.Setup(m => m.CopyFile(It.IsAny<IFormFile>(), It.IsAny<string>(), FileMode.Create));
             _imageService.Setup(m => m.QueueMobileResize(It.IsAny<Model.User>(), It.IsAny<string>(), tags));
@@ -138,7 +138,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 new Model.Tag { TagName = "wdavidsen Upload" }
             };
 
-            SetControllerContext(_uploadController, "POST", user.UserName, formCollecton);
+            SetControllerContext(_uploadController, "POST", user.UserName, user.UserId.Value, formCollecton);
 
             _fileUploadService.Setup(m => m.CopyFile(It.IsAny<IFormFile>(), It.IsAny<string>(), FileMode.Create));
             _imageService.Setup(m => m.QueueMobileResize(It.IsAny<Model.User>(), It.IsAny<string>(), tags));
@@ -173,7 +173,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 new Model.Tag { TagName = "wdavidsen Upload" }
             };
 
-            SetControllerContext(_uploadController, "POST", user.UserName, formCollecton);
+            SetControllerContext(_uploadController, "POST", user.UserName, user.UserId.Value, formCollecton);
 
             _fileUploadService.Setup(m => m.CopyFile(It.IsAny<IFormFile>(), It.IsAny<string>(), FileMode.Create));
             _imageService.Setup(m => m.QueueMobileResize(It.IsAny<Model.User>(), It.IsAny<string>(), tags));
@@ -208,7 +208,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 new Model.Tag { TagName = "wdavidsen Upload" }
             };
 
-            SetControllerContext(_uploadController, "POST", user.UserName, formCollecton);
+            SetControllerContext(_uploadController, "POST", user.UserName, user.UserId.Value, formCollecton);
 
             _fileUploadService.Setup(m => m.CopyFile(It.IsAny<IFormFile>(), It.IsAny<string>(), FileMode.Create));
             _imageService.Setup(m => m.QueueMobileResize(It.IsAny<Model.User>(), It.IsAny<string>(), tags));

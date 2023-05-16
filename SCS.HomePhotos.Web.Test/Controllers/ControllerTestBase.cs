@@ -57,7 +57,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         /// <param name="controller">The controller to set HttpContext on.</param>
         /// <param name="method">The request method, e.g., GET, POST, etc.</param>
         /// <returns>A controller mock.</returns>
-        protected static void SetControllerContext(Controller controller, string method, string userName = null, IFormCollection forms = null)
+        protected static void SetControllerContext(Controller controller, string method, string userName = null, int userId = 1, IFormCollection forms = null)
         {
             if (controller == null)
             {
@@ -89,7 +89,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
                 {
                     new Claim(identity.NameClaimType, userName),
                     new Claim(JwtRegisteredClaimNames.Sub, userName),
-                    new Claim(JwtRegisteredClaimNames.UniqueName, userName),
+                    new Claim(JwtRegisteredClaimNames.UniqueName, userId.ToString()),
                     new Claim(JwtRegisteredClaimNames.Typ, Guid.NewGuid().ToString())
                 });
             }

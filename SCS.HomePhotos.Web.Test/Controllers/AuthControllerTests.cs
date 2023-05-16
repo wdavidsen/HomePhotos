@@ -192,7 +192,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             var userName = "jdoe";
             var userId = 1;
 
-            SetControllerContext(_authController, "POST", userName);
+            SetControllerContext(_authController, "POST", userName, userId);
 
             var refreshToken = _securityService.Object.GenerateRefreshToken();
             var token = _securityService.Object.GenerateToken(new List<Claim>
