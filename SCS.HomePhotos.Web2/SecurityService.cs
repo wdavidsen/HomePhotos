@@ -2,7 +2,6 @@
 using Microsoft.IdentityModel.Tokens;
 
 using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Web.Dto;
 using SCS.HomePhotos.Web.Security;
 
 using System.IdentityModel.Tokens.Jwt;
@@ -55,7 +54,7 @@ namespace SCS.HomePhotos.Web
                 ValidateLifetime = false,
                 IssuerSigningKey = _jwtAuthentication.SymmetricSecurityKey,
                 ValidAudience = _jwtAuthentication.ValidAudience,
-                ValidIssuer = _jwtAuthentication.ValidIssuer
+                ValidIssuer = _jwtAuthentication.ValidIssuer,
             };
 
             JwtSecurityToken jwtSecurityToken;
@@ -124,11 +123,10 @@ namespace SCS.HomePhotos.Web
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Typ, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Typ, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+                new Claim(ClaimTypes.Role, role.ToString())
             };
-
-            claims.Add(new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"));
-            claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
 
             return claims;
         }

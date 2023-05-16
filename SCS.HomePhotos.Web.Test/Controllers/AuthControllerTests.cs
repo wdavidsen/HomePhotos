@@ -35,7 +35,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _jwtAuthentication = new Mock<IOptions<JwtAuthentication>>();
             _accountService = new Mock<IAccountService>();
             _staticConfig = new Mock<IStaticConfig>();
-            _securityService = MockHelper.GetMockSecurityService("jdoe", false);
+            _securityService = MockHelper.GetMockSecurityService("jdoe", 1, false);
 
             _jwtAuthentication.SetupGet(p => p.Value).Returns(new JwtAuthentication
             {
@@ -190,13 +190,16 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         public async Task Refresh()
         {
             var userName = "jdoe";
+            var userId = 1;
+
             SetControllerContext(_authController, "POST", userName);
 
             var refreshToken = _securityService.Object.GenerateRefreshToken();
             var token = _securityService.Object.GenerateToken(new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, userName),
-                    new Claim(JwtRegisteredClaimNames.UniqueName, userName)
+                    new Claim(JwtRegisteredClaimNames.UniqueName, userId.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Typ, Guid.NewGuid().ToString())
                 });
 
             _accountService.Setup(m => m.GetRefreshTokens(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
@@ -237,6 +240,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         public async Task RefreshInvalidToken()
         {
             var userName = "jdoe";
+            
             SetControllerContext(_authController, "POST", userName);
 
             var refreshToken = _securityService.Object.GenerateRefreshToken();
@@ -269,13 +273,15 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         public async Task RefreshNoRefreshTokens()
         {
             var userName = "jdoe";
+            var userId = 1;
+
             SetControllerContext(_authController, "POST", userName);
 
             var refreshToken = _securityService.Object.GenerateRefreshToken();
             var token = _securityService.Object.GenerateToken(new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, userName),
-                    new Claim(JwtRegisteredClaimNames.UniqueName, userName)
+                    new Claim(JwtRegisteredClaimNames.UniqueName, userId.ToString())
                 });
 
             _accountService.Setup(m => m.GetRefreshTokens(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
@@ -304,13 +310,15 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         public async Task RefreshOldRefreshTokens()
         {
             var userName = "jdoe";
+            var userId = 1;
+
             SetControllerContext(_authController, "POST", userName);
 
             var refreshToken = _securityService.Object.GenerateRefreshToken();
             var token = _securityService.Object.GenerateToken(new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, userName),
-                    new Claim(JwtRegisteredClaimNames.UniqueName, userName)
+                    new Claim(JwtRegisteredClaimNames.UniqueName, userId.ToString())
                 });
 
             _accountService.Setup(m => m.GetRefreshTokens(userName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))

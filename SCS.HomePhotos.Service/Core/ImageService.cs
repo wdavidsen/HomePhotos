@@ -95,6 +95,7 @@ namespace SCS.HomePhotos.Service.Core
                     {
                         token.ThrowIfCancellationRequested();
 
+                        tags ??= new List<Tag>();
                         var metadata = _metadataService.GetExifData(imageFilePath);
                         var fullImagePath = CreateFullImage(imageFilePath, cacheFilePath);
 
@@ -135,7 +136,7 @@ namespace SCS.HomePhotos.Service.Core
         private string GetMobileUploadPath(string sourcePath, string uploadedBy, string firstTag)
         {
             //var subfolder = DateTime.Today.ToString("yyyy-MM");
-            var fullDir = Path.Combine(_dynamicConfig.MobileUploadsFolder, uploadedBy, firstTag?.CleanForFileName());
+            var fullDir = Path.Combine(_dynamicConfig.MobileUploadsFolder, uploadedBy, (firstTag ?? "").CleanForFileName());
 
             Directory.CreateDirectory(fullDir);
 

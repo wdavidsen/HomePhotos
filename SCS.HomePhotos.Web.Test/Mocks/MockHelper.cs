@@ -11,14 +11,14 @@ namespace SCS.HomePhotos.Web.Test.Mocks
 {
     public static class MockHelper
     {
-        public static Mock<ISecurityService> GetMockSecurityService(string username, bool isAdmin)
+        public static Mock<ISecurityService> GetMockSecurityService(string username, int userId, bool isAdmin)
         {
             var mock = new Mock<ISecurityService>();
 
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.UniqueName, username),
+                new Claim(JwtRegisteredClaimNames.UniqueName, userId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Typ, Guid.NewGuid().ToString())
             };
 
@@ -42,7 +42,7 @@ namespace SCS.HomePhotos.Web.Test.Mocks
                 {
                     new Claim(identity.NameClaimType, username),
                     new Claim(JwtRegisteredClaimNames.Sub, username),
-                    new Claim(JwtRegisteredClaimNames.UniqueName, username),
+                    new Claim(JwtRegisteredClaimNames.UniqueName, userId.ToString()),
                     new Claim(JwtRegisteredClaimNames.Typ, Guid.NewGuid().ToString())
                 });
 

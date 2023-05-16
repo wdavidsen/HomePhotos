@@ -36,7 +36,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _staticConfig = new Mock<IStaticConfig>();
             _fileUploadService = new Mock<IFileUploadService>();
             _dynamicConfig = new Mock<IDynamicConfig>();
-            _securityService = MockHelper.GetMockSecurityService("jdoe", false);
+            _securityService = MockHelper.GetMockSecurityService("jdoe", 1, false);
 
             _jwtAuthentication.SetupGet(p => p.Value).Returns(new JwtAuthentication
             {
@@ -87,7 +87,7 @@ namespace SCS.HomePhotos.Web.Test.Controllers
             _accountService.Verify(m => m.SaveRefreshToken(registerModel.UserName, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()),
                 Times.Never);
 
-            Assert.IsType<OkResult>(response);
+            Assert.IsType<OkObjectResult>(response);
         }
 
         [Fact]

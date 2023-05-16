@@ -75,6 +75,11 @@ namespace SCS.HomePhotos
         /// <returns>The cleaned string.</returns>
         public static string CleanForFileName(this string text)
         {
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+
             foreach (var c in Path.GetInvalidFileNameChars())
             {
                 text = text.Replace(c.ToString(), string.Empty);

@@ -9,6 +9,7 @@ using SCS.HomePhotos.Web.Models;
 using SCS.HomePhotos.Web.Security;
 
 using System.Diagnostics.CodeAnalysis;
+using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
@@ -184,7 +185,7 @@ namespace SCS.HomePhotos.Web.Controllers
                 return Unauthorized();
             }
 
-            var claim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var claim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == JwtRegisteredClaimNames.Sub);
 
             if (claim == null)
             {

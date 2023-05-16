@@ -86,15 +86,22 @@ namespace SCS.HomePhotos.Web.Test.Controllers
         {
             var user = _fixture.Create<User>();            
             var userDto = new Dto.PasswordUser(user);
+            var registerResult = new RegisterResult();
             userDto.UserId = null;
             userDto.Password = "password1";
 
-            _accountService.Setup(m => m.SaveUser(It.IsAny<User>(), userDto.Password))
+            _accountService.Setup(m => m.Register(It.IsAny<User>(), userDto.Password))
+               .ReturnsAsync(registerResult);
+
+            _accountService.Setup(m => m.GetUser(userDto.Username))
                 .ReturnsAsync(user);
 
             var response = await _usersController.AddUser(userDto);
 
-            _accountService.Verify(m => m.SaveUser(It.IsAny<User>(), userDto.Password),
+            _accountService.Verify(m => m.Register(It.IsAny<User>(), userDto.Password),
+                Times.Once);
+
+            _accountService.Verify(m => m.GetUser(userDto.Username),
                 Times.Once);
 
             Assert.IsType<OkObjectResult>(response);

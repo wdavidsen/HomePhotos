@@ -6,6 +6,7 @@ using Moq;
 
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
+using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Core;
@@ -95,6 +96,10 @@ namespace SCS.HomePhotos.Service.Test
         {
             var photos = _fixture.CreateMany<Photo>(50);
             var userFilter = new UserFilter(1);
+            var user = new User { UserId = 1, UserName = "wdavidsen" };
+
+            _userData.Setup(m => m.GetUser(It.IsAny<string>()))
+               .ReturnsAsync(user);
 
             _photoData.Setup(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<DateRange>(), 1, 50))
                 .ReturnsAsync(photos);
@@ -116,16 +121,19 @@ namespace SCS.HomePhotos.Service.Test
             var ownerId = 1 as int?;
             var userFilter = new UserFilter(1);
 
-            _userData.Setup(m => m.GetUser(owner)).ReturnsAsync(new Model.User { UserName = owner, UserId = ownerId });
+            _userData.Setup(m => m.GetUser(owner))
+                .ReturnsAsync(new Model.User { UserName = owner, UserId = ownerId });
+
+            _photoService.BaselineViewScope = UserPhotoScope.Everything;
 
             _photoData.Setup(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<string>(), 1, 50))
                 .ReturnsAsync(photos)
-                .Callback<string, int?, int, int>((t, o, pageNum, pageSize) =>
+                .Callback<UserFilter, string, int, int>((filter, t, pageNum, pageSize) =>
                 {
                     Assert.Equal(1, pageNum);
                     Assert.Equal(50, pageSize);
                     Assert.Equal(tag, t);
-                    Assert.Equal(ownerId, o);
+                    Assert.Equal(ownerId, filter.UserId);
                 }); 
 
             var results = await _photoService.GetPhotosByTag(tag, owner, 1, 50);
@@ -143,9 +151,15 @@ namespace SCS.HomePhotos.Service.Test
             var endDate = DateTime.Now;
             var photos = _fixture.CreateMany<Photo>(50);
             var userFilter = new UserFilter(1);
+            var user = new User { UserId = 1, UserName = "wdavidsen" };
+
+            _userData.Setup(m => m.GetUser(It.IsAny<string>()))
+               .ReturnsAsync(user);
 
             _photoData.Setup(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<DateRange>(), 1, 50))
                 .ReturnsAsync(photos);
+
+            _photoService.BaselineViewScope = UserPhotoScope.Everything;
 
             var results = await _photoService.GetPhotosByDate(new DateRange(startDate, endDate), null, 1, 50);
 
@@ -159,6 +173,10 @@ namespace SCS.HomePhotos.Service.Test
         public async Task GetTags()
         {
             var tags = _fixture.CreateMany<Tag>(10);
+            var user = new User { UserId = 1, UserName = "wdavidsen" };
+
+            _userData.Setup(m => m.GetUser(It.IsAny<string>()))
+                .ReturnsAsync(user);
 
             _tagData.Setup(m => m.GetTags(It.IsAny<UserFilter>())).ReturnsAsync(tags);
 

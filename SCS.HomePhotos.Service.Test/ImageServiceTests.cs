@@ -59,8 +59,7 @@ namespace SCS.HomePhotos.Service.Test
             var cacheDir = Path.Combine("homePhotos", "cache");
             var checksum = "abc123";
 
-            _fileSystemService.Setup(m => m.GetChecksum(It.IsAny<string>())).Returns(checksum);
-            _fileSystemService.Setup(m => m.GetDirectoryTags(It.IsAny<string>(), It.IsAny<string>())).Returns(new List<string> { "Tag1", "Tag2" });
+            _fileSystemService.Setup(m => m.GetChecksum(It.IsAny<string>())).Returns(checksum);            
             _photoService.Setup(m => m.GetPhotoByChecksum(It.IsAny<string>())).ReturnsAsync(default(Photo));
 
             _dynamicConfig.SetupGet(o => o.CacheFolder).Returns(cacheDir);
@@ -81,10 +80,7 @@ namespace SCS.HomePhotos.Service.Test
 
             _fileSystemService.Verify(m => m.GetChecksum(filePath),
                 Times.Once);
-
-            _fileSystemService.Verify(m => m.GetDirectoryTags(It.IsAny<string>(), filePath),
-                Times.Once);
-
+                        
             _photoService.Verify(m => m.GetPhotoByChecksum(checksum),
                 Times.Once);
 
@@ -121,8 +117,7 @@ namespace SCS.HomePhotos.Service.Test
             var checksum = "abc123";
             var completeInfo = new TaskCompleteInfo(TaskType.ProcessMobilePhoto, "wdavidsen", true);
 
-            _fileSystemService.Setup(m => m.GetChecksum(It.IsAny<string>())).Returns(checksum);
-            _fileSystemService.Setup(m => m.GetDirectoryTags(It.IsAny<string>(), It.IsAny<string>())).Returns(new List<string> { "Tag1", "Tag2" });
+            _fileSystemService.Setup(m => m.GetChecksum(It.IsAny<string>())).Returns(checksum);            
             _photoService.Setup(m => m.GetPhotoByChecksum(It.IsAny<string>())).ReturnsAsync(default(Photo));
 
             _dynamicConfig.SetupGet(o => o.CacheFolder).Returns(cacheDir);
@@ -134,14 +129,15 @@ namespace SCS.HomePhotos.Service.Test
             var cachePath = await _imageService.QueueMobileResize(user, filePath);
 
             var queueEvents = new Mock<IQueueEvents>();
-            queueEvents.SetupGet(m => m.ItemProcessed).Returns((info) =>
-            {
-                Assert.Equal(completeInfo.Type, info.Type);
-                Assert.Equal(completeInfo.Success, info.Success);
-                Assert.Equal(completeInfo.ContextUserName, info.ContextUserName);
-                Assert.NotNull(info.Data);
-                Assert.Equal(filePath, info.Data.ToString());
-            });
+            queueEvents.SetupGet(m => m.ItemProcessed)
+                .Returns((info) =>
+                {
+                    Assert.Equal(completeInfo.Type, info.Type);
+                    Assert.Equal(completeInfo.Success, info.Success);
+                    Assert.Equal(completeInfo.ContextUserName, info.ContextUserName);
+                    Assert.NotNull(info.Data);
+                    Assert.Equal(filePath, info.Data.ToString());
+                });
 
             try
             {
@@ -316,7 +312,7 @@ namespace SCS.HomePhotos.Service.Test
             var cacheSubfolder = "c1";
             var cacheFilePath = Path.Combine(cacheSubfolder, fileNameCache);
             var imageFilePath = Path.Combine("home", "homePhotos", "parties", "birthdays", fileNameOriginal);
-            var tags = new List<string> { "Tag1", "Tag2", "parties", "birthdays" };
+            var tags = new List<Tag> { new Tag { TagName = "Tag1" }, new Tag { TagName = "Tag2" } };
             var exifData = new List<ExifDirectoryBase> { { new ExifSubIfdDirectory() }, { new ExifIfd0Directory() } };
             var imageInfo = new ImageInfo();
 
@@ -328,7 +324,6 @@ namespace SCS.HomePhotos.Service.Test
                 Ratio = 0.33m
             };
 
-            _fileSystemService.Setup(m => m.GetDirectoryTags(It.IsAny<string>(), imageFilePath)).Returns(tags);
             _photoService.Setup(m => m.SavePhoto(It.IsAny<Model.Photo>()))
                 .Callback<Model.Photo>((photo) =>
                 {
@@ -347,14 +342,12 @@ namespace SCS.HomePhotos.Service.Test
                     Assert.Equal(cacheSubfolder, photo.CacheFolder);
 
                     Assert.NotNull(tagList);
-                    Assert.True(tagList.Count() > 3);
+                    Assert.True(tagList.Count() == 2);
                 });
 
             //_imageTransformer.Setup(m => m.GetImageLayoutInfo(It.IsAny<string>())).Returns(imageLayoutInfo);
 
-            _imageService.SavePhotoAndTags(null, imageFilePath, cacheFilePath, checksum, imageLayoutInfo, imageInfo, new List<Model.Tag>());
-
-            _fileSystemService.Verify(m => m.GetDirectoryTags(@"c:\homephotos", imageFilePath), Times.Once);
+            _imageService.SavePhotoAndTags(null, imageFilePath, cacheFilePath, checksum, imageLayoutInfo, imageInfo, tags);
 
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Model.Photo>()), Times.Once);
             _photoService.Verify(m => m.AssociateTags(It.IsAny<Model.Photo>(), It.IsAny<IEnumerable<Tag>>()), Times.Once);
