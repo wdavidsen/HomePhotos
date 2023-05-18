@@ -234,5 +234,42 @@ namespace SCS.HomePhotos.Web.Controllers
 
             return Ok(new Dto.AccountInfo(user));
         }
+
+        /// <summary>
+        /// Gets the current user's specific app settings.
+        /// </summary>
+        /// <returns>User's app settings.</returns>
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.UserSettings))]
+        [HttpGet("settings")]
+        public async Task<IActionResult> GetSettings()
+        {
+            var userSettings = await _accountService.GetUserSettings(User.Identity.Name);
+
+            return Ok(new Dto.UserSettings(userSettings));
+        }
+
+        /// <summary>
+        /// Updates the current user's app settings.
+        /// </summary>
+        /// <param name="settings">The current user's updated settings.</param>
+        /// <returns>User's app settings.</returns>
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.AccountInfo))]
+        [HttpPut("settings")]
+        public async Task<IActionResult> UpdateUserSettings([FromBody] Dto.UserSettings settings)
+        {
+            var currentUser = await _accountService.GetUser(User.Identity.Name);            
+            var userEntity = settings.ToModel();
+            userEntity.UserId = currentUser.UserId.Value;
+
+            userEntity = await _accountService.UpdateUserSettings(userEntity);
+
+            return Ok(new Dto.UserSettings(userEntity));
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 using Moq;
 
@@ -14,7 +15,11 @@ using SCS.HomePhotos.Service.Workers;
 using SCS.HomePhotos.Workers;
 
 using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
@@ -67,6 +72,69 @@ namespace SCS.HomePhotos.Service.Test
                 _logger.Object, _adminLogger.Object, _fileSystemService.Object, _dynamicCache.Object, _backgroundQueue);
 
             _photoService.SetUserContext(_userContext.Object);
+        }
+        
+        [Theory]
+        [InlineData(RoleType.Admin)]
+        [InlineData(RoleType.Reader)]
+        [InlineData(RoleType.Contributor)]
+        public void GetViewScopeEverything(RoleType requestingUserRole)
+        {
+            var ownerUsername = "wdavidsen";            
+            var requestingUsername = "jdoe";
+            var requestingUserId = 2;
+            
+            var expectedScope = UserPhotoScope.Everything;
+
+            _photoService.SetUserContext(MockHelper.GetPrincipal(requestingUsername, requestingUserId, requestingUserRole));
+
+            _photoService.BaselineViewScope = UserPhotoScope.Everything;
+
+            var result = _photoService.GetViewScope(UserPhotoScope.Everything, ownerUsername);
+
+            Assert.Equal(expectedScope, result.Scope);
+        }
+
+        [Theory]
+        [InlineData(RoleType.Admin)]
+        [InlineData(RoleType.Reader)]
+        [InlineData(RoleType.Contributor)]
+        public void GetViewScopeSharedAndPersonal(RoleType requestingUserRole)
+        {
+            var ownerUsername = "wdavidsen";
+            var requestingUsername = "jdoe";
+            var requestingUserId = 2;
+
+            var expectedScope = UserPhotoScope.SharedAndPersonal;
+
+            _photoService.SetUserContext(MockHelper.GetPrincipal(requestingUsername, requestingUserId, requestingUserRole));
+
+            _photoService.BaselineViewScope = UserPhotoScope.SharedAndPersonal;
+
+            var result = _photoService.GetViewScope(UserPhotoScope.Everything, ownerUsername);
+
+            Assert.Equal(expectedScope, result.Scope);
+        }
+
+        [Theory]
+        [InlineData(RoleType.Admin)]
+        [InlineData(RoleType.Reader)]
+        [InlineData(RoleType.Contributor)]
+        public void GetViewScopePersonalOnly(RoleType requestingUserRole)
+        {
+            var ownerUsername = "wdavidsen";
+            var requestingUsername = "jdoe";
+            var requestingUserId = 2;
+
+            var expectedScope = UserPhotoScope.PersonalOnly;
+
+            _photoService.SetUserContext(MockHelper.GetPrincipal(requestingUsername, requestingUserId, requestingUserRole));
+
+            _photoService.BaselineViewScope = UserPhotoScope.PersonalOnly;
+
+            var result = _photoService.GetViewScope(UserPhotoScope.SharedAndPersonal, ownerUsername);
+
+            Assert.Equal(expectedScope, result.Scope);
         }
 
         [Fact]
@@ -124,8 +192,6 @@ namespace SCS.HomePhotos.Service.Test
             _userData.Setup(m => m.GetUser(owner))
                 .ReturnsAsync(new Model.User { UserName = owner, UserId = ownerId });
 
-            _photoService.BaselineViewScope = UserPhotoScope.Everything;
-
             _photoData.Setup(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<string>(), 1, 50))
                 .ReturnsAsync(photos)
                 .Callback<UserFilter, string, int, int>((filter, t, pageNum, pageSize) =>
@@ -158,8 +224,6 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoData.Setup(m => m.GetPhotos(It.IsAny<UserFilter>(), It.IsAny<DateRange>(), 1, 50))
                 .ReturnsAsync(photos);
-
-            _photoService.BaselineViewScope = UserPhotoScope.Everything;
 
             var results = await _photoService.GetPhotosByDate(new DateRange(startDate, endDate), null, 1, 50);
 

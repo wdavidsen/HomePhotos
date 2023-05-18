@@ -10,10 +10,17 @@ namespace SCS.HomePhotos.Service.Core
     /// </summary>
     public class HomePhotosService : IHomePhotosService
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomePhotosService"/> class.
+        /// </summary>
         public HomePhotosService()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomePhotosService"/> class.
+        /// </summary>
+        /// <param name="dynamicConfig">The dynamic configuration.</param>
         public HomePhotosService(IDynamicConfig dynamicConfig)
         {
             BaselineViewScope = dynamicConfig.UserPhotoViewScope;

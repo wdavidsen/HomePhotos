@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
-import { AuthService } from '../services';
+import { AuthService, UserSettingsService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ChangePasswordModalComponent } from '../account/change-password-modal.component';
@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private authenticationService: AuthService,
+        private userSettingsService: UserSettingsService,
         private toastr: ToastrService,
         private modalService: BsModalService,
         public bsModalRef: BsModalRef)
@@ -79,6 +80,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.loginSubscription = this.authenticationService.login(username, password)
             .subscribe({
                 next: () => { 
+                    this.userSettingsService.refreshCache();
                     this.toastr.success('Sign-in successful');
                     this.router.navigate([this.returnUrl]);
                     this.loading = false;

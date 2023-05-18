@@ -130,5 +130,19 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <param name="user">The user entity.</param>
         /// <returns>The user entity.</returns>
         Task<User> UpdateAccount(User user);
+
+        /// <summary>
+        /// Gets the user's app settings.
+        /// </summary>
+        /// <param name="username">The user's username.</param>
+        /// <returns>User settings.</returns>
+        Task<UserSettings> GetUserSettings(string username);
+
+        /// <summary>
+        /// Updates the user's app settings.
+        /// </summary>
+        /// <param name="userSettings">The user's app settings.</param>
+        /// <returns>User settings.</returns>
+        Task<UserSettings> UpdateUserSettings(UserSettings userSettings);
     }
 }

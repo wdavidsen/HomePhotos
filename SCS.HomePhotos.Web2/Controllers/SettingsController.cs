@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
-using SCS.HomePhotos.Service.Core;
 using SCS.HomePhotos.Web.Dto;
 
 namespace SCS.HomePhotos.Web.Controllers

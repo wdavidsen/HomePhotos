@@ -39,6 +39,19 @@
             <param name="accountInfo">The account information.</param>
             <returns>User's account info.</returns>
         </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.GetSettings">
+            <summary>
+            Gets the current user's specific app settings.
+            </summary>
+            <returns>User's app settings.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.UpdateUserSettings(SCS.HomePhotos.Web.Dto.UserSettings)">
+            <summary>
+            Updates the current user's app settings.
+            </summary>
+            <param name="settings">The current user's updated settings.</param>
+            <returns>User's app settings.</returns>
+        </member>
         <member name="T:SCS.HomePhotos.Web.Controllers.AuthController">
             <summary>Authentication services.</summary>
         </member>
@@ -974,6 +987,68 @@
             Converts instance to the domain model.
             </summary>
             <returns>The domain equivalent instance.</returns>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Dto.UserSettings">
+            <summary>
+            User specific app settings.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.UserSettings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.UserSettings"/> class.
+            </summary>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.UserSettings.#ctor(SCS.HomePhotos.Model.UserSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Dto.UserSettings"/> class.
+            </summary>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.UserSettings.ThumbnailSize">
+            <summary>
+            Gets or sets the size of the thumbnail.
+            </summary>
+            <value>
+            The size of the thumbnail.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.UserSettings.SlideshowSpeed">
+            <summary>
+            Gets or sets the slideshow speed.
+            </summary>
+            <value>
+            The slideshow speed.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.UserSettings.AutoStartSlideshow">
+            <summary>
+            Gets or sets a value indicating whether start slideshow should start automatically.
+            </summary>
+            <value>
+              <c>true</c> if start slideshow should start automatically; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.UserSettings.DefaultView">
+            <summary>
+            Gets or sets the default view.
+            </summary>
+            <value>
+            The default view.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Dto.UserSettings.UserScope">
+            <summary>
+            Gets or sets the user scope.
+            </summary>
+            <value>
+            The user scope.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Dto.UserSettings.ToModel">
+            <summary>
+            Converts DTO to domain model equivalent.
+            </summary>
+            <returns>The equivalent domain entity.</returns>
         </member>
         <member name="T:SCS.HomePhotos.Web.FileUploadService">
             <summary>

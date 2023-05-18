@@ -19,6 +19,7 @@ namespace SCS.HomePhotos.Service.Core
         private readonly IUserData _userData;
         private readonly IUserTokenData _userTokenData;
         private readonly IAdminLogService _adminLogService;
+        private readonly IUserSettingsData _userSettingsData;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountService"/> class.
@@ -27,12 +28,14 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="userData">The user data.</param>
         /// <param name="userTokenData">The user token data.</param>
         /// <param name="adminLogService">The admin log service.</param>
-        public AccountService(IStaticConfig staticConfig, IUserData userData, IUserTokenData userTokenData, IAdminLogService adminLogService)
+        /// <param name="userSettingsData">The user settings data.</param>
+        public AccountService(IStaticConfig staticConfig, IUserData userData, IUserTokenData userTokenData, IAdminLogService adminLogService, IUserSettingsData userSettingsData)
         {
             _staticConfig = staticConfig;
             _userData = userData;
             _userTokenData = userTokenData;
             _adminLogService = adminLogService;
+            _userSettingsData = userSettingsData;
         }
 
         /// <summary>
@@ -424,6 +427,35 @@ namespace SCS.HomePhotos.Service.Core
             }
 
             return user;
+        }
+
+        /// <summary>
+        /// Gets the user's app settings.
+        /// </summary>
+        /// <param name="username">The user's username.</param>
+        /// <returns>User settings.</returns>
+        public async Task<UserSettings> GetUserSettings(string username)
+        {
+            var user = await _userData.GetUser(username);
+
+            if (user == null)
+            {
+                throw new InvalidOperationException("User does not exist.");
+            }
+
+            return await _userSettingsData.GetSettings(user.UserId.Value);
+        }
+
+        /// <summary>
+        /// Updates the user's app settings.
+        /// </summary>
+        /// <param name="userSettings">The user's app settings.</param>
+        /// <returns>User settings.</returns>
+        public async Task<UserSettings> UpdateUserSettings(UserSettings userSettings)
+        {
+            await _userSettingsData.SaveSettings(userSettings);
+
+            return userSettings;
         }
 
         /// <summary>

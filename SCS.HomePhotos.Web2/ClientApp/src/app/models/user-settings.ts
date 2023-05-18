@@ -5,12 +5,14 @@ export class UserSettings {
     this.slideshowSpeed = 'Normal';
     this.autoStartSlideshow = false;
     this.defaultView = null
+    this.userScope = "Everything";
   }
 
   thumbnailSize: string;
   slideshowSpeed: string;
   autoStartSlideshow: boolean;
   defaultView: string;
+  userScope: string;
 
   static parseDefaultView(defaultView: string) : Array<string> {
     const tagName = defaultView.substring(0, defaultView.indexOf('(') -1 );

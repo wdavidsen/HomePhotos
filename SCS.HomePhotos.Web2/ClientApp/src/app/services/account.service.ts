@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-import { User, AccountInfo, Tokens, PasswordChange, AvatarUpdate } from '../models';
+import { User, AccountInfo, Tokens, PasswordChange, AvatarUpdate, UserSettings } from '../models';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
@@ -36,6 +36,14 @@ export class AccountService {
 
     save(user: AccountInfo): Observable<AccountInfo> {
         return this.http.put<AccountInfo>(`${environment.apiUrl}/account`, user);
+    }
+
+    saveSettings(userSettings: UserSettings): Observable<UserSettings> {
+        return this.http.put<UserSettings>(`${environment.apiUrl}/account/settings`, userSettings);
+    }
+
+    getSettings(): Observable<UserSettings> {
+        return this.http.get<UserSettings>(`${environment.apiUrl}/account/settings`);
     }
 
     // handleServiceUnavailable() {

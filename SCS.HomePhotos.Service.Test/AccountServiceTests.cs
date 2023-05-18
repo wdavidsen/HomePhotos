@@ -1,6 +1,7 @@
 using AutoFixture;
 using Moq;
 using SCS.HomePhotos.Data.Contracts;
+using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Core;
@@ -20,6 +21,7 @@ namespace SCS.HomePhotos.Service.Test
         private readonly Mock<IUserTokenData> _userTokenData;
         private readonly Mock<IStaticConfig> _staticConfig;
         private readonly Mock<IAdminLogService> _adminLogService;
+        private readonly Mock<IUserSettingsData> _userSettingsData;
 
         public AccountServiceTests()
         {
@@ -27,6 +29,7 @@ namespace SCS.HomePhotos.Service.Test
             _userData = new Mock<IUserData>();
             _userTokenData = new Mock<IUserTokenData>();
             _adminLogService = new Mock<IAdminLogService>();
+            _userSettingsData = new Mock<IUserSettingsData>();
 
             _staticConfig.SetupGet(p => p.MaxFailedLogins).Returns(3);
             _staticConfig.SetupGet(p => p.PasswordRequirements)
@@ -38,7 +41,7 @@ namespace SCS.HomePhotos.Service.Test
                     UppercaseCharacters = 1
                 });
 
-            _accountService = new AccountService(_staticConfig.Object, _userData.Object, _userTokenData.Object, _adminLogService.Object);
+            _accountService = new AccountService(_staticConfig.Object, _userData.Object, _userTokenData.Object, _adminLogService.Object, _userSettingsData.Object);
         }
 
         [Fact]
