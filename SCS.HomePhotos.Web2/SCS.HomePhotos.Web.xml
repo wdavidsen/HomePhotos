@@ -283,7 +283,7 @@
             <param name="tagId">The tag id.</param>
         </member>
         <member name="T:SCS.HomePhotos.Web.Controllers.UploadController">
-            <summary>Upload services.</summary>
+            <summary>Upload services.</summary>        
         </member>
         <member name="M:SCS.HomePhotos.Web.Controllers.UploadController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.UploadController},SCS.HomePhotos.Service.Contracts.IImageService,SCS.HomePhotos.Data.Contracts.IUserData,SCS.HomePhotos.Web.IFileUploadService,SCS.HomePhotos.Service.Contracts.IAdminLogService,SCS.HomePhotos.Web.IUploadTracker)">
             <summary>
@@ -1070,6 +1070,36 @@
             Creates a directory.
             </summary>
             <param name="directoryPath">The directory path.</param>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Filters.UserExistsAttribute">
+            <summary>
+            Action filter that verifies user identity is also in the database as a user record.
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.TypeFilterAttribute" />
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Filters.UserExistsAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Filters.UserExistsAttribute"/> class.
+            </summary>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Filters.UserExistsAttribute.InternalUserExistsAttribute">
+            <summary>
+            Action filter that verifies user identity is also in the database as a user record.
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.Filters.IAsyncActionFilter" />
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Filters.UserExistsAttribute.InternalUserExistsAttribute.#ctor(SCS.HomePhotos.Data.Contracts.IUserData)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Filters.UserExistsAttribute.InternalUserExistsAttribute"/> class.
+            </summary>
+            <param name="userData">The user data.</param>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Filters.UserExistsAttribute.InternalUserExistsAttribute.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary>
+            Called asynchronously before the action, after model binding is complete.
+            </summary>
+            <param name="context">The <see cref="T:Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext" />.</param>
+            <param name="next">The <see cref="T:Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate" />. Invoked to execute the next action filter or the action itself.</param>
         </member>
         <member name="T:SCS.HomePhotos.Web.Hubs.ClientMessageSender">
             <summary>

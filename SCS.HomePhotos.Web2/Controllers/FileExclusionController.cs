@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
-using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Service.Contracts;
-using SCS.HomePhotos.Service.Core;
+using SCS.HomePhotos.Web.Filters;
 using SCS.HomePhotos.Web.Models;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
     /// <summary>File exclusion services.</summary>
     [Authorize]
+    [UserExists]
     [Route("api/[controller]")]
     public class FileExclusionController : HomePhotosController
     {

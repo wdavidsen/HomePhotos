@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Web.Filters;
 using SCS.HomePhotos.Web.Models;
 using SCS.HomePhotos.Web.Security;
 
@@ -138,11 +139,11 @@ namespace SCS.HomePhotos.Web.Controllers
 
         /// <summary>Logs-out current user.</summary>
         [Authorize]
+        [UserExists]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpPost("logout")]
-        [SuppressMessage("Security", "SCS0016:Controller method is vulnerable to CSRF", Justification = "Anti-forgery detection deemed unnecessary for logging out.")]
+        [HttpPost("logout")]       
         public async Task<IActionResult> Logout()
         {
             var userName = User?.Identity?.Name;

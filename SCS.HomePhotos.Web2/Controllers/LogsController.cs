@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Web.Filters;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
     /// <summary>Log services.</summary>
     [Authorize(Policy = "Admins")]
+    [UserExists]
     [Route("api/[controller]")]
     [ApiController]
     public class LogsController : HomePhotosController

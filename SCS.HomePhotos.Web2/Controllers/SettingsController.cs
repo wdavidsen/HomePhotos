@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Dto;
+using SCS.HomePhotos.Web.Filters;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
     /// <summary>Settings services.</summary>
     [Authorize]
+    [UserExists]
     [Authorize(Policy = "Admins")]
     [Route("api/[controller]")]
     public class SettingsController : HomePhotosController

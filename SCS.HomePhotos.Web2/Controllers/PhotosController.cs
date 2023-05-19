@@ -1,15 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Models;
 
+using SCS.HomePhotos.Web.Filters;
+
 namespace SCS.HomePhotos.Web.Controllers
 {
     /// <summary>Photo services.</summary>
-    [Authorize]
+    [Authorize]    
+    [UserExists]
     [ApiController]
     [Route("api/[controller]")]
     public class PhotosController : HomePhotosController
@@ -36,7 +40,7 @@ namespace SCS.HomePhotos.Web.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Dto.Photo>))]
-        [HttpGet("latest", Name = "GetLatestPhotos")]
+        [HttpGet("latest", Name = "GetLatestPhotos")]        
         public async Task<IActionResult> GetLatestPhotos([FromQuery] int pageNum = 1, [FromQuery] int pageSize = 400)
         {
             _photoService.SetUserContext(User);

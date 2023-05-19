@@ -4,14 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using SCS.HomePhotos.Data.Contracts;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Web.Filters;
 
 using System.Diagnostics.CodeAnalysis;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
-    /// <summary>Upload services.</summary>
-    [Authorize]
+    /// <summary>Upload services.</summary>        
     [Authorize(Roles = "Admin,Contributor")]
+    [UserExists]
     [Route("api/[controller]")]
     [ApiController]
     public class UploadController : HomePhotosController

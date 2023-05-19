@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Web.Filters;
 using SCS.HomePhotos.Web.Models;
 
 using System.Runtime.CompilerServices;
@@ -11,7 +12,7 @@ using System.Runtime.CompilerServices;
 namespace SCS.HomePhotos.Web.Controllers
 {
     /// <summary>Account services.</summary>
-    [Authorize]
+    [Authorize]    
     [Route("api/[controller]")]
     public class AccountController : HomePhotosController
     {
@@ -85,6 +86,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <param name="model">The change password model.</param>
         /// <returns>A new JWT and refresh token.</returns>
         [Authorize]
+        [UserExists]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemModel))]
@@ -135,6 +137,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <param name="model">The avatar model.</param>
         /// <returns>The avatar image name.</returns>
         [Authorize]
+        [UserExists]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -204,6 +207,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <summary>Gets current user account info.</summary>
         /// <returns>User's account info.</returns>
         [Authorize]
+        [UserExists]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.AccountInfo))]
@@ -219,6 +223,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <param name="accountInfo">The account information.</param>
         /// <returns>User's account info.</returns>
         [Authorize]
+        [UserExists]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.AccountInfo))]
@@ -240,6 +245,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// </summary>
         /// <returns>User's app settings.</returns>
         [Authorize]
+        [UserExists]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.UserSettings))]
@@ -257,6 +263,7 @@ namespace SCS.HomePhotos.Web.Controllers
         /// <param name="settings">The current user's updated settings.</param>
         /// <returns>User's app settings.</returns>
         [Authorize]
+        [UserExists]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dto.AccountInfo))]

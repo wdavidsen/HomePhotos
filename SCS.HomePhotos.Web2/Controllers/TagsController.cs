@@ -8,12 +8,14 @@ using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Core;
+using SCS.HomePhotos.Web.Filters;
 using SCS.HomePhotos.Web.Models;
 
 namespace SCS.HomePhotos.Web.Controllers
 {
     /// <summary>Tag services.</summary>
     [Authorize]
+    [UserExists]
     [Route("api/[controller]")]
     public class TagsController : HomePhotosController
     {

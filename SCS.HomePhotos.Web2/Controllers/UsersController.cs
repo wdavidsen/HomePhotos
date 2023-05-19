@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using SCS.HomePhotos.Service.Contracts;
+using SCS.HomePhotos.Web.Filters;
 using SCS.HomePhotos.Web.Models;
 
 using System.Runtime.CompilerServices;
@@ -12,6 +13,7 @@ namespace SCS.HomePhotos.Web.Controllers
 {
     /// <summary>User services.</summary>
     [Authorize(Policy = "Admins")]
+    [UserExists]
     [Route("api/[controller]")]
     public class UsersController : HomePhotosController
     {
