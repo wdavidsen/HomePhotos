@@ -1,7 +1,10 @@
-﻿using SCS.HomePhotos.Service.Contracts;
+﻿using SCS.HomePhotos.Data.Contracts;
+using SCS.HomePhotos.Data.Core;
+using SCS.HomePhotos.Service.Contracts;
 
 using System;
 using System.Security.Principal;
+using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Service.Core
 {
@@ -10,6 +13,10 @@ namespace SCS.HomePhotos.Service.Core
     /// </summary>
     public class HomePhotosService : IHomePhotosService
     {
+        private readonly IDynamicConfig _dynamicConfig;
+        private readonly IUserData _userData;
+        private readonly IUserSettingsData _userSettingsData;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="HomePhotosService"/> class.
         /// </summary>
@@ -21,8 +28,14 @@ namespace SCS.HomePhotos.Service.Core
         /// Initializes a new instance of the <see cref="HomePhotosService"/> class.
         /// </summary>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
-        public HomePhotosService(IDynamicConfig dynamicConfig)
+        /// <param name="userData">The user data.</param>
+        /// <param name="userSettingsData">The user settings data.</param>
+        public HomePhotosService(IDynamicConfig dynamicConfig, IUserData userData, IUserSettingsData userSettingsData)
         {
+            _dynamicConfig = dynamicConfig;
+            _userData = userData;
+            _userSettingsData = userSettingsData;
+
             BaselineViewScope = dynamicConfig.UserPhotoViewScope;
         }
 
@@ -57,16 +70,22 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="desiredScope">The desired scope.</param>
         /// <param name="desiredOwnerUsername">The desired owner of the photos the current user wishes to view.</param>
         /// <returns>The allowed scope.</returns>
-        public (string OwnerUsername, UserPhotoScope Scope) GetViewScope(UserPhotoScope desiredScope, string desiredOwnerUsername)
+        public async Task<(string OwnerUsername, UserPhotoScope Scope)> GetViewScope(UserPhotoScope desiredScope, string desiredOwnerUsername)
         {
             (string OwnerUsername, UserPhotoScope Scope) result;
 
             var allowedScope = UserPhotoScope.Everything;
             var allowedUsername = desiredOwnerUsername;
-
-            if (desiredScope < BaselineViewScope)
+            var baseScope = await GetUserScope(); 
+            
+            if (BaselineViewScope < baseScope)
             {
-                allowedScope = BaselineViewScope;
+                baseScope = BaselineViewScope;
+            }
+
+            if (desiredScope < baseScope)
+            {
+                allowedScope = baseScope;
             }
             else
             {
@@ -81,6 +100,19 @@ namespace SCS.HomePhotos.Service.Core
             result = (allowedUsername, allowedScope);
 
             return result;
+        }
+
+        private async Task<UserPhotoScope> GetUserScope()
+        {
+            var user = await _userData.GetUser(User.Identity.Name);
+
+            if (user == null)
+            {
+                return UserPhotoScope.PersonalOnly;
+            }
+            var userSettings = await _userSettingsData.GetSettings(user.UserId.Value);
+
+            return userSettings.UserScope;
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
+using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Workers;
@@ -28,6 +29,7 @@ namespace SCS.HomePhotos.Service.Core
         private readonly IPhotoTagData _photoTagData;
         private readonly IFileExclusionData _fileExclusionData;
         private readonly IUserData _userData;
+        private readonly IUserSettingsData _userSettingsData;
         private readonly IFileSystemService _fileSystemService;
         private readonly IDynamicConfig _dynamicConfig;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
@@ -44,20 +46,22 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="photoTagData">The photo tag data repository.</param>
         /// <param name="fileExclusionData">The file exclusion data repository.</param>
         /// <param name="userData">The user data repository.</param>
+        /// <param name="userSettingsData">The user settings data repository.</param>
         /// <param name="logger">The logger.</param>
         /// <param name="adminLogger">The admin logger.</param>
         /// <param name="fileSystemService">The file system service.</param>
         /// <param name="dynamicConfig">The dynamic configuration.</param>
         /// <param name="backgroundTaskQueue">The background task queue.</param>
-        public PhotoService(IPhotoData photoData, ITagData tagData, IPhotoTagData photoTagData, IFileExclusionData fileExclusionData, IUserData userData,
+        public PhotoService(IPhotoData photoData, ITagData tagData, IPhotoTagData photoTagData, IFileExclusionData fileExclusionData, IUserData userData, IUserSettingsData userSettingsData,
             ILogger<PhotoService> logger, IAdminLogService adminLogger, IFileSystemService fileSystemService, IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
-            : base (dynamicConfig)
+            : base (dynamicConfig, userData, userSettingsData)
         {
             _photoData = photoData;
             _tagData = tagData;
             _photoTagData = photoTagData;
             _fileExclusionData = fileExclusionData;
             _userData = userData;
+            _userSettingsData = userSettingsData;
             _logger = logger;
             _adminLogService = adminLogger;
             _fileSystemService = fileSystemService;
@@ -91,7 +95,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetLatestPhotos(int pageNum = 1, int pageSize = 200)
         {
-            var scope = GetViewScope(UserPhotoScope.Everything, User.Identity.Name);
+            var scope = await GetViewScope(UserPhotoScope.Everything, User.Identity.Name);
 
             var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 
@@ -110,7 +114,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetPhotosByTag(string tag, string owner, int pageNum = 1, int pageSize = 200)
         {
-            var scope = GetViewScope(UserPhotoScope.Everything, owner);
+            var scope = await GetViewScope(UserPhotoScope.Everything, owner);
 
             var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 
@@ -130,7 +134,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, string username, DateRange dateRange, int pageNum = 1, int pageSize = 200)
         {
-            var scope = GetViewScope(UserPhotoScope.Everything, username);
+            var scope = await GetViewScope(UserPhotoScope.Everything, username);
 
             var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 
@@ -149,7 +153,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetPhotosByDate(DateRange dateRange, string username, int pageNum = 1, int pageSize = 200)
         {
-            var scope = GetViewScope(UserPhotoScope.Everything, username);
+            var scope = await GetViewScope(UserPhotoScope.Everything, username);
 
             var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 
@@ -164,7 +168,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>A list of tags.</returns>
         public async Task<IEnumerable<Tag>> GetTags(string username = null, bool includPhotoCounts = false)
         {
-            var scope = GetViewScope(UserPhotoScope.Everything, username);
+            var scope = await GetViewScope(UserPhotoScope.Everything, username);
 
             var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 

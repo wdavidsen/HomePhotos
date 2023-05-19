@@ -268,7 +268,10 @@ namespace SCS.HomePhotos.Service.Core
         {
             var user = await GetUser(userName);
 
-            await _userTokenData.DeleteAgentRefreshTokens(user.UserId.Value, agentIdentifier);
+            if (user != null)
+            {
+                await _userTokenData.DeleteAgentRefreshTokens(user.UserId.Value, agentIdentifier);
+            }
         }
 
         /// <summary>
