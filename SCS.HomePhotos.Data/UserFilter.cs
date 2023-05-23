@@ -75,11 +75,34 @@ namespace SCS.HomePhotos.Data
 
         /// <summary>
         /// Gets the where clause for a SQL query.
+        /// </summary>        
+        /// <returns>The where clause SQL.</returns>
+        internal (string Sql, DynamicParameters Parameters) GetUserScopeWhereClause()
+        {
+            var sql = string.Empty;            
+            var parameters = new DynamicParameters();
+
+            switch (FilterType)
+            {
+                case UserPhotoScope.PersonalOnly:
+                    sql = "UserId = @UserId ";
+                    parameters.Add("UserId", UserId);
+                    break;
+                case UserPhotoScope.SharedAndPersonal:
+                    sql = "(UserId = @UserId OR UserId IS NULL) ";
+                    parameters.Add("UserId", UserId);
+                    break;
+            }
+            return (sql, parameters);
+        }
+
+        /// <summary>
+        /// Gets the where clause for a SQL query.
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <param name="prefixWithAnd">if set to <c>true</c> prefix with "AND".</param>
         /// <returns>The where clause SQL.</returns>
-        internal (string Sql, DynamicParameters Parameters) GetWhereClause(string tableAlias = "", bool prefixWithAnd = false) 
+        internal (string Sql, DynamicParameters Parameters) GetUserScopeWhereClause(string tableAlias, bool prefixWithAnd)
         {
             var sql = string.Empty;
             var sep = string.IsNullOrEmpty(tableAlias) ? string.Empty : ".";
@@ -93,6 +116,35 @@ namespace SCS.HomePhotos.Data
                     break;
                 case UserPhotoScope.SharedAndPersonal:
                     sql = $"({tableAlias}{sep}UserId = @UserId OR {tableAlias}{sep}UserId IS NULL) ";
+                    parameters.Add("UserId", UserId);
+                    break;
+            }
+
+            sql = (sql.Length > 0 && prefixWithAnd ? "AND " : string.Empty) + sql;
+
+            return (sql, parameters);
+        }
+
+        /// <summary>
+        /// Gets the where clause for a SQL query.
+        /// </summary>
+        /// <param name="tableAlias1">The table alias for table 1.</param>
+        /// <param name="tableAlias2">The table alias for table 2.</param>
+        /// <param name="prefixWithAnd">if set to <c>true</c> prefix with "AND".</param>
+        /// <returns>The where clause SQL.</returns>
+        internal (string Sql, DynamicParameters Parameters) GetUserScopeWhereClause(string tableAlias1, string tableAlias2, bool prefixWithAnd)
+        {
+            var sql = string.Empty;            
+            var parameters = new DynamicParameters();
+
+            switch (FilterType)
+            {
+                case UserPhotoScope.PersonalOnly:
+                    sql = $"({tableAlias1}.UserId = @UserId OR {tableAlias2}.UserId = @UserId) ";
+                    parameters.Add("UserId", UserId);
+                    break;
+                case UserPhotoScope.SharedAndPersonal:
+                    sql = $"(({tableAlias1}.UserId = @UserId OR {tableAlias1}.UserId IS NULL)) OR ({tableAlias2}.UserId = @UserId OR {tableAlias2}.UserId IS NULL)";
                     parameters.Add("UserId", UserId);
                     break;
             }

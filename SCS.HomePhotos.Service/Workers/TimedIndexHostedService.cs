@@ -409,7 +409,9 @@ namespace SCS.HomePhotos.Workers
 
                                         var imageInfo = imageService.GetImageInfo(exifData);
                                         var tags = BuildBuiltInTags(fileSystemService, imageFilePath, imageInfo);
-                                        imageService.SavePhotoAndTags(existingPhoto, imageFilePath, cacheFilePath, checksum, imageLayoutInfo, imageInfo, tags);
+                                        var imageFileInfo = new ImageFileInfo(ImageFileSource.LocalDisk, imageFilePath, cacheFilePath, checksum);
+
+                                        imageService.SavePhotoAndTags(existingPhoto, imageFileInfo, imageLayoutInfo, imageInfo, tags, null);
                                     }
                                     else
                                     {

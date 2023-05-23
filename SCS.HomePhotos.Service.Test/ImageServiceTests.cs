@@ -347,7 +347,9 @@ namespace SCS.HomePhotos.Service.Test
 
             //_imageTransformer.Setup(m => m.GetImageLayoutInfo(It.IsAny<string>())).Returns(imageLayoutInfo);
 
-            _imageService.SavePhotoAndTags(null, imageFilePath, cacheFilePath, checksum, imageLayoutInfo, imageInfo, tags);
+            var imageFileInfo = new ImageFileInfo(ImageFileSource.LocalDisk, imageFilePath, cacheFilePath, checksum);
+
+            _imageService.SavePhotoAndTags(null, imageFileInfo, imageLayoutInfo, imageInfo, tags, null);
 
             _photoService.Verify(m => m.SavePhoto(It.IsAny<Model.Photo>()), Times.Once);
             _photoService.Verify(m => m.AssociateTags(It.IsAny<Model.Photo>(), It.IsAny<IEnumerable<Tag>>()), Times.Once);

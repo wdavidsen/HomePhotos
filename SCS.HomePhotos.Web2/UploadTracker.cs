@@ -108,12 +108,17 @@
 
             foreach (var group in groupedItems)
             {
+                if (group == null) continue;
+
                 var userName = group.Key;
                 _userCounts[userName] = new int[] { 0, 0 };
 
                 foreach (var item in group)
                 {
-                    _items.Remove(item);
+                    if (item != null)
+                    {
+                        _items.Remove(item);
+                    }
                 }
             }
         }

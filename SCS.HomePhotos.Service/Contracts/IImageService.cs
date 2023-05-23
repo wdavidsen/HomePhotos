@@ -70,15 +70,13 @@ namespace SCS.HomePhotos.Service.Contracts
         /// Saves the photo and tags.
         /// </summary>
         /// <param name="existingPhoto">The existing photo.</param>
-        /// <param name="imageFilePath">The image file path.</param>
-        /// <param name="checksum">The checksum.</param>
-        /// <param name="cacheSubfolder">The cache subfolder.</param>
+        /// <param name="imageFileInfo">Image file information.</param>
         /// <param name="imageLayoutInfo">The image layout information.</param>
         /// <param name="imageInfo">The image metadata.</param>
         /// <param name="tags">The tags.</param>
+        /// <param name="owner">The user owner of photo.</param>
         /// <returns>The photo object.</returns>
-        Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string checksum, string cacheSubfolder,
-            ImageLayoutInfo imageLayoutInfo, ImageInfo imageInfo, List<Tag> tags);
+        Photo SavePhotoAndTags(Photo existingPhoto, ImageFileInfo imageFileInfo, ImageLayoutInfo imageLayoutInfo, ImageInfo imageInfo, List<Tag> tags, User owner);
 
         /// <summary>
         /// Gets the image layout information.

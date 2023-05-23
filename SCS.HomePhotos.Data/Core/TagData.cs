@@ -28,7 +28,7 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>A list of all tags.</returns>
         public async Task<IEnumerable<Tag>> GetTags(UserFilter userFilter)
         {
-            var whereClause = userFilter.GetWhereClause();
+            var whereClause = userFilter.GetUserScopeWhereClause();
 
             return await GetListPagedAsync(whereClause.Sql, whereClause.Parameters, "TagName ASC", 1, int.MaxValue);
         }
@@ -66,14 +66,14 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>A list of tags.</returns>
         public async Task<IEnumerable<TagStat>> GetTagAndPhotoCount(UserFilter userFilter)
         {
-            var userClause = userFilter.GetWhereClause("t", true);
+            var userClause = userFilter.GetUserScopeWhereClause("p", "t", false);
 
-            var sql = @$"SELECT t.TagId, t.TagName, t.UserId, u.TagColor, u.UserName, COUNT(p.PhotoId) AS PhotoCount 
+            var sql = @$"SELECT DISTINCT t.TagId, t.TagName, t.UserId, u.TagColor, u.UserName, COUNT(p.PhotoId) AS PhotoCount 
                         FROM Tag t 
                         LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId 
                         LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
                         LEFT JOIN User u ON t.UserId = u.UserId 
-                        {userClause.Sql} 
+                        WHERE {userClause.Sql} 
                         GROUP BY t.TagName, t.TagId, t.UserId, u.TagColor, u.UserName   
                         ORDER BY t.TagName";
 

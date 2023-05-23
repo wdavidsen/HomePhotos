@@ -37,9 +37,9 @@ namespace SCS.HomePhotos.Data.Core
             }
 
             var offset = (pageNum - 1) * pageSize;
-            var userClause = userFilter.GetWhereClause("p", true);
+            var userClause = userFilter.GetUserScopeWhereClause("p", "t", true);
 
-            var sql = $@"SELECT p.* 
+            var sql = $@"SELECT DISTINCT p.* 
                          FROM Photo p
                          JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
                          JOIN Tag t ON pt.TagId = t.TagId 
@@ -66,19 +66,25 @@ namespace SCS.HomePhotos.Data.Core
         /// <returns>A photo page list.</returns>
         public async Task<IEnumerable<Photo>> GetPhotos(UserFilter userFilter, DateRange dateRange, int pageNum = 1, int pageSize = 200)
         {
-            var descending = dateRange.FromDate > dateRange.ToDate;
+            var offset = (pageNum - 1) * pageSize;
+            var dateClause = dateRange.GetWhereClause("p", false);
+            var userClause = userFilter.GetUserScopeWhereClause("p", "t", false);
 
-            if (descending)
+            var sql = $@"SELECT DISTINCT p.* 
+                         FROM Photo p
+                         JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
+                         JOIN Tag t ON pt.TagId = t.TagId 
+                         WHERE {dateClause.Sql} AND {userClause.Sql}    
+                         ORDER BY p.DateTaken DESC LIMIT {pageSize} OFFSET {offset}";
+
+            var parameters = new DynamicParameters();
+            parameters.AddDynamicParams(dateClause.Parameters);
+            parameters.AddDynamicParams(userClause.Parameters);
+
+            using (var conn = GetDbConnection())
             {
-                (dateRange.ToDate, dateRange.FromDate) = (dateRange.FromDate, dateRange.ToDate);
+                return await conn.QueryAsync<Photo>(sql, parameters);
             }
-
-            var dateClause = dateRange.GetWhereClause();
-            var userClause = userFilter.GetWhereClause();                        
-            var orderBy = "DateTaken" + (descending ? " DESC" : "");
-            var query = QueryBuilder.AndFilters(dateClause, userClause);
-
-            return await GetListPagedAsync(query.Sql, query.Parameters, orderBy, pageNum, pageSize);
         }
 
         /// <summary>
@@ -101,7 +107,7 @@ namespace SCS.HomePhotos.Data.Core
             var keywordArray = keywords.Split(' ').Select(kw => kw.Replace("'", "")).ToArray();
             var wordCount = keywordArray.Length;
 
-            var mainsql = $@"SELECT p.*, {{0}} as Weight  
+            var mainsql = $@"SELECT DISTINCT p.*, {{0}} as Weight  
                          FROM Photo p
                          JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
                          JOIN Tag t ON pt.TagId = t.TagId ";
@@ -109,7 +115,7 @@ namespace SCS.HomePhotos.Data.Core
             var where1 = $"{Environment.NewLine}WHERE t.TagName <> @Tag{wordCount * 3 + 1} ";
             var where2 = $"{Environment.NewLine}WHERE t.TagName <> '' ";
             var dateClause = dateRange.GetWhereClause("p", true);
-            var userClause = userFilter.GetWhereClause("p", true);
+            var userClause = userFilter.GetUserScopeWhereClause("p", "t", true);
 
             // "exact" match sql for individual words (when more than 1 is provided)
             var sql = string.Format(mainsql, 2) + ((wordCount > 1) ? where1 : where2) + dateClause.Sql + userClause.Sql;

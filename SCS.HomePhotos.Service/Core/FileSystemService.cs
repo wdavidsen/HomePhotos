@@ -97,7 +97,6 @@ namespace SCS.HomePhotos.Service.Core
             }
 
             try
-
             {
                 var relativePath = Path.GetRelativePath(basePath, filePath);
 

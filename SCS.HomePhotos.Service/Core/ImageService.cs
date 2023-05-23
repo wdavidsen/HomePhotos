@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -108,10 +109,12 @@ namespace SCS.HomePhotos.Service.Core
                         var firstTag = tags.Any() ? tags.First().TagName : null;
                         var finalPath = GetMobileUploadPath(imageFilePath, uploadedBy.UserName, firstTag);
                         _fileSystemService.MoveFile(imageFilePath, finalPath, true);
-                        tags.Add(new Tag { TagName = $"{uploadedBy.UserName} Upload", UserId = null }); // system tag
+                        tags.Insert(0, new Tag { TagName = uploadedBy.UserName }); // system tag
 
                         var imageInfo = GetImageInfo(metadata);
-                        SavePhotoAndTags(existingPhoto, finalPath, cacheFilePath, checksum, imageLayoutInfo, imageInfo, tags);
+                        var imageFileInfo = new ImageFileInfo(ImageFileSource.MobileUpload, finalPath, cacheFilePath, checksum);
+
+                        SavePhotoAndTags(existingPhoto, imageFileInfo, imageLayoutInfo, imageInfo, tags, uploadedBy);
 
                         notifier.ItemProcessed(new TaskCompleteInfo(TaskType.ProcessMobilePhoto, uploadedBy.UserName, true, imageFilePath));
                     }
@@ -306,35 +309,31 @@ namespace SCS.HomePhotos.Service.Core
         /// Saves the photo and tags.
         /// </summary>
         /// <param name="existingPhoto">The existing photo.</param>
-        /// <param name="imageFilePath">The image file path.</param>
-        /// <param name="cacheFilePath">The cache file path.</param>
-        /// <param name="checksum">The checksum.</param>
+        /// <param name="imageFileInfo">Image file information.</param>
         /// <param name="imageLayoutInfo">The image layout information.</param>
         /// <param name="imageInfo">The image metadata.</param>
         /// <param name="tags">The tags.</param>
+        /// <param name="owner">The owner of the photo.</param>
         /// <returns>The updated/created photo.</returns>
-        public Photo SavePhotoAndTags(Photo existingPhoto, string imageFilePath, string cacheFilePath, string checksum,
-            ImageLayoutInfo imageLayoutInfo, ImageInfo imageInfo, List<Tag> tags)
+        public Photo SavePhotoAndTags(Photo existingPhoto, ImageFileInfo imageFileInfo, ImageLayoutInfo imageLayoutInfo, ImageInfo imageInfo, List<Tag> tags, User owner)
         {
-            _logger.LogInformation("Saving photo with checksum {Checksum}.", checksum);
+            _logger.LogInformation("Saving photo with checksum {Checksum}.", imageFileInfo.Checksum);
 
             var photo = existingPhoto ?? new Photo();
 
-            photo.Name = Path.GetFileName(imageFilePath);
-            photo.FileName = Path.GetFileName(cacheFilePath);
-            photo.Checksum = checksum;
-            photo.CacheFolder = Path.GetDirectoryName(cacheFilePath);
-            photo.DateFileCreated = File.GetCreationTime(imageFilePath);
+            photo.Name = Path.GetFileName(imageFileInfo.ImageFilePath);
+            photo.FileName = Path.GetFileName(imageFileInfo.CacheFilePath);
+            photo.Checksum = imageFileInfo.Checksum;
+            photo.CacheFolder = Path.GetDirectoryName(imageFileInfo.CacheFilePath);
+            photo.DateFileCreated = File.GetCreationTime(imageFileInfo.ImageFilePath);
             photo.DateTaken = imageInfo.DateTaken;
             photo.ImageHeight = imageLayoutInfo.Height;
             photo.ImageWidth = imageLayoutInfo.Width;
             photo.ReprocessCache = false;
-            photo.MobileUpload = imageFilePath.Contains(_dynamicConfig.MobileUploadsFolder, StringComparison.InvariantCultureIgnoreCase);
-            photo.OriginalFolder = GetOriginalFolder(_dynamicConfig, photo.MobileUpload, imageFilePath);
+            photo.MobileUpload = imageFileInfo.ImageFilePath.Contains(_dynamicConfig.MobileUploadsFolder, StringComparison.InvariantCultureIgnoreCase);
+            photo.OriginalFolder = GetOriginalFolder(_dynamicConfig, photo.MobileUpload, imageFileInfo.ImageFilePath);
 
-            _photoService.AssociateUser(photo, tags);
-            tags.ForEach(t => t.UserId = photo.UserId);
-
+            _photoService.SetUserId(imageFileInfo.ImageFileSource, owner, photo, tags);
             _photoService.SavePhoto(photo);
             _photoService.AssociateTags(photo, tags);            
 

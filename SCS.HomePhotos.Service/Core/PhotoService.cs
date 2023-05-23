@@ -393,23 +393,34 @@ namespace SCS.HomePhotos.Service.Core
         /// <summary>
         /// Associates the user to photo from tags if possible.
         /// </summary>
+        /// <param name="imageFileSource">The source of the image file.</param>
+        /// <param name="owner">The owner of the photo.</param>
         /// <param name="photo">The photo.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>A void task.</returns>
-        public async Task AssociateUser(Photo photo, List<Tag> tags)
+        public async Task SetUserId(ImageFileSource imageFileSource, User owner, Photo photo, List<Tag> tags)
         {
-            var users = await _userData.GetListAsync();
-
-            tags.Reverse();
-
-            foreach (var tag in tags)
+            switch (imageFileSource)
             {
-                var user = users.FirstOrDefault(u => u.UserName.Equals(tag.TagName, StringComparison.InvariantCultureIgnoreCase));
+                case ImageFileSource.LocalDisk:
 
-                if (user != null)
-                {
-                    photo.UserId = user.UserId;
-                }
+                    if (tags != null && tags.Any())
+                    {
+                        var users = await _userData.GetListAsync();
+                        var user = users.FirstOrDefault(u => u.UserName.Equals(tags.First().TagName, StringComparison.InvariantCultureIgnoreCase));
+
+                        if (user != null)
+                        {
+                            photo.UserId = user.UserId;
+                            tags.Skip(1).ToList().ForEach(t => t.UserId = photo.UserId);
+                        }
+                    }                    
+                    break;
+
+                case ImageFileSource.MobileUpload:
+
+                    photo.UserId = owner?.UserId;
+                    break;
             }
         }
 

@@ -2,7 +2,6 @@
 using SCS.HomePhotos.Model;
 
 using System.Collections.Generic;
-using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Service.Contracts
@@ -119,10 +118,12 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <summary>
         /// Associates the user to photo from tags if possible.
         /// </summary>
+        /// <param name="imageFileSource">The source of the image file.</param>
+        /// <param name="owner">The owner of the photo.</param>
         /// <param name="photo">The photo.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>A void task.</returns>
-        Task AssociateUser(Photo photo, List<Tag> tags);
+        Task SetUserId(ImageFileSource imageFileSource, User owner, Photo photo, List<Tag> tags);
 
         /// <summary>
         /// Gets a photo by checksum.
@@ -220,6 +221,6 @@ namespace SCS.HomePhotos.Service.Contracts
         /// <param name="originalFolder">The original folder path relative to the index/mobile upload folder.</param>
         /// <param name="fileName">Name of the file.</param>
         /// <returns>A void task.</returns>
-        Task DeletePhoto(bool mobileUpload, string originalFolder, string fileName);        
+        Task DeletePhoto(bool mobileUpload, string originalFolder, string fileName);
     }
 }

@@ -78,7 +78,7 @@ namespace SCS.HomePhotos.Service.Core
             var allowedUsername = desiredOwnerUsername;
             var baseScope = await GetUserScope(); 
             
-            if (BaselineViewScope < baseScope)
+            if (BaselineViewScope > baseScope)
             {
                 baseScope = BaselineViewScope;
             }
@@ -92,7 +92,7 @@ namespace SCS.HomePhotos.Service.Core
                 allowedScope = desiredScope;
             }
 
-            if (desiredScope < allowedScope && !string.IsNullOrEmpty(desiredOwnerUsername) && !desiredOwnerUsername.Equals(User.Identity.Name, StringComparison.InvariantCultureIgnoreCase))
+            if (desiredScope > allowedScope && !string.IsNullOrEmpty(desiredOwnerUsername) && !desiredOwnerUsername.Equals(User.Identity.Name, StringComparison.InvariantCultureIgnoreCase))
             {
                 allowedUsername = string.Empty;
             }
