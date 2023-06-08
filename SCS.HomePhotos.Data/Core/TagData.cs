@@ -67,13 +67,14 @@ namespace SCS.HomePhotos.Data.Core
         public async Task<IEnumerable<TagStat>> GetTagAndPhotoCount(UserFilter userFilter)
         {
             var userClause = userFilter.GetUserScopeWhereClause("p", "t", false);
+            var whereClause = string.IsNullOrEmpty(userClause.Sql) ? string.Empty : $"WHERE {userClause.Sql}";
 
             var sql = @$"SELECT DISTINCT t.TagId, t.TagName, t.UserId, u.TagColor, u.UserName, COUNT(p.PhotoId) AS PhotoCount 
                         FROM Tag t 
                         LEFT JOIN PhotoTag pt ON t.TagId = pt.TagId 
                         LEFT JOIN Photo p ON pt.PhotoId = p.PhotoId 
                         LEFT JOIN User u ON t.UserId = u.UserId 
-                        WHERE {userClause.Sql} 
+                        {whereClause} 
                         GROUP BY t.TagName, t.TagId, t.UserId, u.TagColor, u.UserName   
                         ORDER BY t.TagName";
 

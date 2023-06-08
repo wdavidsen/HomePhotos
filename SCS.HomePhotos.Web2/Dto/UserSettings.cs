@@ -1,4 +1,6 @@
-﻿using SCS.HomePhotos.Model;
+﻿using Dapper;
+
+using SCS.HomePhotos.Model;
 
 namespace SCS.HomePhotos.Web.Dto
 {
@@ -65,7 +67,7 @@ namespace SCS.HomePhotos.Web.Dto
         /// </summary>
         /// <value>
         /// The user scope.
-        /// </value>
+        /// </value>        
         public UserPhotoScope UserScope { get; set; }
 
         /// <summary>

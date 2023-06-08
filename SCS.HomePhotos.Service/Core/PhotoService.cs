@@ -95,7 +95,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetLatestPhotos(int pageNum = 1, int pageSize = 200)
         {
-            var scope = await GetViewScope(UserPhotoScope.Everything, User.Identity.Name);
+            var scope = await GetViewScope(User.Identity.Name);
 
             var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 
@@ -114,7 +114,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetPhotosByTag(string tag, string owner, int pageNum = 1, int pageSize = 200)
         {
-            var scope = await GetViewScope(UserPhotoScope.Everything, owner);
+            var scope = await GetViewScope(owner);
 
             var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 
@@ -134,7 +134,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetPhotosByKeywords(string keywords, string username, DateRange dateRange, int pageNum = 1, int pageSize = 200)
         {
-            var scope = await GetViewScope(UserPhotoScope.Everything, username);
+            var scope = await GetViewScope(username);
 
             var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 
@@ -153,7 +153,7 @@ namespace SCS.HomePhotos.Service.Core
         /// </returns>
         public async Task<IEnumerable<Photo>> GetPhotosByDate(DateRange dateRange, string username, int pageNum = 1, int pageSize = 200)
         {
-            var scope = await GetViewScope(UserPhotoScope.Everything, username);
+            var scope = await GetViewScope(username);
 
             var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 
@@ -168,7 +168,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <returns>A list of tags.</returns>
         public async Task<IEnumerable<Tag>> GetTags(string username = null, bool includPhotoCounts = false)
         {
-            var scope = await GetViewScope(UserPhotoScope.Everything, username);
+            var scope = await GetViewScope(username);
 
             var userFilter = new UserFilter(scope.Scope, await GetFilterUserId(scope.OwnerUsername));
 

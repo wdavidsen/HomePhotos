@@ -1,0 +1,29 @@
+﻿Manual Deployment Steps for HomePhotos Service and Website
+
+1. Publish SCS.HomePhotos.Web project to a folder using supplied profile
+2. Copy deployment files to c:\Program Files\HomePhotos
+3. Move database from c:\Program Files\HomePhotos to c:\Program Data\HomePhotos\
+4. Search for app netplwiz and create HomePhotosDeamon user with Administrator group
+5. Add read, write, and exeute to *.db file (step 2) and the *.Web.exe file (step 1)
+6. Run install.bat file at c:\Program Files\HomePhotos
+7. Open Windows services manager and assign HomePhotosDeamon user to the HomePhotos Server service
+8. Open appsettings.json at c:\Program Files\HomePhotos
+	* Change Logging:PathFormat to: C:\\ProgramData\\HomePhotos\\log-{Date}.txt
+	* Change HomePhotos:DatabasePath to: C:\\ProgramData\\HomePhotos\\HomePhotos.db
+9. Start the HomePhotos Server service in Windows services manager
+10. Open browser and test webite address: http://localhost:5000
+
+
+Additional Setup for HTTPS
+
+* Do not expose this service to the Internet without HTTPS in place. *
+
+1. Search for computer certificates
+2. Add certificate from GoDaddy to personal folder (details obmitted)
+3. Open appsettings.json at c:\Program Files\HomePhotos
+	* Change HttpsInlineCertStore:Url to match certificate domain (beginning with https://)
+	* Change HttpsInlineCertStore:Subject to match subject in the certificate
+4. Start or restart the HomePhotos Server service in Windows services manager
+5. Open port 80 and 443 in Windows Firewall
+6. Configure network router to send port 80 and 443 traffic to HomePhotos host computer
+7. Open browser and test webite using your domain address: https://[your-domain-here]

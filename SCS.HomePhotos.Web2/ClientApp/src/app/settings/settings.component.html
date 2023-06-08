@@ -26,14 +26,14 @@
     <div class="form-row">
         <div class="form-group col-md-4">
             <label for="nextIndexTime_date">Next index date</label>
-            <input type="date" formControlName="nextIndexTime_date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime_date.errors }" required/>
+            <input type="date" formControlName="nextIndexTime_date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime_date.errors }" />
             <div *ngIf="submitted && f.nextIndexTime_date.errors" class="invalid-feedback">
                 <div *ngIf="f.nextIndexTime_date.errors.required">Next index time is required</div>
             </div>
         </div>
         <div class="form-group col-md-4">
             <label for="nextIndexTime_time">Next index time</label>
-            <input type="time" formControlName="nextIndexTime_time" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime_time.errors }" required />
+            <input type="time" formControlName="nextIndexTime_time" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nextIndexTime_time.errors }" />
             <div *ngIf="submitted && f.nextIndexTime_time.errors" class="invalid-feedback">
                 <div *ngIf="f.nextIndexTime_time.errors.required">Next index time is required</div>
             </div>

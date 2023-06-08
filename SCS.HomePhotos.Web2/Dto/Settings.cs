@@ -92,8 +92,7 @@ namespace SCS.HomePhotos.Web.Dto
         /// </summary>
         /// <value>
         /// The next index time.
-        /// </value>
-        [Required]
+        /// </value>        
         public DateTime? NextIndexTime { get; set; }
 
         /// <summary>

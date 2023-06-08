@@ -1,10 +1,11 @@
 import { OnInit, Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { TagService, UserSettingsService } from '../services';
+import { AuthService, TagService, UserSettingsService } from '../services';
 import { ToastrService } from 'ngx-toastr';
 import { UserSettings } from '../models/user-settings';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { User } from 'oidc-client';
 
 @Component({
   selector: 'app-user-settings',
@@ -20,6 +21,9 @@ export class UserSettingsComponent implements OnInit {
   submitted = false;
   thumbSizes = ['Largest', 'Large', 'Medium', 'Small', 'Smallest'];
   slideSpeeds = ['Fastest', 'Fast', 'Normal', 'Slow', 'Slowest'];
+  userScopes = [    
+    { text: 'Show shared and personal photos and tags', value: 'SharedAndPersonal' },
+    { text: 'Show personal photos and tags only', value: 'PersonalOnly' }];
   defaultTags: Array<string> = [];
 
   constructor(
@@ -27,7 +31,14 @@ export class UserSettingsComponent implements OnInit {
     public bsModalRef: BsModalRef,
     private userSettingsService: UserSettingsService,
     private tagService: TagService,
-    private toastr: ToastrService) {}
+    private toastr: ToastrService,
+    private authenticationService: AuthService) {
+      this.authenticationService.getCurrentUser().subscribe(user => {
+        if (user.role === 'Admin') {
+          this.userScopes.splice(0, 0, { text: 'Show all photos and tags', value: 'Everything' })
+        }
+      });
+    }
 
   ngOnInit() {
     this.userSettings = this.userSettingsService.userSettings;
@@ -74,6 +85,7 @@ export class UserSettingsComponent implements OnInit {
   private setupForm(data: UserSettings) {
 
     this.userSettingsForm = this.formBuilder.group({
+      displayScope: [data ? data.userScope : 'Everything', Validators.required],
       thumbnailSize: [data ? data.thumbnailSize : 'Medium', Validators.required],
       slideshowSpeed: [data ? data.slideshowSpeed : 'Normal', Validators.required],
       autoStartSlideshow: [data ? data.autoStartSlideshow : false, Validators.required],
@@ -84,6 +96,7 @@ export class UserSettingsComponent implements OnInit {
   private formToUserSettings(): UserSettings {
     const settings = new UserSettings();
 
+    settings.userScope = this.f.displayScope.value;
     settings.thumbnailSize = this.f.thumbnailSize.value;
     settings.slideshowSpeed = this.f.slideshowSpeed.value;
     settings.autoStartSlideshow = this.f.autoStartSlideshow.value;

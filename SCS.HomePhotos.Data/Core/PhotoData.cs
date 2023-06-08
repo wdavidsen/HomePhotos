@@ -68,13 +68,13 @@ namespace SCS.HomePhotos.Data.Core
         {
             var offset = (pageNum - 1) * pageSize;
             var dateClause = dateRange.GetWhereClause("p", false);
-            var userClause = userFilter.GetUserScopeWhereClause("p", "t", false);
+            var userClause = userFilter.GetUserScopeWhereClause("p", "t", true);
 
             var sql = $@"SELECT DISTINCT p.* 
                          FROM Photo p
                          JOIN PhotoTag pt ON p.PhotoId = pt.PhotoId
                          JOIN Tag t ON pt.TagId = t.TagId 
-                         WHERE {dateClause.Sql} AND {userClause.Sql}    
+                         WHERE {dateClause.Sql} {userClause.Sql}    
                          ORDER BY p.DateTaken DESC LIMIT {pageSize} OFFSET {offset}";
 
             var parameters = new DynamicParameters();

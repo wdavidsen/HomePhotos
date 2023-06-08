@@ -143,8 +143,9 @@ namespace SCS.HomePhotos.Data
                     sql = $"({tableAlias1}.UserId = @UserId OR {tableAlias2}.UserId = @UserId) ";
                     parameters.Add("UserId", UserId);
                     break;
+
                 case UserPhotoScope.SharedAndPersonal:
-                    sql = $"(({tableAlias1}.UserId = @UserId OR {tableAlias1}.UserId IS NULL)) OR ({tableAlias2}.UserId = @UserId OR {tableAlias2}.UserId IS NULL)";
+                    sql = $"(({tableAlias1}.UserId = @UserId OR {tableAlias1}.UserId IS NULL) OR ({tableAlias2}.UserId = @UserId OR {tableAlias2}.UserId IS NULL)) ";
                     parameters.Add("UserId", UserId);
                     break;
             }

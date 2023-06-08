@@ -66,53 +66,42 @@ namespace SCS.HomePhotos.Service.Core
 
         /// <summary>
         /// Gets the view scope.
-        /// </summary>
-        /// <param name="desiredScope">The desired scope.</param>
+        /// </summary>        
         /// <param name="desiredOwnerUsername">The desired owner of the photos the current user wishes to view.</param>
         /// <returns>The allowed scope.</returns>
-        public async Task<(string OwnerUsername, UserPhotoScope Scope)> GetViewScope(UserPhotoScope desiredScope, string desiredOwnerUsername)
+        public async Task<(string OwnerUsername, UserPhotoScope Scope)> GetViewScope(string desiredOwnerUsername)
         {
             (string OwnerUsername, UserPhotoScope Scope) result;
 
-            var allowedScope = UserPhotoScope.Everything;
             var allowedUsername = desiredOwnerUsername;
-            var baseScope = await GetUserScope(); 
+            var (baseScope, isAdmin) = await GetUserScope();
             
-            if (BaselineViewScope > baseScope)
+            if (BaselineViewScope > baseScope && !isAdmin)
             {
                 baseScope = BaselineViewScope;
             }
 
-            if (desiredScope < baseScope)
-            {
-                allowedScope = baseScope;
-            }
-            else
-            {
-                allowedScope = desiredScope;
-            }
-
-            if (desiredScope > allowedScope && !string.IsNullOrEmpty(desiredOwnerUsername) && !desiredOwnerUsername.Equals(User.Identity.Name, StringComparison.InvariantCultureIgnoreCase))
+            if (baseScope != UserPhotoScope.Everything && !string.IsNullOrEmpty(desiredOwnerUsername) && !desiredOwnerUsername.Equals(User.Identity.Name, StringComparison.InvariantCultureIgnoreCase))
             {
                 allowedUsername = string.Empty;
             }
 
-            result = (allowedUsername, allowedScope);
+            result = (allowedUsername, baseScope);
 
             return result;
         }
 
-        private async Task<UserPhotoScope> GetUserScope()
+        private async Task<(UserPhotoScope Scope, bool IsAdmin)> GetUserScope()
         {
             var user = await _userData.GetUser(User.Identity.Name);
 
             if (user == null)
             {
-                return UserPhotoScope.PersonalOnly;
+                return (UserPhotoScope.PersonalOnly, false);
             }
             var userSettings = await _userSettingsData.GetSettings(user.UserId.Value);
 
-            return userSettings.UserScope;
+            return (userSettings.UserScope, user.Role == Model.RoleType.Admin);
         }
     }
 }

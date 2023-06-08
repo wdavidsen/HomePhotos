@@ -92,7 +92,7 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoService.BaselineViewScope = UserPhotoScope.Everything;
 
-            var result = await _photoService.GetViewScope(UserPhotoScope.Everything, ownerUsername);
+            var result = await _photoService.GetViewScope(ownerUsername);
 
             Assert.Equal(expectedScope, result.Scope);
         }
@@ -113,7 +113,7 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoService.BaselineViewScope = UserPhotoScope.SharedAndPersonal;
 
-            var result = await _photoService.GetViewScope(UserPhotoScope.Everything, ownerUsername);
+            var result = await _photoService.GetViewScope(ownerUsername);
 
             Assert.Equal(expectedScope, result.Scope);
         }
@@ -138,7 +138,7 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoService.BaselineViewScope = UserPhotoScope.PersonalOnly;
 
-            var result = await _photoService.GetViewScope(UserPhotoScope.SharedAndPersonal, ownerUsername);
+            var result = await _photoService.GetViewScope(ownerUsername);
 
             Assert.Equal(expectedScope, result.Scope);
         }

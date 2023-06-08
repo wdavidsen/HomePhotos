@@ -142,6 +142,11 @@ Container.AddSingleton<IClientMessageSender, ClientMessageSender>();
 Container.AddSingleton<IUploadTracker, UploadTracker>();
 Container.AddSingleton<IImageMetadataService, ImageMetadataService>();
 
+Container.AddSpaStaticFiles(config =>
+{
+    config.RootPath = "wwwroot";
+});
+
 builder.Host.UseWindowsService();
 
 var App = builder.Build();

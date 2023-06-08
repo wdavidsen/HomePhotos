@@ -270,6 +270,11 @@ namespace SCS.HomePhotos.Web.Controllers
         [HttpPut("settings")]
         public async Task<IActionResult> UpdateUserSettings([FromBody] Dto.UserSettings settings)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             var currentUser = await _accountService.GetUser(User.Identity.Name);            
             var userEntity = settings.ToModel();
             userEntity.UserId = currentUser.UserId.Value;

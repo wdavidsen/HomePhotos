@@ -146,14 +146,15 @@ namespace SCS.HomePhotos.Workers
             if (_configService.DynamicConfig.NextIndexTime != null)
             {
                 var start = (DateTime.UtcNow + StartTime).ToString("g");
+                var frequency = _configService.DynamicConfig.IndexFrequencyHours;
 
                 _timer = new Timer(DoWork, null, StartTime, RunFrequency);
 
-                var msg = $"Next photo index time set for {start} (UTC); reoccurance every {_configService.DynamicConfig.IndexFrequencyHours} hours.";
+                var msg = $"Next photo index time set for {start} (UTC); reoccurance every {frequency} hours.";
                 _adminlogger.LogNeutral(msg, LogCategory.Index);
 
-                _logger.LogInformation("Next photo index time set for {start} (UTC); reoccurance every {_configService.DynamicConfig.IndexFrequencyHours} hours.",
-                    start, _configService.DynamicConfig.IndexFrequencyHours);
+                _logger.LogInformation("Next photo index time set for {start} (UTC); reoccurance every {frequency} hours.",
+                    start, frequency);
             }
         }
 
