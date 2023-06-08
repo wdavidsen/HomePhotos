@@ -173,9 +173,15 @@ namespace SCS.HomePhotos
         /// <returns>A hash of the password.</returns>
         private static byte[] PBKDF2(string password, byte[] salt, int iterations, int outputBytes)
         {
-            Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password, salt);
-            pbkdf2.IterationCount = iterations;
-            return pbkdf2.GetBytes(outputBytes);
+#pragma warning disable CA5379 // Do Not Use Weak Key Derivation Function Algorithm (is not a valid issue in this context https://security.stackexchange.com/questions/93435/is-rfc2898derivebytes-using-hmac-sha1-still-considered-secure-enough-for-hashi)
+
+            using (Rfc2898DeriveBytes pbkdf2 = new(password, salt))
+            {
+                pbkdf2.IterationCount = iterations;
+                return pbkdf2.GetBytes(outputBytes);
+            }
+
+#pragma warning restore CA5379
         }
     }
 }

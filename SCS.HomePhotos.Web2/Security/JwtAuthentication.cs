@@ -37,7 +37,7 @@ namespace SCS.HomePhotos.Web.Security
         /// <value>
         /// The symmetric security key.
         /// </value>
-        public SymmetricSecurityKey SymmetricSecurityKey => new SymmetricSecurityKey(Convert.FromBase64String(SecurityKey));
+        public SymmetricSecurityKey SymmetricSecurityKey => new(Convert.FromBase64String(SecurityKey));
 
         /// <summary>
         /// Gets the signing credentials.
@@ -45,6 +45,6 @@ namespace SCS.HomePhotos.Web.Security
         /// <value>
         /// The signing credentials.
         /// </value>
-        public SigningCredentials SigningCredentials => new SigningCredentials(SymmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+        public SigningCredentials SigningCredentials => new(SymmetricSecurityKey, SecurityAlgorithms.HmacSha256);
     }
 }
