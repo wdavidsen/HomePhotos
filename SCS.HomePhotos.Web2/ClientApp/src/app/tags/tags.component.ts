@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { InputDialogComponent, ConfirmDialogComponent } from '../common-dialog';
+import { ConfirmDialogComponent } from '../common-dialog';
 import { UserSettings } from '../models/user-settings';
 import { TagDialogComponent } from './tag-dialog.component';
 import { CopyTagDialogComponent } from './copy-tag-dialog.component';
@@ -21,6 +21,7 @@ declare var RGB_Log_Shade: any;
 })
 export class TagsComponent implements OnInit, OnDestroy {
   tagChips: TagChip[] = [];
+  selectedTagChips: TagChip[] = [];
   organizeMode = false;
   filterLetter: string = null;  
   inputModalRef: BsModalRef;
@@ -84,6 +85,12 @@ export class TagsComponent implements OnInit, OnDestroy {
   select(chip: TagChip) {
     if (this.organizeMode) {
       chip.selected = !chip.selected;
+      if (chip.selected) {
+        this.selectedTagChips.push(chip);
+      }
+      else {
+        this.selectedTagChips = this.selectedTagChips.filter(c => !(c.id == chip.id && c.ownerUsername == chip.ownerUsername));
+      }
     }
     else {
       if (chip.ownerUsername) {        
@@ -101,6 +108,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   clearSelections(): void {
     this.tagChips.forEach(thumb => thumb.selected = false);
+    this.selectedTagChips = [];
   }
 
   toggleFilter(tagName: string) {
@@ -293,7 +301,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   combineTags() {
-    const chips = this.getSelectedChips();
+    const chips = this.selectedTagChips;
 
     if (chips.length) {      
       const chip = chips[0];
@@ -309,7 +317,7 @@ export class TagsComponent implements OnInit, OnDestroy {
           if (this.copyTagModalRef.content.okClicked) {
             const c = this.copyTagModalRef.content;
             
-            if (c.tagName && c.tagName.trim() && (c.tagName.toUpperCase() != chip.name.toUpperCase() || c.tagType != tagType)) {
+            if (c.tagName && c.tagName.trim()) {
               const ownerId = c.tagType == 'S' ? null : this.currentUser.userId;
               this.combineTagsSubmit(chips.map(c => c.id), c.tagName, ownerId);
             }
