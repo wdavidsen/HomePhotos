@@ -72,13 +72,9 @@ export class NavMenuComponent implements OnInit {
   logout() {
     this.authenticationService.logout()
       .subscribe({
-        next: () => {
-          this.toastr.success('Sign-out successful');
+        complete: () => {
+          this.toastr.success('You have been signed-out');
           this.router.navigate(['/login']);
-        },
-        error: (response: HttpErrorResponse) => {
-          console.error(response);
-          this.toastr.error('Sign-out failed');
         }
       });
 

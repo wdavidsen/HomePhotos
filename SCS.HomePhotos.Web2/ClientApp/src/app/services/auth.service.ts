@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { mapTo, tap } from 'rxjs/operators';
+import { catchError, mapTo, tap } from 'rxjs/operators';
 import { Tokens } from '../models/tokens';
 import { environment } from '../../environments/environment';
 import { PasswordChange, PasswordRequirements, User } from '../models';
@@ -51,7 +51,13 @@ export class AuthService {
       'refreshToken': this.getRefreshToken()
     })
     .pipe(
-      tap(() => this.doLogoutUser()));
+      tap(() => this.doLogoutUser()))
+      .pipe(catchError(_ => {
+        const msg = 'Logout API call failed, most likely due to expired tokens.'
+        console.error(msg)
+        this.doLogoutUser()
+        throw new Error(msg)
+    }));
   }
 
   isLoggedIn() {
