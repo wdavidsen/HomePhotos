@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-	<AnalysisLevel>6.0-minimum</AnalysisLevel>
+    <TargetFramework>net8.0</TargetFramework>
+	<AnalysisLevel>8.0-minimum</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Dapper" Version="2.1.24" />
     <PackageReference Include="Dapper.SimpleCRUD" Version="2.3.0" />
   </ItemGroup>
 
