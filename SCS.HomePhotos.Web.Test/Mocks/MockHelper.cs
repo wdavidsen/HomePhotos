@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using SCS.HomePhotos.Model;
+using SCS.HomePhotos.Web.Security;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;

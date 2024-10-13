@@ -7,7 +7,7 @@
         <member name="T:SCS.HomePhotos.Web.Controllers.AccountController">
             <summary>Account services.</summary>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.AccountController},SCS.HomePhotos.Service.Contracts.IAccountService,SCS.HomePhotos.IStaticConfig,SCS.HomePhotos.Web.ISecurityService,SCS.HomePhotos.Web.IFileUploadService,SCS.HomePhotos.IDynamicConfig)">
+        <member name="M:SCS.HomePhotos.Web.Controllers.AccountController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.AccountController},SCS.HomePhotos.Service.Contracts.IAccountService,SCS.HomePhotos.IStaticConfig,SCS.HomePhotos.Web.Security.ISecurityService,SCS.HomePhotos.Web.IFileUploadService,SCS.HomePhotos.IDynamicConfig)">
             <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.AccountController" /> class.</summary>
             <param name="logger">The logger.</param>
             <param name="accountService">The account service.</param>
@@ -55,7 +55,7 @@
         <member name="T:SCS.HomePhotos.Web.Controllers.AuthController">
             <summary>Authentication services.</summary>
         </member>
-        <member name="M:SCS.HomePhotos.Web.Controllers.AuthController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.AuthController},Microsoft.Extensions.Options.IOptions{SCS.HomePhotos.Web.Security.JwtAuthentication},SCS.HomePhotos.Service.Contracts.IAccountService,SCS.HomePhotos.IStaticConfig,SCS.HomePhotos.Web.ISecurityService)">
+        <member name="M:SCS.HomePhotos.Web.Controllers.AuthController.#ctor(Microsoft.Extensions.Logging.ILogger{SCS.HomePhotos.Web.Controllers.AuthController},Microsoft.Extensions.Options.IOptions{SCS.HomePhotos.Web.Security.JwtAuthentication},SCS.HomePhotos.Service.Contracts.IAccountService,SCS.HomePhotos.IStaticConfig,SCS.HomePhotos.Web.Security.ISecurityService)">
             <summary>Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Controllers.AuthController" /> class.</summary>
             <param name="logger">The logger.</param>
             <param name="jwtAuthentication">The JWT authentication.</param>
@@ -1269,61 +1269,6 @@
             <param name="file">The file.</param>
             <returns>A byte array.</returns>
         </member>
-        <member name="T:SCS.HomePhotos.Web.ISecurityService">
-            <summary>
-            Provides security services.
-            </summary>
-            <seealso cref="T:SCS.HomePhotos.Web.ISecurityService" />
-        </member>
-        <member name="P:SCS.HomePhotos.Web.ISecurityService.ValidIssuer">
-            <summary>
-            Gets the valid issuer.
-            </summary>
-            <value>
-            The valid issuer.
-            </value>
-        </member>
-        <member name="P:SCS.HomePhotos.Web.ISecurityService.ValidAudience">
-            <summary>
-            Gets the valid audience.
-            </summary>
-            <value>
-            The valid audience.
-            </value>
-        </member>
-        <member name="M:SCS.HomePhotos.Web.ISecurityService.GenerateRefreshToken">
-            <summary>
-            Generates a refresh token.
-            </summary>
-            <returns>The refresh token.</returns>
-        </member>
-        <member name="M:SCS.HomePhotos.Web.ISecurityService.GenerateToken(System.Collections.Generic.IEnumerable{System.Security.Claims.Claim})">
-            <summary>
-            Generates a JWT security token.
-            </summary>
-            <param name="claims">The claims.</param>
-            <returns>A JWT security token</returns>
-        </member>
-        <member name="M:SCS.HomePhotos.Web.ISecurityService.GetPrincipalFromExpiredToken(System.String)">
-            <summary>
-            Gets the principal from expired token.
-            </summary>
-            <param name="token">The token.</param>
-            <returns></returns>
-            <exception cref="T:Microsoft.IdentityModel.Tokens.SecurityTokenException">
-            Invalid token
-            or
-            Invalid token
-            </exception>
-        </member>
-        <member name="M:SCS.HomePhotos.Web.ISecurityService.GetUserClaims(SCS.HomePhotos.Model.User,SCS.HomePhotos.Model.RoleType)">
-            <summary>
-            Gets a user's claims.
-            </summary>
-            <param name="user">The user.</param>
-            <param name="role">The user role.</param>
-            <returns>A list of claims.</returns>
-        </member>
         <member name="T:SCS.HomePhotos.Web.IUploadTracker">
             <summary>
             Image file upload tracker.
@@ -1834,21 +1779,42 @@
             Get action.
             </summary>
         </member>
-        <member name="T:SCS.HomePhotos.Web.SecurityService">
+        <member name="T:SCS.HomePhotos.Web.Security.ISecurityService">
             <summary>
             Provides security services.
             </summary>
-            <seealso cref="T:SCS.HomePhotos.Web.ISecurityService" />
+            <seealso cref="T:SCS.HomePhotos.Web.Security.ISecurityService" />
         </member>
-        <member name="M:SCS.HomePhotos.Web.SecurityService.#ctor(Microsoft.Extensions.Options.IOptions{SCS.HomePhotos.Web.Security.JwtAuthentication},SCS.HomePhotos.IStaticConfig)">
+        <member name="P:SCS.HomePhotos.Web.Security.ISecurityService.ValidIssuer">
             <summary>
-            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.SecurityService"/> class.
+            Gets the valid issuer.
             </summary>
-            <param name="jwtAuthentication">The JWT authentication.</param>
-            <param name="staticConfig">The static configuration.</param>
-            <exception cref="T:System.ArgumentNullException">jwtAuthentication</exception>
+            <value>
+            The valid issuer.
+            </value>
         </member>
-        <member name="M:SCS.HomePhotos.Web.SecurityService.GetPrincipalFromExpiredToken(System.String)">
+        <member name="P:SCS.HomePhotos.Web.Security.ISecurityService.ValidAudience">
+            <summary>
+            Gets the valid audience.
+            </summary>
+            <value>
+            The valid audience.
+            </value>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Security.ISecurityService.GenerateRefreshToken">
+            <summary>
+            Generates a refresh token.
+            </summary>
+            <returns>The refresh token.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Security.ISecurityService.GenerateToken(System.Collections.Generic.IEnumerable{System.Security.Claims.Claim})">
+            <summary>
+            Generates a JWT security token.
+            </summary>
+            <param name="claims">The claims.</param>
+            <returns>A JWT security token</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Security.ISecurityService.GetPrincipalFromExpiredToken(System.String)">
             <summary>
             Gets the principal from expired token.
             </summary>
@@ -1860,42 +1826,13 @@
             Invalid token
             </exception>
         </member>
-        <member name="M:SCS.HomePhotos.Web.SecurityService.GenerateToken(System.Collections.Generic.IEnumerable{System.Security.Claims.Claim})">
-            <summary>
-            Generates a JWT security token.
-            </summary>
-            <param name="claims">The claims.</param>
-            <returns>A JWT security token</returns>
-        </member>
-        <member name="M:SCS.HomePhotos.Web.SecurityService.GenerateRefreshToken">
-            <summary>
-            Generates a refresh token.
-            </summary>
-            <returns>The refresh token.</returns>
-        </member>
-        <member name="M:SCS.HomePhotos.Web.SecurityService.GetUserClaims(SCS.HomePhotos.Model.User,SCS.HomePhotos.Model.RoleType)">
+        <member name="M:SCS.HomePhotos.Web.Security.ISecurityService.GetUserClaims(SCS.HomePhotos.Model.User,SCS.HomePhotos.Model.RoleType)">
             <summary>
             Gets a user's claims.
-            </summary>        
+            </summary>
             <param name="user">The user.</param>
             <param name="role">The user role.</param>
             <returns>A list of claims.</returns>
-        </member>
-        <member name="P:SCS.HomePhotos.Web.SecurityService.ValidIssuer">
-            <summary>
-            Gets the valid issuer.
-            </summary>
-            <value>
-            The valid issuer.
-            </value>
-        </member>
-        <member name="P:SCS.HomePhotos.Web.SecurityService.ValidAudience">
-            <summary>
-            Gets the valid audience.
-            </summary>
-            <value>
-            The valid audience.
-            </value>
         </member>
         <member name="T:SCS.HomePhotos.Web.Security.JwtAuthentication">
             <summary>
@@ -1940,6 +1877,69 @@
             </summary>
             <value>
             The signing credentials.
+            </value>
+        </member>
+        <member name="T:SCS.HomePhotos.Web.Security.SecurityService">
+            <summary>
+            Provides security services.
+            </summary>
+            <seealso cref="T:SCS.HomePhotos.Web.Security.ISecurityService" />
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Security.SecurityService.#ctor(Microsoft.Extensions.Options.IOptions{SCS.HomePhotos.Web.Security.JwtAuthentication},SCS.HomePhotos.IStaticConfig)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SCS.HomePhotos.Web.Security.SecurityService"/> class.
+            </summary>
+            <param name="jwtAuthentication">The JWT authentication.</param>
+            <param name="staticConfig">The static configuration.</param>
+            <exception cref="T:System.ArgumentNullException">jwtAuthentication</exception>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Security.SecurityService.GetPrincipalFromExpiredToken(System.String)">
+            <summary>
+            Gets the principal from expired token.
+            </summary>
+            <param name="token">The token.</param>
+            <returns></returns>
+            <exception cref="T:Microsoft.IdentityModel.Tokens.SecurityTokenException">
+            Invalid token
+            or
+            Invalid token
+            </exception>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Security.SecurityService.GenerateToken(System.Collections.Generic.IEnumerable{System.Security.Claims.Claim})">
+            <summary>
+            Generates a JWT security token.
+            </summary>
+            <param name="claims">The claims.</param>
+            <returns>A JWT security token</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Security.SecurityService.GenerateRefreshToken">
+            <summary>
+            Generates a refresh token.
+            </summary>
+            <returns>The refresh token.</returns>
+        </member>
+        <member name="M:SCS.HomePhotos.Web.Security.SecurityService.GetUserClaims(SCS.HomePhotos.Model.User,SCS.HomePhotos.Model.RoleType)">
+            <summary>
+            Gets a user's claims.
+            </summary>        
+            <param name="user">The user.</param>
+            <param name="role">The user role.</param>
+            <returns>A list of claims.</returns>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Security.SecurityService.ValidIssuer">
+            <summary>
+            Gets the valid issuer.
+            </summary>
+            <value>
+            The valid issuer.
+            </value>
+        </member>
+        <member name="P:SCS.HomePhotos.Web.Security.SecurityService.ValidAudience">
+            <summary>
+            Gets the valid audience.
+            </summary>
+            <value>
+            The valid audience.
             </value>
         </member>
         <member name="T:SCS.HomePhotos.Web.UploadInfo">

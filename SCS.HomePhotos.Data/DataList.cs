@@ -22,14 +22,8 @@ namespace SCS.HomePhotos.Data
         /// </exception>
         public DataList(IEnumerable<T> data, PageInfo pageInfo)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-            if (pageInfo == null)
-            {
-                throw new ArgumentNullException(nameof(pageInfo));
-            }
+            ArgumentNullException.ThrowIfNull(data);
+            ArgumentNullException.ThrowIfNull(pageInfo);
 
             Data = data.ToList();
             PageInfo = pageInfo;

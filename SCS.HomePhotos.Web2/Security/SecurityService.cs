@@ -1,19 +1,17 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-
 using SCS.HomePhotos.Model;
-using SCS.HomePhotos.Web.Security;
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
-namespace SCS.HomePhotos.Web
+namespace SCS.HomePhotos.Web.Security
 {
     /// <summary>
     /// Provides security services.
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Web.ISecurityService" />
+    /// <seealso cref="ISecurityService" />
     public class SecurityService : ISecurityService
     {
         private readonly JwtAuthentication _jwtAuthentication;
@@ -24,7 +22,7 @@ namespace SCS.HomePhotos.Web
         /// </summary>
         /// <param name="jwtAuthentication">The JWT authentication.</param>
         /// <param name="staticConfig">The static configuration.</param>
-        /// <exception cref="System.ArgumentNullException">jwtAuthentication</exception>
+        /// <exception cref="ArgumentNullException">jwtAuthentication</exception>
         public SecurityService(IOptions<JwtAuthentication> jwtAuthentication, IStaticConfig staticConfig)
         {
             _jwtAuthentication = jwtAuthentication?.Value ?? throw new ArgumentNullException(nameof(jwtAuthentication));
@@ -39,7 +37,7 @@ namespace SCS.HomePhotos.Web
         /// </summary>
         /// <param name="token">The token.</param>
         /// <returns></returns>
-        /// <exception cref="Microsoft.IdentityModel.Tokens.SecurityTokenException">
+        /// <exception cref="SecurityTokenException">
         /// Invalid token
         /// or
         /// Invalid token
@@ -117,7 +115,7 @@ namespace SCS.HomePhotos.Web
         /// <param name="user">The user.</param>
         /// <param name="role">The user role.</param>
         /// <returns>A list of claims.</returns>
-        public List<Claim> GetUserClaims(Model.User user, RoleType role)
+        public List<Claim> GetUserClaims(User user, RoleType role)
         {
             var claims = new List<Claim>
             {

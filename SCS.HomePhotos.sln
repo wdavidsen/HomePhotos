@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Service", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.Web", "SCS.HomePhotos.Web2\SCS.HomePhotos.Web.csproj", "{D4731814-76AC-4F00-9452-AA764CC4EF2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCS.HomePhotos.KeyGenerator", "SCS.HomePhotos.KeyGenerator\SCS.HomePhotos.KeyGenerator.csproj", "{81AD9909-1317-4C97-A7C1-9CFC70319504}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCS.HomePhotos.KeyGenerator", "SCS.HomePhotos.KeyGenerator\SCS.HomePhotos.KeyGenerator.csproj", "{81AD9909-1317-4C97-A7C1-9CFC70319504}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

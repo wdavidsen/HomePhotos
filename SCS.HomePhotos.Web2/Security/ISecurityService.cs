@@ -1,13 +1,12 @@
 ﻿using SCS.HomePhotos.Model;
-
 using System.Security.Claims;
 
-namespace SCS.HomePhotos.Web
+namespace SCS.HomePhotos.Web.Security
 {
     /// <summary>
     /// Provides security services.
     /// </summary>
-    /// <seealso cref="SCS.HomePhotos.Web.ISecurityService" />
+    /// <seealso cref="ISecurityService" />
     public interface ISecurityService
     {
         /// <summary>
@@ -58,6 +57,6 @@ namespace SCS.HomePhotos.Web
         /// <param name="user">The user.</param>
         /// <param name="role">The user role.</param>
         /// <returns>A list of claims.</returns>
-        List<Claim> GetUserClaims(Model.User user, RoleType role);
+        List<Claim> GetUserClaims(User user, RoleType role);
     }
 }

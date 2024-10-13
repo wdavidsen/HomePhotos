@@ -40,7 +40,7 @@ namespace SCS.HomePhotos.Service.Core
             DynamicConfig = dynamicConfig;
             StaticConfig = staticConfig;
 
-            DynamicConfig.PropertyChanged += _dynamicConfig_PropertyChanged;
+            DynamicConfig.PropertyChanged += DdynamicConfig_PropertyChanged;
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace SCS.HomePhotos.Service.Core
             _configData.SaveConfiguration(configToSave);
         }
 
-        private void _dynamicConfig_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void DdynamicConfig_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             SaveDynamicConfig();
         }

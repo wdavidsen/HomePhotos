@@ -1,13 +1,11 @@
 ﻿using AutoFixture;
 
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 using Moq;
 
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
-using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Core;
@@ -15,11 +13,7 @@ using SCS.HomePhotos.Service.Workers;
 using SCS.HomePhotos.Workers;
 
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
@@ -75,17 +69,17 @@ namespace SCS.HomePhotos.Service.Test
 
             _photoService.SetUserContext(_userContext.Object);
         }
-        
+
         [Theory]
         [InlineData(RoleType.Admin)]
         [InlineData(RoleType.Reader)]
         [InlineData(RoleType.Contributor)]
         public async Task GetViewScopeEverything(RoleType requestingUserRole)
         {
-            var ownerUsername = "wdavidsen";            
+            var ownerUsername = "wdavidsen";
             var requestingUsername = "jdoe";
             var requestingUserId = 2;
-            
+
             var expectedScope = UserPhotoScope.Everything;
 
             _photoService.SetUserContext(MockHelper.GetPrincipal(requestingUsername, requestingUserId, requestingUserRole));
@@ -133,7 +127,7 @@ namespace SCS.HomePhotos.Service.Test
             //_userData.Setup(m => m.GetUser(It.IsAny<string>())).ReturnsAsync(new User());
 
             //_userSettingsData.Setup(m => m.GetSettings(It.IsAny<int>())).ReturnsAsync(new UserSettings());
-            
+
             _photoService.SetUserContext(MockHelper.GetPrincipal(requestingUsername, requestingUserId, requestingUserRole));
 
             _photoService.BaselineViewScope = UserPhotoScope.PersonalOnly;
@@ -206,7 +200,7 @@ namespace SCS.HomePhotos.Service.Test
                     Assert.Equal(50, pageSize);
                     Assert.Equal(tag, t);
                     Assert.Equal(ownerId, filter.UserId);
-                }); 
+                });
 
             var results = await _photoService.GetPhotosByTag(tag, owner, 1, 50);
 

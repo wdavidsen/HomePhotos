@@ -34,18 +34,18 @@ namespace SCS.HomePhotos.Web.Security
                 IssuerSigningKey = jwtAuthentication.SymmetricSecurityKey,
                 NameClaimType = ClaimTypes.NameIdentifier
             };
-            //options.Events = new JwtBearerEvents
-            //{
-            //    OnAuthenticationFailed = context =>
-            //    {
-            //        if (!context.Request.Path.Value.StartsWith(Constants.RefreshRoute, StringComparison.InvariantCultureIgnoreCase)
-            //            && context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-            //        {
-            //            context.Response.Headers.Add("token-expired", "true");
-            //        }
-            //        return Task.CompletedTask;
-            //    }
-            //};
+            options.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    //if (!context.Request.Path.Value.StartsWith(Constants.RefreshRoute, StringComparison.InvariantCultureIgnoreCase)
+                    //    && context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                    //{
+                    //    context.Response.Headers.Add("token-expired", "true");
+                    //}
+                    return Task.CompletedTask;
+                }
+            };
         }
     }
 }

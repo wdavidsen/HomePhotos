@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Web.Filters;
 using SCS.HomePhotos.Web.Models;
-
+using SCS.HomePhotos.Web.Security;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("SCS.HomePhotos.Web.Test")]

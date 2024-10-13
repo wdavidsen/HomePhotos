@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 
 using SCS.HomePhotos.Data;
 using SCS.HomePhotos.Data.Contracts;
-using SCS.HomePhotos.Data.Core;
 using SCS.HomePhotos.Model;
 using SCS.HomePhotos.Service.Contracts;
 using SCS.HomePhotos.Service.Workers;
@@ -12,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SCS.HomePhotos.Service.Core
@@ -54,7 +52,7 @@ namespace SCS.HomePhotos.Service.Core
         /// <param name="backgroundTaskQueue">The background task queue.</param>
         public PhotoService(IPhotoData photoData, ITagData tagData, IPhotoTagData photoTagData, IFileExclusionData fileExclusionData, IUserData userData, IUserSettingsData userSettingsData,
             ILogger<PhotoService> logger, IAdminLogService adminLogger, IFileSystemService fileSystemService, IDynamicConfig dynamicConfig, IBackgroundTaskQueue backgroundTaskQueue)
-            : base (dynamicConfig, userData, userSettingsData)
+            : base(dynamicConfig, userData, userSettingsData)
         {
             _photoData = photoData;
             _tagData = tagData;
@@ -414,7 +412,7 @@ namespace SCS.HomePhotos.Service.Core
                             photo.UserId = user.UserId;
                             tags.Skip(1).ToList().ForEach(t => t.UserId = photo.UserId);
                         }
-                    }                    
+                    }
                     break;
 
                 case ImageFileSource.MobileUpload:
